@@ -7,3 +7,4 @@
 | 2026-04-11 | images | [hero.png](images/hero.png) | Hero image for Claude desktop reverse engineering April article | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-desktop-reverse-april/hero.png |
 | 2026-04-13 | images | [hero-part1.png](images/hero-part1.png) | Hero image for 32-hour workweek article Part 1 | /Users/marcokotrotsos/PERSONAL/Content/drafts/32-hour-workweek/hero-part1.png |
 | 2026-04-13 | images | [hero-part2.png](images/hero-part2.png) | Hero image for 32-hour workweek article Part 2 | /Users/marcokotrotsos/PERSONAL/Content/drafts/32-hour-workweek/hero-part2.png |
+| 2026-04-14 | images | [hero.png](images/hero.png) | Hero image for Anthropic Managed Agents article | /Users/marcokotrotsos/PERSONAL/Content/drafts/managed-agents/hero.png |
