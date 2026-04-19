@@ -17,3 +17,4 @@
 | 2026-04-17 | reverse-engineer | reports | [CHICAGO.md](projects/reverse-engineer/reports/CHICAGO.md) | Reverse engineering of Claude.app Chicago feature: ambient screen-aware computer-use mode |
 | 2026-04-19 | reverse-engineer | reports | [TELEPATHY.md](projects/reverse-engineer/reports/TELEPATHY.md) | Reverse engineering of OpenAI Codex Telepathy: ambient screen-capture agent shipped dormant |
 | 2026-04-19 | reverse-engineer | reports | [SKY.md](projects/reverse-engineer/reports/SKY.md) | Reverse engineering of OpenAI Codex Sky: separately-signed Computer Use backend sandboxed inside Codex |
+| 2026-04-19 | montferland | reports | [WCAG-evaluatie-Duckstad.md](projects/montferland/reports/WCAG-evaluatie-Duckstad.md) | WCAG 2.2 AA toegankelijkheidsevaluatie van virtuele assistent demo Duckstad |
