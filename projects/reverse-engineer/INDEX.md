@@ -8,3 +8,4 @@
 | 2026-04-17 | docs | [REDTEAM_REPORT.docx](docs/REDTEAM_REPORT.docx) | Red team report for Montferland virtual assistant: 3 High, 4 Medium, 5 Low findings including full system prompt extraction | /Users/marcokotrotsos/PERSONAL/reverse-engineer/redteam-montferland/reports/REDTEAM_REPORT.docx |
 | 2026-04-17 | reports | [CHICAGO.md](reports/CHICAGO.md) | Reverse engineering of Claude.app Chicago feature: ambient screen-aware computer-use mode | /Users/marcokotrotsos/PERSONAL/reverse-engineer/claude-app-analysis/CHICAGO.md |
 | 2026-04-19 | reports | [TELEPATHY.md](reports/TELEPATHY.md) | Reverse engineering of OpenAI Codex Telepathy: ambient screen-capture agent shipped dormant | /Users/marcokotrotsos/PERSONAL/reverse-engineer/codex/TELEPATHY.md |
+| 2026-04-19 | reports | [SKY.md](reports/SKY.md) | Reverse engineering of OpenAI Codex Sky: separately-signed Computer Use backend sandboxed inside Codex | /Users/marcokotrotsos/PERSONAL/reverse-engineer/codex/SKY.md |
