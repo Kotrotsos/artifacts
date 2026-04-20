@@ -19,3 +19,4 @@
 | 2026-04-19 | reverse-engineer | reports | [SKY.md](projects/reverse-engineer/reports/SKY.md) | Reverse engineering of OpenAI Codex Sky: separately-signed Computer Use backend sandboxed inside Codex |
 | 2026-04-19 | montferland | reports | [WCAG-evaluatie-Duckstad.md](projects/montferland/reports/WCAG-evaluatie-Duckstad.md) | WCAG 2.2 AA toegankelijkheidsevaluatie van virtuele assistent demo Duckstad |
 | 2026-04-19 | montferland | docs | [WCAG-evaluatie-Duckstad.docx](projects/montferland/docs/WCAG-evaluatie-Duckstad.docx) | WCAG 2.2 AA toegankelijkheidsevaluatie van virtuele assistent demo Duckstad (Word) |
+| 2026-04-20 | montferland | reports | [REDTEAM-rapport-Meppel.md](projects/montferland/reports/REDTEAM-rapport-Meppel.md) | Red team prompt-injection rapport voor Mia chatbot Meppel: 50+ attacks met 4 critical en 4 high-impact bevindingen |

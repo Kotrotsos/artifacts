@@ -4,3 +4,4 @@
 |------|------|------|-------------|--------|
 | 2026-04-19 | reports | [WCAG-evaluatie-Duckstad.md](reports/WCAG-evaluatie-Duckstad.md) | WCAG 2.2 AA toegankelijkheidsevaluatie van virtuele assistent demo Duckstad | /Users/marcokotrotsos/PERSONAL/montferland/wcag/WCAG-evaluatie-Duckstad.md |
 | 2026-04-19 | docs | [WCAG-evaluatie-Duckstad.docx](docs/WCAG-evaluatie-Duckstad.docx) | WCAG 2.2 AA toegankelijkheidsevaluatie van virtuele assistent demo Duckstad (Word) | /Users/marcokotrotsos/PERSONAL/montferland/wcag/WCAG-evaluatie-Duckstad.docx |
+| 2026-04-20 | reports | [REDTEAM-rapport-Meppel.md](reports/REDTEAM-rapport-Meppel.md) | Red team prompt-injection rapport voor Mia chatbot Meppel: 50+ attacks met 4 critical en 4 high-impact bevindingen | /Users/marcokotrotsos/PERSONAL/montferland/wcag/redteam/REDTEAM-rapport-Meppel.md |
