@@ -22,3 +22,4 @@
 | 2026-04-20 | montferland | reports | [REDTEAM-rapport-Meppel.md](projects/montferland/reports/REDTEAM-rapport-Meppel.md) | Red team prompt-injection rapport voor Mia chatbot Meppel: 50+ attacks met 4 critical en 4 high-impact bevindingen |
 | 2026-04-20 | montferland | reports | [REDTEAM-rapport-Meppel.md](projects/montferland/reports/REDTEAM-rapport-Meppel.md) | Red team rapport Mia Meppel met multi-turn addendum: 4 archetypen, 114 calls, persona drift en split-assembly als nieuwe faalmodi |
 | 2026-04-21 | montferland | reports | [REDTEAM-rapport-Montferland-interim.md](projects/montferland/reports/REDTEAM-rapport-Montferland-interim.md) | Interim red team rapport Mai chatbot Montferland |
+| 2026-04-21 | montferland | docs | [REDTEAM-rapport-Montferland.docx](projects/montferland/docs/REDTEAM-rapport-Montferland.docx) | Red team rapport Mai chatbot Montferland Word document |
