@@ -21,3 +21,4 @@
 | 2026-04-19 | montferland | docs | [WCAG-evaluatie-Duckstad.docx](projects/montferland/docs/WCAG-evaluatie-Duckstad.docx) | WCAG 2.2 AA toegankelijkheidsevaluatie van virtuele assistent demo Duckstad (Word) |
 | 2026-04-20 | montferland | reports | [REDTEAM-rapport-Meppel.md](projects/montferland/reports/REDTEAM-rapport-Meppel.md) | Red team prompt-injection rapport voor Mia chatbot Meppel: 50+ attacks met 4 critical en 4 high-impact bevindingen |
 | 2026-04-20 | montferland | reports | [REDTEAM-rapport-Meppel.md](projects/montferland/reports/REDTEAM-rapport-Meppel.md) | Red team rapport Mia Meppel met multi-turn addendum: 4 archetypen, 114 calls, persona drift en split-assembly als nieuwe faalmodi |
+| 2026-04-21 | montferland | reports | [REDTEAM-rapport-Montferland-interim.md](projects/montferland/reports/REDTEAM-rapport-Montferland-interim.md) | Interim red team rapport Mai chatbot Montferland |
