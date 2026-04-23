@@ -25,3 +25,4 @@
 | 2026-04-21 | montferland | docs | [REDTEAM-rapport-Montferland.docx](projects/montferland/docs/REDTEAM-rapport-Montferland.docx) | Red team rapport Mai chatbot Montferland Word document |
 | 2026-04-22 | 2houses | docs | [REDTEAM_REPORT.docx](projects/2houses/docs/REDTEAM_REPORT.docx) | Red team assessment of 2houses.com co-parenting platform: 1 Critical, 2 High, 4 Medium, 1 Low |
 | 2026-04-23 | content | images | [hero.png](projects/content/images/hero.png) | Hero image for State of Agentic Coding Spring 2026 article, isometric 3D stack illustration |
+| 2026-04-23 | content | images | [hero.png](projects/content/images/hero.png) | Hero v2 for State of Agentic Coding Spring 2026, solid platforms with better contrast |
