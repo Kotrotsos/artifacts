@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZL2026 — Workflow hyperframes</title>
+<style>
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --surface-soft: #FBFAF7;
+    --surface-sink: #F1F0EC;
+    --ink: #111110;
+    --ink-soft: #3A3935;
+    --ink-muted: #6A6862;
+    --ink-dim: #9B988F;
+    --line: rgba(17,17,16,0.08);
+    --line-strong: rgba(17,17,16,0.14);
+    --navy: #2C3E6B;
+    --navy-soft: #EEF1F7;
+    --navy-ink: #1A2649;
+    --success: #2F6B18;
+    --success-soft: #EAF3DE;
+    --warn: #7A4A0A;
+    --warn-soft: #FAEEDA;
+    --info-soft: #E6EBF4;
+    --ease: cubic-bezier(0.23, 1, 0.32, 1);
+    --shadow-1: 0 1px 2px rgba(17,17,16,0.05);
+    --shadow-2: 0 1px 2px rgba(17,17,16,0.05), 0 6px 20px rgba(17,17,16,0.05);
+    --shadow-focus: 0 0 0 3px rgba(44,62,107,0.22);
+  }
+  body.dark {
+    --bg: #0F0F0D;
+    --surface: #161614;
+    --surface-soft: #1C1C1A;
+    --surface-sink: #1F1F1C;
+    --ink: #F2F1EE;
+    --ink-soft: #D5D3CD;
+    --ink-muted: #ABA89F;
+    --ink-dim: #7A7770;
+    --line: rgba(242,241,238,0.10);
+    --line-strong: rgba(242,241,238,0.18);
+    --navy: #94A8D6;
+    --navy-soft: #1F2840;
+    --navy-ink: #CDD7EE;
+    --success: #9BD171;
+    --success-soft: #1F2E12;
+    --warn: #E9B36A;
+    --warn-soft: #332511;
+    --info-soft: #1C2334;
+    --shadow-1: 0 1px 2px rgba(0,0,0,0.4);
+    --shadow-2: 0 1px 2px rgba(0,0,0,0.4), 0 6px 20px rgba(0,0,0,0.3);
+    --shadow-focus: 0 0 0 3px rgba(148,168,214,0.3);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    letter-spacing: -0.004em;
+    -webkit-font-smoothing: antialiased;
+    padding: 48px 24px 96px;
+    transition: background 240ms var(--ease), color 240ms var(--ease);
+  }
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 24px; margin-bottom: 48px; flex-wrap: wrap;
+  }
+  .title {
+    font-size: 32px; font-weight: 600; letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .sub {
+    font-size: 14px; color: var(--ink-muted); margin-top: 8px;
+    max-width: 560px;
+  }
+  .theme-toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--ink-muted);
+    padding: 8px 12px; border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 120ms var(--ease), color 120ms var(--ease), border-color 120ms var(--ease), transform 120ms var(--ease);
+  }
+  .theme-toggle:hover { border-color: var(--ink-muted); color: var(--ink); }
+  .theme-toggle:active { transform: scale(0.97); }
+
+  .frames {
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .frame {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px 32px;
+    box-shadow: var(--shadow-1);
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 24px;
+    transition: box-shadow 180ms var(--ease), border-color 180ms var(--ease), transform 180ms var(--ease);
+  }
+  .frame:hover { box-shadow: var(--shadow-2); border-color: var(--line-strong); }
+
+  .step-num {
+    font-size: 28px; font-weight: 600;
+    color: var(--ink-dim);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .frame.side .step-num::after { content: "·"; display: block; font-size: 14px; color: var(--ink-dim); margin-top: 6px; }
+  .body { min-width: 0; }
+
+  .flow {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--surface-sink);
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+  .badge::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor; opacity: 0.75;
+  }
+  .badge.nieuw { background: var(--info-soft); color: var(--navy-ink); }
+  .badge.in-behandeling { background: var(--warn-soft); color: var(--warn); }
+  .badge.eerste { background: #E9E7F8; color: #4A41A8; }
+  .badge.eind { background: var(--warn-soft); color: var(--warn); }
+  .badge.klaar { background: var(--success-soft); color: var(--success); }
+  .badge.ingang { background: var(--surface-sink); color: var(--ink-soft); }
+  .badge.uitgang { background: var(--navy-soft); color: var(--navy-ink); }
+  body.dark .badge.eerste { background: #28234C; color: #BFB8EE; }
+
+  .arrow {
+    color: var(--ink-dim);
+    font-size: 16px;
+    user-select: none;
+  }
+
+  .action {
+    font-size: 20px; font-weight: 600;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .role {
+    display: inline-flex; align-items: center;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  .desc {
+    font-size: 14px; color: var(--ink-soft);
+    line-height: 1.65;
+    max-width: 640px;
+  }
+  .note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--ink-muted);
+    padding-left: 12px;
+    border-left: 2px solid var(--line-strong);
+  }
+
+  .frame.side { background: var(--surface-soft); }
+  .frame.side .action { color: var(--ink-soft); }
+
+  .legend {
+    margin-top: 40px;
+    padding: 20px 24px;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  .legend h3 {
+    font-size: 11px; font-weight: 600; color: var(--ink-dim);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+  .legend ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .legend li { display: flex; align-items: baseline; gap: 10px; }
+  .legend .badge { flex-shrink: 0; }
+
+  @media (max-width: 640px) {
+    body { padding: 32px 16px 64px; }
+    .frame { grid-template-columns: 1fr; padding: 22px; gap: 12px; }
+    .step-num { font-size: 20px; }
+    .action { font-size: 18px; }
+    .title { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div>
+      <div class="title">Workflow hyperframes</div>
+      <div class="sub">Een perslijst doorloopt zes vaste stappen, van upload tot download. Elke stap heeft een vaste actie, een vaste rol en een gevolg voor de status.</div>
+    </div>
+    <button class="theme-toggle" onclick="document.body.classList.toggle('dark')">Thema wisselen</button>
+  </div>
+
+  <div class="frames">
+
+    <!-- Frame 1 -->
+    <div class="frame">
+      <div class="step-num">01</div>
+      <div class="body">
+        <div class="flow">
+          <span class="badge ingang">Begin</span>
+          <span class="arrow">→</span>
+          <span class="badge nieuw">Nieuw</span>
+        </div>
+        <div class="action">Upload of handmatige invoer</div>
+        <div class="role">Redacteur · Producer · Admin</div>
+        <div class="desc">Een perslijst wordt aangemaakt door een PDF te uploaden of via Handmatig invoeren. De parser leest de Datum-header als Datum perslijst en leest de zaken per blok. De deadline wordt automatisch op +3 werkdagen gezet, of +1 werkdag bij Spoed.</div>
+        <div class="note">Iedere rol mag uploaden. Na deze stap staat de perslijst in de wachtrij onder Te verwerken perslijsten.</div>
+      </div>
+    </div>
+
+    <!-- Frame 2 -->
+    <div class="frame">
+      <div class="step-num">02</div>
+      <div class="body">
+        <div class="flow">
+          <span class="badge nieuw">Nieuw</span>
+          <span class="arrow">→</span>
+          <span class="badge in-behandeling">In behandeling</span>
+        </div>
+        <div class="action">Verwerken — de redacteur claimt de perslijst</div>
+        <div class="role">Redacteur</div>
+        <div class="desc">Door op een rij in het overzicht te klikken, wordt de redacteur als behandelaar aan de perslijst gekoppeld. Er verschijnt de tekst "In behandeling door mij" in de kolom In behandeling door. De velden zijn nu bewerkbaar en een extra zaak kan worden toegevoegd.</div>
+      </div>
+    </div>
+
+    <!-- Frame 3 (side path) -->
+    <div class="frame side">
+      <div class="step-num">02a</div>
+      <div class="body">
+        <div class="flow">
+          <span class="badge in-behandeling">In behandeling</span>
+          <span class="arrow">→</span>
+          <span class="badge nieuw">Nieuw</span>
+        </div>
+        <div class="action">Opslaan en vrijgeven — teruggeven aan de wachtrij</div>
+        <div class="role">Redacteur</div>
+        <div class="desc">De wijzigingen blijven bewaard maar de perslijst wordt weer beschikbaar voor een collega. Handig bij overdracht aan het einde van een dienst of als een andere redacteur sneller klaar is met vergelijkbaar materiaal.</div>
+        <div class="note">Zijpad. De perslijst gaat terug naar Nieuw, niet naar de volgende fase.</div>
+      </div>
+    </div>
+
+    <!-- Frame 4 -->
+    <div class="frame">
+      <div class="step-num">03</div>
+      <div class="body">
+        <div class="flow">
+          <span class="badge in-behandeling">In behandeling</span>
+          <span class="arrow">→</span>
+          <span class="badge eerste">Eerste beoordeling</span>
+        </div>
+        <div class="action">Verzenden voor beoordeling</div>
+        <div class="role">Redacteur</div>
+        <div class="desc">Zodra alle zaken zijn opgeslagen (de bolletjes naast de tabbladen zijn gevuld), wordt de hele perslijst ter beoordeling verzonden. De velden worden vergrendeld en de Ontgrendelen-knop verschijnt per samenvatting voor ad-hoc correcties.</div>
+      </div>
+    </div>
+
+    <!-- Frame 5 -->
+    <div class="frame">
+      <div class="step-num">04</div>
+      <div class="body">
+        <div class="flow">
+          <span class="badge eerste">Eerste beoordeling</span>
+          <span class="arrow">→</span>
+          <span class="badge eind">Eindbeoordeling</span>
+        </div>
+        <div class="action">Doorsturen naar producer</div>
+        <div class="role">Producer · Admin</div>
+        <div class="desc">De eerste beoordelaar controleert de samenvattingen op inhoud en privacy. Bij akkoord wordt de perslijst doorgezet naar de producer voor de finale check. Er is geen afkeur-flow: als iets niet klopt wordt het ter plekke aangepast en vervolgens doorgestuurd.</div>
+      </div>
+    </div>
+
+    <!-- Frame 6 -->
+    <div class="frame">
+      <div class="step-num">05</div>
+      <div class="body">
+        <div class="flow">
+          <span class="badge eind">Eindbeoordeling</span>
+          <span class="arrow">→</span>
+          <span class="badge klaar">Klaar</span>
+        </div>
+        <div class="action">Goedkeuren — definitief akkoord</div>
+        <div class="role">Producer</div>
+        <div class="desc">De producer geeft het laatste akkoord. De perslijst is nu vergrendeld voor verdere wijziging en verschijnt in het overzicht als afgerond. Vanaf dit moment kan iedereen de publicatie-PDF ophalen.</div>
+      </div>
+    </div>
+
+    <!-- Frame 7 -->
+    <div class="frame">
+      <div class="step-num">06</div>
+      <div class="body">
+        <div class="flow">
+          <span class="badge klaar">Klaar</span>
+          <span class="arrow">→</span>
+          <span class="badge uitgang">Download</span>
+        </div>
+        <div class="action">PDF exporteren</div>
+        <div class="role">Iedereen</div>
+        <div class="desc">De Download PDF-knop opent een keuze tussen twee formaten: Normale output (compact, samenvattingen per zaak) of Zittingslijst (het officiële A4-liggend tabelformaat met meerdere zaken per pagina). De export gebruikt altijd de meest recente velden, niet de originele bron-PDF.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="legend">
+    <h3>Status-legenda</h3>
+    <ul>
+      <li><span class="badge nieuw">Nieuw</span> <span>Staat in de wachtrij, nog niet geclaimd.</span></li>
+      <li><span class="badge in-behandeling">In behandeling</span> <span>Een redacteur is actief de zaken aan het invullen.</span></li>
+      <li><span class="badge eerste">Eerste beoordeling</span> <span>Klaar voor eerste inhoudelijke check.</span></li>
+      <li><span class="badge eind">Eindbeoordeling</span> <span>In de wachtrij voor de producer.</span></li>
+      <li><span class="badge klaar">Klaar</span> <span>Definitief goedgekeurd en klaar voor publicatie.</span></li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
