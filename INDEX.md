@@ -28,3 +28,4 @@
 | 2026-04-23 | content | images | [hero.png](projects/content/images/hero.png) | Hero v2 for State of Agentic Coding Spring 2026, solid platforms with better contrast |
 | 2026-04-24 | rechtzaak | reports | [workflow_hyperframes.html](projects/rechtzaak/reports/workflow_hyperframes.html) | ZL2026 workflow hyperframes: step-by-step status transitions |
 | 2026-04-25 | designpro | reports | [designpro-md-launch.md](projects/designpro/reports/designpro-md-launch.md) | Launch summary for DesignPro.md MVP shipped to Railway with editor, playground, examples, components, AI render, docs, and admin |
+| 2026-04-27 | virtuele-assistent | reports | [wcag-2.2-compliance.md](projects/virtuele-assistent/reports/wcag-2.2-compliance.md) | WCAG 2.2 AA compliance report for agent-frontend chatbot |
