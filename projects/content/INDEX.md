@@ -12,3 +12,4 @@
 | 2026-04-23 | images | [hero.png](images/hero.png) | Hero image for State of Agentic Coding Spring 2026 article, isometric 3D stack illustration | /Users/marcokotrotsos/PERSONAL/Content/drafts/state-of-agentic-coding-spring-2026/hero.png |
 | 2026-04-23 | images | [hero.png](images/hero.png) | Hero v2 for State of Agentic Coding Spring 2026, solid platforms with better contrast | /Users/marcokotrotsos/PERSONAL/Content/drafts/state-of-agentic-coding-spring-2026/hero.png |
 | 2026-05-03 | images | [hero.png](images/hero.png) | Medium hero image for AI displacement report article | /Users/marcokotrotsos/PERSONAL/Content/00_Content/ai-displacement-report/medium/hero.png |
+| 2026-05-03 | images | [hero.png](images/hero.png) | Substack watercolor hero image for AI displacement report article | /Users/marcokotrotsos/PERSONAL/Content/00_Content/ai-displacement-report/substack/hero.png |

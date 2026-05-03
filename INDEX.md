@@ -37,3 +37,4 @@
 | 2026-05-03 | dutch-gov-audit-2026 | docs | [DUTCH_GOV_AUDIT_2026.docx](projects/dutch-gov-audit-2026/docs/DUTCH_GOV_AUDIT_2026.docx) | Comparative four-site audit: Belastingdienst, Overheid, Utrecht, Medemblik |
 | 2026-05-03 | montferland-audit | docs | [MONTFERLAND_AUDIT.docx](projects/montferland-audit/docs/MONTFERLAND_AUDIT.docx) | Montferland.info privacy/security/accessibility audit (Matomo Cloud, expired security.txt, privacyverklaring out of date) |
 | 2026-05-03 | content | images | [hero.png](projects/content/images/hero.png) | Medium hero image for AI displacement report article |
+| 2026-05-03 | content | images | [hero.png](projects/content/images/hero.png) | Substack watercolor hero image for AI displacement report article |
