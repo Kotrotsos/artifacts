@@ -35,3 +35,4 @@
 | 2026-05-03 | utrecht-audit | docs | [UTRECHT_AUDIT.docx](projects/utrecht-audit/docs/UTRECHT_AUDIT.docx) | Utrecht.nl privacy/security/accessibility audit (article + findings + methodology) |
 | 2026-05-03 | medemblik-audit | docs | [MEDEMBLIK_AUDIT.docx](projects/medemblik-audit/docs/MEDEMBLIK_AUDIT.docx) | Medemblik.nl privacy/security/accessibility audit (article + findings + methodology) |
 | 2026-05-03 | dutch-gov-audit-2026 | docs | [DUTCH_GOV_AUDIT_2026.docx](projects/dutch-gov-audit-2026/docs/DUTCH_GOV_AUDIT_2026.docx) | Comparative four-site audit: Belastingdienst, Overheid, Utrecht, Medemblik |
+| 2026-05-03 | montferland-audit | docs | [MONTFERLAND_AUDIT.docx](projects/montferland-audit/docs/MONTFERLAND_AUDIT.docx) | Montferland.info privacy/security/accessibility audit (Matomo Cloud, expired security.txt, privacyverklaring out of date) |
