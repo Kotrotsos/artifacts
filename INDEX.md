@@ -33,3 +33,4 @@
 | 2026-05-03 | belastingdienst-audit | docs | [BELASTINGDIENST_AUDIT.docx](projects/belastingdienst-audit/docs/BELASTINGDIENST_AUDIT.docx) | Belastingdienst.nl privacy/security/accessibility audit (article + findings + methodology) |
 | 2026-05-03 | overheid-audit | docs | [OVERHEID_AUDIT.docx](projects/overheid-audit/docs/OVERHEID_AUDIT.docx) | Overheid.nl privacy/security/accessibility audit (article + findings + methodology) |
 | 2026-05-03 | utrecht-audit | docs | [UTRECHT_AUDIT.docx](projects/utrecht-audit/docs/UTRECHT_AUDIT.docx) | Utrecht.nl privacy/security/accessibility audit (article + findings + methodology) |
+| 2026-05-03 | medemblik-audit | docs | [MEDEMBLIK_AUDIT.docx](projects/medemblik-audit/docs/MEDEMBLIK_AUDIT.docx) | Medemblik.nl privacy/security/accessibility audit (article + findings + methodology) |
