@@ -30,3 +30,4 @@
 | 2026-04-25 | designpro | reports | [designpro-md-launch.md](projects/designpro/reports/designpro-md-launch.md) | Launch summary for DesignPro.md MVP shipped to Railway with editor, playground, examples, components, AI render, docs, and admin |
 | 2026-04-27 | virtuele-assistent | reports | [wcag-2.2-compliance.md](projects/virtuele-assistent/reports/wcag-2.2-compliance.md) | WCAG 2.2 AA compliance report for agent-frontend chatbot |
 | 2026-04-30 | series-build-apps | docs | [So-You-Want-To-Build-Apps.pdf](projects/series-build-apps/docs/So-You-Want-To-Build-Apps.pdf) | Complete book PDF, 11 chapters, Anthropic-style design |
+| 2026-05-03 | belastingdienst-audit | docs | [BELASTINGDIENST_AUDIT.docx](projects/belastingdienst-audit/docs/BELASTINGDIENST_AUDIT.docx) | Belastingdienst.nl privacy/security/accessibility audit (article + findings + methodology) |
