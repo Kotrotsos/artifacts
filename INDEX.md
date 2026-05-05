@@ -43,3 +43,4 @@
 | 2026-05-05 | rechtzaak | docs | [Zittingslijsten-Workflow.docx](projects/rechtzaak/docs/Zittingslijsten-Workflow.docx) | Document workflow sequence diagram and process description from upload through review to download |
 | 2026-05-05 | rechtzaak | docs | [Zittingslijsten-Schema.docx](projects/rechtzaak/docs/Zittingslijsten-Schema.docx) | Schema reference, single-status workflow noted |
 | 2026-05-05 | rechtzaak | docs | [Zittingslijsten-Workflow.docx](projects/rechtzaak/docs/Zittingslijsten-Workflow.docx) | Workflow handover, single straight-through process from upload to download |
+| 2026-05-05 | osint | reports | [findings.md](projects/osint/reports/findings.md) | Pentest engagement report for unomundi.com — 4 critical/high findings on self-hosted Supabase + admin stack |
