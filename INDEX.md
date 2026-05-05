@@ -53,3 +53,4 @@
 | 2026-05-05 | osint | docs | [Unomundi-Security-Findings-2026-05-05.pdf](projects/osint/docs/Unomundi-Security-Findings-2026-05-05.pdf) | Stakeholder PDF: Unomundi security engagement findings (cover + TOC + CONFIDENTIAL watermark) |
 | 2026-05-05 | osint | reports | [admin-gapfill-results.md](projects/osint/reports/admin-gapfill-results.md) | Admin host gap-fill: source-map/build-artifact/TLS clean; new finding A-4 admin Edge Function lacks role check |
 | 2026-05-05 | osint | reports | [W-waitlist-recon.md](projects/osint/reports/W-waitlist-recon.md) | Waitlist recon: reCAPTCHA gates submission (positive); 8 GDPR/privacy gaps in policy + dual entity ambiguity |
+| 2026-05-05 | osint | reports | [S-stakeholder-osint.md](projects/osint/reports/S-stakeholder-osint.md) | Stakeholder OSINT map: Companies House (UK 17032480), KvK ref, founders bios, funding context, spear-phishing pretexts |
