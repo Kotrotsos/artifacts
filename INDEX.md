@@ -39,3 +39,4 @@
 | 2026-05-03 | content | images | [hero.png](projects/content/images/hero.png) | Medium hero image for AI displacement report article |
 | 2026-05-03 | content | images | [hero.png](projects/content/images/hero.png) | Substack watercolor hero image for AI displacement report article |
 | 2026-05-05 | rechtzaak | docs | [Zittingslijsten-on-GCP.docx](projects/rechtzaak/docs/Zittingslijsten-on-GCP.docx) | GCP environment description for Rechtspraak handover, single Cloud Run + Cloud SQL footprint |
+| 2026-05-05 | rechtzaak | docs | [Zittingslijsten-Schema.docx](projects/rechtzaak/docs/Zittingslijsten-Schema.docx) | Postgres database schema reference for Zittingslijsten, table-by-table description with enums and relationships |
