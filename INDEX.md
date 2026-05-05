@@ -51,3 +51,4 @@
 | 2026-05-05 | osint | reports | [A2-content-catalogue-exposure.md](projects/osint/reports/A2-content-catalogue-exposure.md) | Finding A-2: 6,500 catalogue rows readable by any anonymous registrant; intent vs leak depends on business model |
 | 2026-05-05 | osint | reports | [disclosure-email.md](projects/osint/reports/disclosure-email.md) | Responsible-disclosure email to send to unomundi.com security team for production Studio exposure |
 | 2026-05-05 | osint | docs | [Unomundi-Security-Findings-2026-05-05.pdf](projects/osint/docs/Unomundi-Security-Findings-2026-05-05.pdf) | Stakeholder PDF: Unomundi security engagement findings (cover + TOC + CONFIDENTIAL watermark) |
+| 2026-05-05 | osint | reports | [admin-gapfill-results.md](projects/osint/reports/admin-gapfill-results.md) | Admin host gap-fill: source-map/build-artifact/TLS clean; new finding A-4 admin Edge Function lacks role check |
