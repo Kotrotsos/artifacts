@@ -49,3 +49,4 @@
 | 2026-05-05 | osint | reports | [pgstat-extraction-analysis.md](projects/osint/reports/pgstat-extraction-analysis.md) | Analysis of pg_stat_statements exfiltration: information disclosure scope, no PII; 87 visible-text statements + 3938 metadata rows |
 | 2026-05-05 | osint | reports | [authenticated-role-probe.md](projects/osint/reports/authenticated-role-probe.md) | Authenticated-role probe via anonymous GoTrue signup: RLS correctly scopes to own user; new finding A-1 anonymous→guardian auto-classification |
 | 2026-05-05 | osint | reports | [A2-content-catalogue-exposure.md](projects/osint/reports/A2-content-catalogue-exposure.md) | Finding A-2: 6,500 catalogue rows readable by any anonymous registrant; intent vs leak depends on business model |
+| 2026-05-05 | osint | reports | [disclosure-email.md](projects/osint/reports/disclosure-email.md) | Responsible-disclosure email to send to unomundi.com security team for production Studio exposure |
