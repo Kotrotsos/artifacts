@@ -44,3 +44,4 @@
 | 2026-05-05 | rechtzaak | docs | [Zittingslijsten-Schema.docx](projects/rechtzaak/docs/Zittingslijsten-Schema.docx) | Schema reference, single-status workflow noted |
 | 2026-05-05 | rechtzaak | docs | [Zittingslijsten-Workflow.docx](projects/rechtzaak/docs/Zittingslijsten-Workflow.docx) | Workflow handover, single straight-through process from upload to download |
 | 2026-05-05 | osint | reports | [findings.md](projects/osint/reports/findings.md) | Pentest engagement report for unomundi.com — 4 critical/high findings on self-hosted Supabase + admin stack |
+| 2026-05-05 | osint | reports | [unomundi-database-schema.md](projects/osint/reports/unomundi-database-schema.md) | Unomundi Supabase database schema reference (59 tables, 99 paths) extracted from public Kong endpoint |
