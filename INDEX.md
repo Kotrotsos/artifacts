@@ -52,3 +52,4 @@
 | 2026-05-05 | osint | reports | [disclosure-email.md](projects/osint/reports/disclosure-email.md) | Responsible-disclosure email to send to unomundi.com security team for production Studio exposure |
 | 2026-05-05 | osint | docs | [Unomundi-Security-Findings-2026-05-05.pdf](projects/osint/docs/Unomundi-Security-Findings-2026-05-05.pdf) | Stakeholder PDF: Unomundi security engagement findings (cover + TOC + CONFIDENTIAL watermark) |
 | 2026-05-05 | osint | reports | [admin-gapfill-results.md](projects/osint/reports/admin-gapfill-results.md) | Admin host gap-fill: source-map/build-artifact/TLS clean; new finding A-4 admin Edge Function lacks role check |
+| 2026-05-05 | osint | reports | [W-waitlist-recon.md](projects/osint/reports/W-waitlist-recon.md) | Waitlist recon: reCAPTCHA gates submission (positive); 8 GDPR/privacy gaps in policy + dual entity ambiguity |
