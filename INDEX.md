@@ -38,3 +38,4 @@
 | 2026-05-03 | montferland-audit | docs | [MONTFERLAND_AUDIT.docx](projects/montferland-audit/docs/MONTFERLAND_AUDIT.docx) | Montferland.info privacy/security/accessibility audit (Matomo Cloud, expired security.txt, privacyverklaring out of date) |
 | 2026-05-03 | content | images | [hero.png](projects/content/images/hero.png) | Medium hero image for AI displacement report article |
 | 2026-05-03 | content | images | [hero.png](projects/content/images/hero.png) | Substack watercolor hero image for AI displacement report article |
+| 2026-05-05 | rechtzaak | docs | [Zittingslijsten-on-GCP.docx](projects/rechtzaak/docs/Zittingslijsten-on-GCP.docx) | GCP environment description for Rechtspraak handover, single Cloud Run + Cloud SQL footprint |
