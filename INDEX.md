@@ -46,3 +46,4 @@
 | 2026-05-05 | osint | reports | [findings.md](projects/osint/reports/findings.md) | Pentest engagement report for unomundi.com — 4 critical/high findings on self-hosted Supabase + admin stack |
 | 2026-05-05 | osint | reports | [unomundi-database-schema.md](projects/osint/reports/unomundi-database-schema.md) | Unomundi Supabase database schema reference (59 tables, 99 paths) extracted from public Kong endpoint |
 | 2026-05-05 | osint | reports | [count-anon-summary.md](projects/osint/reports/count-anon-summary.md) | Empirical RLS exposure check against unomundi dev Supabase: 3 leaks confirmed, user data RLS-blocked |
+| 2026-05-05 | osint | reports | [pgstat-extraction-analysis.md](projects/osint/reports/pgstat-extraction-analysis.md) | Analysis of pg_stat_statements exfiltration: information disclosure scope, no PII; 87 visible-text statements + 3938 metadata rows |
