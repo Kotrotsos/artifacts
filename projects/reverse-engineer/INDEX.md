@@ -9,3 +9,4 @@
 | 2026-04-17 | reports | [CHICAGO.md](reports/CHICAGO.md) | Reverse engineering of Claude.app Chicago feature: ambient screen-aware computer-use mode | /Users/marcokotrotsos/PERSONAL/reverse-engineer/claude-app-analysis/CHICAGO.md |
 | 2026-04-19 | reports | [TELEPATHY.md](reports/TELEPATHY.md) | Reverse engineering of OpenAI Codex Telepathy: ambient screen-capture agent shipped dormant | /Users/marcokotrotsos/PERSONAL/reverse-engineer/codex/TELEPATHY.md |
 | 2026-04-19 | reports | [SKY.md](reports/SKY.md) | Reverse engineering of OpenAI Codex Sky: separately-signed Computer Use backend sandboxed inside Codex | /Users/marcokotrotsos/PERSONAL/reverse-engineer/codex/SKY.md |
+| 2026-05-06 | reports | [REPORT.md](reports/REPORT.md) | Gemini for macOS 1.53.0.262 reverse engineering report — Janus framework, Robin proto, Veo3 modes, Agent/Computer-Use, Chrome NativeMessaging | /Users/marcokotrotsos/PERSONAL/reverse-engineer/gemini-mac-1.53.0.262/REPORT.md |
