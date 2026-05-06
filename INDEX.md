@@ -55,3 +55,4 @@
 | 2026-05-05 | osint | reports | [W-waitlist-recon.md](projects/osint/reports/W-waitlist-recon.md) | Waitlist recon: reCAPTCHA gates submission (positive); 8 GDPR/privacy gaps in policy + dual entity ambiguity |
 | 2026-05-05 | osint | reports | [S-stakeholder-osint.md](projects/osint/reports/S-stakeholder-osint.md) | Stakeholder OSINT map: Companies House (UK 17032480), KvK ref, founders bios, funding context, spear-phishing pretexts |
 | 2026-05-06 | reverse-engineer | reports | [REPORT.md](projects/reverse-engineer/reports/REPORT.md) | Gemini for macOS 1.53.0.262 reverse engineering report — Janus framework, Robin proto, Veo3 modes, Agent/Computer-Use, Chrome NativeMessaging |
+| 2026-05-06 | reverse-engineer | reports | [LEAK_AUDIT.md](projects/reverse-engineer/reports/LEAK_AUDIT.md) | Gemini for macOS 1.53.0.262 leak audit — 6 hardcoded API keys, Argo/Tagore codenames, internal source paths, preprod hostnames, engineer LDAPs |
