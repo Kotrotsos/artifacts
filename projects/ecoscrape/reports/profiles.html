@@ -15,6 +15,10 @@
     --border: #e5e7eb;
     --chip: #f3f4f6;
     --chip-text: #374151;
+    --warn-bg: #fef3c7;
+    --warn-text: #92400e;
+    --reason-bg: #f9fafb;
+    --reason-border: #e5e7eb;
     --overlay: rgba(20,20,20,0.45);
   }
   [data-theme="dark"] {
@@ -27,6 +31,10 @@
     --border: #2a312f;
     --chip: #252a29;
     --chip-text: #c8ccca;
+    --warn-bg: #3a2a0a;
+    --warn-text: #fbbf24;
+    --reason-bg: #14191a;
+    --reason-border: #2a312f;
     --overlay: rgba(0,0,0,0.65);
   }
   * { box-sizing: border-box; }
@@ -48,228 +56,137 @@
     flex-wrap: wrap;
     gap: 16px;
   }
-  h1 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  .subtitle {
-    color: var(--muted);
-    font-size: 13px;
-    margin-top: 4px;
-  }
+  h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; }
   .theme-toggle {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-size: 13px;
-    color: var(--text);
-    cursor: pointer;
-    font-family: inherit;
+    background: var(--card); border: 1px solid var(--border); border-radius: 999px;
+    padding: 6px 14px; font-size: 13px; color: var(--text); cursor: pointer; font-family: inherit;
   }
   .theme-toggle:hover { background: var(--chip); }
   .group-header {
-    max-width: 1200px;
-    margin: 24px auto 12px;
-    padding: 0 24px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    font-weight: 600;
+    max-width: 1200px; margin: 24px auto 12px; padding: 0 24px;
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); font-weight: 600;
+  }
+  .group-header .badge {
+    display: inline-block; margin-left: 8px;
+    background: var(--accent-soft); color: var(--accent);
+    border-radius: 999px; padding: 2px 8px; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.04em;
   }
   main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px 16px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 16px;
+    max-width: 1200px; margin: 0 auto; padding: 0 24px 16px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px;
   }
   .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    cursor: pointer;
-    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
-    text-align: left;
-    font-family: inherit;
-    color: inherit;
-    width: 100%;
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 12px;
+    cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    text-align: left; font-family: inherit; color: inherit; width: 100%;
   }
   .card:hover {
-    transform: translateY(-2px);
-    border-color: var(--accent);
+    transform: translateY(-2px); border-color: var(--accent);
     box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   }
-  [data-theme="dark"] .card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  }
+  [data-theme="dark"] .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+  .card.thorough { border-left: 3px solid var(--accent); }
+  .card.not-hovenier { border-left: 3px solid #d97706; }
   .card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
   }
-  .name {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.3;
-    margin: 0;
-  }
+  .name { font-size: 16px; font-weight: 600; line-height: 1.3; margin: 0; }
   .size-badge {
-    background: var(--accent-soft);
-    color: var(--accent);
-    border-radius: 6px;
-    padding: 2px 8px;
-    font-size: 12px;
-    font-weight: 600;
-    flex-shrink: 0;
+    background: var(--accent-soft); color: var(--accent);
+    border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 600; flex-shrink: 0;
   }
-  .website {
-    font-size: 13px;
-    color: var(--muted);
-    word-break: break-all;
-  }
-  .profile {
-    font-size: 14px;
-    color: var(--text);
-    margin: 0;
-  }
-  .stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 4px;
-  }
+  .website { font-size: 13px; color: var(--muted); word-break: break-all; }
+  .profile { font-size: 14px; color: var(--text); margin: 0; }
+  .stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
   .chip {
-    background: var(--chip);
-    color: var(--chip-text);
-    border-radius: 6px;
-    padding: 3px 8px;
-    font-size: 11px;
-    font-weight: 500;
-    white-space: nowrap;
+    background: var(--chip); color: var(--chip-text);
+    border-radius: 6px; padding: 3px 8px; font-size: 11px; font-weight: 500; white-space: nowrap;
   }
   .chip-label { color: var(--muted); margin-right: 3px; }
   .chip-value { font-weight: 600; }
   .duurz { background: var(--accent-soft); color: var(--accent); }
   .unknown { opacity: 0.65; }
   .click-hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .warn-banner {
+    background: var(--warn-bg); color: var(--warn-text);
+    border-radius: 6px; padding: 6px 10px; font-size: 12px; font-weight: 500;
+  }
   footer {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 16px 24px 48px;
-    color: var(--muted);
-    font-size: 12px;
+    max-width: 1200px; margin: 0 auto; padding: 16px 24px 48px;
+    color: var(--muted); font-size: 12px;
   }
 
   /* Modal */
   .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: var(--overlay);
-    display: none;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 32px 16px;
-    z-index: 100;
-    overflow-y: auto;
+    position: fixed; inset: 0; background: var(--overlay);
+    display: none; align-items: flex-start; justify-content: center;
+    padding: 32px 16px; z-index: 100; overflow-y: auto;
   }
   .modal-overlay.open { display: flex; }
   .modal {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    max-width: 720px;
-    width: 100%;
-    padding: 28px 28px 24px;
-    position: relative;
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    max-width: 760px; width: 100%; padding: 28px 28px 24px; position: relative;
     box-shadow: 0 12px 40px rgba(0,0,0,0.18);
   }
   .modal-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 22px;
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-family: inherit;
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none; color: var(--muted);
+    font-size: 22px; cursor: pointer; line-height: 1; padding: 4px 10px;
+    border-radius: 6px; font-family: inherit;
   }
   .modal-close:hover { background: var(--chip); color: var(--text); }
-  .modal h2 {
-    margin: 0 0 4px;
-    font-size: 22px;
-    letter-spacing: -0.01em;
-    padding-right: 40px;
-  }
+  .modal h2 { margin: 0 0 4px; font-size: 22px; letter-spacing: -0.01em; padding-right: 40px; }
   .meta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 16px;
-    color: var(--muted);
-    font-size: 13px;
-    margin-bottom: 16px;
+    display: flex; flex-wrap: wrap; gap: 8px 16px;
+    color: var(--muted); font-size: 13px; margin-bottom: 16px;
   }
   .meta-row a { color: var(--accent); text-decoration: none; }
   .meta-row a:hover { text-decoration: underline; }
   .modal-section {
-    margin: 18px 0;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
+    margin: 18px 0; padding-top: 16px; border-top: 1px solid var(--border);
   }
   .modal-section:first-of-type { border-top: 0; padding-top: 0; }
   .modal-section h3 {
-    margin: 0 0 10px;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--muted);
-    font-weight: 600;
+    margin: 0 0 10px; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); font-weight: 600;
   }
-  .dim-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+  .dim-list { display: grid; grid-template-columns: 1fr; gap: 12px; }
   .dim {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px;
   }
   .dim-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 10px;
-    margin-bottom: 4px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 10px; margin-bottom: 6px;
   }
   .dim-name { font-weight: 600; font-size: 14px; }
   .dim-value {
-    background: var(--accent-soft);
-    color: var(--accent);
-    border-radius: 6px;
-    padding: 2px 10px;
-    font-size: 13px;
-    font-weight: 700;
-    white-space: nowrap;
+    background: var(--accent-soft); color: var(--accent);
+    border-radius: 6px; padding: 2px 10px; font-size: 13px; font-weight: 700; white-space: nowrap;
   }
   .dim-value.unknown { background: var(--chip); color: var(--muted); }
-  .dim-meaning { font-size: 13px; color: var(--text); margin: 4px 0 0; }
-  .dim-help { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+  .dim-meaning { font-size: 13px; color: var(--text); margin: 6px 0 0; }
+  .dim-help { font-size: 12px; color: var(--muted); margin: 6px 0 0; font-style: italic; }
+  .dim-reasoning {
+    margin: 10px 0 0; padding: 10px 12px;
+    background: var(--reason-bg); border: 1px solid var(--reason-border);
+    border-radius: 8px; font-size: 13px; line-height: 1.45;
+  }
+  .dim-reasoning .reason-label {
+    display: block; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--accent); margin-bottom: 4px;
+  }
   .read-help { font-size: 13px; color: var(--muted); margin: 0; }
+  .not-hovenier-banner {
+    background: var(--warn-bg); color: var(--warn-text);
+    border-radius: 8px; padding: 10px 12px; font-size: 13px; font-weight: 500; margin-bottom: 16px;
+  }
   body.modal-open { overflow: hidden; }
 </style>
 </head>
@@ -277,10 +194,13 @@
 <header>
   <div>
     <h1>Hoveniers, Bestaande Klanten ECOstyle</h1>
-    <div class="subtitle">21 companies, click any card for the full breakdown</div>
+    <div class="subtitle">28 companies, click any card for the full breakdown. Cards with a green left border had a thorough multi-page analysis with per-score reasoning.</div>
   </div>
   <button class="theme-toggle" id="themeToggle" type="button">Dark mode</button>
 </header>
+
+<div class="group-header">Group 3, recent additions <span class="badge">thorough analysis</span></div>
+<main id="grid3"></main>
 
 <div class="group-header">Group 1</div>
 <main id="grid1"></main>
@@ -289,7 +209,7 @@
 <main id="grid2"></main>
 
 <footer>
-  Source: table.tsv. Group labels from source: "Bestaande klanten, omzet ECOstyle". Scoring per shared rubric, 9 dimensions per company. Click a card for the full description and rubric meaning of every score.
+  Source: table.tsv plus follow-up emails. Group labels from source: "Bestaande klanten, omzet ECOstyle". Scoring per shared rubric, 9 dimensions per company. Cards with a green left border had multi-page scrapes (homepage, over-ons, diensten, duurzaamheid, portfolio, contact) plus targeted searches for staff count, with reasoning written per score. Click a card for the full description.
 </footer>
 
 <div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
@@ -299,7 +219,6 @@
 <script>
 "use strict";
 
-// Rubric definitions, used to decode every score in the detail view.
 const RUBRIC = {
   medew: {
     name: "Aantal medewerkers",
@@ -427,76 +346,207 @@ function sizeBadge(letter) {
   return map[letter] || letter;
 }
 
+// Group 3, thorough analyses with reasoning per score.
+const GROUP3 = [
+  {
+    name: "Donkergroep (HQ)",
+    email: "tom.jonkhart@donkergroep.com",
+    website: "https://donkergroep.com",
+    isHovenier: true,
+    thorough: true,
+    profile: "Donker Groep is one of the largest green companies in the Netherlands, founded in 1961 in Sneek, with 850+ employees growing to 1,000+ during peak season and operating through multiple brands (Donker Groen, Interieur, Spelen, Substrates, Design). It is steward-owned and serves healthcare, housing corporations, education, real estate, government and ESG corporates with green construction, maintenance, indoor planting, substrates and design. It positions itself as the most sustainable hovenier of the Netherlands with explicit climate goals for 2035.",
+    medew: "F", medew_reasoning: "Search results and LinkedIn confirm Donker Groep employs 850+ employees, well over the 50 threshold for tier F, with multiple brands and branches.",
+    org: "3", org_reasoning: "With 850+ employees across multiple brands and a steward ownership model, leadership clearly does not work hands-on, fitting the rubric default for F-size firms.",
+    partbedr: "10/90", partbedr_reasoning: "The site explicitly targets healthcare, housing corporations, education, real estate, government and ESG corporates, with portfolio examples like AFAS Experience Center and ING Cedar, indicating a strongly B2B/government focus.",
+    segm: "20/60/20", segm_reasoning: "Their large institutional and corporate portfolio (offices, healthcare, government) is mostly midden, with some high-end ESG corporate work but also basic maintenance contracts.",
+    tuin: "5/35/60", tuin_reasoning: "Portfolio examples (Kasteelpark Coevorden, AFAS Leusden, ING Amsterdam, playgrounds) are predominantly large institutional and corporate sites, with very few small or typical residential gardens.",
+    ao: "40/60", ao_reasoning: "Services span design, installation, and maintenance equally with strong emphasis on ongoing groenbeheer contracts for institutional clients, slightly tilting onderhoud-heavy.",
+    grgn: "30/70", grgn_reasoning: "Branding (groen bedrijf, biodiversity focus, plant walls, vertical green) and sustainability framing emphasize planting and ecology over hardscape, though large projects include paving.",
+    reg: "2", reg_reasoning: "HQ in Sneek (Friesland, randstedelijk-regional) but operates nationally across multiple branches, so coverage averages randstedelijk-to-rural rather than core urban.",
+    duurz: "5", duurz_reasoning: "Awarded Duurzaamste Hovenier 2025, achieved CO2 Prestatieladder trede 5, 95% emission-free handheld tools, 91% emission-free vehicles, dedicated 2035 nature-inclusive/circular/CO2-neutral roadmap, plus STIP and Prestatieladder Socialer Ondernemen trede 3.",
+    notes: "National-scale green contractor, comparable to Krinkels/Idverde/Vebego. Sustainability leadership is a core differentiator."
+  },
+  {
+    name: "Kapaan",
+    email: "andre@kapaan.nl",
+    website: "https://kapaan.nl",
+    isHovenier: true,
+    thorough: true,
+    profile: "Hoveniersbedrijf Kapaan is a VoF based in Lienden, Gelderland, led by André Kapaan, operating since 1999 with around 16 staff covering design, installation, maintenance, groenbeheer, grondwerk, transport and wegenbouw. They serve both particulieren and zakelijk customers across the river area (Culemborg, Ede, Opheusden, Rhenen, Tiel) with a totale ontzorging pitch. Certifications include VCA, erkend leerbedrijf, and Top Pro 2026.",
+    medew: "D", medew_reasoning: "The over-ons page enumerates roughly 16 staff (admin, sales, executor, foreman, 4 gardeners, 2 drivers, handyman, crane operator, groundworker, apprentice), placing it firmly in the 10-20 D tier.",
+    org: "2", org_reasoning: "Owner André Kapaan is listed as Directie-projectleider, indicating he leads projects but with 16 staff he largely manages, fitting deels for a D-size firm.",
+    partbedr: "50/50", partbedr_reasoning: "Diensten page explicitly lists Particulieren and Zakelijk as customer types, and they offer wegenbouw, groenbeheer and transport services typical of B2B and civil work alongside private gardens.",
+    segm: "10/60/30", segm_reasoning: "Totale ontzorging branding with verandas, lighting and irrigation suggests upper-midden to higher-end work, though the broad service list and rural location keep it predominantly midden.",
+    tuin: "10/60/30", tuin_reasoning: "River-area service zone (Culemborg, Rhenen, Tiel) skews to typical suburban and some larger rural plots, with limited urban stadstuinen.",
+    ao: "50/50", ao_reasoning: "Services list places tuinontwerp, tuinaanleg and tuinonderhoud equally prominent with additional grondwerk and groenbeheer suggesting balanced design-build plus contract maintenance.",
+    grgn: "50/50", grgn_reasoning: "With grondwerk, transport, wegenbouw, materieeldienst on the diensten list alongside green services, hardscape and infrastructure are clearly significant alongside planting.",
+    reg: "3", reg_reasoning: "Located in Lienden with service area in the Betuwe villages (Culemborg, Opheusden, Rhenen, Tiel), classic platteland river-area towns.",
+    duurz: "2", duurz_reasoning: "No dedicated sustainability page or content found, only VCA, Top Pro and erkend leerbedrijf certifications mentioned, with passive love for green framing rather than active environmental commitments.",
+    notes: "Mid-size river-area hovenier with civil and grondwerk capability suggesting a slightly broader contractor profile than pure tuin-only firms."
+  },
+  {
+    name: "Alzheimer Vrijwilligers",
+    email: "j.verveer@alzheimervrijwilligers.nl",
+    website: "https://alzheimervrijwilligers.nl",
+    isHovenier: false,
+    thorough: true,
+    profile: "Alzheimer Vrijwilligers is the volunteer arm of Alzheimer Nederland, a non-profit organization that mobilizes and supports community volunteers helping people affected by Alzheimer's disease and their families. It is not a hovenier or landscaping company in any sense.",
+    medew: "?", medew_reasoning: "Not a hovenier, scoring not applicable.",
+    org: "?", org_reasoning: "Not a hovenier, scoring not applicable.",
+    partbedr: "?", partbedr_reasoning: "Not a hovenier, scoring not applicable.",
+    segm: "?", segm_reasoning: "Not a hovenier, scoring not applicable.",
+    tuin: "?", tuin_reasoning: "Not a hovenier, scoring not applicable.",
+    ao: "?", ao_reasoning: "Not a hovenier, scoring not applicable.",
+    grgn: "?", grgn_reasoning: "Not a hovenier, scoring not applicable.",
+    reg: "?", reg_reasoning: "Not a hovenier, scoring not applicable.",
+    duurz: "?", duurz_reasoning: "Not a hovenier, scoring not applicable.",
+    notes: "Non-profit volunteer platform of Alzheimer Nederland for dementia support. Should be removed from any hoveniers segmentation list, this is a data-quality false positive."
+  },
+  {
+    name: "Sight Landscaping",
+    email: "gijs.vandermeer@sightlandscaping.nl",
+    website: "https://www.sightlandscaping.nl",
+    isHovenier: true,
+    thorough: true,
+    profile: "SIGHT Landscaping is a national-scale Dutch green contractor with 250+ employees, headquartered in Ermelo and operating from 7 locations (Ermelo, Almere, Arnhem, Holten, Eelde, Rhoon, Amersfoort plus Graft de Rijp). Services include groenonderhoud, ontwerp en aanleg, integraal beheer, onkruidbestrijding, daktuinen, burgerparticipatie and gladheidbestrijding for businesses, healthcare, recreation and government. Branding emphasizes ecological green management with no-nonsense, collaborative, proactive values.",
+    medew: "F", medew_reasoning: "The Over Sight page explicitly states more than 250 employees across 7 plus locations, exceeding the 50-employee threshold for F.",
+    org: "3", org_reasoning: "With 250+ staff and a multi-branch structure, leadership manages only, default for F per rubric.",
+    partbedr: "5/95", partbedr_reasoning: "Customer segments listed are bedrijven en instellingen, recreatie, zorg and overheid with portfolio of office towers, hospitals, train stations and parks, with no particulier offering visible.",
+    segm: "30/60/10", segm_reasoning: "Public-sector and corporate maintenance contracts skew to laag and midden specifications with some higher-spec corporate landscaping projects.",
+    tuin: "0/20/80", tuin_reasoning: "Portfolio is dominated by parks, train stations, hospitals, office complexes and municipal terrain, all large bedrijfsterreinen rather than residential plots.",
+    ao: "30/70", ao_reasoning: "Service list and branding emphasize integraal beheer, groenonderhoud and onkruidbestrijding as primary, with ontwerp en aanleg secondary, indicating an onderhoud-heavy contractor.",
+    grgn: "30/70", grgn_reasoning: "Focus on green maintenance, daktuinen, biodiversity and ecological green management with limited bestrating or hardscape branding indicates groen-heavy mix.",
+    reg: "2", reg_reasoning: "HQ in Ermelo (Veluwe) with branches across Almere, Amersfoort, Arnhem, Rhoon and others, covering randstedelijk-to-regional Netherlands rather than urban core or pure platteland.",
+    duurz: "4", duurz_reasoning: "Site states CO2 Prestatieladder participation, full-electric machinery transition, biodiversity programs, route optimization and ecological green management as core, though specific levels and certifications page returned 404.",
+    notes: "Large B2B and government green contractor, very similar profile to Donker and Idverde tier, not a residential hovenier. Re-do confirms its non-particulier orientation."
+  },
+  {
+    name: "Lensen Hoveniers",
+    email: "mark@lensenhoveniers.nl",
+    website: "https://lensenhoveniers.nl",
+    isHovenier: true,
+    thorough: true,
+    profile: "Lensen Hoveniers is a Gelderland-based hoveniersbedrijf in Oosterbeek operating since 1993 with around 14 team members across aanleg, onderhoud, ontwerp and office (Jan, Gerald, Boy, Joost, Peter, Brian, Paul, Rocky, Christiaan, Sterre, Job, Benjamin and others). They serve the Arnhem en Oosterbeek region with garden design (incl. 3D animation), aanleg, maintenance, wellness features (pools, jacuzzis, sauna), sedum roofing and grafonderhoud. Memberships include VHG and Appeltern Tuinexpert.",
+    medew: "D", medew_reasoning: "Het-team page lists at least 12 named staff plus office, putting headcount at 14 plus which sits in the 10-20 D tier.",
+    org: "2", org_reasoning: "With around 14 staff structured into multiple departments (aanleg, onderhoud, ontwerp, office), leadership likely manages with some hands-on involvement, fitting deels for a D-size firm.",
+    partbedr: "80/20", partbedr_reasoning: "Portfolio types emphasize particuliere tuinen, voortuinen, stadstuinen, landelijke tuinen and wellness gardens, with bedrijfstuinen and hotels mentioned as a smaller secondary segment.",
+    segm: "0/40/60", segm_reasoning: "Wellness features (zwembad, jacuzzi, sauna, outdoor showers), 3D ontwerp, large estates and vakmanschap branding plus solar-powered facility indicate clearly upper-midden to high-end work.",
+    tuin: "10/50/40", tuin_reasoning: "Portfolio explicitly includes stadstuinen, kleine tuinen, voortuinen, large estates and landelijke tuinen, suggesting a balanced spread with a strong groot-tuin slice.",
+    ao: "60/40", ao_reasoning: "Strong emphasis on ontwerp (with 3D animation), aanleg and wellness or installation work, with maintenance subscriptions also offered, indicating an aanleg-heavy mix.",
+    grgn: "40/60", grgn_reasoning: "Use of bakstenen, terraces, garden houses, pergolas and hardscape balanced with biodiversity focus, organic fertilizers and natural planting on the duurzaamheid page.",
+    reg: "2", reg_reasoning: "Located in Oosterbeek serving Arnhem and surrounding Gelderland, classic randstedelijk regional center next to a major city.",
+    duurz: "4", duurz_reasoning: "Solar panels on orangerie since 2016 powering all electric tools, biological fertilizers only, brush and burner weed control instead of Roundup, biodiverse garden design, water stewardship, even though no formal third-party certification listed.",
+    notes: "Mid-size regional hovenier with strong wellness and design-build positioning, plus credible practical sustainability story without formal certifications."
+  },
+  {
+    name: "Ginkel Groep",
+    email: "tsnoei@ginkelgroep.nl",
+    website: "https://ginkelgroep.nl",
+    isHovenier: true,
+    thorough: true,
+    profile: "Koninklijke Ginkel Groep is a 1903-founded national green enterprise with 400+ employees (including around 80 with disabilities) operating from 11 plus locations across Midden, West and Oost Nederland (HQ Veenendaal). It received Royal designation in 2003 and is led by 4th and 5th generation family. Services span landscape maintenance, daktuinen, zwemvijvers, tree care, biodiversity development, water management and indoor planting, serving public space, commercial and residential clients.",
+    medew: "F", medew_reasoning: "Over-page states 400 plus employees across 11 locations, exceeding the F threshold of 50.",
+    org: "3", org_reasoning: "With 400 plus staff and 11 locations, owners manage only and don't work hands-on, default for F per rubric.",
+    partbedr: "20/80", partbedr_reasoning: "Three customer segments are public spaces, commercial and private, but the portfolio (Lloyd Yard Rotterdam, urban developments) and scale strongly skew B2B and overheid, with private as a smaller residential branch via local Van Ginkel offices.",
+    segm: "20/60/20", segm_reasoning: "Mostly midden public-sector and commercial green maintenance, with high-end residential design via subsidiaries (zwemvijvers, daktuinen) and lower-spec municipal contracts on the other end.",
+    tuin: "5/35/60", tuin_reasoning: "Portfolio emphasizes urban waterfronts, swim ponds and commercial green infrastructure with some residential gardens, weighting strongly toward groot scale.",
+    ao: "40/60", ao_reasoning: "Wide thematic focus (water management, biodiversity, climate) with landscape maintenance as a primary service line, slightly onderhoud-heavy but with significant aanleg and design.",
+    grgn: "25/75", grgn_reasoning: "Themes are biodiversity, water, indoor climate, air quality, climate regulation, with explicit groen-as-solution framing indicating strongly groen-heavy positioning.",
+    reg: "2", reg_reasoning: "HQ Veenendaal with branches in Amsterdam, Delft, Leiderdorp, Hoorn, Arnhem, Zeist and Deventer, covering randstedelijk and regional Netherlands rather than purely urban or rural.",
+    duurz: "5", duurz_reasoning: "CO2 Prestatieladder trede 5 (highest level, valid until 2027), three Groenkeur designations (groenvoorziening, dak en gevel, boomverzorging), ISO9001, VCA, 180 solar panels, green roof on warehouse, 20 percent CO2 reduction since 2020, plus dedicated MVO page.",
+    notes: "National royal-status green contractor with strong sustainability credentials and large institutional portfolio, similar tier to Donker Groep and Sight Landscaping."
+  },
+  {
+    name: "Acer Hoveniers",
+    email: "barry@acerhoveniers.nl",
+    website: "http://www.acerhoveniers.nl/",
+    isHovenier: true,
+    thorough: true,
+    profile: "Acer Hoveniers is a deliberately small-scale hoveniersbedrijf in Pijnacker, Zuid-Holland, led by owner Barry Veentjer with a permanent team of around 3 employees, operating since 2000 from a 1984-rooted business (taken over from Wim Hoogendam). They focus on biological and sustainable garden design, aanleg, onderhoud, boomonderhoud and steigerhouten meubelen for residential clients in Pijnacker, Zoetermeer, Delft, Den Haag, Rotterdam and Leiden. Member of VHG and Tuinkeur certified.",
+    medew: "B", medew_reasoning: "Search results indicate Barry plus a permanent team of about 3 employees (varying 2-4 in sources), and the site explicitly calls itself kleinschalig, placing it in the 3-5 B tier.",
+    org: "1", org_reasoning: "Owner Barry Veentjer is named in customer reviews as actively running the business, and the firm explicitly chose small-scale operation for personal approach, fitting ja, eigenaar werkt mee.",
+    partbedr: "90/10", partbedr_reasoning: "Site explicitly targets residential Zuid-Holland clients with personalized garden solutions, with no zakelijk segment featured, though some greening projects in Pijnacker, Den Haag and Leiden suggest occasional public or community work.",
+    segm: "10/70/20", segm_reasoning: "Standard rubric default for an unclear small hovenier fits, with biological practices, FSC wood, and personal advice suggesting solid midden-range craftsmanship and some quality jobs.",
+    tuin: "30/60/10", tuin_reasoning: "Service area covers urban and suburban Zuid-Holland (Den Haag, Rotterdam, Delft, Pijnacker, Zoetermeer) suggesting a mix of small or standard residential gardens with limited landgoed work.",
+    ao: "40/60", ao_reasoning: "Services include vacation garden care, pre-sale maintenance and seasonal planting alongside ontwerp en aanleg, suggesting maintenance-leaning balance typical of small biological hovenier.",
+    grgn: "30/70", grgn_reasoning: "Biological gardening, organic pest management and seasonal planting design dominate the messaging over hardscape, indicating a groen-heavy small operation, though FSC timber and steigerhouten meubelen add some hout and grijs.",
+    reg: "2", reg_reasoning: "Pijnacker base with service area Zoetermeer, Delft, Den Haag and Rotterdam puts it in the randstedelijk Zuid-Holland suburbs, between urban core and platteland.",
+    duurz: "4", duurz_reasoning: "Tuinkeur certified, VHG member, no chemical pesticides, biological pest management, FSC-certified and European timber, waste separation at job sites, business explicitly built on biological and organic principles since 2000, though no MVO, Groenkeur or CO2 ladder certifications.",
+    notes: "Small biological-focused Zuid-Holland hovenier with a clear ecological identity and Tuinkeur certification, very different profile from the big national contractors on this list."
+  }
+];
+
+// Group 1, original table.tsv first block. Concise scoring, no per-dim reasoning.
 const GROUP1 = [
-  { name: "Sparq Tuinen", email: "info@sparqtuinen.nl", website: "https://sparqtuinen.nl",
+  { name: "Sparq Tuinen", email: "info@sparqtuinen.nl", website: "https://sparqtuinen.nl", isHovenier: true,
     profile: "Mid-size hovenier in Nuenen, Oost-Brabant, focused on luxe villa gardens with pools. Hardscape-heavy aanleg work, owner partly hands-on. No sustainability USP visible.",
     medew: "D", org: "2", partbedr: "100/0", segm: "0/20/80", tuin: "10/50/40", ao: "80/20", grgn: "60/40", reg: "2", duurz: "1" },
-  { name: "AV hovenier", email: "info@avhovenier.nl", website: "https://avhovenier.nl/",
+  { name: "AV hovenier", email: "info@avhovenier.nl", website: "https://avhovenier.nl/", isHovenier: true,
     profile: "Small hovenier in Hummelo, Achterhoek and Arnhem region. Biodiversity focus, mixed particulier and zakelijk work. Owner works hands-on with a tight team.",
     medew: "B", org: "1", partbedr: "70/30", segm: "10/60/30", tuin: "10/60/30", ao: "50/50", grgn: "30/70", reg: "3", duurz: "3" },
-  { name: "Toptuinen", email: "erjan@toptuinen.nl", website: "https://toptuinen.com/",
+  { name: "Toptuinen", email: "erjan@toptuinen.nl", website: "https://toptuinen.com/", isHovenier: true,
     profile: "Lunteren, Gelderland. Website unreachable during analysis, no scoring possible. Manual lookup or KvK check needed.",
     medew: "?", org: "?", partbedr: "?", segm: "?", tuin: "?", ao: "?", grgn: "?", reg: "?", duurz: "?", unreachable: true },
-  { name: "Hoveniersbedrijf Wassink", email: "teunwassink@hotmail.com", website: "https://www.hoveniersbedrijfwassink.nl/",
+  { name: "Hoveniersbedrijf Wassink", email: "teunwassink@hotmail.com", website: "https://www.hoveniersbedrijfwassink.nl/", isHovenier: true,
     profile: "ZZP hovenier Teun Wassink in Bergeijk, Noord-Brabant. Personal branding, generic services list, particulier focus. No duurzaamheid claims.",
     medew: "A", org: "1", partbedr: "90/10", segm: "10/75/15", tuin: "20/60/20", ao: "50/50", grgn: "40/60", reg: "3", duurz: "1" },
-  { name: "Hoveniersbedrijf de Paashoef", email: "info@depaashoef.nl", website: "https://www.depaashoef.nl/",
+  { name: "Hoveniersbedrijf de Paashoef", email: "info@depaashoef.nl", website: "https://www.depaashoef.nl/", isHovenier: true,
     profile: "All-round hovenier in Gemert, Noord-Brabant. Strong design pipeline including 3D-ontwerp, mostly particulier with some zakelijk. Mid-market villas and modern gardens.",
     medew: "D", org: "2", partbedr: "85/15", segm: "10/60/30", tuin: "10/60/30", ao: "60/40", grgn: "50/50", reg: "3", duurz: "~2" },
-  { name: "Art of Outdoor B.V", email: "administratie@seegersgardens.nl", website: "https://www.artofoutdoor.nl/",
-    profile: "Family business since 1973 in Stevensweert, Limburg. Design-led with eco-zwembaden and Biotop natural pools. Mixed particulier and zakelijk. Note: contact email points to seegersgardens.nl, possibly shared admin or rebrand.",
+  { name: "Art of Outdoor B.V", email: "administratie@seegersgardens.nl", website: "https://www.artofoutdoor.nl/", isHovenier: true,
+    profile: "Family business since 1973 in Stevensweert, Limburg. Design-led with eco-zwembaden and Biotop natural pools. Mixed particulier and zakelijk. Note, contact email points to seegersgardens.nl, possibly shared admin or rebrand.",
     medew: "C", org: "2", partbedr: "60/40", segm: "0/40/60", tuin: "10/40/50", ao: "70/30", grgn: "40/60", reg: "3", duurz: "3" },
-  { name: "Posthumus-tuinen", email: "mark@posthumus-tuinen.nl", website: "https://posthumus-tuinen.nl/",
+  { name: "Posthumus-tuinen", email: "mark@posthumus-tuinen.nl", website: "https://posthumus-tuinen.nl/", isHovenier: true,
     profile: "Mid-size hovenier in Apeldoorn covering full lifecycle from ontwerp to onderhoud. Particulier-focused, balanced aanleg en onderhoud, no strong sustainability USP.",
     medew: "D", org: "2", partbedr: "80/20", segm: "10/60/30", tuin: "10/60/30", ao: "60/40", grgn: "40/60", reg: "~3", duurz: "~2" },
-  { name: "Hortus statera", email: "info@hortus-statera.nl", website: "https://hortus-statera.nl/",
+  { name: "Hortus statera", email: "info@hortus-statera.nl", website: "https://hortus-statera.nl/", isHovenier: true,
     profile: "Hovenier in Huijbergen, Noord-Brabant, combining tuinen with boomverzorging. Particulier-heavy, balanced services, no sustainability certifications visible.",
     medew: "C", org: "2", partbedr: "90/10", segm: "10/70/20", tuin: "10/70/20", ao: "50/50", grgn: "40/60", reg: "3", duurz: "2" },
-  { name: "Puper Hoveniers", email: "INFO@PUPERHOVENIERS.NL", website: "https://www.puperhoveniers.nl/",
+  { name: "Puper Hoveniers", email: "INFO@PUPERHOVENIERS.NL", website: "https://www.puperhoveniers.nl/", isHovenier: true,
     profile: "Hovenier in Leerdam since 1993. Mixed clientele covering stadstuinen, villatuinen and zakelijk werk. 8.9 client review average. Owner partly hands-on.",
     medew: "C", org: "2", partbedr: "60/40", segm: "10/60/30", tuin: "20/50/30", ao: "60/40", grgn: "50/50", reg: "2", duurz: "~2" },
-  { name: "De Jong Tuinen", email: "info@dejongtuinen.com", website: "https://www.dejongtuinen.nl",
+  { name: "De Jong Tuinen", email: "info@dejongtuinen.com", website: "https://www.dejongtuinen.nl", isHovenier: true,
     profile: "Small design-led ZZP hovenier in Sliedrecht, Drechtsteden. Pure B2C, focused on custom private gardens. TuinKeur certified, aanleg-dominant business model. Mid to high segment, light sustainability claims only.",
     medew: "A", org: "1", partbedr: "100/0", segm: "10/60/30", tuin: "10/60/30", ao: "70/30", grgn: "40/60", reg: "2", duurz: "2" }
 ];
 
 const GROUP2 = [
-  { name: "Alexander Hermse Hovenier", email: "a.h.hovenier@gmail.com", website: null,
+  { name: "Alexander Hermse Hovenier", email: "a.h.hovenier@gmail.com", website: null, isHovenier: true,
     profile: "ZZP hovenier in Nijmegen region. No own website, contact via gmail. Profile inferred from name and email pattern.",
     medew: "A", org: "1", partbedr: "90/10", segm: "10/70/20", tuin: "20/60/20", ao: "50/50", grgn: "40/60", reg: "2", duurz: "1", noSite: true },
-  { name: "Antwan Tuinprojecten", email: "jaco@antwan.nl", website: "https://antwan.nl",
+  { name: "Antwan Tuinprojecten", email: "jaco@antwan.nl", website: "https://antwan.nl", isHovenier: true,
     profile: "Premium tuinprojecten firm with around 35 medewerkers, based in Rotterdam region. High-end villa and estate work, in-house design studio. Owner manages, no longer hands-on at this size.",
     medew: "E", org: "3", partbedr: "70/30", segm: "0/30/70", tuin: "0/30/70", ao: "60/40", grgn: "40/60", reg: "2", duurz: "3" },
-  { name: "Arickx Hoveniersbedrijf BV", email: "g.bergsma@arickx.nl", website: "https://arickx.nl",
+  { name: "Arickx Hoveniersbedrijf BV", email: "g.bergsma@arickx.nl", website: "https://arickx.nl", isHovenier: true,
     profile: "Hoveniersbedrijf in Gorredijk, Friesland. B2B-leaning with gemeenten and vastgoed clients. Owner partly hands-on, generic services list, modest sustainability presence.",
     medew: "C", org: "2", partbedr: "30/70", segm: "10/70/20", tuin: "10/40/50", ao: "50/50", grgn: "40/60", reg: "3", duurz: "2" },
-  { name: "Arjan Rutte hout&tuin", email: "Info@hout-tuin.nl", website: "https://hout-tuin.nl",
+  { name: "Arjan Rutte hout&tuin", email: "Info@hout-tuin.nl", website: "https://hout-tuin.nl", isHovenier: true,
     profile: "ZZP combining hout en timmerwerk with tuinwerk. Particulier focus, hardscape-leaning because of the houtbouw specialization. No sustainability claims.",
     medew: "A", org: "1", partbedr: "100/0", segm: "10/70/20", tuin: "10/70/20", ao: "50/50", grgn: "60/40", reg: "2", duurz: "1" },
-  { name: "Arnaldo's Tuinen", email: "info@arnaldostuinen.nl", website: "https://arnaldostuinen.nl",
+  { name: "Arnaldo's Tuinen", email: "info@arnaldostuinen.nl", website: "https://arnaldostuinen.nl", isHovenier: true,
     profile: "Small hovenier in Wamel, Gelderland platteland. Betaalbaar en midden segment work, owner-led, mostly particulier. No sustainability USP.",
     medew: "B", org: "1", partbedr: "95/5", segm: "20/70/10", tuin: "10/70/20", ao: "50/50", grgn: "40/60", reg: "3", duurz: "1" },
-  { name: "Balkenende Hoveniers", email: "info@balkenende.nl", website: "https://balkenende.nl",
+  { name: "Balkenende Hoveniers", email: "info@balkenende.nl", website: "https://balkenende.nl", isHovenier: true,
     profile: "Established hovenier in Lisserbroek, 35 plus years in business. Mixed villa, VvE and zorginstellingen work, with explicit sedum and biodivers branding. Highest sustainability score in this batch.",
     medew: "C", org: "2", partbedr: "70/30", segm: "10/40/50", tuin: "10/40/50", ao: "60/40", grgn: "30/70", reg: "2", duurz: "4" },
-  { name: "Berentsen tuin en timmerwerk", email: "jeffrey_berentsen@hotmail.com", website: null,
+  { name: "Berentsen tuin en timmerwerk", email: "jeffrey_berentsen@hotmail.com", website: null, isHovenier: true,
     profile: "ZZP in Weesp combining tuin and timmerwerk. No own website, presence on Werkspot reviews. Pure particulier work, balanced gray and green from the timmer specialization.",
     medew: "A", org: "1", partbedr: "100/0", segm: "10/70/20", tuin: "20/70/10", ao: "40/60", grgn: "50/50", reg: "2", duurz: "1", noSite: true },
-  { name: "booiman tuinen", email: "ronald@booimantuinen.nl", website: "https://booimantuinen.nl",
+  { name: "booiman tuinen", email: "ronald@booimantuinen.nl", website: "https://booimantuinen.nl", isHovenier: true,
     profile: "Established hovenier in Beilen, Drenthe. 30 plus years in business with 1000 plus tuinen done. Specialty in vijvers and zwemvijvers. Particulier-heavy, owner partly hands-on.",
     medew: "C", org: "2", partbedr: "80/20", segm: "10/50/40", tuin: "10/60/30", ao: "60/40", grgn: "40/60", reg: "3", duurz: "2" },
-  { name: "Boudewijn Infra", email: "info@boudewijninfra.nl", website: "https://boudewijninfra.nl",
+  { name: "Boudewijn Infra", email: "info@boudewijninfra.nl", website: "https://boudewijninfra.nl", isHovenier: true,
     profile: "Bestrating en infra contractor in Schelluinen with named B2B clients like Scania and Shell. Heavy grijs and hardscape, this is more an infra firm than a typical hovenier.",
     medew: "D", org: "2", partbedr: "20/80", segm: "10/70/20", tuin: "10/40/50", ao: "70/30", grgn: "80/20", reg: "3", duurz: "2" },
-  { name: "Bovendorp Tuinen", email: "wouterbovendorp@hotmail.com", website: null,
+  { name: "Bovendorp Tuinen", email: "wouterbovendorp@hotmail.com", website: null, isHovenier: true,
     profile: "Young ZZP in Zandvoort, started 2021. No own website, hotmail contact. Stadstuinen-leaning portfolio expected from coastal location.",
     medew: "A", org: "1", partbedr: "100/0", segm: "10/70/20", tuin: "30/60/10", ao: "50/50", grgn: "40/60", reg: "2", duurz: "1", noSite: true },
-  { name: "bruggeman tuinen", email: "info@bruggemantuinen.nl", website: "https://bruggemantuinen.nl",
+  { name: "bruggeman tuinen", email: "info@bruggemantuinen.nl", website: "https://bruggemantuinen.nl", isHovenier: true,
     profile: "ZZP-style hovenier in Lamswaarde, Zeeland platteland. Site is a coming soon page so most details are inferred from the small-scale signal.",
     medew: "A", org: "1", partbedr: "90/10", segm: "10/70/20", tuin: "10/70/20", ao: "50/50", grgn: "40/60", reg: "3", duurz: "1" }
 ];
 
-// Safe DOM helpers, no innerHTML, all values via textContent.
+// Safe DOM helpers, no innerHTML.
 function el(tag, props, children) {
   const node = document.createElement(tag);
   if (props) {
@@ -530,8 +580,13 @@ function chip(label, value, extraClass) {
 
 function buildCard(c, idx, group) {
   const isUnknown = c.unreachable || c.medew === "?";
+  let cls = "card";
+  if (isUnknown) cls += " unknown";
+  if (c.thorough) cls += " thorough";
+  if (c.isHovenier === false) cls += " not-hovenier";
+
   const card = el("button", {
-    className: "card" + (isUnknown ? " unknown" : ""),
+    className: cls,
     type: "button",
     data: { group: String(group), idx: String(idx) }
   });
@@ -540,6 +595,10 @@ function buildCard(c, idx, group) {
     el("h2", { className: "name", text: c.name }),
     el("span", { className: "size-badge", text: c.medew && c.medew !== "?" ? sizeBadge(c.medew) : "?" })
   ]));
+
+  if (c.isHovenier === false) {
+    card.appendChild(el("div", { className: "warn-banner", text: "Not a hovenier, flagged data quality" }));
+  }
 
   const websiteText = c.website
     ? c.website.replace(/^https?:\/\//, "").replace(/\/$/, "")
@@ -565,30 +624,35 @@ function buildCard(c, idx, group) {
   return card;
 }
 
-function buildDimRow(key, value) {
+function buildDimRow(key, c) {
   const r = RUBRIC[key];
+  const value = c[key];
   const cleanVal = (value === undefined || value === null || value === "") ? "?" : value;
   const isUnknown = cleanVal === "?";
   const meaning = decode(key, cleanVal);
+  const reasoning = c[key + "_reasoning"];
 
-  return el("div", { className: "dim" }, [
-    el("div", { className: "dim-head" }, [
-      el("span", { className: "dim-name", text: r.name }),
-      el("span", { className: "dim-value" + (isUnknown ? " unknown" : ""), text: cleanVal })
-    ]),
-    el("div", { className: "dim-meaning", text: meaning }),
-    el("div", { className: "dim-help", text: r.description })
-  ]);
+  const dim = el("div", { className: "dim" });
+  dim.appendChild(el("div", { className: "dim-head" }, [
+    el("span", { className: "dim-name", text: r.name }),
+    el("span", { className: "dim-value" + (isUnknown ? " unknown" : ""), text: cleanVal })
+  ]));
+  dim.appendChild(el("div", { className: "dim-meaning", text: meaning }));
+  dim.appendChild(el("div", { className: "dim-help", text: r.description }));
+  if (reasoning && reasoning !== "Not a hovenier, scoring not applicable.") {
+    const reasonBox = el("div", { className: "dim-reasoning" });
+    reasonBox.appendChild(el("span", { className: "reason-label", text: "Why this score" }));
+    reasonBox.appendChild(document.createTextNode(reasoning));
+    dim.appendChild(reasonBox);
+  }
+  return dim;
 }
 
 function buildModal(c) {
   const modal = el("div");
 
   const closeBtn = el("button", {
-    className: "modal-close",
-    id: "modalCloseBtn",
-    type: "button",
-    text: "×",
+    className: "modal-close", id: "modalCloseBtn", type: "button", text: "×",
     attrs: { "aria-label": "Close" }
   });
   modal.appendChild(closeBtn);
@@ -597,22 +661,40 @@ function buildModal(c) {
 
   const meta = el("div", { className: "meta-row" });
   if (c.website) {
-    const a = el("a", {
+    meta.appendChild(el("a", {
       text: c.website.replace(/^https?:\/\//, "").replace(/\/$/, ""),
       attrs: { href: c.website, target: "_blank", rel: "noopener" }
-    });
-    meta.appendChild(a);
+    }));
   } else {
     meta.appendChild(el("span", { text: "no website found" }));
   }
   if (c.email) meta.appendChild(el("span", { text: c.email }));
   modal.appendChild(meta);
 
+  if (c.isHovenier === false) {
+    modal.appendChild(el("div", {
+      className: "not-hovenier-banner",
+      text: "This entry is not a hovenier and is flagged as a data-quality false positive. Detail scoring not applicable."
+    }));
+  }
+
   // Profile section
   const sec1 = el("div", { className: "modal-section" });
   sec1.appendChild(el("h3", { text: "Profile" }));
-  sec1.appendChild(el("p", { className: "read-help", text: c.profile, attrs: { style: "margin:0;color:var(--text)" } }));
+  sec1.appendChild(el("p", {
+    className: "read-help",
+    text: c.profile,
+    attrs: { style: "margin:0;color:var(--text)" }
+  }));
   modal.appendChild(sec1);
+
+  // Notes section if present
+  if (c.notes) {
+    const secN = el("div", { className: "modal-section" });
+    secN.appendChild(el("h3", { text: "Notes" }));
+    secN.appendChild(el("p", { className: "read-help", text: c.notes }));
+    modal.appendChild(secN);
+  }
 
   // Scoring breakdown
   const sec2 = el("div", { className: "modal-section" });
@@ -620,7 +702,7 @@ function buildModal(c) {
   const list = el("div", { className: "dim-list" });
   const dims = ["medew","org","partbedr","segm","tuin","ao","grgn","reg","duurz"];
   for (let i = 0; i < dims.length; i++) {
-    list.appendChild(buildDimRow(dims[i], c[dims[i]]));
+    list.appendChild(buildDimRow(dims[i], c));
   }
   sec2.appendChild(list);
   modal.appendChild(sec2);
@@ -628,27 +710,30 @@ function buildModal(c) {
   // How to read
   const sec3 = el("div", { className: "modal-section" });
   sec3.appendChild(el("h3", { text: "How to read this" }));
-  sec3.appendChild(el("p", {
-    className: "read-help",
-    text: "Scores are estimated from the website content, name signals and rubric defaults. A tilde prefix like ~2 means the value is a best-guess due to limited or unreachable site content. A question mark means no data was available. Use as a directional segmentation tool, not as exact measurement."
-  }));
+  const readText = c.thorough
+    ? "This card had a thorough multi-page analysis covering homepage, over-ons, diensten, duurzaamheid, portfolio and contact pages, plus a targeted search for staff count. The reasoning under each score cites specific evidence found on those pages."
+    : "Scores are estimated from the homepage content, name signals and rubric defaults. A tilde prefix like ~2 means the value is a best-guess due to limited or unreachable site content. A question mark means no data was available. Use as a directional segmentation tool, not as exact measurement.";
+  sec3.appendChild(el("p", { className: "read-help", text: readText }));
   modal.appendChild(sec3);
 
   return modal;
 }
 
-// Render grids
 const grid1 = document.getElementById("grid1");
 const grid2 = document.getElementById("grid2");
+const grid3 = document.getElementById("grid3");
+GROUP3.forEach((c, i) => grid3.appendChild(buildCard(c, i, 3)));
 GROUP1.forEach((c, i) => grid1.appendChild(buildCard(c, i, 1)));
 GROUP2.forEach((c, i) => grid2.appendChild(buildCard(c, i, 2)));
 
-// Modal handling
 const modal = document.getElementById("modal");
 const modalBody = document.getElementById("modalBody");
 
 function openModal(group, idx) {
-  const c = group === 1 ? GROUP1[idx] : GROUP2[idx];
+  let c;
+  if (group === 1) c = GROUP1[idx];
+  else if (group === 2) c = GROUP2[idx];
+  else c = GROUP3[idx];
   while (modalBody.firstChild) modalBody.removeChild(modalBody.firstChild);
   const built = buildModal(c);
   while (built.firstChild) modalBody.appendChild(built.firstChild);
@@ -677,7 +762,6 @@ document.addEventListener("keydown", e => {
   if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
 });
 
-// Theme toggle
 const toggle = document.getElementById("themeToggle");
 const root = document.documentElement;
 function setTheme(t) {

@@ -61,3 +61,4 @@
 | 2026-05-07 | ecoscrape | reports | [result2.md](projects/ecoscrape/reports/result2.md) | ECOstyle bestaande klanten, 21 hoveniers segmented across 9 dimensions |
 | 2026-05-07 | ecoscrape | reports | [profiles.html](projects/ecoscrape/reports/profiles.html) | Hoveniers profile cards HTML, ECOstyle klanten, light/dark mode |
 | 2026-05-07 | ecoscrape | reports | [profiles.html](projects/ecoscrape/reports/profiles.html) | Hoveniers profile cards with click-to-expand modal showing rubric meaning per score |
+| 2026-05-07 | ecoscrape | reports | [profiles.html](projects/ecoscrape/reports/profiles.html) | Hoveniers profile cards with thorough analyses and per-score reasoning for 7 new entries |
