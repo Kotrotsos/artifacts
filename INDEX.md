@@ -66,3 +66,4 @@
 | 2026-05-07 | ecoscrape | spreadsheets | [hoveniers_nl.xlsx](projects/ecoscrape/spreadsheets/hoveniers_nl.xlsx) | 10958 Dutch hoveniers scraped from hoveniernederland.nl with name address postcode email phone website |
 | 2026-05-07 | ecoscrape | spreadsheets | [hoveniers50_enriched.xlsx](projects/ecoscrape/spreadsheets/hoveniers50_enriched.xlsx) | First 50 hoveniers from NL directory enriched with name+city search and 9-dim scoring with reasoning |
 | 2026-05-07 | ecoscrape | reports | [profiles50.html](projects/ecoscrape/reports/profiles50.html) | Profile cards for first 50 hoveniers with thorough scoring and per-score reasoning in modal |
+| 2026-05-07 | ecoscrape | spreadsheets | [hoveniers50_enriched.xlsx](projects/ecoscrape/spreadsheets/hoveniers50_enriched.xlsx) | First 50 hoveniers enriched, deeper email regex scan added 15 more emails and 14 more phones |
