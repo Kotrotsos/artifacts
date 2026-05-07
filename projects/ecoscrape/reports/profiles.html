@@ -15,6 +15,7 @@
     --border: #e5e7eb;
     --chip: #f3f4f6;
     --chip-text: #374151;
+    --overlay: rgba(20,20,20,0.45);
   }
   [data-theme="dark"] {
     --bg: #0f1413;
@@ -26,6 +27,7 @@
     --border: #2a312f;
     --chip: #252a29;
     --chip-text: #c8ccca;
+    --overlay: rgba(0,0,0,0.65);
   }
   * { box-sizing: border-box; }
   html, body {
@@ -81,7 +83,7 @@
   main {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 24px 48px;
+    padding: 0 24px 16px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 16px;
@@ -94,6 +96,20 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+    text-align: left;
+    font-family: inherit;
+    color: inherit;
+    width: 100%;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  }
+  [data-theme="dark"] .card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   }
   .card-head {
     display: flex;
@@ -119,10 +135,8 @@
   .website {
     font-size: 13px;
     color: var(--muted);
-    text-decoration: none;
     word-break: break-all;
   }
-  .website:hover { color: var(--accent); }
   .profile {
     font-size: 14px;
     color: var(--text);
@@ -141,16 +155,13 @@
     padding: 3px 8px;
     font-size: 11px;
     font-weight: 500;
+    white-space: nowrap;
   }
   .chip-label { color: var(--muted); margin-right: 3px; }
   .chip-value { font-weight: 600; }
-  .duurz {
-    background: var(--accent-soft);
-    color: var(--accent);
-  }
-  .unknown {
-    opacity: 0.6;
-  }
+  .duurz { background: var(--accent-soft); color: var(--accent); }
+  .unknown { opacity: 0.65; }
+  .click-hint { font-size: 11px; color: var(--muted); margin-top: 2px; }
   footer {
     max-width: 1200px;
     margin: 0 auto;
@@ -158,398 +169,529 @@
     color: var(--muted);
     font-size: 12px;
   }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 16px;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    max-width: 720px;
+    width: 100%;
+    padding: 28px 28px 24px;
+    position: relative;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: inherit;
+  }
+  .modal-close:hover { background: var(--chip); color: var(--text); }
+  .modal h2 {
+    margin: 0 0 4px;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    padding-right: 40px;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .meta-row a { color: var(--accent); text-decoration: none; }
+  .meta-row a:hover { text-decoration: underline; }
+  .modal-section {
+    margin: 18px 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .modal-section:first-of-type { border-top: 0; padding-top: 0; }
+  .modal-section h3 {
+    margin: 0 0 10px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .dim-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .dim {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .dim-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .dim-name { font-weight: 600; font-size: 14px; }
+  .dim-value {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .dim-value.unknown { background: var(--chip); color: var(--muted); }
+  .dim-meaning { font-size: 13px; color: var(--text); margin: 4px 0 0; }
+  .dim-help { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+  .read-help { font-size: 13px; color: var(--muted); margin: 0; }
+  body.modal-open { overflow: hidden; }
 </style>
 </head>
 <body>
 <header>
   <div>
     <h1>Hoveniers, Bestaande Klanten ECOstyle</h1>
-    <div class="subtitle">21 companies, profile snapshots based on website analysis</div>
+    <div class="subtitle">21 companies, click any card for the full breakdown</div>
   </div>
   <button class="theme-toggle" id="themeToggle" type="button">Dark mode</button>
 </header>
 
 <div class="group-header">Group 1</div>
-<main>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Sparq Tuinen</h2>
-      <span class="size-badge">D, 10-20</span>
-    </div>
-    <a class="website" href="https://sparqtuinen.nl" target="_blank" rel="noopener">sparqtuinen.nl</a>
-    <p class="profile">Mid-size hovenier in Nuenen, Oost-Brabant, focused on luxe villa gardens with pools. Hardscape-heavy aanleg work, owner partly hands-on. No sustainability USP visible.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">100/0</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">0/20/80</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">80/20</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">2</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">1</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">AV hovenier</h2>
-      <span class="size-badge">B, 3-5</span>
-    </div>
-    <a class="website" href="https://avhovenier.nl/" target="_blank" rel="noopener">avhovenier.nl</a>
-    <p class="profile">Small hovenier in Hummelo, Achterhoek/Arnhem region. Biodiversity focus, mixed particulier and zakelijk work. Owner works hands-on with a tight team.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">70/30</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/60/30</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">30/70</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">3</span></span>
-    </div>
-  </article>
-
-  <article class="card unknown">
-    <div class="card-head">
-      <h2 class="name">Toptuinen</h2>
-      <span class="size-badge">?</span>
-    </div>
-    <a class="website" href="https://toptuinen.com/" target="_blank" rel="noopener">toptuinen.com</a>
-    <p class="profile">Lunteren, Gelderland. Website unreachable during analysis, no scoring possible. Manual lookup or KvK check needed.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">all cols</span><span class="chip-value">?</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Hoveniersbedrijf Wassink</h2>
-      <span class="size-badge">A, 1-2</span>
-    </div>
-    <a class="website" href="https://www.hoveniersbedrijfwassink.nl/" target="_blank" rel="noopener">hoveniersbedrijfwassink.nl</a>
-    <p class="profile">ZZP hovenier Teun Wassink in Bergeijk, Noord-Brabant. Personal branding, generic services list, particulier focus. No duurzaamheid claims.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">90/10</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/75/15</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">1</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Hoveniersbedrijf de Paashoef</h2>
-      <span class="size-badge">D, 10-20</span>
-    </div>
-    <a class="website" href="https://www.depaashoef.nl/" target="_blank" rel="noopener">depaashoef.nl</a>
-    <p class="profile">All-round hovenier in Gemert, Noord-Brabant. Strong design pipeline including 3D-ontwerp, mostly particulier with some zakelijk. Mid-market villas and modern gardens.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">85/15</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/60/30</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">~2</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Art of Outdoor B.V</h2>
-      <span class="size-badge">C, 5-10</span>
-    </div>
-    <a class="website" href="https://www.artofoutdoor.nl/" target="_blank" rel="noopener">artofoutdoor.nl</a>
-    <p class="profile">Family business since 1973 in Stevensweert, Limburg. Design-led with eco-zwembaden and Biotop natural pools. Mixed particulier and zakelijk. Note: contact email points to seegersgardens.nl, possibly shared admin.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">0/40/60</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">70/30</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">3</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Posthumus-tuinen</h2>
-      <span class="size-badge">D, 10-20</span>
-    </div>
-    <a class="website" href="https://posthumus-tuinen.nl/" target="_blank" rel="noopener">posthumus-tuinen.nl</a>
-    <p class="profile">Mid-size hovenier in Apeldoorn covering full lifecycle from ontwerp to onderhoud. Particulier-focused, balanced aanleg/onderhoud, no strong sustainability USP.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">80/20</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/60/30</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">~3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">~2</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Hortus statera</h2>
-      <span class="size-badge">C, 5-10</span>
-    </div>
-    <a class="website" href="https://hortus-statera.nl/" target="_blank" rel="noopener">hortus-statera.nl</a>
-    <p class="profile">Hovenier in Huijbergen, Noord-Brabant, combining tuinen with boomverzorging. Particulier-heavy, balanced services, no sustainability certifications visible.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">90/10</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/70/20</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">2</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Puper Hoveniers</h2>
-      <span class="size-badge">C, 5-10</span>
-    </div>
-    <a class="website" href="https://www.puperhoveniers.nl/" target="_blank" rel="noopener">puperhoveniers.nl</a>
-    <p class="profile">Hovenier in Leerdam since 1993. Mixed clientele covering stadstuinen, villatuinen and zakelijk werk. 8.9 client review average. Owner partly hands-on.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/60/30</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">2</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">~2</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">De Jong Tuinen</h2>
-      <span class="size-badge">A, 1-2</span>
-    </div>
-    <a class="website" href="https://www.dejongtuinen.nl" target="_blank" rel="noopener">dejongtuinen.nl</a>
-    <p class="profile">Small design-led ZZP hovenier in Sliedrecht, Drechtsteden. Pure B2C, focused on custom private gardens. TuinKeur certified, aanleg-dominant business model. Mid to high segment, light sustainability claims only.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">100/0</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/60/30</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">70/30</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">2</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">2</span></span>
-    </div>
-  </article>
-
-</main>
+<main id="grid1"></main>
 
 <div class="group-header">Group 2</div>
-<main>
-
-  <article class="card unknown">
-    <div class="card-head">
-      <h2 class="name">Alexander Hermse Hovenier</h2>
-      <span class="size-badge">A, 1-2</span>
-    </div>
-    <span class="website">no website found, gmail contact</span>
-    <p class="profile">ZZP hovenier in Nijmegen region. No own website, contact via gmail. Profile inferred from name and email pattern.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">90/10</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/70/20</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">2</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">1</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Antwan Tuinprojecten</h2>
-      <span class="size-badge">E, 20-50</span>
-    </div>
-    <a class="website" href="https://antwan.nl" target="_blank" rel="noopener">antwan.nl</a>
-    <p class="profile">Premium tuinprojecten firm with around 35 medewerkers, based in Rotterdam region. High-end villa and estate work, in-house design studio. Owner manages, no longer hands-on at this size.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">70/30</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">0/30/70</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">2</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">3</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Arickx Hoveniersbedrijf BV</h2>
-      <span class="size-badge">C, 5-10</span>
-    </div>
-    <a class="website" href="https://arickx.nl" target="_blank" rel="noopener">arickx.nl</a>
-    <p class="profile">Hoveniersbedrijf in Gorredijk, Friesland. B2B-leaning with gemeenten and vastgoed clients. Owner partly hands-on, generic services list, modest sustainability presence.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">30/70</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/70/20</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">2</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Arjan Rutte hout&amp;tuin</h2>
-      <span class="size-badge">A, 1-2</span>
-    </div>
-    <a class="website" href="https://hout-tuin.nl" target="_blank" rel="noopener">hout-tuin.nl</a>
-    <p class="profile">ZZP combining hout/timmerwerk with tuinwerk. Particulier focus, hardscape-heavy because of the houtbouw specialization. No sustainability claims.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">100/0</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/70/20</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">2</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">1</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Arnaldo's Tuinen</h2>
-      <span class="size-badge">B, 3-5</span>
-    </div>
-    <a class="website" href="https://arnaldostuinen.nl" target="_blank" rel="noopener">arnaldostuinen.nl</a>
-    <p class="profile">Small hovenier in Wamel, Gelderland platteland. Betaalbaar/midden segment work, owner-led, mostly particulier. No sustainability USP.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">95/5</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">20/70/10</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">1</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Balkenende Hoveniers</h2>
-      <span class="size-badge">C, 5-10</span>
-    </div>
-    <a class="website" href="https://balkenende.nl" target="_blank" rel="noopener">balkenende.nl</a>
-    <p class="profile">Established hovenier in Lisserbroek, 35+ years. Mixed villa, VvE and zorginstellingen work, with explicit sedum and biodivers branding. Highest sustainability score in this batch.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">70/30</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/40/50</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">30/70</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">2</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">4</span></span>
-    </div>
-  </article>
-
-  <article class="card unknown">
-    <div class="card-head">
-      <h2 class="name">Berentsen tuin en timmerwerk</h2>
-      <span class="size-badge">A, 1-2</span>
-    </div>
-    <span class="website">no website found, hotmail contact</span>
-    <p class="profile">ZZP in Weesp combining tuin and timmerwerk. No own website, presence on Werkspot reviews. Pure particulier work, balanced gray/green from the timmer specialization.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">100/0</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/70/20</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">2</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">1</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">booiman tuinen</h2>
-      <span class="size-badge">C, 5-10</span>
-    </div>
-    <a class="website" href="https://booimantuinen.nl" target="_blank" rel="noopener">booimantuinen.nl</a>
-    <p class="profile">Established hovenier in Beilen, Drenthe, 30+ years and 1000+ tuinen done. Specialty in vijvers and zwemvijvers. Particulier-heavy, owner partly hands-on.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">80/20</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/50/40</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">60/40</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">2</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">Boudewijn Infra</h2>
-      <span class="size-badge">D, 10-20</span>
-    </div>
-    <a class="website" href="https://boudewijninfra.nl" target="_blank" rel="noopener">boudewijninfra.nl</a>
-    <p class="profile">Bestrating en infra contractor in Schelluinen with named B2B clients like Scania and Shell. Heavy grijs/hardscape, this is more an infra firm than a typical hovenier.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">20/80</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/70/20</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">70/30</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">80/20</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">2</span></span>
-    </div>
-  </article>
-
-  <article class="card unknown">
-    <div class="card-head">
-      <h2 class="name">Bovendorp Tuinen</h2>
-      <span class="size-badge">A, 1-2</span>
-    </div>
-    <span class="website">no website found, hotmail contact</span>
-    <p class="profile">Young ZZP in Zandvoort, started 2021. No own website, hotmail contact. Stadstuinen-leaning portfolio expected from coastal location.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">100/0</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/70/20</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">2</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">1</span></span>
-    </div>
-  </article>
-
-  <article class="card">
-    <div class="card-head">
-      <h2 class="name">bruggeman tuinen</h2>
-      <span class="size-badge">A, 1-2</span>
-    </div>
-    <a class="website" href="https://bruggemantuinen.nl" target="_blank" rel="noopener">bruggemantuinen.nl</a>
-    <p class="profile">ZZP-style hovenier in Lamswaarde, Zeeland platteland. Site is a "coming soon" page so most details are inferred from the small-scale signal.</p>
-    <div class="stats">
-      <span class="chip"><span class="chip-label">P/B</span><span class="chip-value">90/10</span></span>
-      <span class="chip"><span class="chip-label">L/M/H</span><span class="chip-value">10/70/20</span></span>
-      <span class="chip"><span class="chip-label">A/O</span><span class="chip-value">50/50</span></span>
-      <span class="chip"><span class="chip-label">Gr/Gn</span><span class="chip-value">40/60</span></span>
-      <span class="chip"><span class="chip-label">Reg</span><span class="chip-value">3</span></span>
-      <span class="chip duurz"><span class="chip-label">Duurz</span><span class="chip-value">1</span></span>
-    </div>
-  </article>
-
-</main>
+<main id="grid2"></main>
 
 <footer>
-  Source: table.tsv. Group labels from source: "Bestaande klanten, omzet ECOstyle". Scoring per shared rubric, 9 dimensions per company. Cards marked transparent had unreachable websites or missing data, scoring is rubric-default with name-derived inference.
+  Source: table.tsv. Group labels from source: "Bestaande klanten, omzet ECOstyle". Scoring per shared rubric, 9 dimensions per company. Click a card for the full description and rubric meaning of every score.
 </footer>
 
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
+  <div class="modal" id="modalBody"></div>
+</div>
+
 <script>
-  const toggle = document.getElementById('themeToggle');
-  const root = document.documentElement;
-  function setTheme(t) {
-    if (t === 'dark') { root.setAttribute('data-theme', 'dark'); toggle.textContent = 'Light mode'; }
-    else { root.removeAttribute('data-theme'); toggle.textContent = 'Dark mode'; }
-    try { localStorage.setItem('hov-theme', t); } catch (e) {}
+"use strict";
+
+// Rubric definitions, used to decode every score in the detail view.
+const RUBRIC = {
+  medew: {
+    name: "Aantal medewerkers",
+    description: "How many people work at the company. Estimated from team page, fleet photos, branch count, LinkedIn cues. Anchors most other inferences.",
+    levels: {
+      A: "1 to 2 people, sole proprietor or ZZP, owner does everything",
+      B: "3 to 5 people, small family business",
+      C: "5 to 10 people, small firm with multiple specialties",
+      D: "10 to 20 people, medium organization with structure",
+      E: "20 to 50 people, regional player with serious B2B work",
+      F: "Over 50 people, national or large regional contractor"
+    }
+  },
+  org: {
+    name: "Organisatiegraad, eigenaar werkt zelf mee",
+    description: "Whether the owner is hands-on in the field, partly involved, or purely managing. Closely tied to firm size.",
+    levels: {
+      "1": "Ja, owner works hands-on alongside the team",
+      "2": "Deels, owner is involved but mostly manages",
+      "3": "Nauwelijks, owner manages only, professionalized organization"
+    }
+  },
+  partbedr: {
+    name: "Verdeling particulieren, bedrijven",
+    description: "Customer mix between private homeowners (particulieren) and businesses or government (bedrijven). Read from portfolio examples and named clients.",
+    interpret: function(v) {
+      if (!v || v.indexOf("/") < 0) return "Unknown";
+      const parts = v.split("/").map(x => parseInt(x.replace(/\D/g, ""), 10) || 0);
+      const p = parts[0];
+      if (p >= 90) return "Pure B2C, almost only particulieren";
+      if (p >= 60) return "Mainly particulieren with some B2B";
+      if (p >= 40) return "Roughly balanced mix";
+      if (p >= 20) return "Mainly B2B with some particulieren";
+      return "Pure B2B, mostly bedrijven and overheid";
+    }
+  },
+  segm: {
+    name: "Segment laag, midden, hoog",
+    description: "Price tier of work delivered. Inferred from portfolio quality, language used (exclusief, luxe), pricing cues if visible.",
+    interpret: function(v) {
+      if (!v || v.indexOf("/") < 0) return "Unknown";
+      const parts = v.split("/").map(x => parseInt(x.replace(/\D/g, ""), 10) || 0);
+      const l = parts[0], m = parts[1], h = parts[2];
+      if (h >= 60) return "Premium, focused on luxe and exclusieve gardens";
+      if (h >= 30) return "Mid to high market, mostly midden with hoog work";
+      if (m >= 50) return "Mainstream midden segment";
+      if (l >= 30) return "Includes value or laag segment work";
+      return "Balanced segment mix";
+    }
+  },
+  tuin: {
+    name: "Grootte tuinen klein, gemiddeld, groot",
+    description: "Typical garden sizes done. Inferred from portfolio photos and the landscape character of the operating region.",
+    interpret: function(v) {
+      if (!v || v.indexOf("/") < 0) return "Unknown";
+      const parts = v.split("/").map(x => parseInt(x.replace(/\D/g, ""), 10) || 0);
+      const k = parts[0], g = parts[2];
+      if (g >= 50) return "Mostly grote tuinen, villas, landgoed, bedrijfsterrein";
+      if (g >= 25) return "Mix leaning towards grote tuinen";
+      if (k >= 30) return "Includes klein, stadstuin, postzegeltuinen";
+      return "Mostly gemiddelde tuinen, typical residential";
+    }
+  },
+  ao: {
+    name: "Aanleg, onderhoud verhouding",
+    description: "Mix of installation work (aanleg) versus ongoing maintenance (onderhoud). Read from service emphasis and company name.",
+    interpret: function(v) {
+      if (!v || v.indexOf("/") < 0) return "Unknown";
+      const parts = v.split("/").map(x => parseInt(x.replace(/\D/g, ""), 10) || 0);
+      const a = parts[0], o = parts[1];
+      if (a >= 70) return "Aanleg-heavy, design-build firm";
+      if (a >= 55) return "Aanleg-leaning";
+      if (o >= 70) return "Onderhoud-heavy, contract maintenance focus";
+      if (o >= 55) return "Onderhoud-leaning";
+      return "Roughly balanced";
+    }
+  },
+  grgn: {
+    name: "Grijs, groen verhouding",
+    description: "Hardscape (stenen, hout, bestrating) versus planting and green elements. Read from portfolio and services.",
+    interpret: function(v) {
+      if (!v || v.indexOf("/") < 0) return "Unknown";
+      const parts = v.split("/").map(x => parseInt(x.replace(/\D/g, ""), 10) || 0);
+      const gr = parts[0], gn = parts[1];
+      if (gr >= 70) return "Heavy grijs, mostly bestrating, terrassen, schuttingen";
+      if (gr >= 55) return "Grijs-leaning";
+      if (gn >= 70) return "Groen-heavy, plant and biodiversity focus";
+      if (gn >= 55) return "Groen-leaning";
+      return "Roughly balanced gray and green";
+    }
+  },
+  reg: {
+    name: "Werkregio",
+    description: "Where the company actually operates. Based on office address and listed service area.",
+    levels: {
+      "1": "Stedelijk, urban core like Amsterdam, Rotterdam, Utrecht, Den Haag",
+      "2": "Randstedelijk, suburb of a major city",
+      "3": "Platteland, rural villages and countryside"
+    }
+  },
+  duurz: {
+    name: "Houding tegenover duurzaamheid",
+    description: "How explicitly the company embraces sustainability. Read from dedicated pages, certifications like Groenkeur, MVO, Tuinkeur, mentions of biodiversity, klimaatadaptatie, electric tools.",
+    levels: {
+      "1": "Totaal niet relevant, no sustainability mentions anywhere",
+      "2": "Passief, generic green language only",
+      "3": "Redelijk, mentions ecologisch or biodivers, has Groenkeur or similar",
+      "4": "Actief, dedicated page, MVO certified, sustainability as USP",
+      "5": "Leading, klimaatadaptatie focus, natuurinclusief, strong duurzaamheid branding and certifications"
+    }
   }
-  let saved = null;
-  try { saved = localStorage.getItem('hov-theme'); } catch (e) {}
-  setTheme(saved === 'dark' ? 'dark' : 'light');
-  toggle.addEventListener('click', () => {
-    const cur = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-    setTheme(cur === 'dark' ? 'light' : 'dark');
+};
+
+function decode(dim, value) {
+  const r = RUBRIC[dim];
+  if (!value || value === "?") return "Unknown, no data available";
+  const clean = String(value).replace(/^~/, "");
+  if (r.levels && r.levels[clean]) return r.levels[clean];
+  if (r.interpret) return r.interpret(clean);
+  return "";
+}
+
+function sizeBadge(letter) {
+  const map = { A:"A, 1-2", B:"B, 3-5", C:"C, 5-10", D:"D, 10-20", E:"E, 20-50", F:"F, >50" };
+  return map[letter] || letter;
+}
+
+const GROUP1 = [
+  { name: "Sparq Tuinen", email: "info@sparqtuinen.nl", website: "https://sparqtuinen.nl",
+    profile: "Mid-size hovenier in Nuenen, Oost-Brabant, focused on luxe villa gardens with pools. Hardscape-heavy aanleg work, owner partly hands-on. No sustainability USP visible.",
+    medew: "D", org: "2", partbedr: "100/0", segm: "0/20/80", tuin: "10/50/40", ao: "80/20", grgn: "60/40", reg: "2", duurz: "1" },
+  { name: "AV hovenier", email: "info@avhovenier.nl", website: "https://avhovenier.nl/",
+    profile: "Small hovenier in Hummelo, Achterhoek and Arnhem region. Biodiversity focus, mixed particulier and zakelijk work. Owner works hands-on with a tight team.",
+    medew: "B", org: "1", partbedr: "70/30", segm: "10/60/30", tuin: "10/60/30", ao: "50/50", grgn: "30/70", reg: "3", duurz: "3" },
+  { name: "Toptuinen", email: "erjan@toptuinen.nl", website: "https://toptuinen.com/",
+    profile: "Lunteren, Gelderland. Website unreachable during analysis, no scoring possible. Manual lookup or KvK check needed.",
+    medew: "?", org: "?", partbedr: "?", segm: "?", tuin: "?", ao: "?", grgn: "?", reg: "?", duurz: "?", unreachable: true },
+  { name: "Hoveniersbedrijf Wassink", email: "teunwassink@hotmail.com", website: "https://www.hoveniersbedrijfwassink.nl/",
+    profile: "ZZP hovenier Teun Wassink in Bergeijk, Noord-Brabant. Personal branding, generic services list, particulier focus. No duurzaamheid claims.",
+    medew: "A", org: "1", partbedr: "90/10", segm: "10/75/15", tuin: "20/60/20", ao: "50/50", grgn: "40/60", reg: "3", duurz: "1" },
+  { name: "Hoveniersbedrijf de Paashoef", email: "info@depaashoef.nl", website: "https://www.depaashoef.nl/",
+    profile: "All-round hovenier in Gemert, Noord-Brabant. Strong design pipeline including 3D-ontwerp, mostly particulier with some zakelijk. Mid-market villas and modern gardens.",
+    medew: "D", org: "2", partbedr: "85/15", segm: "10/60/30", tuin: "10/60/30", ao: "60/40", grgn: "50/50", reg: "3", duurz: "~2" },
+  { name: "Art of Outdoor B.V", email: "administratie@seegersgardens.nl", website: "https://www.artofoutdoor.nl/",
+    profile: "Family business since 1973 in Stevensweert, Limburg. Design-led with eco-zwembaden and Biotop natural pools. Mixed particulier and zakelijk. Note: contact email points to seegersgardens.nl, possibly shared admin or rebrand.",
+    medew: "C", org: "2", partbedr: "60/40", segm: "0/40/60", tuin: "10/40/50", ao: "70/30", grgn: "40/60", reg: "3", duurz: "3" },
+  { name: "Posthumus-tuinen", email: "mark@posthumus-tuinen.nl", website: "https://posthumus-tuinen.nl/",
+    profile: "Mid-size hovenier in Apeldoorn covering full lifecycle from ontwerp to onderhoud. Particulier-focused, balanced aanleg en onderhoud, no strong sustainability USP.",
+    medew: "D", org: "2", partbedr: "80/20", segm: "10/60/30", tuin: "10/60/30", ao: "60/40", grgn: "40/60", reg: "~3", duurz: "~2" },
+  { name: "Hortus statera", email: "info@hortus-statera.nl", website: "https://hortus-statera.nl/",
+    profile: "Hovenier in Huijbergen, Noord-Brabant, combining tuinen with boomverzorging. Particulier-heavy, balanced services, no sustainability certifications visible.",
+    medew: "C", org: "2", partbedr: "90/10", segm: "10/70/20", tuin: "10/70/20", ao: "50/50", grgn: "40/60", reg: "3", duurz: "2" },
+  { name: "Puper Hoveniers", email: "INFO@PUPERHOVENIERS.NL", website: "https://www.puperhoveniers.nl/",
+    profile: "Hovenier in Leerdam since 1993. Mixed clientele covering stadstuinen, villatuinen and zakelijk werk. 8.9 client review average. Owner partly hands-on.",
+    medew: "C", org: "2", partbedr: "60/40", segm: "10/60/30", tuin: "20/50/30", ao: "60/40", grgn: "50/50", reg: "2", duurz: "~2" },
+  { name: "De Jong Tuinen", email: "info@dejongtuinen.com", website: "https://www.dejongtuinen.nl",
+    profile: "Small design-led ZZP hovenier in Sliedrecht, Drechtsteden. Pure B2C, focused on custom private gardens. TuinKeur certified, aanleg-dominant business model. Mid to high segment, light sustainability claims only.",
+    medew: "A", org: "1", partbedr: "100/0", segm: "10/60/30", tuin: "10/60/30", ao: "70/30", grgn: "40/60", reg: "2", duurz: "2" }
+];
+
+const GROUP2 = [
+  { name: "Alexander Hermse Hovenier", email: "a.h.hovenier@gmail.com", website: null,
+    profile: "ZZP hovenier in Nijmegen region. No own website, contact via gmail. Profile inferred from name and email pattern.",
+    medew: "A", org: "1", partbedr: "90/10", segm: "10/70/20", tuin: "20/60/20", ao: "50/50", grgn: "40/60", reg: "2", duurz: "1", noSite: true },
+  { name: "Antwan Tuinprojecten", email: "jaco@antwan.nl", website: "https://antwan.nl",
+    profile: "Premium tuinprojecten firm with around 35 medewerkers, based in Rotterdam region. High-end villa and estate work, in-house design studio. Owner manages, no longer hands-on at this size.",
+    medew: "E", org: "3", partbedr: "70/30", segm: "0/30/70", tuin: "0/30/70", ao: "60/40", grgn: "40/60", reg: "2", duurz: "3" },
+  { name: "Arickx Hoveniersbedrijf BV", email: "g.bergsma@arickx.nl", website: "https://arickx.nl",
+    profile: "Hoveniersbedrijf in Gorredijk, Friesland. B2B-leaning with gemeenten and vastgoed clients. Owner partly hands-on, generic services list, modest sustainability presence.",
+    medew: "C", org: "2", partbedr: "30/70", segm: "10/70/20", tuin: "10/40/50", ao: "50/50", grgn: "40/60", reg: "3", duurz: "2" },
+  { name: "Arjan Rutte hout&tuin", email: "Info@hout-tuin.nl", website: "https://hout-tuin.nl",
+    profile: "ZZP combining hout en timmerwerk with tuinwerk. Particulier focus, hardscape-leaning because of the houtbouw specialization. No sustainability claims.",
+    medew: "A", org: "1", partbedr: "100/0", segm: "10/70/20", tuin: "10/70/20", ao: "50/50", grgn: "60/40", reg: "2", duurz: "1" },
+  { name: "Arnaldo's Tuinen", email: "info@arnaldostuinen.nl", website: "https://arnaldostuinen.nl",
+    profile: "Small hovenier in Wamel, Gelderland platteland. Betaalbaar en midden segment work, owner-led, mostly particulier. No sustainability USP.",
+    medew: "B", org: "1", partbedr: "95/5", segm: "20/70/10", tuin: "10/70/20", ao: "50/50", grgn: "40/60", reg: "3", duurz: "1" },
+  { name: "Balkenende Hoveniers", email: "info@balkenende.nl", website: "https://balkenende.nl",
+    profile: "Established hovenier in Lisserbroek, 35 plus years in business. Mixed villa, VvE and zorginstellingen work, with explicit sedum and biodivers branding. Highest sustainability score in this batch.",
+    medew: "C", org: "2", partbedr: "70/30", segm: "10/40/50", tuin: "10/40/50", ao: "60/40", grgn: "30/70", reg: "2", duurz: "4" },
+  { name: "Berentsen tuin en timmerwerk", email: "jeffrey_berentsen@hotmail.com", website: null,
+    profile: "ZZP in Weesp combining tuin and timmerwerk. No own website, presence on Werkspot reviews. Pure particulier work, balanced gray and green from the timmer specialization.",
+    medew: "A", org: "1", partbedr: "100/0", segm: "10/70/20", tuin: "20/70/10", ao: "40/60", grgn: "50/50", reg: "2", duurz: "1", noSite: true },
+  { name: "booiman tuinen", email: "ronald@booimantuinen.nl", website: "https://booimantuinen.nl",
+    profile: "Established hovenier in Beilen, Drenthe. 30 plus years in business with 1000 plus tuinen done. Specialty in vijvers and zwemvijvers. Particulier-heavy, owner partly hands-on.",
+    medew: "C", org: "2", partbedr: "80/20", segm: "10/50/40", tuin: "10/60/30", ao: "60/40", grgn: "40/60", reg: "3", duurz: "2" },
+  { name: "Boudewijn Infra", email: "info@boudewijninfra.nl", website: "https://boudewijninfra.nl",
+    profile: "Bestrating en infra contractor in Schelluinen with named B2B clients like Scania and Shell. Heavy grijs and hardscape, this is more an infra firm than a typical hovenier.",
+    medew: "D", org: "2", partbedr: "20/80", segm: "10/70/20", tuin: "10/40/50", ao: "70/30", grgn: "80/20", reg: "3", duurz: "2" },
+  { name: "Bovendorp Tuinen", email: "wouterbovendorp@hotmail.com", website: null,
+    profile: "Young ZZP in Zandvoort, started 2021. No own website, hotmail contact. Stadstuinen-leaning portfolio expected from coastal location.",
+    medew: "A", org: "1", partbedr: "100/0", segm: "10/70/20", tuin: "30/60/10", ao: "50/50", grgn: "40/60", reg: "2", duurz: "1", noSite: true },
+  { name: "bruggeman tuinen", email: "info@bruggemantuinen.nl", website: "https://bruggemantuinen.nl",
+    profile: "ZZP-style hovenier in Lamswaarde, Zeeland platteland. Site is a coming soon page so most details are inferred from the small-scale signal.",
+    medew: "A", org: "1", partbedr: "90/10", segm: "10/70/20", tuin: "10/70/20", ao: "50/50", grgn: "40/60", reg: "3", duurz: "1" }
+];
+
+// Safe DOM helpers, no innerHTML, all values via textContent.
+function el(tag, props, children) {
+  const node = document.createElement(tag);
+  if (props) {
+    for (const k in props) {
+      if (k === "className") node.className = props[k];
+      else if (k === "text") node.textContent = props[k];
+      else if (k === "data") {
+        for (const dk in props.data) node.dataset[dk] = props.data[dk];
+      } else if (k === "attrs") {
+        for (const ak in props.attrs) node.setAttribute(ak, props.attrs[ak]);
+      } else node[k] = props[k];
+    }
+  }
+  if (children) {
+    for (let i = 0; i < children.length; i++) {
+      const c = children[i];
+      if (c == null) continue;
+      if (typeof c === "string") node.appendChild(document.createTextNode(c));
+      else node.appendChild(c);
+    }
+  }
+  return node;
+}
+
+function chip(label, value, extraClass) {
+  return el("span", { className: "chip" + (extraClass ? " " + extraClass : "") }, [
+    el("span", { className: "chip-label", text: label }),
+    el("span", { className: "chip-value", text: value })
+  ]);
+}
+
+function buildCard(c, idx, group) {
+  const isUnknown = c.unreachable || c.medew === "?";
+  const card = el("button", {
+    className: "card" + (isUnknown ? " unknown" : ""),
+    type: "button",
+    data: { group: String(group), idx: String(idx) }
   });
+
+  card.appendChild(el("div", { className: "card-head" }, [
+    el("h2", { className: "name", text: c.name }),
+    el("span", { className: "size-badge", text: c.medew && c.medew !== "?" ? sizeBadge(c.medew) : "?" })
+  ]));
+
+  const websiteText = c.website
+    ? c.website.replace(/^https?:\/\//, "").replace(/\/$/, "")
+    : (c.noSite ? "no website found" : "");
+  card.appendChild(el("span", { className: "website", text: websiteText }));
+
+  card.appendChild(el("p", { className: "profile", text: c.profile }));
+
+  const stats = el("div", { className: "stats" });
+  if (c.medew !== "?") {
+    stats.appendChild(chip("P/B", c.partbedr));
+    stats.appendChild(chip("L/M/H", c.segm));
+    stats.appendChild(chip("A/O", c.ao));
+    stats.appendChild(chip("Gr/Gn", c.grgn));
+    stats.appendChild(chip("Reg", c.reg));
+    stats.appendChild(chip("Duurz", c.duurz, "duurz"));
+  } else {
+    stats.appendChild(chip("all cols", "?"));
+  }
+  card.appendChild(stats);
+
+  card.appendChild(el("div", { className: "click-hint", text: "Click for full breakdown" }));
+  return card;
+}
+
+function buildDimRow(key, value) {
+  const r = RUBRIC[key];
+  const cleanVal = (value === undefined || value === null || value === "") ? "?" : value;
+  const isUnknown = cleanVal === "?";
+  const meaning = decode(key, cleanVal);
+
+  return el("div", { className: "dim" }, [
+    el("div", { className: "dim-head" }, [
+      el("span", { className: "dim-name", text: r.name }),
+      el("span", { className: "dim-value" + (isUnknown ? " unknown" : ""), text: cleanVal })
+    ]),
+    el("div", { className: "dim-meaning", text: meaning }),
+    el("div", { className: "dim-help", text: r.description })
+  ]);
+}
+
+function buildModal(c) {
+  const modal = el("div");
+
+  const closeBtn = el("button", {
+    className: "modal-close",
+    id: "modalCloseBtn",
+    type: "button",
+    text: "×",
+    attrs: { "aria-label": "Close" }
+  });
+  modal.appendChild(closeBtn);
+
+  modal.appendChild(el("h2", { text: c.name }));
+
+  const meta = el("div", { className: "meta-row" });
+  if (c.website) {
+    const a = el("a", {
+      text: c.website.replace(/^https?:\/\//, "").replace(/\/$/, ""),
+      attrs: { href: c.website, target: "_blank", rel: "noopener" }
+    });
+    meta.appendChild(a);
+  } else {
+    meta.appendChild(el("span", { text: "no website found" }));
+  }
+  if (c.email) meta.appendChild(el("span", { text: c.email }));
+  modal.appendChild(meta);
+
+  // Profile section
+  const sec1 = el("div", { className: "modal-section" });
+  sec1.appendChild(el("h3", { text: "Profile" }));
+  sec1.appendChild(el("p", { className: "read-help", text: c.profile, attrs: { style: "margin:0;color:var(--text)" } }));
+  modal.appendChild(sec1);
+
+  // Scoring breakdown
+  const sec2 = el("div", { className: "modal-section" });
+  sec2.appendChild(el("h3", { text: "Scoring breakdown" }));
+  const list = el("div", { className: "dim-list" });
+  const dims = ["medew","org","partbedr","segm","tuin","ao","grgn","reg","duurz"];
+  for (let i = 0; i < dims.length; i++) {
+    list.appendChild(buildDimRow(dims[i], c[dims[i]]));
+  }
+  sec2.appendChild(list);
+  modal.appendChild(sec2);
+
+  // How to read
+  const sec3 = el("div", { className: "modal-section" });
+  sec3.appendChild(el("h3", { text: "How to read this" }));
+  sec3.appendChild(el("p", {
+    className: "read-help",
+    text: "Scores are estimated from the website content, name signals and rubric defaults. A tilde prefix like ~2 means the value is a best-guess due to limited or unreachable site content. A question mark means no data was available. Use as a directional segmentation tool, not as exact measurement."
+  }));
+  modal.appendChild(sec3);
+
+  return modal;
+}
+
+// Render grids
+const grid1 = document.getElementById("grid1");
+const grid2 = document.getElementById("grid2");
+GROUP1.forEach((c, i) => grid1.appendChild(buildCard(c, i, 1)));
+GROUP2.forEach((c, i) => grid2.appendChild(buildCard(c, i, 2)));
+
+// Modal handling
+const modal = document.getElementById("modal");
+const modalBody = document.getElementById("modalBody");
+
+function openModal(group, idx) {
+  const c = group === 1 ? GROUP1[idx] : GROUP2[idx];
+  while (modalBody.firstChild) modalBody.removeChild(modalBody.firstChild);
+  const built = buildModal(c);
+  while (built.firstChild) modalBody.appendChild(built.firstChild);
+  modal.classList.add("open");
+  document.body.classList.add("modal-open");
+  const cb = document.getElementById("modalCloseBtn");
+  if (cb) cb.focus();
+}
+
+function closeModal() {
+  modal.classList.remove("open");
+  document.body.classList.remove("modal-open");
+}
+
+document.addEventListener("click", e => {
+  const card = e.target.closest(".card");
+  if (card) {
+    openModal(parseInt(card.dataset.group, 10), parseInt(card.dataset.idx, 10));
+    return;
+  }
+  if (e.target.id === "modalCloseBtn" || e.target.classList.contains("modal-overlay")) {
+    closeModal();
+  }
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+});
+
+// Theme toggle
+const toggle = document.getElementById("themeToggle");
+const root = document.documentElement;
+function setTheme(t) {
+  if (t === "dark") { root.setAttribute("data-theme", "dark"); toggle.textContent = "Light mode"; }
+  else { root.removeAttribute("data-theme"); toggle.textContent = "Dark mode"; }
+  try { localStorage.setItem("hov-theme", t); } catch (e) {}
+}
+let saved = null;
+try { saved = localStorage.getItem("hov-theme"); } catch (e) {}
+setTheme(saved === "dark" ? "dark" : "light");
+toggle.addEventListener("click", () => {
+  const cur = root.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  setTheme(cur === "dark" ? "light" : "dark");
+});
 </script>
 </body>
 </html>

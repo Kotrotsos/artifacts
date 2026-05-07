@@ -60,3 +60,4 @@
 | 2026-05-06 | reverse-engineer | reports | [BOUNTY_PROBE_v2.md](projects/reverse-engineer/reports/BOUNTY_PROBE_v2.md) | Gemini for macOS API key bypass PoC v2 — confirmed working bypass: com.google.gemini bundle satisfies legacy iOS App Restriction, Places key has no per-API allowlist, HTTP 200 with real data |
 | 2026-05-07 | ecoscrape | reports | [result2.md](projects/ecoscrape/reports/result2.md) | ECOstyle bestaande klanten, 21 hoveniers segmented across 9 dimensions |
 | 2026-05-07 | ecoscrape | reports | [profiles.html](projects/ecoscrape/reports/profiles.html) | Hoveniers profile cards HTML, ECOstyle klanten, light/dark mode |
+| 2026-05-07 | ecoscrape | reports | [profiles.html](projects/ecoscrape/reports/profiles.html) | Hoveniers profile cards with click-to-expand modal showing rubric meaning per score |
