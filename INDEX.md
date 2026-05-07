@@ -63,3 +63,4 @@
 | 2026-05-07 | ecoscrape | reports | [profiles.html](projects/ecoscrape/reports/profiles.html) | Hoveniers profile cards with click-to-expand modal showing rubric meaning per score |
 | 2026-05-07 | ecoscrape | reports | [profiles.html](projects/ecoscrape/reports/profiles.html) | Hoveniers profile cards with thorough analyses and per-score reasoning for 7 new entries |
 | 2026-05-07 | ecoscrape | reports | [profiles.html](projects/ecoscrape/reports/profiles.html) | Hoveniers profiles fixed-height modal with internal scrolling, email visible on cards |
+| 2026-05-07 | ecoscrape | spreadsheets | [hoveniers_nl.xlsx](projects/ecoscrape/spreadsheets/hoveniers_nl.xlsx) | 10958 Dutch hoveniers scraped from hoveniernederland.nl with name address postcode email phone website |
