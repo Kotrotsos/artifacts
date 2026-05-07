@@ -100,6 +100,8 @@
     border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 600; flex-shrink: 0;
   }
   .website { font-size: 13px; color: var(--muted); word-break: break-all; }
+  .contact-row { display: flex; flex-direction: column; gap: 2px; }
+  .email-line { font-size: 12px; color: var(--muted); word-break: break-all; }
   .profile { font-size: 14px; color: var(--text); margin: 0; }
   .stats { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
   .chip {
@@ -123,20 +125,31 @@
   /* Modal */
   .modal-overlay {
     position: fixed; inset: 0; background: var(--overlay);
-    display: none; align-items: flex-start; justify-content: center;
-    padding: 32px 16px; z-index: 100; overflow-y: auto;
+    display: none; align-items: center; justify-content: center;
+    padding: 24px 16px; z-index: 100;
   }
   .modal-overlay.open { display: flex; }
   .modal {
     background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-    max-width: 760px; width: 100%; padding: 28px 28px 24px; position: relative;
+    max-width: 760px; width: 100%;
+    max-height: calc(100vh - 48px);
+    padding: 0; position: relative;
     box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+    display: flex; flex-direction: column;
+  }
+  .modal-scroll {
+    overflow-y: auto;
+    padding: 28px 28px 24px;
   }
   .modal-close {
-    position: absolute; top: 16px; right: 16px;
-    background: none; border: none; color: var(--muted);
-    font-size: 22px; cursor: pointer; line-height: 1; padding: 4px 10px;
-    border-radius: 6px; font-family: inherit;
+    position: absolute; top: 14px; right: 14px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 20px; cursor: pointer; line-height: 1;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px; font-family: inherit;
+    z-index: 2;
   }
   .modal-close:hover { background: var(--chip); color: var(--text); }
   .modal h2 { margin: 0 0 4px; font-size: 22px; letter-spacing: -0.01em; padding-right: 40px; }
@@ -603,7 +616,12 @@ function buildCard(c, idx, group) {
   const websiteText = c.website
     ? c.website.replace(/^https?:\/\//, "").replace(/\/$/, "")
     : (c.noSite ? "no website found" : "");
-  card.appendChild(el("span", { className: "website", text: websiteText }));
+  const contactRow = el("div", { className: "contact-row" });
+  contactRow.appendChild(el("span", { className: "website", text: websiteText }));
+  if (c.email) {
+    contactRow.appendChild(el("span", { className: "email-line", text: c.email }));
+  }
+  card.appendChild(contactRow);
 
   card.appendChild(el("p", { className: "profile", text: c.profile }));
 
@@ -649,15 +667,18 @@ function buildDimRow(key, c) {
 }
 
 function buildModal(c) {
-  const modal = el("div");
+  const wrapper = el("div");
 
-  const closeBtn = el("button", {
+  // Close button stays outside the scroll region.
+  wrapper.appendChild(el("button", {
     className: "modal-close", id: "modalCloseBtn", type: "button", text: "×",
     attrs: { "aria-label": "Close" }
-  });
-  modal.appendChild(closeBtn);
+  }));
 
-  modal.appendChild(el("h2", { text: c.name }));
+  // Scrollable content region.
+  const scroll = el("div", { className: "modal-scroll" });
+
+  scroll.appendChild(el("h2", { text: c.name }));
 
   const meta = el("div", { className: "meta-row" });
   if (c.website) {
@@ -669,16 +690,15 @@ function buildModal(c) {
     meta.appendChild(el("span", { text: "no website found" }));
   }
   if (c.email) meta.appendChild(el("span", { text: c.email }));
-  modal.appendChild(meta);
+  scroll.appendChild(meta);
 
   if (c.isHovenier === false) {
-    modal.appendChild(el("div", {
+    scroll.appendChild(el("div", {
       className: "not-hovenier-banner",
       text: "This entry is not a hovenier and is flagged as a data-quality false positive. Detail scoring not applicable."
     }));
   }
 
-  // Profile section
   const sec1 = el("div", { className: "modal-section" });
   sec1.appendChild(el("h3", { text: "Profile" }));
   sec1.appendChild(el("p", {
@@ -686,17 +706,15 @@ function buildModal(c) {
     text: c.profile,
     attrs: { style: "margin:0;color:var(--text)" }
   }));
-  modal.appendChild(sec1);
+  scroll.appendChild(sec1);
 
-  // Notes section if present
   if (c.notes) {
     const secN = el("div", { className: "modal-section" });
     secN.appendChild(el("h3", { text: "Notes" }));
     secN.appendChild(el("p", { className: "read-help", text: c.notes }));
-    modal.appendChild(secN);
+    scroll.appendChild(secN);
   }
 
-  // Scoring breakdown
   const sec2 = el("div", { className: "modal-section" });
   sec2.appendChild(el("h3", { text: "Scoring breakdown" }));
   const list = el("div", { className: "dim-list" });
@@ -705,18 +723,18 @@ function buildModal(c) {
     list.appendChild(buildDimRow(dims[i], c));
   }
   sec2.appendChild(list);
-  modal.appendChild(sec2);
+  scroll.appendChild(sec2);
 
-  // How to read
   const sec3 = el("div", { className: "modal-section" });
   sec3.appendChild(el("h3", { text: "How to read this" }));
   const readText = c.thorough
     ? "This card had a thorough multi-page analysis covering homepage, over-ons, diensten, duurzaamheid, portfolio and contact pages, plus a targeted search for staff count. The reasoning under each score cites specific evidence found on those pages."
     : "Scores are estimated from the homepage content, name signals and rubric defaults. A tilde prefix like ~2 means the value is a best-guess due to limited or unreachable site content. A question mark means no data was available. Use as a directional segmentation tool, not as exact measurement.";
   sec3.appendChild(el("p", { className: "read-help", text: readText }));
-  modal.appendChild(sec3);
+  scroll.appendChild(sec3);
 
-  return modal;
+  wrapper.appendChild(scroll);
+  return wrapper;
 }
 
 const grid1 = document.getElementById("grid1");
@@ -739,6 +757,8 @@ function openModal(group, idx) {
   while (built.firstChild) modalBody.appendChild(built.firstChild);
   modal.classList.add("open");
   document.body.classList.add("modal-open");
+  const scrollEl = modalBody.querySelector(".modal-scroll");
+  if (scrollEl) scrollEl.scrollTop = 0;
   const cb = document.getElementById("modalCloseBtn");
   if (cb) cb.focus();
 }

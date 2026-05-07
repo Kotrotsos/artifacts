@@ -6,3 +6,4 @@
 | 2026-05-07 | reports | [profiles.html](reports/profiles.html) | Hoveniers profile cards HTML, ECOstyle klanten, light/dark mode | /Users/marcokotrotsos/NXTPHASE/ecoscrape/profiles.html |
 | 2026-05-07 | reports | [profiles.html](reports/profiles.html) | Hoveniers profile cards with click-to-expand modal showing rubric meaning per score | /Users/marcokotrotsos/NXTPHASE/ecoscrape/profiles.html |
 | 2026-05-07 | reports | [profiles.html](reports/profiles.html) | Hoveniers profile cards with thorough analyses and per-score reasoning for 7 new entries | /Users/marcokotrotsos/NXTPHASE/ecoscrape/profiles.html |
+| 2026-05-07 | reports | [profiles.html](reports/profiles.html) | Hoveniers profiles fixed-height modal with internal scrolling, email visible on cards | /Users/marcokotrotsos/NXTPHASE/ecoscrape/profiles.html |
