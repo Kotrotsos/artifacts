@@ -72,3 +72,4 @@
 | 2026-05-09 | apdocs | reports | [process_determinism.html](projects/apdocs/reports/process_determinism.html) | Process and determinism map for the APDOCS pipeline (9 phases, 26 operations) |
 | 2026-05-09 | claude-plugins | reports | [demo-easings.html](projects/claude-plugins/reports/demo-easings.html) | Live demo of ask-visual easing-pick form, three CSS-animated cards |
 | 2026-05-09 | claude-plugins | reports | [README.html](projects/claude-plugins/reports/README.html) | ask-visual plugin README rendered as standalone HTML |
+| 2026-05-09 | claude-plugins | reports | [index.html](projects/claude-plugins/reports/index.html) | nxtphaseai marketplace landing page listing all plugins |

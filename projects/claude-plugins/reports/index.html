@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nxtphaseai, Claude Code plugin marketplace</title>
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --panel: #ffffff;
+    --fg: #1a1a1a;
+    --fg-soft: #6a6862;
+    --rule: rgba(17,17,16,.10);
+    --code-bg: #f1f0ec;
+    --link: #2c5aa0;
+    --pill-eval: #eaf3de;
+    --pill-eval-fg: #2f6b18;
+    --pill-visual: #eef1f7;
+    --pill-visual-fg: #1a2649;
+    --hover: #fbfaf7;
+  }
+  :root[data-theme="dark"] {
+    --bg: #14130f;
+    --panel: #1f1d18;
+    --fg: #ece9e0;
+    --fg-soft: #9a958a;
+    --rule: rgba(255,255,255,.08);
+    --code-bg: #2a2620;
+    --link: #8aaee0;
+    --pill-eval: #1f3019;
+    --pill-eval-fg: #b3d09a;
+    --pill-visual: #1f2434;
+    --pill-visual-fg: #b6c4dd;
+    --hover: #25221c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14130f; --panel: #1f1d18; --fg: #ece9e0; --fg-soft: #9a958a;
+      --rule: rgba(255,255,255,.08); --code-bg: #2a2620;
+      --link: #8aaee0;
+      --pill-eval: #1f3019; --pill-eval-fg: #b3d09a;
+      --pill-visual: #1f2434; --pill-visual-fg: #b6c4dd;
+      --hover: #25221c;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg); color: var(--fg); line-height: 1.6;
+    padding: 56px 24px;
+  }
+  main { max-width: 820px; margin: 0 auto; }
+  a { color: var(--link); }
+  a:hover { text-decoration: underline; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 14px; }
+  .brand-mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; color: var(--fg-soft); margin: 0 0 6px; letter-spacing: .04em; }
+  h1 { font-size: 36px; letter-spacing: -.02em; margin: 0 0 12px; }
+  .lede { color: var(--fg-soft); font-size: 17px; max-width: 60ch; margin: 0; }
+
+  .theme-switch { display: inline-flex; gap: 4px; background: var(--code-bg); padding: 4px; border-radius: 8px; flex-shrink: 0; }
+  .theme-switch button {
+    background: transparent; border: 0; color: var(--fg-soft);
+    font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 5px; cursor: pointer;
+  }
+  .theme-switch button[aria-pressed="true"] { background: var(--panel); color: var(--fg); }
+
+  section { margin-top: 48px; }
+  h2 { font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-soft); margin: 0 0 16px; font-weight: 600; }
+
+  pre.install {
+    background: var(--code-bg); padding: 16px 18px; border-radius: 10px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px;
+    overflow-x: auto; margin: 0;
+  }
+  pre.install .c { color: var(--fg-soft); }
+
+  .plugins { display: flex; flex-direction: column; gap: 14px; }
+  .plugin {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 22px 24px; transition: background .15s;
+  }
+  .plugin:hover { background: var(--hover); }
+  .plugin .row1 { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .plugin h3 { font-size: 19px; margin: 0; letter-spacing: -.005em; }
+  .plugin h3 a { color: var(--fg); text-decoration: none; }
+  .plugin h3 a:hover { color: var(--link); }
+  .plugin .ver { font-family: ui-monospace, monospace; font-size: 11px; color: var(--fg-soft); }
+  .plugin .pill {
+    font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 999px; font-weight: 600;
+  }
+  .plugin .pill.eval { background: var(--pill-eval); color: var(--pill-eval-fg); }
+  .plugin .pill.visual { background: var(--pill-visual); color: var(--pill-visual-fg); }
+  .plugin p { margin: 0 0 10px; font-size: 14px; color: var(--fg); }
+  .plugin .links { display: flex; gap: 16px; font-size: 12px; }
+  .plugin .links a { color: var(--fg-soft); }
+  .plugin .links a:hover { color: var(--link); }
+
+  .author-rules { background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; padding: 22px 24px; }
+  .author-rules ol { padding-left: 22px; margin: 0; font-size: 14px; }
+  .author-rules ol li { margin-bottom: 8px; }
+  .author-rules code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 12px; }
+
+  footer { margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--rule); color: var(--fg-soft); font-size: 12px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer a { color: var(--fg-soft); }
+
+  @media print {
+    body { background: white; color: black; padding: 28px; font-size: 11pt; }
+    .theme-switch { display: none; }
+    .plugin, .author-rules, pre.install { background: white; border-color: #ccc; }
+    a { color: black; text-decoration: underline; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <div>
+    <p class="brand-mono">nxtphaseai</p>
+    <h1>NxtPhase plugin marketplace</h1>
+    <p class="lede">A small, opinionated set of plugins for Claude Code. Subscribe once, install whatever fits, get updates by re-subscribing.</p>
+  </div>
+  <div class="theme-switch" role="group" aria-label="Theme">
+    <button data-theme-set="light" aria-pressed="false">Light</button>
+    <button data-theme-set="dark" aria-pressed="false">Dark</button>
+    <button data-theme-set="system" aria-pressed="true">System</button>
+  </div>
+</header>
+
+<section>
+  <h2>Subscribe</h2>
+<pre class="install"><span class="c"># one-time, register the marketplace</span>
+claude /plugin marketplace add nxtphaseai/claude-plugins
+
+<span class="c"># browse and install</span>
+claude /plugin install agent-eval@nxtphaseai
+claude /plugin install ask-visual@nxtphaseai
+
+<span class="c"># later, pull updates</span>
+claude /plugin marketplace update nxtphaseai</pre>
+</section>
+
+<section>
+  <h2>Plugins</h2>
+  <div class="plugins">
+
+    <article class="plugin">
+      <div class="row1">
+        <h3><a href="../plugins/agent-eval/">agent-eval</a></h3>
+        <span class="ver">v0.3.0</span>
+        <span class="pill eval">evaluation</span>
+      </div>
+      <p>Auto-grades the agent's last turn against your prompt, and against optional project rules in <code>eval/eval.md</code>, then appends a red/green scored card to <code>eval/eval.html</code>. Wires deterministic linters and typecheckers into the same grading pass as the LLM rubric, so you see in one place whether the agent shipped what you asked for and whether it broke any project rules along the way.</p>
+      <div class="links">
+        <a href="../plugins/agent-eval/README.md">README (markdown)</a>
+        <a href="../plugins/agent-eval/install.sh">Manual installer</a>
+      </div>
+    </article>
+
+    <article class="plugin">
+      <div class="row1">
+        <h3><a href="../plugins/ask-visual/">ask-visual</a></h3>
+        <span class="ver">v0.1.0</span>
+        <span class="pill visual">interactive</span>
+      </div>
+      <p>Visual <code>AskUserQuestion</code>. Instead of an ASCII menu, the agent writes a real HTML form (cards, sliders, color pickers, anything the browser supports), the plugin spins up a one-shot localhost web server, the user picks in their browser, and the answer flows back as JSON. No persistent backend, server dies on submit.</p>
+      <div class="links">
+        <a href="../plugins/ask-visual/artifacts/README.html">README (HTML)</a>
+        <a href="../plugins/ask-visual/artifacts/demo-easings.html">Live demo</a>
+        <a href="../plugins/ask-visual/install.sh">Manual installer</a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section>
+  <h2>For authors</h2>
+  <div class="author-rules">
+    <p style="margin:0 0 14px;font-size:14px">Add a new plugin in three steps:</p>
+    <ol>
+      <li>Create <code>plugins/&lt;name&gt;/</code> with at minimum a <code>.claude-plugin/plugin.json</code> and a <code>README.md</code>. Add <code>commands/</code>, <code>hooks/</code>, <code>agents/</code>, <code>bin/</code> as needed.</li>
+      <li>Register it in <code>.claude-plugin/marketplace.json</code> and bump <code>metadata.version</code>.</li>
+      <li>Open a PR to <code>main</code>. Once merged, teammates pick it up via <code>claude /plugin marketplace update nxtphaseai</code>.</li>
+    </ol>
+    <p style="margin:14px 0 0;font-size:13px;color:var(--fg-soft)">Conventions: hook commands use <code>${CLAUDE_PLUGIN_ROOT}</code> so they survive both install paths. Hooks fail soft (missing tools log to stderr and exit 0, never block the user's turn). Each plugin ships its own <code>install.sh</code> for environments without <code>/plugin</code> support.</p>
+  </div>
+</section>
+
+<footer>
+  <span>MIT licensed. Maintained by NxtPhase.</span>
+  <span><a href="https://github.com/nxtphaseai/claude-plugins">github.com/nxtphaseai/claude-plugins</a></span>
+</footer>
+
+</main>
+
+<script>
+  (function () {
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-theme-set]');
+    function apply(v) {
+      buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === v)));
+      if (v === 'system') { root.removeAttribute('data-theme'); localStorage.removeItem('mp-theme'); }
+      else { root.setAttribute('data-theme', v); localStorage.setItem('mp-theme', v); }
+    }
+    const stored = localStorage.getItem('mp-theme');
+    apply(stored || 'system');
+    buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet)));
+  })();
+</script>
+</body>
+</html>
