@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ask-visual demo: tween easings</title>
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --panel: #ffffff;
+    --fg: #1a1a1a;
+    --fg-soft: #6a6862;
+    --rule: rgba(17,17,16,.10);
+    --code-bg: #f1f0ec;
+    --track-bg: #fbfaf7;
+    --accent-blue: #2c5aa0;
+    --accent-blue-dark: #1a2649;
+    --accent-amber: #d97a3a;
+    --accent-amber-light: #ffd96b;
+    --accent-red: #8f2424;
+  }
+  :root[data-theme="dark"] {
+    --bg: #14130f;
+    --panel: #1f1d18;
+    --fg: #ece9e0;
+    --fg-soft: #9a958a;
+    --rule: rgba(255,255,255,.08);
+    --code-bg: #2a2620;
+    --track-bg: #1a1813;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14130f;
+      --panel: #1f1d18;
+      --fg: #ece9e0;
+      --fg-soft: #9a958a;
+      --rule: rgba(255,255,255,.08);
+      --code-bg: #2a2620;
+      --track-bg: #1a1813;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.55;
+    padding: 48px 24px;
+  }
+  main { max-width: 980px; margin: 0 auto; }
+
+  header { margin-bottom: 36px; display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  h1 { font-size: 28px; letter-spacing: -.015em; margin: 0 0 6px; }
+  .lede { color: var(--fg-soft); font-size: 15px; max-width: 56ch; margin: 0; }
+
+  .theme-switch { display: inline-flex; gap: 4px; background: var(--code-bg); padding: 4px; border-radius: 8px; }
+  .theme-switch button {
+    background: transparent; border: 0; color: var(--fg-soft);
+    font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 5px;
+    cursor: pointer;
+  }
+  .theme-switch button[aria-pressed="true"] { background: var(--panel); color: var(--fg); }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 0 0 32px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex; flex-direction: column;
+  }
+  .card .codey {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px; color: var(--fg-soft);
+    background: var(--code-bg);
+    padding: 3px 7px; border-radius: 4px;
+    align-self: flex-start; margin-bottom: 6px;
+  }
+  .card h2 { font-size: 21px; margin: 0 0 4px; }
+  .card .tag { font-size: 11px; color: var(--fg-soft); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 14px; }
+  .card .desc { font-size: 13px; color: var(--fg); flex: 1; margin: 14px 0 0; }
+
+  .track {
+    position: relative; height: 56px;
+    background: var(--track-bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px; overflow: hidden;
+  }
+  .track::before {
+    content: ""; position: absolute; left: 8px; right: 8px; top: 50%;
+    height: 1px; background: var(--rule);
+  }
+  .shape { position: absolute; top: 50%; left: 8px; width: 28px; height: 28px; margin-top: -14px; }
+
+  .shape-square {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark));
+    border-radius: 6px;
+    animation: slide-eio 1.6s ease-in-out infinite alternate;
+  }
+  @keyframes slide-eio {
+    from { left: 8px; }
+    to   { left: calc(100% - 36px); }
+  }
+
+  .shape-circle {
+    background: radial-gradient(circle at 30% 30%, var(--accent-amber-light), var(--accent-amber));
+    border-radius: 50%;
+    animation: slide-spring 3.2s infinite;
+  }
+  @keyframes slide-spring {
+    0%   { left: 8px; }
+    14%  { left: calc(100% - 22px); }
+    20%  { left: calc(100% - 44px); }
+    26%  { left: calc(100% - 30px); }
+    32%  { left: calc(100% - 38px); }
+    38%  { left: calc(100% - 34px); }
+    50%  { left: calc(100% - 36px); }
+    64%  { left: -6px; }
+    70%  { left: 16px; }
+    76%  { left: 2px; }
+    82%  { left: 12px; }
+    88%  { left: 6px; }
+    100% { left: 8px; }
+  }
+
+  .shape-arrow {
+    width: 0; height: 0; margin-top: -14px; background: transparent;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+    border-left: 24px solid var(--accent-red);
+    animation: slide-anticipate 2.4s infinite;
+  }
+  @keyframes slide-anticipate {
+    0%   { left: 8px; }
+    18%  { left: -6px; }
+    52%  { left: calc(100% - 22px); }
+    62%  { left: calc(100% - 38px); }
+    66%  { left: calc(100% - 34px); }
+    70%  { left: calc(100% - 36px); }
+    72%  { left: calc(100% - 36px); }
+    90%  { left: calc(100% - 22px); }
+    100% { left: 8px; }
+  }
+
+  .meta-section {
+    margin-top: 40px; padding-top: 24px;
+    border-top: 1px solid var(--rule);
+  }
+  .meta-section h3 { font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--fg-soft); margin: 0 0 12px; }
+  pre.snippet {
+    background: var(--code-bg); border-radius: 8px; padding: 16px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px;
+    line-height: 1.5; overflow-x: auto;
+  }
+
+  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--rule); color: var(--fg-soft); font-size: 12px; }
+
+  @media print {
+    body { background: white; color: black; padding: 24px; }
+    .theme-switch { display: none; }
+    .card, .track, pre.snippet { background: white; border-color: #ccc; }
+    .shape { animation: none !important; left: 50% !important; }
+    footer { color: #555; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Pick a tween easing for the shape</h1>
+      <p class="lede">A live demo of the choices the agent serves through ask-visual. Each card runs the animation on loop so the personality of the curve is visible, not just labeled.</p>
+    </div>
+    <div class="theme-switch" role="group" aria-label="Theme">
+      <button data-theme-set="light" aria-pressed="false">Light</button>
+      <button data-theme-set="dark" aria-pressed="false">Dark</button>
+      <button data-theme-set="system" aria-pressed="true">System</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <article class="card">
+      <span class="codey">cubic-bezier(.42,0,.58,1)</span>
+      <h2>Ease-in-and-out</h2>
+      <div class="tag">Smooth, neutral, invisible</div>
+      <div class="track"><div class="shape shape-square"></div></div>
+      <p class="desc">Speeds up, peaks at the middle, slows down. The motion of someone walking through a doorway, measured, polite, almost forgettable. Use when you want the animation itself to disappear and only the result to register.</p>
+    </article>
+
+    <article class="card">
+      <span class="codey">spring( stiffness, damping )</span>
+      <h2>Spring</h2>
+      <div class="tag">Bouncy, physical, alive</div>
+      <div class="track"><div class="shape shape-circle"></div></div>
+      <p class="desc">Pulled past the target by inertia, snaps back, settles after a few oscillations. The motion of a screen door slamming shut behind you. Use when the UI should feel like it has weight, like a real object with mass and friction.</p>
+    </article>
+
+    <article class="card">
+      <span class="codey">cubic-bezier(.68,-0.6,.32,1.6)</span>
+      <h2>Anticipate</h2>
+      <div class="tag">Wind-up, dramatic, cinematic</div>
+      <div class="track"><div class="shape shape-arrow"></div></div>
+      <p class="desc">Pulls back first, then lunges past. The crouch before a jump, the wind-up before a punch. Use when you want the user's eye to land on the motion before it happens, priming attention and announcing importance.</p>
+    </article>
+  </div>
+
+  <section class="meta-section">
+    <h3>How this card was served</h3>
+    <p style="font-size:13px;color:var(--fg-soft);margin:0 0 14px">The agent wrote the body of this exact form to a temp file and ran:</p>
+    <pre class="snippet">python3 .claude/bin/ask-visual.py /tmp/ask.html</pre>
+    <p style="font-size:13px;color:var(--fg-soft);margin:14px 0 0">A one-shot HTTP server bound a free localhost port, opened the URL in the user's default browser, blocked until the form was submitted, then printed the form data as JSON to stdout and exited. No persistent backend. The agent read the JSON and continued the conversation.</p>
+  </section>
+
+  <footer>
+    Part of the <a href="https://github.com/nxtphaseai/claude-plugins" style="color:inherit">nxtphaseai</a> Claude Code plugin marketplace. ask-visual 0.1.0.
+  </footer>
+</main>
+
+<script>
+  (function () {
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-theme-set]');
+    function apply(v) {
+      buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === v)));
+      if (v === 'system') {
+        root.removeAttribute('data-theme');
+        localStorage.removeItem('ask-visual-theme');
+      } else {
+        root.setAttribute('data-theme', v);
+        localStorage.setItem('ask-visual-theme', v);
+      }
+    }
+    const stored = localStorage.getItem('ask-visual-theme');
+    apply(stored || 'system');
+    buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet)));
+  })();
+</script>
+</body>
+</html>
