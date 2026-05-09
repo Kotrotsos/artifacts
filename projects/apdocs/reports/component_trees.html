@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APDOCS — Component Trees: ESN 994738 &amp; ESN 779125</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #6a6a6a;
+    --border: #e0e0e0;
+    --hover: #f4f4f4;
+    --trunk: #2a2a2a;
+    --branch: #999;
+    --accent: #1f6feb;
+    --warn: #c2410c;
+    --warn-bg: #fff7ed;
+    --ok: #166534;
+    --ok-bg: #f0fdf4;
+    --neutral-bg: #f8f8f8;
+    --code-bg: #f4f4f4;
+  }
+  [data-theme="dark"], html[data-theme="dark"] {
+    --bg: #0f1115;
+    --fg: #e8e8e8;
+    --muted: #9a9a9a;
+    --border: #2a2d34;
+    --hover: #1a1d23;
+    --trunk: #d8d8d8;
+    --branch: #6a6a6a;
+    --accent: #58a6ff;
+    --warn: #fb923c;
+    --warn-bg: #2b1d10;
+    --ok: #4ade80;
+    --ok-bg: #102218;
+    --neutral-bg: #181a1f;
+    --code-bg: #1a1d23;
+  }
+  @media (prefers-color-scheme: dark) {
+    [data-theme="system"], html:not([data-theme]) {
+      --bg: #0f1115; --fg: #e8e8e8; --muted: #9a9a9a;
+      --border: #2a2d34; --hover: #1a1d23; --trunk: #d8d8d8; --branch: #6a6a6a;
+      --accent: #58a6ff; --warn: #fb923c; --warn-bg: #2b1d10;
+      --ok: #4ade80; --ok-bg: #102218; --neutral-bg: #181a1f; --code-bg: #1a1d23;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px; line-height: 1.5;
+  }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 32px 24px 80px; }
+  h1, h2, h3, h4 { font-weight: 600; letter-spacing: -0.01em; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  h2 { font-size: 19px; margin: 36px 0 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+  h3 { font-size: 15px; margin: 20px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .lede { color: var(--muted); margin: 0 0 24px; }
+  code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .pill {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 500; background: var(--neutral-bg);
+    border: 1px solid var(--border); color: var(--muted);
+  }
+  .pill.warn { background: var(--warn-bg); color: var(--warn); border-color: var(--warn); }
+  .pill.ok   { background: var(--ok-bg); color: var(--ok); border-color: var(--ok); }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px;
+  }
+  .theme-toggle {
+    display: inline-flex; gap: 0; border: 1px solid var(--border); border-radius: 6px;
+    overflow: hidden;
+  }
+  .theme-toggle button {
+    background: transparent; border: 0; color: var(--muted);
+    padding: 6px 12px; cursor: pointer; font-size: 12px;
+    border-right: 1px solid var(--border);
+    font-family: inherit;
+  }
+  .theme-toggle button:last-child { border-right: 0; }
+  .theme-toggle button.active { background: var(--neutral-bg); color: var(--fg); }
+  .theme-toggle button:hover { background: var(--hover); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  @media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--neutral-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 22px;
+  }
+  .card h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+  .card-meta {
+    display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px;
+    font-size: 13px; margin: 8px 0 18px;
+  }
+  .card-meta dt { color: var(--muted); }
+  .card-meta dd { margin: 0; }
+
+  /* Lifecycle timeline (vertical trunk with stage rows) */
+  .timeline { margin: 12px 0; }
+  .stage {
+    position: relative; padding: 12px 0 12px 32px;
+    border-left: 2px solid var(--trunk); margin-left: 14px;
+  }
+  .stage:last-child { border-left-color: transparent; }
+  .stage::before {
+    content: ""; position: absolute; left: -8px; top: 18px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--trunk);
+  }
+  .stage.has-snapshot::before {
+    background: var(--accent); border-color: var(--accent);
+  }
+  .stage-head {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline;
+    font-size: 14px; font-weight: 500;
+  }
+  .stage-tsn {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    color: var(--accent); font-weight: 600;
+  }
+  .stage-meta {
+    color: var(--muted); font-size: 12px; margin-top: 2px;
+  }
+  .stage-delta { color: var(--muted); font-size: 11px; }
+
+  /* Module grid for components */
+  .modules { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; }
+  .module {
+    border: 1px solid var(--border); border-radius: 8px; padding: 12px;
+  }
+  .module h4 {
+    margin: 0 0 8px; font-size: 13px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+  }
+  .llp-list { display: grid; grid-template-columns: 1fr; gap: 4px; }
+  .llp-list.cols-2 { grid-template-columns: 1fr 1fr; }
+  .llp {
+    display: grid; grid-template-columns: 60px 1fr 130px 110px max-content; gap: 8px;
+    padding: 6px 8px; border-radius: 4px; font-size: 12px;
+    align-items: center;
+  }
+  .llp:hover { background: var(--hover); }
+  .llp .pos { color: var(--muted); font-family: ui-monospace, monospace; }
+  .llp .desc { font-weight: 500; }
+  .llp .pn, .llp .sn { font-family: ui-monospace, monospace; color: var(--muted); font-size: 11px; }
+  .llp.swap { background: var(--warn-bg); border-left: 2px solid var(--warn); padding-left: 6px; }
+  .llp.swap .desc { color: var(--warn); }
+
+  .swap-detail {
+    grid-column: 1 / -1; padding: 6px 8px 4px 60px; font-size: 11px;
+    color: var(--muted); border-left: 1px dashed var(--branch); margin-left: 12px;
+  }
+  .swap-detail .row { display: flex; gap: 12px; }
+  .swap-detail .when { width: 90px; color: var(--warn); font-weight: 500; }
+
+  /* Branch tree visualization */
+  .branch-tree {
+    background: var(--code-bg); border-radius: 8px; padding: 16px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px; line-height: 1.55; overflow-x: auto;
+    white-space: pre;
+    color: var(--fg);
+  }
+  .branch-tree .h { color: var(--muted); }
+  .branch-tree .o { color: var(--accent); }
+  .branch-tree .w { color: var(--warn); font-weight: 600; }
+
+  /* Flags table */
+  .flags { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .flag {
+    display: grid; grid-template-columns: 170px 1fr; gap: 14px;
+    padding: 10px 14px; border-radius: 6px;
+    background: var(--warn-bg); border-left: 3px solid var(--warn);
+  }
+  .flag .tag {
+    font-family: ui-monospace, monospace; font-size: 11px;
+    color: var(--warn); font-weight: 600; text-transform: uppercase;
+  }
+  .flag p { margin: 0; font-size: 13px; }
+
+  /* Comparison table */
+  table.compare {
+    width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px;
+  }
+  table.compare th, table.compare td {
+    padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.compare th { font-weight: 600; color: var(--muted); background: var(--neutral-bg); }
+  table.compare th:first-child { width: 200px; }
+  table.compare tr:last-child td { border-bottom: 0; }
+  table.compare .num { font-family: ui-monospace, monospace; color: var(--accent); }
+
+  /* Top metric strip */
+  .metrics {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin: 18px 0 32px;
+  }
+  @media (max-width: 700px) { .metrics { grid-template-columns: repeat(2, 1fr); } }
+  .metric {
+    background: var(--neutral-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px;
+  }
+  .metric .v { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+  .metric .k { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  footer {
+    margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar">
+  <div>
+    <h1>APDOCS — Component Trees</h1>
+    <p class="lede">Engines ESN 994738 (CF34-10E) and ESN 779125 (CFM56-5B2/P), reconstructed from the actual document packages.</p>
+  </div>
+  <div class="theme-toggle" role="group" aria-label="Theme">
+    <button data-theme-set="light"  type="button">Light</button>
+    <button data-theme-set="dark"   type="button">Dark</button>
+    <button data-theme-set="system" type="button" class="active">System</button>
+  </div>
+</div>
+
+<div class="metrics">
+  <div class="metric"><div class="v">2</div><div class="k">Engine packages analysed</div></div>
+  <div class="metric"><div class="v">38</div><div class="k">LLP positions tracked</div></div>
+  <div class="metric"><div class="v">3</div><div class="k">Confirmed swaps detected</div></div>
+  <div class="metric"><div class="v">9</div><div class="k">Red flags raised automatically</div></div>
+</div>
+
+<div class="grid-2">
+
+<!-- ======================== ESN 994738 ======================== -->
+<section class="card">
+  <h2>ESN 994738 — CF34-10E</h2>
+  <dl class="card-meta">
+    <dt>Manufacturer</dt><dd>General Electric (Embraer ERJ-190)</dd>
+    <dt>Manufactured</dt><dd>29 Apr 2009 by GE</dd>
+    <dt>Final EOL</dt><dd>2 Oct 2024</dd>
+    <dt>Total life</dt><dd><span class="mono">27,547 TSN / 19,173 CSN</span></dd>
+    <dt>Operators</dt><dd>TACA → Royal Jordanian → Kenya Airways → APOC</dd>
+    <dt>Shop visits</dt><dd>1 (IHI Japan, TSN 11,343)</dd>
+    <dt>LLP positions</dt><dd>18 tracked + 1 missing dossier (Turbine Rear Frame)</dd>
+    <dt>Tree shape</dt><dd><span class="pill ok">Linear — all 18 LLPs factory-original</span></dd>
+  </dl>
+
+  <h3>Lifecycle Timeline</h3>
+  <div class="timeline">
+    <div class="stage has-snapshot">
+      <div class="stage-head"><span class="stage-tsn">TSN 0</span> &middot; INSTALL</div>
+      <div class="stage-meta">TACA on TI-BCG (MSN 215) &middot; manufactured 29 Apr 2009</div>
+    </div>
+    <div class="stage">
+      <div class="stage-head"><span class="stage-tsn">TSN 1,006</span> &middot; DE-REG &rarr; NEW REG</div>
+      <div class="stage-meta">TACA, airframe re-registered TI-BCG &rarr; N936TA (MSN 215, same airframe)</div>
+      <div class="stage-delta">+1,006 TSN since manufacture</div>
+    </div>
+    <div class="stage has-snapshot">
+      <div class="stage-head"><span class="stage-tsn">TSN 11,343</span> &middot; SV / EOL &rarr; INSTALL</div>
+      <div class="stage-meta">IHI shop visit, then Royal Jordanian on JY-EMA (MSN 107). Thrust E6 &rarr; E7 rerate.</div>
+      <div class="stage-delta">+10,337 TSN since previous</div>
+    </div>
+    <div class="stage">
+      <div class="stage-head"><span class="stage-tsn">TSN 12,861</span> &middot; EOL &rarr; INSTALL</div>
+      <div class="stage-meta">RJ off &rarr; Kenya Airways on 5Y-FFE (MSN 586). Back to E6 thrust.</div>
+      <div class="stage-delta">+1,518 TSN this stage</div>
+    </div>
+    <div class="stage">
+      <div class="stage-head"><span class="stage-tsn">TSN 23,051</span> &middot; REMOVAL &rarr; INSTALL</div>
+      <div class="stage-meta">Kenya, swapped to 5Y-KYT (MSN 544)</div>
+      <div class="stage-delta">+10,190 TSN this stage</div>
+    </div>
+    <div class="stage has-snapshot">
+      <div class="stage-head"><span class="stage-tsn">TSN 27,547</span> &middot; EOL &rarr; APOC</div>
+      <div class="stage-meta">Kenya Airways off, engine to APOC (10 Oct 2024)</div>
+      <div class="stage-delta">+4,496 TSN this stage</div>
+    </div>
+  </div>
+
+  <h3>The 18 LLPs (all factory-original)</h3>
+  <div class="modules">
+    <div class="module">
+      <h4>Fan Module — 4 LLPs</h4>
+      <div class="llp-list">
+        <div class="llp"><span class="pos">211</span><span class="desc">BOOSTER SPOOL</span><span class="pn">45P1173</span><span class="sn">FBNF1242</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">213</span><span class="desc">FAN DISK</span><span class="pn">2050M52P04</span><span class="sn">FBNF0934</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">221</span><span class="desc">FAN DRIVE SHAFT</span><span class="pn">2226M21P04</span><span class="sn">JHV705AN</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">B001</span><span class="desc">FAN SHAFT</span><span class="pn">45P2303</span><span class="sn">GE000741</span><span class="pill ok">orig</span></div>
+      </div>
+    </div>
+    <div class="module">
+      <h4>HPC / Compressor — 5 LLPs</h4>
+      <div class="llp-list">
+        <div class="llp"><span class="pos">G004</span><span class="desc">HPC 1-2 SPOOL</span><span class="pn">2028M40G01</span><span class="sn">GWN0KDJK</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">G006</span><span class="desc">HPC 4-9 SPOOL</span><span class="pn">2028M42G03</span><span class="sn">GWN0KRK6</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">G005</span><span class="desc">HPC STG. 3 DISK</span><span class="pn">2028M41P01</span><span class="sn">XAE69710</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">G007</span><span class="desc">HPC FWD SHAFT</span><span class="pn">2028M39P01</span><span class="sn">GATHMAC5</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">G008</span><span class="desc">CDP SEAL</span><span class="pn">2028M43P03</span><span class="sn">GFF5EMH7</span><span class="pill ok">orig</span></div>
+      </div>
+    </div>
+    <div class="module">
+      <h4>HPT / High-Pressure Turbine — 4 LLPs</h4>
+      <div class="llp-list">
+        <div class="llp"><span class="pos">L002</span><span class="desc">HPT DISK</span><span class="pn">1865M51P03</span><span class="sn">GWN0L0KT</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">L008</span><span class="desc">HPT FT ROT AIRSEAL</span><span class="pn">1865M49P04</span><span class="sn">TMTWH690</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">L004</span><span class="desc">HPT FT SHAFT</span><span class="pn">1865M47P02</span><span class="sn">XAEM0072</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">L011</span><span class="desc">HPT REAR SHAFT</span><span class="pn">1865M55P02</span><span class="sn">FDU8925C</span><span class="pill ok">orig</span></div>
+      </div>
+    </div>
+    <div class="module">
+      <h4>LPT / Low-Pressure Turbine — 4 LLPs</h4>
+      <div class="llp-list">
+        <div class="llp"><span class="pos">P03A</span><span class="desc">LPT DISK #1</span><span class="pn">2226M14P02</span><span class="sn">JHV834BA</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">P03B</span><span class="desc">LPT DISK #2</span><span class="pn">2226M15P04</span><span class="sn">JHV762BC</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">P03C</span><span class="desc">LPT DISK #3</span><span class="pn">2226M16P05</span><span class="sn">JHV838BE</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">P03D</span><span class="desc">LPT DISK #4</span><span class="pn">2226M17P01</span><span class="sn">JHV715CC</span><span class="pill ok">orig</span></div>
+      </div>
+    </div>
+    <div class="module">
+      <h4>Combustor — 1 LLP</h4>
+      <div class="llp-list">
+        <div class="llp"><span class="pos">H001</span><span class="desc">CC CASE</span><span class="pn">2070M47G03</span><span class="sn">SPK95RTG</span><span class="pill ok">orig</span></div>
+      </div>
+    </div>
+    <div class="module">
+      <h4>Frame — MISSING DOSSIER</h4>
+      <div class="llp-list">
+        <div class="llp swap"><span class="pos">R001</span><span class="desc">TURBINE REAR FRAME</span><span class="pn">2226M25G05</span><span class="sn">JHV746AU</span><span class="pill warn">no dossier</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== ESN 779125 ======================== -->
+<section class="card">
+  <h2>ESN 779125 — CFM56-5B2/P</h2>
+  <dl class="card-meta">
+    <dt>Manufacturer</dt><dd>Snecma / CFM International (Airbus A321-112)</dd>
+    <dt>Manufactured</dt><dd>7 Apr 2008 by Snecma (WO 704010655)</dd>
+    <dt>Final EOL</dt><dd>30 Mar 2021</dd>
+    <dt>Total life</dt><dd><span class="mono">51,434 TSN / 35,392 CSN</span></dd>
+    <dt>Operators</dt><dd>Alitalia, full life on I-BIXQ position #1</dd>
+    <dt>Shop visits</dt><dd>5 (FiatAvio, LH Technik, AZMS&times;2, Alitalia)</dd>
+    <dt>LLP positions</dt><dd>20 tracked, 3 swapped during service</dd>
+    <dt>Tree shape</dt><dd><span class="pill warn">Branching — 3 sub-trees from swaps</span></dd>
+  </dl>
+
+  <h3>Lifecycle Timeline</h3>
+  <div class="timeline">
+    <div class="stage has-snapshot">
+      <div class="stage-head"><span class="stage-tsn">TSN 0</span> &middot; Manufacture</div>
+      <div class="stage-meta">Snecma, 7 Apr 2008 &middot; OCR snapshot present</div>
+    </div>
+    <div class="stage">
+      <div class="stage-head"><span class="stage-tsn">TSN 7,130</span> &middot; SV #1</div>
+      <div class="stage-meta">FiatAvio &middot; folder-only</div>
+      <div class="stage-delta">+7,130 TSN since previous</div>
+    </div>
+    <div class="stage">
+      <div class="stage-head"><span class="stage-tsn">TSN 20,132</span> &middot; SV #2</div>
+      <div class="stage-meta">Lufthansa Technik &middot; folder-only</div>
+      <div class="stage-delta">+13,002 TSN this stage</div>
+    </div>
+    <div class="stage">
+      <div class="stage-head"><span class="stage-tsn">TSN 26,820</span> &middot; SV #3</div>
+      <div class="stage-meta">AZMS &middot; folder-only</div>
+      <div class="stage-delta">+6,688 TSN this stage</div>
+    </div>
+    <div class="stage has-snapshot">
+      <div class="stage-head"><span class="stage-tsn">TSN 36,979</span> &middot; Status snapshot</div>
+      <div class="stage-meta">Alitalia I-BIXQ #1 (in flight, Dec 2012) &middot; OCR snapshot present</div>
+      <div class="stage-delta">+10,159 TSN this stage</div>
+    </div>
+    <div class="stage">
+      <div class="stage-head"><span class="stage-tsn">TSN 40,666</span> &middot; SV #4</div>
+      <div class="stage-meta">AZMS &middot; folder-only &middot; <span class="pill warn">likely swap event</span></div>
+      <div class="stage-delta">+3,687 TSN this stage</div>
+    </div>
+    <div class="stage">
+      <div class="stage-head"><span class="stage-tsn">TSN 48,986</span> &middot; SV #5</div>
+      <div class="stage-meta">Alitalia &middot; folder-only &middot; <span class="pill warn">likely swap event</span></div>
+      <div class="stage-delta">+8,320 TSN this stage</div>
+    </div>
+    <div class="stage has-snapshot">
+      <div class="stage-head"><span class="stage-tsn">TSN 51,434</span> &middot; EOL &rarr; APOC</div>
+      <div class="stage-meta">Alitalia, 30 Mar 2021 &middot; OCR snapshot present</div>
+      <div class="stage-delta">+2,448 TSN this stage</div>
+    </div>
+  </div>
+
+  <h3>The 20 LLPs — 17 unchanged, 3 swapped</h3>
+  <div class="modules">
+    <div class="module">
+      <h4>Fan / Booster — 3 positions, 1 swap</h4>
+      <div class="llp-list">
+        <div class="llp"><span class="pos">211</span><span class="desc">BOOSTER SPOOL</span><span class="pn">338-001-906-0</span><span class="sn">DE258600</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">213</span><span class="desc">FAN DISK STG 1</span><span class="pn">338-001-504-0</span><span class="sn">MA216569</span><span class="pill ok">orig</span></div>
+        <div class="llp swap"><span class="pos">221</span><span class="desc">FAN SHAFT</span><span class="pn">338-010-601-0</span><span class="sn">RO26128 &rarr; DNOO7492</span><span class="pill warn">SWAPPED</span></div>
+      </div>
+      <div class="swap-detail">
+        <div class="row"><div class="when">MFG @ 2008</div><div>SN <span class="mono">RO26128</span> factory-installed</div></div>
+        <div class="row"><div class="when">Dec 2012</div><div>SN <span class="mono">RO26128</span> still on engine</div></div>
+        <div class="row"><div class="when">Mar 2021</div><div>SN <span class="mono">DNOO7492</span> on engine. Swap occurred during SV #4 or #5.</div></div>
+      </div>
+    </div>
+    <div class="module">
+      <h4>HPC / Compressor — 5 positions, 1 swap</h4>
+      <div class="llp-list">
+        <div class="llp"><span class="pos">312</span><span class="desc">HPC SHAFT</span><span class="pn">1386M56P03</span><span class="sn">GWN0GN0P</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">313</span><span class="desc">HPC SPOOL 1-2</span><span class="pn">1558M31G04</span><span class="sn">GWN0GTA0</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">314</span><span class="desc">HPC DISK STG 3</span><span class="pn">1590M59P01</span><span class="sn">XAEH5677</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">315</span><span class="desc">HPC SPOOL 4-9</span><span class="pn">1588M89G03</span><span class="sn">GWN0GTJK</span><span class="pill ok">orig</span></div>
+        <div class="llp swap"><span class="pos">316</span><span class="desc">CDP ROT AIR SEAL</span><span class="pn">1523M35P01</span><span class="sn">GFF5SE548 &rarr; GFFS5J1AM</span><span class="pill warn">SWAPPED</span></div>
+      </div>
+      <div class="swap-detail">
+        <div class="row"><div class="when">MFG @ 2008</div><div>SN <span class="mono">GFF5SE548</span> factory-installed</div></div>
+        <div class="row"><div class="when">Mar 2021</div><div>SN <span class="mono">GFFS5J1AM</span> on engine. Swap event undated.</div></div>
+      </div>
+    </div>
+    <div class="module">
+      <h4>HPT / High-Pressure Turbine — 4 positions, no swaps</h4>
+      <div class="llp-list">
+        <div class="llp"><span class="pos">521</span><span class="desc">FRONT SHAFT</span><span class="pn">1498M40P05</span><span class="sn">XAE55326</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">522</span><span class="desc">FRONT AIR SEAL</span><span class="pn">1795M36P02</span><span class="sn">TMTNM346</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">525</span><span class="desc">HPT DISK</span><span class="pn">1498M43P06</span><span class="sn">GWN0GH05</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">526</span><span class="desc">HPT REAR SHAFT</span><span class="pn">1864M90P05</span><span class="sn">DED79167</span><span class="pill ok">orig</span></div>
+      </div>
+    </div>
+    <div class="module">
+      <h4>LPT / Low-Pressure Turbine — 7 positions, no swaps</h4>
+      <div class="llp-list cols-2">
+        <div class="llp"><span class="pos">541</span><span class="desc">LPT CASE</span><span class="pn">338-117-452-0</span><span class="sn">DD260400</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">542</span><span class="desc">LPT STG 1 DISK</span><span class="pn">336-001-804-0</span><span class="sn">BC991531</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">543</span><span class="desc">LPT STG 2 DISK</span><span class="pn">336-001-909-0</span><span class="sn">DD655179</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">544</span><span class="desc">LPT STG 3 DISK</span><span class="pn">336-002-006-0</span><span class="sn">DD655861</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">545</span><span class="desc">LPT STG 4 DISK</span><span class="pn">336-002-105-0</span><span class="sn">BC864420</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">546</span><span class="desc">LPT CONICAL SUPPORT</span><span class="pn">338-077-502-0</span><span class="sn">DD763172</span><span class="pill ok">orig</span></div>
+        <div class="llp"><span class="pos">551</span><span class="desc">LPT SHAFT</span><span class="pn">338-010-005-0</span><span class="sn">DE198583</span><span class="pill ok">orig</span></div>
+      </div>
+    </div>
+    <div class="module">
+      <h4>Frame — 1 position, 1 swap (PN family change)</h4>
+      <div class="llp-list">
+        <div class="llp swap"><span class="pos">561</span><span class="desc">TURBINE REAR FRAME</span><span class="pn">336-031-632-0 &rarr; 338-061-627-0</span><span class="sn">RN40877 &rarr; DA653691</span><span class="pill warn">SWAPPED + PN CHANGE</span></div>
+      </div>
+      <div class="swap-detail">
+        <div class="row"><div class="when">MFG @ 2008</div><div>PN <span class="mono">336-031-632-0</span> SN <span class="mono">RN40877</span></div></div>
+        <div class="row"><div class="when">Dec 2012</div><div>same as above, still on engine</div></div>
+        <div class="row"><div class="when">Mar 2021</div><div>PN <span class="mono">338-061-627-0</span> SN <span class="mono">DA653691</span> &middot; PN family changed: needs SB or AD authorisation</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /grid-2 -->
+
+<!-- ======================== Branch tree ASCII ======================== -->
+<h2>Branch Tree (visual)</h2>
+<p class="lede">Each swapped LLP requires its own back-to-birth trace, distinct from the engine. The dashed lines show where the swap event date is currently unknown — likely SV #4 (TSN 40,666) or SV #5 (TSN 48,986).</p>
+
+<div class="branch-tree"><span class="h">                ESN 779125 timeline (engine trunk)
+</span>
+        <span class="o">●━━━━━●━━━━●━━━━●━━━━━━━━━━●━━━━━━━━━━●━━━━●━━━━●━━━━━━━━━━●</span>
+        <span class="h">MFG   SV1  SV2  SV3        Dec'12       SV4  SV5         EOL</span>
+        <span class="h">2008                       (status)                       2021</span>
+
+  <span class="w">pos 221  FAN SHAFT</span>
+        ●━━━━━━━━━━━━━━━━━━━━━━━━━●····?····●━━━━━━━━━━━━━━━━━━━━━━━━●
+        <span class="h">RO26128                                                            </span>
+                                  <span class="h">└──── swap ────┘ DNOO7492 ───────────────●</span>
+
+  <span class="w">pos 316  CDP ROT AIR SEAL</span>
+        ●━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━●····?····●━━━━━━●
+        <span class="h">GFF5SE548                                                          </span>
+                                                <span class="h">└─ swap ─┘ GFFS5J1AM ────●</span>
+
+  <span class="w">pos 561  TURBINE REAR FRAME</span>  <span class="h">(also PN family change)</span>
+        ●━━━━━━━━━━━━━━━━━━━━━━━━━●····?····●━━━━━━━━━━━━━━━━━━━━━━━━●
+        <span class="h">RN40877 (PN 336-031-632-0)                                         </span>
+                                  <span class="h">└──── swap ────┘ DA653691 (PN 338-061-627-0) ●</span></div>
+
+<!-- ======================== Cross-engine compare ======================== -->
+<h2>Cross-Engine Comparison</h2>
+<table class="compare">
+  <thead>
+    <tr><th></th><th>ESN 994738</th><th>ESN 779125</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Engine type</td><td>CF34-10E (Embraer)</td><td>CFM56-5B2/P (Airbus A321)</td></tr>
+    <tr><td>Manufacturer</td><td>General Electric</td><td>Snecma / CFM International</td></tr>
+    <tr><td>Service life</td><td>Apr 2009 &rarr; Oct 2024 (15.5 yr)</td><td>Apr 2008 &rarr; Mar 2021 (13.0 yr)</td></tr>
+    <tr><td>Total TSN</td><td><span class="num">27,547</span></td><td><span class="num">51,434</span></td></tr>
+    <tr><td>Total CSN</td><td><span class="num">19,173</span></td><td><span class="num">35,392</span></td></tr>
+    <tr><td>Operators</td><td>3 (TACA, RJ, Kenya)</td><td>1 (Alitalia, full life)</td></tr>
+    <tr><td>Aircraft moves</td><td>4 different airframes + 1 re-reg</td><td>1 airframe, position #1</td></tr>
+    <tr><td>Shop visits</td><td>1 (IHI)</td><td>5 (FiatAvio, LHT, AZMS&times;2, Alitalia)</td></tr>
+    <tr><td>LLP positions tracked</td><td>18 (+ 1 missing dossier)</td><td>20</td></tr>
+    <tr><td>LLP swaps</td><td>0 — all factory-original</td><td>3 confirmed</td></tr>
+    <tr><td>Tree shape</td><td>Linear (single trunk)</td><td>Branching (trunk + 3 sub-trees)</td></tr>
+    <tr><td>Dossier text source</td><td>Native text PDFs</td><td>OCR'd image scans (Tesseract)</td></tr>
+    <tr><td>Tree build time</td><td>~2 seconds</td><td>~5 minutes (5m20s OCR + parse)</td></tr>
+    <tr><td>Cross-LLP consistency</td><td>0 inconsistencies in 180 rows</td><td>5 OCR-drift artifacts auto-filtered</td></tr>
+  </tbody>
+</table>
+
+<!-- ======================== Red flags ======================== -->
+<h2>Red Flags Raised Automatically</h2>
+<p class="lede">All 9 flags below were detected without human review by intersecting OCR'd text, filename structure, and folder structure.</p>
+
+<div class="flags">
+  <div class="flag">
+    <div class="tag">missing-dossier &middot; 994738</div>
+    <p>TURBINE REAR FRAME (PN <span class="mono">2226M25G05</span>, SN <span class="mono">JHV746AU</span>, life limit 32,400 cycles) appears in the IHI SV's LLP Status but no dossier file exists in <span class="mono">0. 994738 LLP Trace/</span>. Expected 19, found 18.</p>
+  </div>
+  <div class="flag">
+    <div class="tag">missing-doc &middot; 994738</div>
+    <p><span class="mono">5. OP TSN 27,546 (Kenya Airways)/</span> has no Certification file (slot 1). Required for the Kenya operating period.</p>
+  </div>
+  <div class="flag">
+    <div class="tag">re-registration &middot; 994738</div>
+    <p>TSN 1,006: airframe re-registered TI-BCG &rarr; N936TA while remaining with TACA. Not an engine swap. The validator must not raise this as an inconsistency.</p>
+  </div>
+  <div class="flag">
+    <div class="tag">thrust-rerate &middot; 994738</div>
+    <p>Engine ran as E6 (17,390 lbf) &rarr; E7 (18,820 lbf) on Royal Jordanian's JY-EMA &rarr; E6 again on Kenya Airways. Same hardware, three different ratings. Confirm a rerate certificate exists at each transition.</p>
+  </div>
+  <div class="flag">
+    <div class="tag">swap-trace-needed &middot; 779125</div>
+    <p>Three confirmed swaps (FAN SHAFT, CDP ROT AIR SEAL, TURBINE REAR FRAME) require separate BtB traces for the swapped-IN parts. Not in the LLP Trace folder. To find them, OCR folders 4-6 (the SVs where the swap likely happened).</p>
+  </div>
+  <div class="flag">
+    <div class="tag">pn-family-change &middot; 779125</div>
+    <p>TURBINE REAR FRAME PN went <span class="mono">336-031-632-0</span> &rarr; <span class="mono">338-061-627-0</span>. Different PN family = different part revision/variant. Must be authorised by an SB or AD.</p>
+  </div>
+  <div class="flag">
+    <div class="tag">swap-event-undated &middot; 779125</div>
+    <p>All 3 swaps happened sometime between Dec 2012 and Mar 2021. We don't yet know which specific SV did which swap. Resolving this needs OCR on folders 4 and 6 (SV #4 and SV #5 LLP Status reports).</p>
+  </div>
+  <div class="flag">
+    <div class="tag">foreign-esn &middot; 779125</div>
+    <p>Loose file <span class="mono">779114 NIS 2007 (1).pdf</span> in the 779125 package root. ESN 779114 is a sibling engine (also from ELFC). Either misfiled or a deliberate cross-reference for shared documentation.</p>
+  </div>
+  <div class="flag">
+    <div class="tag">misfile &middot; 779125</div>
+    <p><span class="mono">/6. SV TSN 48,986/4. OP TSN 51,434 AD Status (dragged).pdf</span> declares "OP TSN 51,434" in its filename but lives in the SV folder. Should be in <span class="mono">7. OP TSN 51,434/</span>.</p>
+  </div>
+</div>
+
+<footer>
+  <p>Generated from real APOC document packages: ESN 994738 (1.4 GB, 321 files) and ESN 779125 (3.0 GB, 244 files). Tree built by parsing 180 textual lineage rows for 994738 and 60 OCR'd LLP-row observations for 779125 (Tesseract 5, 320 seconds for 20 dossiers). Swap detection via Levenshtein-distance filter on canonicalised PN/SN strings.</p>
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+  (function(){
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-theme-set]');
+    const stored = localStorage.getItem('apdocs-theme') || 'system';
+    function apply(theme) {
+      if (theme === 'system') {
+        root.removeAttribute('data-theme');
+      } else {
+        root.setAttribute('data-theme', theme);
+      }
+      buttons.forEach(b => b.classList.toggle('active', b.dataset.themeSet === theme));
+      localStorage.setItem('apdocs-theme', theme);
+    }
+    buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet)));
+    apply(stored);
+  })();
+</script>
+
+</body>
+</html>

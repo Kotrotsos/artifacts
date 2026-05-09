@@ -68,3 +68,4 @@
 | 2026-05-07 | ecoscrape | reports | [profiles50.html](projects/ecoscrape/reports/profiles50.html) | Profile cards for first 50 hoveniers with thorough scoring and per-score reasoning in modal |
 | 2026-05-07 | ecoscrape | spreadsheets | [hoveniers50_enriched.xlsx](projects/ecoscrape/spreadsheets/hoveniers50_enriched.xlsx) | First 50 hoveniers enriched, deeper email regex scan added 15 more emails and 14 more phones |
 | 2026-05-07 | ecoscrape | reports | [profiles50.html](projects/ecoscrape/reports/profiles50.html) | Profile cards 50 hoveniers with regex-extracted contacts and per-score reasoning |
+| 2026-05-09 | apdocs | reports | [component_trees.html](projects/apdocs/reports/component_trees.html) | Component trees for ESN 994738 and 779125 with swap detection and red flags |
