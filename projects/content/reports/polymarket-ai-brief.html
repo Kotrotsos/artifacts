@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polymarket AI Intelligence Brief, May 9 2026</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --surface: #ffffff;
+    --surface-2: #f3f1ec;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-faint: #888;
+    --accent: #0d4f3c;
+    --accent-soft: #1f6e57;
+    --warn: #b35a1f;
+    --good: #1f6e57;
+    --bad: #a23b3b;
+    --rule: #e3dfd6;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  [data-theme="dark"] {
+    --bg: #0f1110;
+    --surface: #181a18;
+    --surface-2: #22251f;
+    --ink: #ececec;
+    --ink-soft: #b8b8b8;
+    --ink-faint: #888;
+    --accent: #6fc8a6;
+    --accent-soft: #8edbbb;
+    --warn: #e0a26b;
+    --good: #6fc8a6;
+    --bad: #e08585;
+    --rule: #2a2c28;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    margin: 0;
+    padding: 0;
+  }
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 48px 28px 80px;
+  }
+  header.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+  header.top .meta {
+    color: var(--ink-faint);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 600;
+    margin: 8px 0 4px;
+    letter-spacing: -0.01em;
+  }
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 40px 0 12px;
+    letter-spacing: -0.01em;
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 24px 0 8px;
+  }
+  p { margin: 0 0 12px; }
+  .lede { color: var(--ink-soft); font-size: 17px; max-width: 700px; }
+  .takeaways {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 18px 24px;
+    margin: 24px 0 36px;
+  }
+  .takeaways .label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .takeaways ol {
+    margin: 0;
+    padding-left: 22px;
+  }
+  .takeaways li {
+    margin-bottom: 6px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 14px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    background: var(--surface-2);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .pct { font-weight: 600; }
+  .up { color: var(--good); }
+  .down { color: var(--bad); }
+  .flat { color: var(--ink-faint); }
+  .narrative {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 18px 22px;
+    margin: 12px 0;
+    box-shadow: var(--shadow);
+  }
+  .narrative .tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--bg);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .angle {
+    border-left: 2px solid var(--accent-soft);
+    padding: 4px 0 4px 16px;
+    margin: 14px 0;
+  }
+  .angle .head {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .angle .sub {
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  a { color: var(--accent); }
+  a:hover { color: var(--accent-soft); }
+  .toggle {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 12px;
+    background: var(--surface);
+  }
+  .toggle button {
+    background: transparent;
+    color: var(--ink-soft);
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    font: inherit;
+    border-right: 1px solid var(--rule);
+  }
+  .toggle button:last-child { border-right: none; }
+  .toggle button[aria-pressed="true"] {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-faint);
+    font-size: 13px;
+  }
+  @media print {
+    .toggle { display: none; }
+    body { background: white; color: black; font-size: 11pt; }
+    .wrap { max-width: none; padding: 0; }
+    table, .narrative { box-shadow: none; }
+    h2 { page-break-after: avoid; }
+    .narrative, table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="meta">Polymarket Signal Brief</div>
+    <h1>What the AI prediction markets are pricing in this week</h1>
+  </div>
+  <div class="toggle" role="group" aria-label="Color theme">
+    <button data-theme-set="light" aria-pressed="true">Light</button>
+    <button data-theme-set="dark" aria-pressed="false">Dark</button>
+    <button data-theme-set="system" aria-pressed="false">System</button>
+  </div>
+</header>
+
+<p class="lede">Snapshot of every AI-relevant Polymarket event with active volume on May 9, 2026. The point is not to bet, the point is to read where real money is being placed and use it as a probability map for what is likely to drive AI news the next seven days.</p>
+
+<div class="takeaways">
+  <div class="label">Key takeaways</div>
+  <ol>
+    <li><strong>Anthropic is the consensus model leader.</strong> 78.5% to hold the top Chatbot Arena spot at end of May, 70.45% at end of June, 88% to be valued higher than OpenAI by year end. OpenAI is priced at 3.45% for May. The market is calling a clear lead, not a contest.</li>
+    <li><strong>NVIDIA is still the trade.</strong> 88.8% to be the largest company in the world by market cap on May 31, up 3.25 points in 24 hours. Combined with GPU rental price markets jumping 20 to 37 points toward higher price brackets, the compute scarcity narrative is hardening, not softening.</li>
+    <li><strong>OpenAI hardware leaks are getting priced.</strong> Glasses 23.5%, necklace wearable 20%, earbuds 19.5% for a 2026 announcement. The necklace jumped 7.5 points in a day. Something is moving in OpenAI's hardware pipeline that traders are watching.</li>
+  </ol>
+</div>
+
+<h2>Top AI markets by 24h volume</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Market</th>
+      <th class="num">Yes %</th>
+      <th class="num">24h vol</th>
+      <th class="num">1d change</th>
+      <th>Resolves</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Microsoft is largest company by market cap on June 30 (No side traded)</td>
+      <td class="num pct">99.75%</td>
+      <td class="num">$46,264</td>
+      <td class="num flat">−0.10pt</td>
+      <td>Jun 30</td>
+    </tr>
+    <tr>
+      <td>Anthropic has best AI model at end of May</td>
+      <td class="num pct">78.5%</td>
+      <td class="num">$13,948</td>
+      <td class="num up">+2.0pt</td>
+      <td>May 31</td>
+    </tr>
+    <tr>
+      <td>OpenAI has best AI model at end of May</td>
+      <td class="num pct">3.45%</td>
+      <td class="num">$12,284</td>
+      <td class="num up">+0.3pt</td>
+      <td>May 31</td>
+    </tr>
+    <tr>
+      <td>NVIDIA is largest company by market cap on May 31</td>
+      <td class="num pct">88.8%</td>
+      <td class="num">$10,728</td>
+      <td class="num up">+3.25pt</td>
+      <td>May 31</td>
+    </tr>
+    <tr>
+      <td>Google has best AI model at end of June</td>
+      <td class="num pct">21.0%</td>
+      <td class="num">$10,569</td>
+      <td class="num down">−7.0pt</td>
+      <td>Jun 30</td>
+    </tr>
+    <tr>
+      <td>DeepSeek has best AI model at end of June</td>
+      <td class="num pct">0.45%</td>
+      <td class="num">$9,827</td>
+      <td class="num flat">+0.1pt</td>
+      <td>Jun 30</td>
+    </tr>
+    <tr>
+      <td>OpenAI announces earbuds in 2026</td>
+      <td class="num pct">19.5%</td>
+      <td class="num">$6,724</td>
+      <td class="num up">+2.5pt</td>
+      <td>Dec 31</td>
+    </tr>
+    <tr>
+      <td>NVIDIA is largest company by market cap on June 30</td>
+      <td class="num pct">80.5%</td>
+      <td class="num">$6,485</td>
+      <td class="num flat">−0.5pt</td>
+      <td>Jun 30</td>
+    </tr>
+    <tr>
+      <td>xAI has best AI model at end of June</td>
+      <td class="num pct">1.3%</td>
+      <td class="num">$20,058</td>
+      <td class="num flat">+0.1pt</td>
+      <td>Jun 30</td>
+    </tr>
+    <tr>
+      <td>Anthropic has best AI model at end of June</td>
+      <td class="num pct">70.45%</td>
+      <td class="num">$2,031</td>
+      <td class="num up">+6.25pt</td>
+      <td>Jun 30</td>
+    </tr>
+  </tbody>
+</table>
+
+<p style="font-size:13px;color:var(--ink-faint);">Volume in USD. 1d change is one-day price change in percentage points. Resolution sources are Chatbot Arena leaderboard for model markets and consensus reporting for market-cap markets.</p>
+
+<h2>Trending narratives</h2>
+
+<div class="narrative">
+  <h3><span class="tag">Theme 1</span>The Anthropic consensus is hardening</h3>
+  <p>Three different markets are pricing the same trade. Anthropic at 78.5% for end of May leadership, 70.45% for end of June, and 88% to be valued higher than OpenAI by Dec 31. The June market jumped 6.25 points in 24 hours, the May market 2 points. OpenAI is at 3.45% for May, 6.5% for June. xAI is 0.65% and 1.3%.</p>
+  <p>What this collectively suggests: the market does not see this as a horse race anymore. Traders are pricing in Anthropic owning the leaderboard for two consecutive months and the valuation crossover within the year. Money is moving toward Anthropic, not just commentary.</p>
+  <p><strong>Why it matters this week:</strong> If Anthropic ships anything that confirms the lead, expect a fast repricing higher and a wave of "OpenAI lost the throne" coverage. If OpenAI counters with a model announcement, the May market is the place to watch for the reaction speed.</p>
+</div>
+
+<div class="narrative">
+  <h3><span class="tag">Theme 2</span>Compute scarcity is the unspoken story</h3>
+  <p>NVIDIA's largest-company odds rose 3.25 points to 88.8% in 24 hours while every other Magnificent-7 candidate sits at single digits or below. At the same time, GPU rental price markets show H200 and B200 indices breaking through previously skeptical price ceilings, with multiple thresholds jumping 20 to 37 points in a single day toward Yes resolution at higher price brackets.</p>
+  <p>What this collectively suggests: the supply side is tightening, not loosening. The cohort that was supposed to relieve compute pressure (Trainium, TPU v6, MI300X, Chinese alternatives) has not budged the price.</p>
+  <p><strong>Why it matters this week:</strong> Any earnings, capex commentary, or hyperscaler buildout news will be read against this signal. If NVIDIA prints a guide, the markets will move first and the narrative will follow.</p>
+</div>
+
+<div class="narrative">
+  <h3><span class="tag">Theme 3</span>OpenAI hardware is no longer rumor</h3>
+  <p>Three OpenAI hardware sub-markets are quietly priced in the 19 to 24 percent range. Glasses 23.5%, necklace wearable 20% (up 7.5 points in a day), earbuds 19.5% (up 2.5 points). These are not random punts. They map to specific shapes someone has seen or heard about.</p>
+  <p>What this collectively suggests: the Jony Ive collaboration is not vapor. The market is hedging across form factors because nobody knows which device shape will land first, but they expect at least one to be announced before Dec 31.</p>
+  <p><strong>Why it matters this week:</strong> The necklace move is the tell. Watch for leaks, supply chain reporting, or developer-conference scheduling. If those numbers compound this week, OpenAI is closer to a hardware reveal than the public timeline suggests.</p>
+</div>
+
+<div class="narrative">
+  <h3><span class="tag">Theme 4</span>The regulation tail is still priced low</h3>
+  <p>"OpenAI announces AGI before 2027" sits at 13%, has not moved meaningfully, and trades on $5 of 24h volume. The "AI data center moratorium passed before 2027" market is at 91.9% Yes but on $114 of 24h volume, which is too thin to read as conviction. ChatGPT outage markets are flat at 27 to 29% for fewer than 2 outages in May.</p>
+  <p>What this collectively suggests: the market sees no AGI claim, no serious regulatory chokepoint, and no operational reliability shock between now and the end of May. The base case is: capability ladder keeps climbing, infrastructure holds, regulators watch.</p>
+  <p><strong>Why it matters this week:</strong> The dog is not barking. If anything happens on the regulatory side this week, Polymarket will be late to price it, which is itself an article hook.</p>
+</div>
+
+<h2>Article angles</h2>
+
+<div class="angle">
+  <div class="head">1. The Anthropic Consensus, In Numbers</div>
+  <div class="sub">Read the three Anthropic markets together as a single position. Why do prediction traders see a clear leader where the press still frames it as a race? Lean into the divergence between market consensus and media framing.</div>
+</div>
+
+<div class="angle">
+  <div class="head">2. The Compute Scarcity Trade Is Not Over</div>
+  <div class="sub">NVIDIA at 88.8% to be the world's largest company plus GPU rental prices breaking out higher equals a single thesis: the AI capex super-cycle is still in expansion. Counter-argument piece would interrogate what would have to break to flip these markets.</div>
+</div>
+
+<div class="angle">
+  <div class="head">3. The Necklace, The Earbuds, The Glasses</div>
+  <div class="sub">OpenAI hardware as a betting market read. The 7.5 point one-day jump on the necklace is the most interesting signal of the week. Track the leak chain that is moving these prices and what it implies about the launch shape.</div>
+</div>
+
+<div class="angle">
+  <div class="head">4. The 88% Anthropic Valuation Crossover</div>
+  <div class="sub">Tightly scoped piece on a single market: "Anthropic valued higher than OpenAI in 2026" at 88%. What capital structure events would have to happen for this to resolve Yes, and what it would mean for the AI labs landscape.</div>
+</div>
+
+<div class="angle">
+  <div class="head">5. What The Markets Are Not Pricing</div>
+  <div class="sub">The contrarian piece. AGI announcement at 13%, AI moratorium illiquid, no model-failure markets. The interesting trades are the ones nobody is making. What are we collectively underrating, and where is the asymmetry?</div>
+</div>
+
+<h2>Raw data, full AI market list</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Event / Market</th>
+      <th class="num">Yes %</th>
+      <th class="num">Total vol</th>
+      <th class="num">24h vol</th>
+      <th class="num">1d Δ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td colspan="5"><strong>Best AI model end of May 2026</strong> &nbsp; <a href="https://polymarket.com/event/which-company-has-the-best-ai-model-end-of-may">link</a></td></tr>
+    <tr><td>Anthropic</td><td class="num pct">78.5%</td><td class="num">$367,614</td><td class="num">$13,948</td><td class="num up">+2.0</td></tr>
+    <tr><td>Google</td><td class="num pct">17.5%</td><td class="num">$307,828</td><td class="num">$1,752</td><td class="num down">−2.0</td></tr>
+    <tr><td>OpenAI</td><td class="num pct">3.45%</td><td class="num">$473,877</td><td class="num">$12,284</td><td class="num up">+0.3</td></tr>
+    <tr><td>xAI</td><td class="num pct">0.65%</td><td class="num">$368,693</td><td class="num">$11,068</td><td class="num down">−0.4</td></tr>
+    <tr><td>Alibaba, Meta, ByteDance, DeepSeek, Mistral, others</td><td class="num pct">≤0.15%</td><td class="num">~$3.6M combined</td><td class="num">~$70K</td><td class="num flat">flat</td></tr>
+
+    <tr><td colspan="5"><strong>Best AI model end of June 2026</strong> &nbsp; <a href="https://polymarket.com/event/which-company-has-best-ai-model-end-of-june">link</a></td></tr>
+    <tr><td>Anthropic</td><td class="num pct">70.45%</td><td class="num">$808,038</td><td class="num">$2,031</td><td class="num up">+6.25</td></tr>
+    <tr><td>Google</td><td class="num pct">21.0%</td><td class="num">$490,989</td><td class="num">$10,569</td><td class="num down">−7.0</td></tr>
+    <tr><td>OpenAI</td><td class="num pct">6.5%</td><td class="num">$323,047</td><td class="num">$2,289</td><td class="num flat">flat</td></tr>
+    <tr><td>xAI</td><td class="num pct">1.3%</td><td class="num">$1,036,664</td><td class="num">$20,058</td><td class="num up">+0.1</td></tr>
+    <tr><td>DeepSeek</td><td class="num pct">0.45%</td><td class="num">$490,779</td><td class="num">$9,827</td><td class="num flat">+0.1</td></tr>
+
+    <tr><td colspan="5"><strong>Largest company by market cap, May 31</strong> &nbsp; <a href="https://polymarket.com/event/largest-company-end-of-may-167">link</a></td></tr>
+    <tr><td>NVIDIA</td><td class="num pct">88.8%</td><td class="num">$644,130</td><td class="num">$10,728</td><td class="num up">+3.25</td></tr>
+
+    <tr><td colspan="5"><strong>Largest company by market cap, June 30</strong> &nbsp; <a href="https://polymarket.com/event/largest-company-end-of-june-712">link</a></td></tr>
+    <tr><td>NVIDIA</td><td class="num pct">80.5%</td><td class="num">$1,148,645</td><td class="num">$6,485</td><td class="num down">−0.5</td></tr>
+    <tr><td>Alphabet</td><td class="num pct">17.05%</td><td class="num">$1,362,081</td><td class="num">$3,395</td><td class="num up">+2.65</td></tr>
+    <tr><td>Apple</td><td class="num pct">2.35%</td><td class="num">$1,070,099</td><td class="num">$4,586</td><td class="num down">−0.4</td></tr>
+    <tr><td>Microsoft, Tesla, Amazon, Saudi Aramco</td><td class="num pct">≤0.35%</td><td class="num">~$7.7M combined</td><td class="num">~$240K</td><td class="num flat">flat</td></tr>
+
+    <tr><td colspan="5"><strong>OpenAI hardware in 2026</strong> &nbsp; <a href="https://polymarket.com/event/what-kind-of-product-will-openai-announce-in-2026">link</a></td></tr>
+    <tr><td>Glasses</td><td class="num pct">23.5%</td><td class="num">$44,228</td><td class="num">—</td><td class="num flat">—</td></tr>
+    <tr><td>Necklace wearable</td><td class="num pct">20.0%</td><td class="num">$14,367</td><td class="num">$204</td><td class="num up">+7.5</td></tr>
+    <tr><td>Earbuds or headphones</td><td class="num pct">19.5%</td><td class="num">$87,014</td><td class="num">$6,724</td><td class="num up">+2.5</td></tr>
+
+    <tr><td colspan="5"><strong>Lab valuation and capability</strong></td></tr>
+    <tr><td>Anthropic valued higher than OpenAI in 2026 &nbsp; <a href="https://polymarket.com/event/anthropic-valued-higher-than-openai-in-2026">link</a></td><td class="num pct">88.0%</td><td class="num">$49,106</td><td class="num">$212</td><td class="num up">+0.5</td></tr>
+    <tr><td>OpenAI announces AGI before 2027 &nbsp; <a href="https://polymarket.com/event/openai-announces-it-has-achieved-agi-before-2027">link</a></td><td class="num pct">13.0%</td><td class="num">$68,451</td><td class="num">$5</td><td class="num up">+0.5</td></tr>
+
+    <tr><td colspan="5"><strong>GPU rental price index, May 31 (top movers)</strong> &nbsp; <a href="https://polymarket.com/event/gpu-rental-prices-h200-hit-by-may-31">H200</a> · <a href="https://polymarket.com/event/gpu-rental-prices-b200-hit-by-may-31">B200</a></td></tr>
+    <tr><td>H200 hits $4.00 high</td><td class="num pct">100%</td><td class="num">$216</td><td class="num">—</td><td class="num up">+38.0</td></tr>
+    <tr><td>H200 hits $3.60 low</td><td class="num pct">100%</td><td class="num">$306</td><td class="num">—</td><td class="num up">+37.5</td></tr>
+    <tr><td>B200 hits $5.50 high</td><td class="num pct">78.0%</td><td class="num">$33</td><td class="num">$33</td><td class="num up">+36.5</td></tr>
+    <tr><td>B200 hits $4.30 low</td><td class="num pct">59.5%</td><td class="num">$102</td><td class="num">$47</td><td class="num up">+32.5</td></tr>
+
+    <tr><td colspan="5"><strong>Regulation and operations</strong></td></tr>
+    <tr><td>AI data center moratorium passed before 2027 &nbsp; <a href="https://polymarket.com/event/ai-data-center-moratorium-passed-before-2027">link</a></td><td class="num pct">91.9%</td><td class="num">$49,003</td><td class="num">$114</td><td class="num down">−1.3</td></tr>
+    <tr><td>Fewer than 2 ChatGPT outages in May &nbsp; <a href="https://polymarket.com/event/of-chatgpt-outage-days-in-may-2026">link</a></td><td class="num pct">27.5%</td><td class="num">$5,656</td><td class="num">$20</td><td class="num up">+0.5</td></tr>
+  </tbody>
+</table>
+
+<p style="font-size:13px;color:var(--ink-faint);">Markets sourced from Polymarket Gamma API on 2026-05-09. Outcome prices are interpreted as implied probabilities. The AI data center moratorium market is illiquid (24h volume below $200) and the 91.9% Yes price should be read as price drift, not consensus. All other markets above show meaningful weekly turnover.</p>
+
+<footer>
+  <p>Generated 2026-05-09. Data: <a href="https://gamma-api.polymarket.com">Polymarket Gamma API</a>. Filter: events tagged AI, openai, chatgpt, llm, artificial-intelligence, nvidia. Price changes are 24-hour deltas, in percentage points.</p>
+</footer>
+
+</div>
+<script>
+  const buttons = document.querySelectorAll('.toggle button');
+  const root = document.documentElement;
+  const apply = (mode) => {
+    if (mode === 'system') {
+      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    } else {
+      root.setAttribute('data-theme', mode);
+    }
+    buttons.forEach(b => b.setAttribute('aria-pressed', b.dataset.themeSet === mode ? 'true' : 'false'));
+    try { localStorage.setItem('themeMode', mode); } catch(e) {}
+  };
+  buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet)));
+  try {
+    const saved = localStorage.getItem('themeMode');
+    if (saved) apply(saved);
+  } catch(e) {}
+</script>
+</body>
+</html>

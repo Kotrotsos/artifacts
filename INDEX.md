@@ -73,3 +73,4 @@
 | 2026-05-09 | claude-plugins | reports | [demo-easings.html](projects/claude-plugins/reports/demo-easings.html) | Live demo of ask-visual easing-pick form, three CSS-animated cards |
 | 2026-05-09 | claude-plugins | reports | [README.html](projects/claude-plugins/reports/README.html) | ask-visual plugin README rendered as standalone HTML |
 | 2026-05-09 | claude-plugins | reports | [index.html](projects/claude-plugins/reports/index.html) | nxtphaseai marketplace landing page listing all plugins |
+| 2026-05-09 | content | reports | [polymarket-ai-brief.html](projects/content/reports/polymarket-ai-brief.html) | Polymarket AI prediction markets brief, May 9 2026, top 10 markets and weekly narrative signals |
