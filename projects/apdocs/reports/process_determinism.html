@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APDOCS — Process &amp; Determinism Map</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff; --fg: #1a1a1a; --muted: #6a6a6a;
+    --border: #e0e0e0; --hover: #f4f4f4;
+    --neutral-bg: #f8f8f8; --code-bg: #f4f4f4;
+    --det: #166534; --det-bg: #f0fdf4;
+    --hyb: #92400e; --hyb-bg: #fef3c7;
+    --nond: #7c2d12; --nond-bg: #ffedd5;
+    --accent: #1f6feb;
+    --critical: #991b1b; --critical-bg: #fef2f2;
+  }
+  [data-theme="dark"] {
+    --bg: #0f1115; --fg: #e8e8e8; --muted: #9a9a9a;
+    --border: #2a2d34; --hover: #1a1d23;
+    --neutral-bg: #181a1f; --code-bg: #1a1d23;
+    --det: #4ade80; --det-bg: #102218;
+    --hyb: #fbbf24; --hyb-bg: #2b2010;
+    --nond: #fb923c; --nond-bg: #2b1d10;
+    --accent: #58a6ff;
+    --critical: #f87171; --critical-bg: #2b1414;
+  }
+  @media (prefers-color-scheme: dark) {
+    [data-theme="system"], html:not([data-theme]) {
+      --bg: #0f1115; --fg: #e8e8e8; --muted: #9a9a9a;
+      --border: #2a2d34; --hover: #1a1d23;
+      --neutral-bg: #181a1f; --code-bg: #1a1d23;
+      --det: #4ade80; --det-bg: #102218;
+      --hyb: #fbbf24; --hyb-bg: #2b2010;
+      --nond: #fb923c; --nond-bg: #2b1d10;
+      --accent: #58a6ff;
+      --critical: #f87171; --critical-bg: #2b1414;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px; line-height: 1.55;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 24px 80px; }
+  h1 { font-size: 26px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  h2 { font-size: 19px; margin: 36px 0 14px; padding-top: 14px; border-top: 1px solid var(--border); letter-spacing: -0.01em; }
+  h3 { font-size: 14px; margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .lede { color: var(--muted); margin: 0 0 24px; max-width: 880px; }
+  code, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .theme-toggle {
+    display: inline-flex; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+  }
+  .theme-toggle button {
+    background: transparent; border: 0; color: var(--muted);
+    padding: 6px 12px; cursor: pointer; font-size: 12px;
+    border-right: 1px solid var(--border); font-family: inherit;
+  }
+  .theme-toggle button:last-child { border-right: 0; }
+  .theme-toggle button.active { background: var(--neutral-bg); color: var(--fg); }
+  .theme-toggle button:hover { background: var(--hover); }
+
+  /* Legend */
+  .legend {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin: 16px 0 28px;
+  }
+  @media (max-width: 760px) { .legend { grid-template-columns: 1fr; } }
+  .legend-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px;
+    background: var(--neutral-bg);
+  }
+  .legend-tag {
+    display: inline-block; padding: 3px 10px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .det  .legend-tag { background: var(--det-bg);  color: var(--det); }
+  .hyb  .legend-tag { background: var(--hyb-bg);  color: var(--hyb); }
+  .nond .legend-tag { background: var(--nond-bg); color: var(--nond); }
+  .legend-item p { margin: 0; font-size: 13px; }
+
+  /* Pipeline */
+  .pipeline { display: flex; flex-direction: column; gap: 16px; }
+  .phase {
+    border: 1px solid var(--border); border-radius: 10px; background: var(--neutral-bg);
+    padding: 0; overflow: hidden;
+  }
+  .phase-head {
+    display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+    background: var(--neutral-bg);
+  }
+  .phase-letter {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent); color: white; font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .phase-title { font-size: 16px; font-weight: 600; }
+  .phase-sub { color: var(--muted); font-size: 12px; }
+
+  .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  @media (max-width: 900px) { .steps { grid-template-columns: 1fr; } }
+  .step {
+    padding: 14px 18px; border-top: 1px solid var(--border);
+  }
+  .step:nth-child(odd) { border-right: 1px solid var(--border); }
+  @media (max-width: 900px) { .step:nth-child(odd) { border-right: 0; } }
+  .step-head {
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .step-name { font-weight: 600; font-size: 14px; }
+  .tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .tag.det  { background: var(--det-bg);  color: var(--det); }
+  .tag.hyb  { background: var(--hyb-bg);  color: var(--hyb); }
+  .tag.nond { background: var(--nond-bg); color: var(--nond); }
+  .step-detail { color: var(--muted); font-size: 13px; margin: 4px 0 8px; }
+  .step-meta {
+    display: grid; grid-template-columns: 96px 1fr; gap: 4px 12px;
+    font-size: 12px; margin-top: 8px;
+  }
+  .step-meta dt { color: var(--muted); font-weight: 500; }
+  .step-meta dd { margin: 0; }
+  .step-meta dd .mono { background: var(--code-bg); padding: 1px 5px; border-radius: 3px; font-size: 11px; }
+
+  /* Risk callout */
+  .risk {
+    margin-top: 8px; padding: 8px 12px; border-radius: 6px;
+    background: var(--critical-bg); border-left: 3px solid var(--critical);
+    font-size: 12px; color: var(--critical);
+  }
+  .risk strong { color: var(--critical); }
+
+  /* Architecture rule callouts */
+  .rules {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px;
+  }
+  @media (max-width: 900px) { .rules { grid-template-columns: 1fr; } }
+  .rule {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px;
+    background: var(--neutral-bg);
+  }
+  .rule-num {
+    display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color: white; font-weight: 700; font-size: 11px;
+    text-align: center; line-height: 22px; margin-right: 8px;
+  }
+  .rule h3 { color: var(--fg); margin: 0 0 6px; text-transform: none; letter-spacing: -0.01em; font-size: 13px; }
+  .rule p { margin: 0; font-size: 12px; color: var(--muted); }
+
+  /* Tally */
+  .tally {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0 0;
+  }
+  @media (max-width: 760px) { .tally { grid-template-columns: repeat(2, 1fr); } }
+  .tally-item {
+    border: 1px solid var(--border); border-radius: 8px; padding: 14px;
+    background: var(--neutral-bg);
+  }
+  .tally-item .v { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .tally-item.det  .v { color: var(--det); }
+  .tally-item.hyb  .v { color: var(--hyb); }
+  .tally-item.nond .v { color: var(--nond); }
+  .tally-item .k { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* Skill block */
+  .skill-block {
+    background: var(--neutral-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 22px; margin-top: 28px;
+  }
+  .skill-block h2 { margin-top: 0; padding-top: 0; border-top: 0; }
+  .skill-tree {
+    background: var(--code-bg); padding: 14px 16px; border-radius: 6px;
+    font-family: ui-monospace, monospace; font-size: 12px; line-height: 1.6;
+    overflow-x: auto; white-space: pre;
+  }
+  .skill-tree .h { color: var(--muted); }
+  .skill-tree .a { color: var(--accent); }
+
+  footer {
+    margin-top: 50px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar">
+  <div>
+    <h1>APDOCS — Process &amp; Determinism Map</h1>
+    <p class="lede">Aviation Back-to-Birth document review is a regulatory workflow. Every claim the system makes must be traceable to either a deterministic rule or an explicitly-flagged AI judgement. This page maps each pipeline step to its determinism profile.</p>
+  </div>
+  <div class="theme-toggle" role="group" aria-label="Theme">
+    <button data-theme-set="light" type="button">Light</button>
+    <button data-theme-set="dark" type="button">Dark</button>
+    <button data-theme-set="system" type="button" class="active">System</button>
+  </div>
+</div>
+
+<!-- Legend -->
+<h3>Determinism levels</h3>
+<div class="legend">
+  <div class="legend-item det">
+    <span class="legend-tag">Deterministic</span>
+    <p>Same input always produces the same output. Rule-based, repeatable, audit-friendly. Suitable for compliance evidence. Implemented in code, inspectable in source control.</p>
+  </div>
+  <div class="legend-item hyb">
+    <span class="legend-tag">Hybrid</span>
+    <p>Deterministic structure operating on noisy or imperfect input (OCR text, fuzzy matching, threshold-driven). Output is repeatable for a given input but the input itself may carry errors that propagate. Requires a confidence score and downstream verification.</p>
+  </div>
+  <div class="legend-item nond">
+    <span class="legend-tag">Non-deterministic</span>
+    <p>Claude / LLM judgement. Output may vary across runs even with identical input. Used where deterministic rules cannot apply (free-form text, fuzzy semantic match, vision tasks). Every output must be reviewable, explainable, and either confirmed by a human or by a deterministic counter-check.</p>
+  </div>
+</div>
+
+<!-- Tally -->
+<h3>Tally across the pipeline</h3>
+<div class="tally">
+  <div class="tally-item det"><div class="v">14</div><div class="k">Deterministic steps</div></div>
+  <div class="tally-item hyb"><div class="v">5</div><div class="k">Hybrid steps</div></div>
+  <div class="tally-item nond"><div class="v">7</div><div class="k">Non-deterministic steps</div></div>
+  <div class="tally-item"><div class="v">26</div><div class="k">Total pipeline operations</div></div>
+</div>
+
+<h2>The pipeline (9 phases, 26 operations)</h2>
+
+<div class="pipeline">
+
+<!-- ============ PHASE A ============ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-letter">A</div>
+    <div>
+      <div class="phase-title">Package ingestion</div>
+      <div class="phase-sub">Walk the source tree. Map folder + filename signals to lifecycle stages and document slots.</div>
+    </div>
+  </div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">A1. File-system walk</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Recursive directory traversal, file hashing, size and extension recording.</div>
+      <dl class="step-meta">
+        <dt>Implementation</dt><dd><span class="mono">build_join.py</span> — Python <span class="mono">pathlib.rglob</span></dd>
+        <dt>Why det</dt><dd>OS-level operation, no judgement involved</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">A2. Stage classification from folder name</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Parse <span class="mono">2. 994738 SV TSN 11,343 (IHI)</span> into kind=SV, ESN=994738, TSN=11343, vendor=IHI.</div>
+      <dl class="step-meta">
+        <dt>Implementation</dt><dd>Regex <span class="mono">STAGE_RX</span>, <span class="mono">TSN_RX</span>, <span class="mono">VENDOR_RX</span></dd>
+        <dt>Risk</dt><dd>Depends on APOC's naming convention being followed. Misnamed folders fall through to LOOSE bucket.</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">A3. Doc-slot from filename prefix</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Numeric prefix maps to canonical slot: <span class="mono">1.</span>=Certification, <span class="mono">3.</span>=LLP Status, <span class="mono">11.</span>=Operation Statement, etc.</div>
+      <dl class="step-meta">
+        <dt>Coverage</dt><dd>~23% of files classifiable by filename alone</dd>
+        <dt>Risk</dt><dd>The <span class="mono">(dragged)</span> misfile shows mismatch between filename declared stage and folder location. Detection is itself deterministic.</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">A4. Doc-type fallback for unclassified files</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">For the 77% with no slot prefix, OCR the first page and ask Claude to classify against a known type catalogue. Returns type + confidence.</div>
+      <dl class="step-meta">
+        <dt>Why non-det</dt><dd>Free-form text classification; LLM may pick differently across runs on edge cases</dd>
+        <dt>Mitigation</dt><dd>Require confidence ≥ 0.8 to auto-accept. Below that, route to OIL for human review.</dd>
+      </dl>
+      <div class="risk"><strong>Risk:</strong> Mis-classification routes a document to the wrong slot, causing false "missing-doc" flags downstream. Always pair with deterministic counter-check (e.g. "if slot 1 missing for an SV stage, but a doc classified as Certification is in the folder, prefer the classified one").</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ PHASE B ============ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-letter">B</div>
+    <div>
+      <div class="phase-title">Text extraction</div>
+      <div class="phase-sub">Get text out of PDFs. Native text-layer wherever possible, OCR otherwise.</div>
+    </div>
+  </div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">B1. Text-layer PDF extraction</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">If the PDF has a native text layer, extract via <span class="mono">pdftotext -layout</span>. 994738's LLP Trace dossiers were assembled in a system, so they have clean text.</div>
+      <dl class="step-meta">
+        <dt>Coverage</dt><dd>~10% of files (the system-generated dossiers + a few digital docs)</dd>
+        <dt>Tool</dt><dd>poppler <span class="mono">pdftotext</span>, deterministic</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">B2. Rasterize and Tesseract OCR</span>
+        <span class="tag hyb">Hybrid</span>
+      </div>
+      <div class="step-detail">For image-only PDFs (~80%), <span class="mono">pdftoppm -r 300 -gray</span> then <span class="mono">tesseract --psm 6</span>. Same input always produces the same output, but OCR introduces character-level noise.</div>
+      <dl class="step-meta">
+        <dt>Throughput</dt><dd>~16s per dossier; 320s for 20 dossiers (120 pages)</dd>
+        <dt>Known errors</dt><dd>0↔O, 5↔S, 1↔I↔l, J↔I, dropped leading characters (e.g. <span class="mono">DD763172</span>→<span class="mono">D763172</span>)</dd>
+        <dt>Why hybrid</dt><dd>Process is repeatable but input fidelity (scan quality, layout) determines accuracy</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">B3. OCR fallback for poor-quality scans</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">When Tesseract confidence is below threshold or output is gibberish, escalate to Claude vision. Slower and costs tokens, but recovers text from low-contrast / handwritten / stamped pages where Tesseract fails.</div>
+      <dl class="step-meta">
+        <dt>When invoked</dt><dd>Tesseract page confidence &lt; 70% or known-fields not found in regex pass</dd>
+        <dt>Cost</dt><dd>~€0.05-0.15 per page vs €0 for Tesseract</dd>
+        <dt>Why non-det</dt><dd>Vision model output may vary across runs; same scan can produce slightly different text</dd>
+      </dl>
+      <div class="risk"><strong>Risk:</strong> Field values produced by vision LLM are not citable evidence on their own. Always render an image crop alongside the extracted value in the UI, so a human can verify.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">B4. Date / signature / stamp recovery</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">Stylised dates ("2b AgR20}" out of Tesseract → "26 Apr 2017"), signature presence, stamp presence. Vision LLM only.</div>
+      <dl class="step-meta">
+        <dt>Why non-det</dt><dd>Visual judgement, no rule-based shortcut for handwriting / stylised glyphs</dd>
+        <dt>Mitigation</dt><dd>Output a binary present/absent + a confidence + an image crop. If signature missing or stamp missing → mandatory OIL item, never auto-resolved.</dd>
+      </dl>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ PHASE C ============ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-letter">C</div>
+    <div>
+      <div class="phase-title">Field extraction</div>
+      <div class="phase-sub">Pull structured values (PN, SN, TSN, CSN, dates, MSN, registration) from text.</div>
+    </div>
+  </div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">C1. Anchor-based regex on clean text</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">For 994738, anchor on engine ESN and known part PN (from filename), split before/after to recover engine TSN/CSN, dates, reason. 180 rows parsed, 0 inconsistencies.</div>
+      <dl class="step-meta">
+        <dt>Implementation</dt><dd><span class="mono">build_tree.py</span> &middot; <span class="mono">parse_row()</span></dd>
+        <dt>Why det</dt><dd>Pure regex, anchored on stable identifiers</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">C2. Tokenised regex on OCR'd text</span>
+        <span class="tag hyb">Hybrid</span>
+      </div>
+      <div class="step-detail">For 779125, OCR adds prefix junk (<span class="mono">_</span>, <span class="mono">,</span>) and inconsistent spacing. Tokenize, find known item codes (211, 213, 221...) anywhere in first 3 tokens, then look for PN-shaped and SN-shaped tokens.</div>
+      <dl class="step-meta">
+        <dt>Why hybrid</dt><dd>Deterministic algorithm, but the input text has OCR noise that may cause misses or false positives</dd>
+        <dt>Counter-measure</dt><dd>Each LLP appears in multiple snapshots; majority-vote across dossiers</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">C3. LLM extraction for irregular forms</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">For Bills of Sale, IACS letters, and free-form Operation Statements, regex breaks down. Send the OCR'd text + a typed JSON schema to Claude, validate the JSON, retry if invalid.</div>
+      <dl class="step-meta">
+        <dt>When invoked</dt><dd>Doc type ∈ {BoS, IACS, Operation Statement, Operator Letter}</dd>
+        <dt>Mitigation</dt><dd>Schema validation rejects malformed responses. Two-pass: extract, then verify by re-asking the model to cite the source line for each field.</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">C4. SN canonicalisation for OCR drift</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Lowercase, strip dashes, fold confusable characters: O→0, S→5, I→1, L→1, J→1, B→8, Z→2. Used only for matching, never for display.</div>
+      <dl class="step-meta">
+        <dt>Risk</dt><dd>If a real PN happens to differ only by a confusable character, canonicalisation may merge two distinct parts. Counter: also compare un-canonicalised PN; require both forms to agree before declaring a match.</dd>
+      </dl>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ PHASE D ============ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-letter">D</div>
+    <div>
+      <div class="phase-title">Tree construction</div>
+      <div class="phase-sub">From extracted fields, build the engine timeline and per-LLP histories.</div>
+    </div>
+  </div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">D1. Engine timeline assembly</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Group extracted rows by engine TSN, sort events at same TSN by reason precedence (DE-REG before NEW REG, EOL before INSTALL). Open stage on INSTALL/NEW REG, close on EOL/DE-REG/SV-EOL/REMOVAL.</div>
+      <dl class="step-meta">
+        <dt>Why det</dt><dd>Pure data structure operations on validated input</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">D2. Cross-LLP consistency check</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">For each (engine_TSN, reason) pair, every LLP that has a row should agree on operator, registration, MSN. Disagreement = data integrity issue.</div>
+      <dl class="step-meta">
+        <dt>Result on 994738</dt><dd>180 rows checked, 0 inconsistencies</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">D3. Snapshot reconciliation across dossiers</span>
+        <span class="tag hyb">Hybrid</span>
+      </div>
+      <div class="step-detail">For 779125, 20 dossiers each contain status snapshots. Group by (issue_date, A/C, position). Aggregate metadata by majority vote (Counter.most_common(1)).</div>
+      <dl class="step-meta">
+        <dt>Why hybrid</dt><dd>OCR errors mean different dossiers report slightly different values for the same field. Majority vote heals most cases. Edge cases require human review.</dd>
+      </dl>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ PHASE E ============ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-letter">E</div>
+    <div>
+      <div class="phase-title">Swap detection</div>
+      <div class="phase-sub">When the same LLP position carries a different SN at different snapshots, detect and confirm.</div>
+    </div>
+  </div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">E1. Per-position SN comparison</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">For each item code, list all (snapshot, PN, SN) tuples. If the unique SN set has size &gt; 1, candidate swap.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">E2. Levenshtein-based OCR-noise filter</span>
+        <span class="tag hyb">Hybrid</span>
+      </div>
+      <div class="step-detail">Canonicalise SN strings, compute pairwise Levenshtein distance. Distance ≤ 2 (after canonicalisation) = OCR artifact. Distance &gt; 2 = real swap. Found 3 real swaps + 5 artifacts in 779125.</div>
+      <dl class="step-meta">
+        <dt>Why hybrid</dt><dd>Threshold of 2 is a calibrated judgement, not a derived constant</dd>
+        <dt>Calibration</dt><dd>Tuned on the 779125 dataset; should be re-tuned per OCR quality and per part SN length distribution</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">E3. Swap-event timing inference</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">Given known SN at snapshot T1 and different SN at T2, the swap happened in some shop visit between them. The exact SV is determined by reading the SV's LLP Status and matching SNs. Until that's done, "during SV #N or SV #N+1" is the answer.</div>
+      <dl class="step-meta">
+        <dt>Why non-det</dt><dd>Sometimes shop reports are ambiguous about which removal/install happened on which date; LLM has to read free text</dd>
+        <dt>Mitigation</dt><dd>If multiple SVs are candidates, raise as OIL item and let a human pick</dd>
+      </dl>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ PHASE F ============ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-letter">F</div>
+    <div>
+      <div class="phase-title">Validation</div>
+      <div class="phase-sub">Run rule families. Most are deterministic. The few that aren't are explicitly flagged.</div>
+    </div>
+  </div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F1. TSN/CSN monotonicity</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">For any LLP across the timeline, TSN and CSN must never decrease. If they do, data error.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F2. Operator handover continuity</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Off-wing TSN of operator N must equal on-wing TSN of operator N+1. Gaps = unaccounted operating period = compliance issue.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F3. Doc-slot completeness per stage kind</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">SV folder requires slots {1,2,3,4,5,6}. OP folder requires {1,3,4,5,11}. MFG requires {1,2,3}. Anything missing → flag.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F4. LLP-dossier vs LLP-Status diff</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Set of LLPs in any SV's LLP Status should equal set of dossiers in <span class="mono">0. LLP Trace/</span>. Found the missing TURBINE REAR FRAME in 994738 by exactly this rule.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F5. Cross-ESN contamination</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Filename ESN must match package ESN. Catches the 779114 / 779352 misfiles inside the 779125 package.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F6. Filename-stage vs folder-stage</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Filename declares "OP TSN 51,434" but file lives in <span class="mono">/6. SV TSN 48,986/</span> → flag <span class="mono">misfile</span>. The <span class="mono">(dragged)</span> annotation in the filename is icing.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F7. IACS wording compliance</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">Spec slide 8: "Standard wording (or acceptable variation) referencing Chicago Convention". The acceptable variations are not enumerated. Claude reads the IACS, scores wording compliance, cites the deviation if any.</div>
+      <dl class="step-meta">
+        <dt>Why non-det</dt><dd>Natural language judgement; "acceptable" is a fuzzy concept the OEM and the carrier and the lessor each interpret differently</dd>
+        <dt>Mitigation</dt><dd>Build a "known acceptable variations" list from successful prior validations. Anything new escalates to OIL with the LLM's analysis attached.</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F8. Re-registration vs swap distinction</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">994738 at TSN 1,006: TI-BCG → N936TA, both on TACA. Looks like an aircraft swap by a naïve rule. Actually a US Federal re-registration of the same airframe, same MSN. Distinguishing this requires reading the operator letter.</div>
+      <dl class="step-meta">
+        <dt>Why non-det</dt><dd>The signal is in free-text justification documents</dd>
+        <dt>Mitigation</dt><dd>If MSN unchanged across the transition, treat as re-reg by default. Only escalate if MSN also changes.</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F9. Thrust rerate authorisation</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">994738 changed E6 (17,390 lbf) → E7 (18,820 lbf) → E6 across operators. Each transition needs an SB / Service Bulletin authorising the rerate. Detecting the rerate is deterministic; detecting the SB is non-deterministic.</div>
+      <dl class="step-meta">
+        <dt>Mitigation</dt><dd>If SB cited in the operator certification text, accept. Otherwise, mandatory OIL item.</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">F10. PN family change requires SB / AD</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Detecting that PN family changed (336-031-632-0 → 338-061-627-0 for 779125 TURBINE REAR FRAME) is deterministic. The follow-up "is there an SB or AD authorising it?" is a search task; raise OIL if not found.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ PHASE G ============ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-letter">G</div>
+    <div>
+      <div class="phase-title">Reporting &amp; OIL</div>
+      <div class="phase-sub">Build the Open Item List and ranking. Tree visualisation. Trace Pack.</div>
+    </div>
+  </div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">G1. OIL assembly</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">Collect all flags from F1-F10 into a structured list. Each item: rule_id, severity, target (file/component/stage), evidence path.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">G2. Severity ranking</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">Items are tiered as Critical / High / Medium / Low. The tiering rules are 80% deterministic (e.g. missing certificate = Critical), but edge cases (e.g. SN OCR ambiguity) need judgement.</div>
+      <dl class="step-meta">
+        <dt>Mitigation</dt><dd>Default tiering by deterministic rule. Allow LLM to upgrade severity, never downgrade. All upgrades logged with rationale.</dd>
+      </dl>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">G3. Tree rendering</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">JSON → HTML / SVG / ASCII. Pure layout.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">G4. Trace Pack PDF cover summary</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">"This engine flew 27,547 hours over 15 years across 3 operators. All LLPs are factory-original. One dossier is missing." Free-form prose, generated by Claude from the deterministic data.</div>
+      <dl class="step-meta">
+        <dt>Mitigation</dt><dd>Cite every numeric claim back to source. The summary is rendering, the underlying data is the evidence.</dd>
+      </dl>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ PHASE H ============ -->
+<div class="phase">
+  <div class="phase-head">
+    <div class="phase-letter">H</div>
+    <div>
+      <div class="phase-title">Smart Search</div>
+      <div class="phase-sub">"IACS for PN 10-210101-006 of MSN 1451 in year 2021"</div>
+    </div>
+  </div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">H1. Structured query (PN, SN, ESN, MSN, year, doc type)</span>
+        <span class="tag det">Deterministic</span>
+      </div>
+      <div class="step-detail">When the user gives a structured query, hit the index directly. SQL or Cognitive Search filter.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-head">
+        <span class="step-name">H2. Natural-language query</span>
+        <span class="tag nond">Non-deterministic</span>
+      </div>
+      <div class="step-detail">"Show me all the engines that had a Turbine Rear Frame swap between 2018 and 2022." Claude parses, generates a structured query, runs it deterministically, returns the result.</div>
+      <dl class="step-meta">
+        <dt>Mitigation</dt><dd>Always show the parsed structured query to the user before executing. They can correct it.</dd>
+      </dl>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /pipeline -->
+
+<!-- ============ Architecture rules ============ -->
+<h2>Architectural rules I converged on</h2>
+
+<div class="rules">
+  <div class="rule">
+    <h3><span class="rule-num">1</span>Deterministic by default</h3>
+    <p>If a deterministic rule can solve it, use the rule. Reach for an LLM only when no rule applies. Cheaper, faster, auditable, and the result is identical across re-runs (which matters for compliance evidence).</p>
+  </div>
+  <div class="rule">
+    <h3><span class="rule-num">2</span>Every LLM output is a hypothesis, not a fact</h3>
+    <p>Claude's output is a candidate. It must be either confirmed by a human reviewer or by a deterministic counter-check before becoming part of the official record. Every LLM-derived field carries provenance and confidence.</p>
+  </div>
+  <div class="rule">
+    <h3><span class="rule-num">3</span>Always cite source</h3>
+    <p>Every extracted value (PN, SN, TSN, date) must point back to a specific (file, page, region). The UI shows the image crop next to the value. This makes reviewer verification a 5-second click instead of a 5-minute hunt.</p>
+  </div>
+</div>
+
+<div class="rules" style="margin-top: 12px;">
+  <div class="rule">
+    <h3><span class="rule-num">4</span>LLM never downgrades severity</h3>
+    <p>Deterministic rules raise flags at a default severity. The LLM may upgrade severity (e.g. "this is actually Critical because the missing IACS covers the operator change") but never downgrade. Reasons for upgrades are logged.</p>
+  </div>
+  <div class="rule">
+    <h3><span class="rule-num">5</span>Heal OCR by majority vote</h3>
+    <p>Each fact (PN, SN, TSN at date) appears in multiple documents across the package. Aggregate by majority across observations. This turns noisy OCR into clean structured data without needing perfect OCR.</p>
+  </div>
+  <div class="rule">
+    <h3><span class="rule-num">6</span>Cache OCR aggressively</h3>
+    <p>OCR is a one-time cost per file. Once a file's <span class="mono">.ocr.txt</span> sidecar exists, never re-OCR unless the source PDF hash changes. This makes the system idempotent and predictable.</p>
+  </div>
+</div>
+
+<!-- ============ Skill block ============ -->
+<div class="skill-block">
+<h2>The skill being built</h2>
+<p class="lede">All of the above is being consolidated into a Claude Code skill at <span class="mono">.claude/skills/apdocs/</span>. The skill encodes the doc-type catalogue, the validation rule set, the determinism map, the procedure playbooks, and references the working scripts under <span class="mono">scripts/</span>.</p>
+
+<h3>Skill structure</h3>
+<div class="skill-tree"><span class="h">.claude/skills/apdocs/</span>
+├── <span class="a">SKILL.md</span>                Activation, when-to-use, primary procedures, determinism contract
+├── <span class="a">REFERENCE.md</span>            Doc-type catalogue, validation rules, file structure conventions
+├── <span class="a">DETERMINISM.md</span>          Per-step determinism profile (this page, condensed)
+├── scripts/
+│   ├── build_join.py        File-system inventory and stage classification
+│   ├── ocr_pdfs.py          Batch OCR with sidecar caching
+│   ├── build_tree_text.py   Tree from text-layer dossiers (994738-style)
+│   ├── build_tree_ocr.py    Tree from OCR'd snapshots (779125-style)
+│   ├── render_tree.py       HTML / ASCII rendering
+│   └── validate.py          F1-F10 rule engine
+└── examples/
+    ├── ESN_994738_tree.json   Reference output (text-PDF case)
+    ├── ESN_779125_tree.json   Reference output (OCR case with swaps)
+    └── component_trees.html   Reference HTML output</div>
+</div>
+
+<footer>
+Generated 2026-05-09 from the working APDOCS pipeline. Tally: 14 deterministic, 5 hybrid, 7 non-deterministic operations across 9 phases. The split reflects an architectural commitment to auditability over convenience: an LLM is only invoked when no rule can do the job, and every LLM output is reviewable.
+</footer>
+
+</div><!-- /wrap -->
+
+<script>
+  (function(){
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-theme-set]');
+    const stored = localStorage.getItem('apdocs-theme') || 'system';
+    function apply(theme) {
+      if (theme === 'system') root.removeAttribute('data-theme');
+      else root.setAttribute('data-theme', theme);
+      buttons.forEach(b => b.classList.toggle('active', b.dataset.themeSet === theme));
+      localStorage.setItem('apdocs-theme', theme);
+    }
+    buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet)));
+    apply(stored);
+  })();
+</script>
+
+</body>
+</html>
