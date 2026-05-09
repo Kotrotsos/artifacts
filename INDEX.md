@@ -71,3 +71,4 @@
 | 2026-05-09 | apdocs | reports | [component_trees.html](projects/apdocs/reports/component_trees.html) | Component trees for ESN 994738 and 779125 with swap detection and red flags |
 | 2026-05-09 | apdocs | reports | [process_determinism.html](projects/apdocs/reports/process_determinism.html) | Process and determinism map for the APDOCS pipeline (9 phases, 26 operations) |
 | 2026-05-09 | claude-plugins | reports | [demo-easings.html](projects/claude-plugins/reports/demo-easings.html) | Live demo of ask-visual easing-pick form, three CSS-animated cards |
+| 2026-05-09 | claude-plugins | reports | [README.html](projects/claude-plugins/reports/README.html) | ask-visual plugin README rendered as standalone HTML |

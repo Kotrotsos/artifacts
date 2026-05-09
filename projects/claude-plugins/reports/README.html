@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ask-visual: visual AskUserQuestion for Claude Code</title>
+<style>
+  :root {
+    --bg: #f7f6f2;
+    --panel: #ffffff;
+    --fg: #1a1a1a;
+    --fg-soft: #6a6862;
+    --rule: rgba(17,17,16,.10);
+    --code-bg: #f1f0ec;
+    --link: #2c5aa0;
+    --pill: #eef1f7;
+    --pill-fg: #1a2649;
+  }
+  :root[data-theme="dark"] {
+    --bg: #14130f;
+    --panel: #1f1d18;
+    --fg: #ece9e0;
+    --fg-soft: #9a958a;
+    --rule: rgba(255,255,255,.08);
+    --code-bg: #2a2620;
+    --link: #8aaee0;
+    --pill: #20283a;
+    --pill-fg: #b6c4dd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14130f; --panel: #1f1d18; --fg: #ece9e0; --fg-soft: #9a958a;
+      --rule: rgba(255,255,255,.08); --code-bg: #2a2620;
+      --link: #8aaee0; --pill: #20283a; --pill-fg: #b6c4dd;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg); color: var(--fg);
+    line-height: 1.65;
+    padding: 48px 24px;
+  }
+  main { max-width: 760px; margin: 0 auto; }
+  a { color: var(--link); }
+
+  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 28px; }
+  h1 { font-size: 32px; letter-spacing: -.02em; margin: 0 0 6px; }
+  h2 { font-size: 20px; margin: 36px 0 12px; letter-spacing: -.01em; border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
+  h3 { font-size: 15px; margin: 24px 0 8px; color: var(--fg); }
+  p { margin: 0 0 14px; }
+  ul, ol { padding-left: 22px; margin: 0 0 16px; }
+  li { margin-bottom: 6px; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; background: var(--code-bg); padding: 1px 6px; border-radius: 4px; }
+  pre { background: var(--code-bg); padding: 16px; border-radius: 8px; overflow-x: auto; line-height: 1.55; font-size: 12.5px; margin: 0 0 18px; }
+  pre code { background: transparent; padding: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 0 0 18px; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font-weight: 600; color: var(--fg-soft); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+
+  .tagline { color: var(--fg-soft); font-size: 16px; margin-bottom: 0; max-width: 56ch; }
+  .meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 28px; }
+  .meta .pill { background: var(--pill); color: var(--pill-fg); font-size: 11px; padding: 3px 10px; border-radius: 999px; font-family: ui-monospace, monospace; }
+
+  .theme-switch { display: inline-flex; gap: 4px; background: var(--code-bg); padding: 4px; border-radius: 8px; flex-shrink: 0; }
+  .theme-switch button {
+    background: transparent; border: 0; color: var(--fg-soft);
+    font: inherit; font-size: 12px; padding: 5px 10px; border-radius: 5px;
+    cursor: pointer;
+  }
+  .theme-switch button[aria-pressed="true"] { background: var(--panel); color: var(--fg); }
+
+  .callout {
+    border-left: 3px solid var(--link);
+    background: var(--panel);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 0 0 18px;
+    font-size: 14px;
+    color: var(--fg);
+  }
+  .callout strong { color: var(--fg); }
+
+  footer { margin-top: 48px; padding-top: 20px; border-top: 1px solid var(--rule); color: var(--fg-soft); font-size: 12px; }
+
+  @media print {
+    body { background: white; color: black; padding: 28px; font-size: 11pt; }
+    .theme-switch { display: none; }
+    h1 { font-size: 22pt; }
+    h2 { font-size: 14pt; }
+    pre, code, .callout, .meta .pill { background: #f4f4f4; color: black; }
+    a { color: black; text-decoration: underline; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <div>
+    <h1>ask-visual</h1>
+    <p class="tagline">Visual AskUserQuestion. The agent writes a real HTML form, the user picks/types/drags/clicks in their browser, the answer flows back as JSON.</p>
+  </div>
+  <div class="theme-switch" role="group" aria-label="Theme">
+    <button data-theme-set="light" aria-pressed="false">Light</button>
+    <button data-theme-set="dark" aria-pressed="false">Dark</button>
+    <button data-theme-set="system" aria-pressed="true">System</button>
+  </div>
+</header>
+
+<div class="meta">
+  <span class="pill">v0.1.0</span>
+  <span class="pill">Python stdlib only</span>
+  <span class="pill">~140 lines</span>
+  <span class="pill">MIT</span>
+</div>
+
+<p>Instead of an ASCII menu or a one-line text question, the agent writes a real HTML form with cards, sliders, color pickers, drag-to-reorder, anything the browser supports. The plugin spins up a tiny one-shot localhost web server, opens it in the user's default browser, the user picks/types/drags/clicks, the form is POSTed back, the script prints the result as JSON to stdout, and the server exits. No daemon, no cleanup.</p>
+
+<h2>Install</h2>
+
+<p>Through the marketplace:</p>
+<pre><code>claude /plugin marketplace add nxtphaseai/claude-plugins
+claude /plugin install ask-visual@nxtphaseai</code></pre>
+
+<p>Or manually, into the current project:</p>
+<pre><code>git clone &lt;this-repo&gt;
+bash plugins/ask-visual/install.sh           # into ./.claude/ of the current git repo
+bash plugins/ask-visual/install.sh --user    # user-wide into ~/.claude/</code></pre>
+
+<p>Restart Claude Code so the slash command loads. To remove:</p>
+<pre><code>bash plugins/ask-visual/install.sh --uninstall</code></pre>
+
+<h2>What it installs</h2>
+
+<table>
+  <thead><tr><th>Path</th><th>Role</th></tr></thead>
+  <tbody>
+    <tr><td><code>&lt;scope&gt;/commands/ask-visual.md</code></td><td>The <code>/ask-visual</code> slash command, the instructions the agent reads.</td></tr>
+    <tr><td><code>&lt;scope&gt;/bin/ask-visual.py</code></td><td>The HTTP server / form runner. Python stdlib only.</td></tr>
+  </tbody>
+</table>
+
+<h2>How the agent uses it</h2>
+
+<p>The agent writes the body of a form to a temp file (no <code>&lt;html&gt;</code>, <code>&lt;form&gt;</code>, or submit JS, those are wrapped on for it), then runs:</p>
+
+<pre><code>python3 .claude/bin/ask-visual.py /tmp/ask.html</code></pre>
+
+<p>The script:</p>
+<ol>
+  <li>Binds a random free port on <code>127.0.0.1</code>.</li>
+  <li>Opens that URL in the user's default browser.</li>
+  <li>Blocks until a <code>POST /submit</code> arrives.</li>
+  <li>Prints the form data as a single JSON object to stdout.</li>
+  <li>Exits.</li>
+</ol>
+
+<p>Inside the form, every <code>name</code>-bearing input is captured. The clicked button's <code>name</code> and <code>value</code> are included in the submission, so a card layout with one <code>&lt;button name="choice" value="card-a"&gt;</code> per card works out of the box, clicking the button picks the card and submits the form in one motion. Multi-select dropdowns return arrays.</p>
+
+<h2>Example</h2>
+
+<p>The agent wants to ask: "pick a card design and an accent color". It writes this to <code>/tmp/ask.html</code>:</p>
+
+<pre><code>&lt;h1&gt;Pick a card design and accent color&lt;/h1&gt;
+&lt;div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px"&gt;
+  &lt;div style="border:1px solid #ccc;border-radius:8px;padding:14px"&gt;
+    &lt;h3&gt;Minimal&lt;/h3&gt;
+    &lt;button name="card" value="minimal"&gt;Pick this&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div style="border:1px solid #ccc;border-radius:8px;padding:14px;
+              box-shadow:0 2px 8px rgba(0,0,0,.08)"&gt;
+    &lt;h3&gt;Lifted&lt;/h3&gt;
+    &lt;button name="card" value="lifted"&gt;Pick this&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div style="border:2px solid #1a1a1a;border-radius:8px;padding:14px"&gt;
+    &lt;h3&gt;Bold&lt;/h3&gt;
+    &lt;button name="card" value="bold"&gt;Pick this&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;label&gt;Accent color:
+  &lt;input type="color" name="accent" value="#1a1a1a"&gt;&lt;/label&gt;&lt;/p&gt;</code></pre>
+
+<p>The user clicks the "Lifted" card's button after picking a blue accent. stdout receives:</p>
+
+<pre><code>{"accent":"#2c5aa0","card":"lifted"}</code></pre>
+
+<p>The agent reads that and continues the task with the user's choice in hand. A live demo of this same pattern lives in <a href="./demo-easings.html">demo-easings.html</a>.</p>
+
+<h2>Limits and behavior</h2>
+
+<ul>
+  <li><strong>Localhost only.</strong> Binds <code>127.0.0.1</code>, no exposure to the network.</li>
+  <li><strong>One submission, then exit.</strong> The form gets disabled after submit so refresh or double-click cannot double-fire.</li>
+  <li><strong>Default 10-minute timeout</strong> waiting for submission. Override via <code>ASK_VISUAL_TIMEOUT=&lt;seconds&gt;</code>. On timeout the script exits 3.</li>
+  <li><strong>No persistent backend.</strong> No PIDs to track, no temp dirs to clean up, nothing left running between turns.</li>
+</ul>
+
+<h2>When NOT to use it</h2>
+
+<div class="callout">
+  Headless or SSH-only environments, <code>webbrowser.open</code> no-ops silently there. Fall back to <code>AskUserQuestion</code>.
+</div>
+<div class="callout">
+  Yes/no or one-of-two text questions, <code>AskUserQuestion</code> is faster.
+</div>
+<div class="callout">
+  Anything where the user types a paragraph, text Q&amp;A handles that fine.
+</div>
+
+<h2>What it does NOT do</h2>
+
+<ul>
+  <li>Doesn't modify your code.</li>
+  <li>Doesn't store anything between runs, the server is one-shot.</li>
+  <li>Doesn't talk to any third party. Localhost only.</li>
+  <li>Doesn't authenticate, assumes single-user local environment.</li>
+</ul>
+
+<footer>
+  Part of the <a href="https://github.com/nxtphaseai/claude-plugins">nxtphaseai</a> Claude Code plugin marketplace. ask-visual 0.1.0, MIT.
+</footer>
+
+</main>
+
+<script>
+  (function () {
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-theme-set]');
+    function apply(v) {
+      buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === v)));
+      if (v === 'system') { root.removeAttribute('data-theme'); localStorage.removeItem('av-readme-theme'); }
+      else { root.setAttribute('data-theme', v); localStorage.setItem('av-readme-theme', v); }
+    }
+    const stored = localStorage.getItem('av-readme-theme');
+    apply(stored || 'system');
+    buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet)));
+  })();
+</script>
+</body>
+</html>
