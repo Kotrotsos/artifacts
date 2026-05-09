@@ -75,3 +75,4 @@
 | 2026-05-09 | claude-plugins | reports | [index.html](projects/claude-plugins/reports/index.html) | nxtphaseai marketplace landing page listing all plugins |
 | 2026-05-09 | content | reports | [polymarket-ai-brief.html](projects/content/reports/polymarket-ai-brief.html) | Polymarket AI prediction markets brief, May 9 2026, top 10 markets and weekly narrative signals |
 | 2026-05-09 | content | reports | [draft.md](projects/content/reports/draft.md) | Draft: The Anthropic Consensus, Polymarket signal vs press framing of AI race |
+| 2026-05-09 | nl2sql | reports | [index.html](projects/nl2sql/reports/index.html) | nl2sql library and CLI HTML documentation |
