@@ -77,3 +77,4 @@
 | 2026-05-09 | content | reports | [draft.md](projects/content/reports/draft.md) | Draft: The Anthropic Consensus, Polymarket signal vs press framing of AI race |
 | 2026-05-09 | nl2sql | reports | [index.html](projects/nl2sql/reports/index.html) | nl2sql library and CLI HTML documentation |
 | 2026-05-09 | nl2sql | reports | [report.html](projects/nl2sql/reports/report.html) | sample eval harness HTML report |
+| 2026-05-09 | nl2sql | reports | [test-report.html](projects/nl2sql/reports/test-report.html) | pytest HTML test report |
