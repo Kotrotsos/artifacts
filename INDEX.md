@@ -81,3 +81,4 @@
 | 2026-05-11 | print | reports | [sole-scan-2026-05-11T07-38-33.html](projects/print/reports/sole-scan-2026-05-11T07-38-33.html) | Sole detection report — 5 folder test, stricter prompt, 1 sole flagged |
 | 2026-05-11 | elastofirm-profiler | reports | [ingeschreven-cirkel.html](projects/elastofirm-profiler/reports/ingeschreven-cirkel.html) | Explanation of inscribed circle in rubber profile curing |
 | 2026-05-11 | aside | reports | [ticket-detection-summary.html](projects/aside/reports/ticket-detection-summary.html) | Ticket detection feature ship summary with card preview |
+| 2026-05-11 | print | reports | [sole-gallery-2026-05-11T20-16-16.html](projects/print/reports/sole-gallery-2026-05-11T20-16-16.html) | Sole gallery — 1041 cropped sole shots for visual spot-check |
