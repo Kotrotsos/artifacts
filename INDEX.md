@@ -78,3 +78,4 @@
 | 2026-05-09 | nl2sql | reports | [index.html](projects/nl2sql/reports/index.html) | nl2sql library and CLI HTML documentation |
 | 2026-05-09 | nl2sql | reports | [report.html](projects/nl2sql/reports/report.html) | sample eval harness HTML report |
 | 2026-05-09 | nl2sql | reports | [test-report.html](projects/nl2sql/reports/test-report.html) | pytest HTML test report |
+| 2026-05-11 | print | reports | [sole-scan-2026-05-11T07-38-33.html](projects/print/reports/sole-scan-2026-05-11T07-38-33.html) | Sole detection report — 5 folder test, stricter prompt, 1 sole flagged |
