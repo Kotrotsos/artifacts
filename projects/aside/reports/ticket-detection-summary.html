@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Aside, ticket detection shipped</title>
+<style>
+  :root {
+    --bg: #faf9f6;
+    --surface: #ffffff;
+    --ink: #111111;
+    --ink-soft: #4a4a4a;
+    --ink-faint: #8a8a8a;
+    --rule: #e7e5e0;
+    --accent: #b3361c;
+    --warn: #c08a1c;
+    --ok: #2f6b18;
+    --code-bg: #f3f1ec;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root.system {
+      --bg: #15161a;
+      --surface: #1c1e22;
+      --ink: #ececec;
+      --ink-soft: #bcbcbc;
+      --ink-faint: #8a8a8a;
+      --rule: #2a2c31;
+      --accent: #e07a64;
+      --warn: #e6b265;
+      --ok: #93c182;
+      --code-bg: #25282e;
+    }
+  }
+  html.dark {
+    --bg: #15161a;
+    --surface: #1c1e22;
+    --ink: #ececec;
+    --ink-soft: #bcbcbc;
+    --ink-faint: #8a8a8a;
+    --rule: #2a2c31;
+    --accent: #e07a64;
+    --warn: #e6b265;
+    --ok: #93c182;
+    --code-bg: #25282e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "SF Pro Text", Inter, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: 760px;
+    margin: 56px auto;
+    padding: 0 28px;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  header .meta {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    letter-spacing: 0.02em;
+  }
+  .theme-toggle {
+    margin-left: 12px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-soft);
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .theme-toggle:hover { color: var(--ink); border-color: var(--ink-soft); }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 36px 0 12px;
+  }
+  p { margin: 0 0 14px; color: var(--ink-soft); }
+  p strong { color: var(--ink); font-weight: 600; }
+
+  .summary {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 18px 22px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  .summary strong { color: var(--ink); }
+
+  ul.bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+  }
+  ul.bullets li {
+    position: relative;
+    padding: 6px 0 6px 22px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  ul.bullets li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--ink-faint);
+  }
+  ul.bullets li strong { color: var(--ink); }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12.5px;
+    background: var(--code-bg);
+    padding: 1px 6px;
+    border-radius: 2px;
+    color: var(--ink);
+  }
+
+  .schema {
+    background: var(--code-bg);
+    padding: 14px 18px;
+    border-left: 2px solid var(--ink-faint);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12.5px;
+    color: var(--ink);
+    margin: 0 0 14px;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+
+  .ticket-preview {
+    display: grid;
+    grid-template-columns: 90px 1fr 130px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--accent);
+    margin: 12px 0 18px;
+  }
+  .ticket-preview .rail {
+    padding: 14px 12px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .ticket-preview .rail .id {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+  .ticket-preview .rail .pri {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .ticket-preview .body {
+    padding: 14px 16px;
+    min-width: 0;
+  }
+  .ticket-preview .body h3 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .ticket-preview .body .story {
+    font-style: italic;
+    font-size: 13px;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--accent);
+    padding: 2px 0 2px 10px;
+    margin: 0 0 10px;
+    line-height: 1.45;
+  }
+  .ticket-preview .body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .ticket-preview .body ul li {
+    padding: 3px 0 3px 18px;
+    position: relative;
+    font-size: 12.5px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .ticket-preview .body ul li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  .ticket-preview .side {
+    padding: 14px 12px;
+    border-left: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ticket-preview .side .label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .ticket-preview .side .tags { display: flex; gap: 3px; flex-wrap: wrap; }
+  .ticket-preview .side .tag {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    background: var(--accent);
+    color: var(--surface);
+  }
+  .ticket-preview .side .tag.alt {
+    background: var(--ink);
+  }
+  .ticket-preview .side .effort {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+  }
+
+  .commit {
+    display: inline-block;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px;
+    color: var(--ok);
+    padding: 2px 8px;
+    background: var(--code-bg);
+  }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+    font-size: 12px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  @media print {
+    :root, html.dark { --bg: #ffffff; --surface: #ffffff; --ink: #000; --ink-soft: #222; --ink-faint: #555; --rule: #cccccc; --accent: #8a2916; --code-bg: #f1f1f1; }
+    body { font-size: 11pt; }
+    main { margin: 0; padding: 0 0.5in; max-width: 100%; }
+    .theme-toggle { display: none; }
+    header { padding-bottom: 8px; margin-bottom: 18px; }
+    h2 { margin-top: 22px; }
+    .ticket-preview, .summary, .schema { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Ticket detection, shipped</h1>
+      <div class="meta">commit d97e40a · branch clean-slate</div>
+    </div>
+    <button class="theme-toggle" onclick="
+      const h = document.documentElement;
+      if (h.classList.contains('dark')) { h.classList.remove('dark'); h.classList.add('system'); localStorage.setItem('theme','light'); }
+      else if (h.classList.contains('system')) { h.classList.remove('system'); h.classList.add('dark'); localStorage.setItem('theme','dark'); }
+      else { h.classList.add('system'); localStorage.removeItem('theme'); }
+    ">Theme</button>
+  </header>
+
+  <section class="summary">
+    <strong>What changed.</strong> Opt-in <code>Detect tickets</code> checkbox under a new <em>Assistant features</em> section in Settings. When on, the call assistant watches for fully-formed user stories during the call and drops a structured ticket card into the chat stream when one emerges.
+  </section>
+
+  <h2>How it decides</h2>
+  <p>The LLM call now returns a discriminated JSON instead of a yes/no speak flag:</p>
+  <div class="schema">{ "kind": "chat",   "message": "..." }
+{ "kind": "ticket", "ticket":  { priority, title, user_story, acceptance, tags, effort } }
+{ "kind": "silent" }</div>
+
+  <p>Tickets only fire when a story is genuinely complete: an actor, a capability, an outcome, and at least two concrete acceptance criteria. The running ticket list is fed back into every prompt so duplicates are ruled out.</p>
+
+  <h2>Card layout</h2>
+  <p>The new <code>TicketCard.tsx</code> renders inline in the chat stream:</p>
+
+  <div class="ticket-preview">
+    <div class="rail">
+      <span class="id">T-001</span>
+      <span class="pri">MUST</span>
+    </div>
+    <div class="body">
+      <h3>Group and sort similarity results by weight</h3>
+      <div class="story">As an engineer, I want similarity results grouped or sorted by weight band so a 12kg profile never appears next to a 147g profile even when their silhouettes match.</div>
+      <ul>
+        <li>Default sort within similarity results, weight ascending</li>
+        <li>Or, group buckets at sensible weight boundaries</li>
+        <li>User can override</li>
+      </ul>
+    </div>
+    <div class="side">
+      <div>
+        <div class="label">Tags</div>
+        <div class="tags">
+          <span class="tag">P1</span>
+          <span class="tag alt">SEARCH</span>
+        </div>
+      </div>
+      <div>
+        <div class="label">Effort</div>
+        <div class="effort">S</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Server-side fixups</h2>
+  <ul class="bullets">
+    <li><strong>Sequential IDs.</strong> Backend assigns <code>T-001</code>, <code>T-002</code> so the model doesn't try to invent project codes.</li>
+    <li><strong>Priority normalised.</strong> <code>MUST</code> / <code>HIGH</code> / <code>MEDIUM</code> / <code>LOW</code>, with <code>P0..P4</code>, <code>URGENT</code>, <code>CRITICAL</code> aliased to the canonical set.</li>
+    <li><strong>Effort normalised.</strong> <code>S</code> / <code>M</code> / <code>L</code> / <code>XL</code>, longhand aliases collapsed.</li>
+    <li><strong>Duplicate guard.</strong> Running list of captured tickets is injected into every passive prompt with a "do not duplicate" instruction.</li>
+    <li><strong>Parse-failure logging.</strong> Bad JSON from the model is logged with the offending text so we can see what came back, instead of silently going quiet.</li>
+  </ul>
+
+  <h2>Where it lives</h2>
+  <ul class="bullets">
+    <li><strong>Backend.</strong> <code>src-tauri/src/assistant/chat.rs</code>, <code>src-tauri/src/config.rs</code>, <code>src-tauri/src/lib.rs</code></li>
+    <li><strong>Frontend.</strong> <code>src/components/v2/TicketCard.tsx</code>, <code>src/components/v2/AssistantChat.tsx</code>, <code>src/components/Settings.tsx</code></li>
+  </ul>
+
+  <h2>Try it</h2>
+  <ul class="bullets">
+    <li>Restart <code>npx tauri dev</code>.</li>
+    <li>Settings, tick <em>Detect tickets</em>, save.</li>
+    <li>Start a call and articulate a story. Something like, <em>as an engineer I want X so Y, and it should also handle Z and A</em> will tend to land a ticket within one tick.</li>
+  </ul>
+
+  <h2>About the silent loop</h2>
+  <p>The earlier "assistant turns stopped" symptom should be easier to diagnose now: parse failures are logged with the offending JSON, and the loop continues on errors instead of going quiet. If it still falls silent, grab any <code>Assistant tick error:</code> warnings from the log and that should point to an Anthropic-side issue (rate limit, model error) rather than a permanent stall.</p>
+
+  <footer>
+    <span>Status, <span class="commit">d97e40a</span></span>
+    <span>aside, clean-slate branch</span>
+  </footer>
+</main>
+
+<script>
+  (function () {
+    const saved = localStorage.getItem('theme');
+    const root = document.documentElement;
+    if (saved === 'dark') { root.classList.add('dark'); }
+    else if (saved === 'light') { /* default light */ }
+    else { root.classList.add('system'); }
+  })();
+</script>
+</body>
+</html>
