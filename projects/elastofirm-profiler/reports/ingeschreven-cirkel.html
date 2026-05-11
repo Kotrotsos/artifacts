@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ingeschreven cirkel and rubber profile curing</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #555;
+    --border: #e5e5e5;
+    --accent: #2563eb;
+    --card-bg: #f7f7f7;
+    --code-bg: #f0f0f0;
+  }
+  [data-theme="dark"] {
+    --bg: #0f0f10;
+    --fg: #e8e8e8;
+    --muted: #a0a0a0;
+    --border: #2a2a2a;
+    --accent: #60a5fa;
+    --card-bg: #18181a;
+    --code-bg: #1f1f22;
+  }
+  @media (prefers-color-scheme: dark) {
+    [data-theme="system"] {
+      --bg: #0f0f10;
+      --fg: #e8e8e8;
+      --muted: #a0a0a0;
+      --border: #2a2a2a;
+      --accent: #60a5fa;
+      --card-bg: #18181a;
+      --code-bg: #1f1f22;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 2rem 0 0.75rem;
+    letter-spacing: -0.005em;
+  }
+  p { margin: 0 0 1rem; }
+  ol {
+    padding-left: 1.25rem;
+    margin: 0 0 1rem;
+  }
+  ol li { margin-bottom: 0.5rem; }
+  strong { font-weight: 600; }
+  .callout {
+    background: var(--card-bg);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.25rem;
+    border-radius: 0 6px 6px 0;
+    margin: 1.5rem 0;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  code {
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+  .theme-switch {
+    display: inline-flex;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 0.8rem;
+  }
+  .theme-switch button {
+    background: transparent;
+    color: var(--fg);
+    border: none;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+    font-family: inherit;
+    border-right: 1px solid var(--border);
+  }
+  .theme-switch button:last-child { border-right: none; }
+  .theme-switch button.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  @media print {
+    .theme-switch { display: none; }
+    body { background: #fff; color: #000; }
+    main { max-width: none; padding: 0; }
+    a { color: #000; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Ingeschreven cirkel</h1>
+      <div class="subtitle">In the context of rubber profile manufacturing and curing</div>
+    </div>
+    <div class="theme-switch" role="group" aria-label="Theme">
+      <button data-theme-set="light">Light</button>
+      <button data-theme-set="dark">Dark</button>
+      <button data-theme-set="system">System</button>
+    </div>
+  </header>
+
+  <p>
+    The <strong>ingeschreven cirkel</strong> (inscribed circle) is the
+    <strong>largest circle that fits inside the cross-section of a rubber profile</strong>.
+    It represents the thickest internal point of the shape.
+  </p>
+
+  <h2>Why it matters for heating and curing</h2>
+  <ol>
+    <li><strong>Cure time is determined by the thickest cross-section</strong>, because heat has to penetrate to the center.</li>
+    <li>The inscribed circle diameter gives the worst-case heat conduction distance.</li>
+    <li><strong>Larger inscribed circle, longer vulcanization time</strong> at a given temperature.</li>
+    <li>It is a standard input for calculating extrusion line speed, dwell time in the curing oven, and salt-bath, UHF, or microwave cure parameters.</li>
+  </ol>
+
+  <div class="callout">
+    <p>
+      <strong>In practice:</strong> if your profile has a 3 mm inscribed circle,
+      the rubber compound in that thickest spot needs enough oven time to reach cure temperature throughout.
+      Speed up the line too much and you get undercure at the core.
+    </p>
+  </div>
+
+  <p>
+    Some companies use the inscribed circle as a <em>design rule</em>, keeping it below a target diameter
+    so the cure cycle stays economical.
+  </p>
+</main>
+
+<script>
+  const buttons = document.querySelectorAll('.theme-switch button');
+  function apply(theme) {
+    document.documentElement.dataset.theme = theme;
+    buttons.forEach(b => b.classList.toggle('active', b.dataset.themeSet === theme));
+    try { localStorage.setItem('theme', theme); } catch (e) {}
+  }
+  buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet)));
+  let saved = 'light';
+  try { saved = localStorage.getItem('theme') || 'light'; } catch (e) {}
+  apply(saved);
+</script>
+</body>
+</html>
