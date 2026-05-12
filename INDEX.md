@@ -86,3 +86,4 @@
 | 2026-05-12 | aside | reports | [session-report.html](projects/aside/reports/session-report.html) | Session report covering call-assistant pivot, tickets, Private mode, sys audio reconnect |
 | 2026-05-12 | content | reports | [article-scan.html](projects/content/reports/article-scan.html) | Five practical AI article angles sourced from May 12 2026 scan |
 | 2026-05-12 | content | reports | [draft.md](projects/content/reports/draft.md) | Uber burned annual AI budget in four months, FinOps reframe for consumption-priced AI |
+| 2026-05-12 | content | images | [hero.png](projects/content/images/hero.png) | Hero image for Uber AI budget article, isometric gauge draining tokens into compute node |
