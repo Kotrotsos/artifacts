@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Aside, recent session report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #fbfaf7;
+    --surface: #ffffff;
+    --ink: #14130f;
+    --muted: #6a6862;
+    --line: rgba(20, 19, 15, 0.08);
+    --line-strong: rgba(20, 19, 15, 0.16);
+    --accent: #b1462e;
+    --ok: #4a7a3a;
+    --warn: #b07a1f;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Roboto Mono", monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root.system {
+      --bg: #15140f;
+      --surface: #1d1c17;
+      --ink: #f1efe8;
+      --muted: #9a978f;
+      --line: rgba(255, 255, 255, 0.08);
+      --line-strong: rgba(255, 255, 255, 0.16);
+    }
+  }
+  :root.dark {
+    --bg: #15140f;
+    --surface: #1d1c17;
+    --ink: #f1efe8;
+    --muted: #9a978f;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+  }
+
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: var(--sans);
+    margin: 0;
+    padding: 48px 24px 96px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+
+  header.head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 36px;
+  }
+  h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  .sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+
+  .theme {
+    display: inline-flex;
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    overflow: hidden;
+  }
+  .theme button {
+    background: transparent;
+    color: var(--ink);
+    border: none;
+    padding: 6px 10px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+  }
+  .theme button.active { background: var(--ink); color: var(--bg); }
+
+  section { margin: 36px 0; }
+  h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 14px;
+    letter-spacing: -0.005em;
+  }
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-right: 10px;
+    letter-spacing: 0.05em;
+  }
+  h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 20px 0 8px;
+  }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 12px; padding-left: 22px; }
+  li { margin: 4px 0; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--ink);
+    padding: 16px 18px;
+    margin: 14px 0;
+  }
+  .card.accent { border-left-color: var(--accent); }
+  .card.ok { border-left-color: var(--ok); }
+  .card.warn { border-left-color: var(--warn); }
+
+  .meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+  }
+
+  code, .mono { font-family: var(--mono); font-size: 12.5px; }
+  code { background: var(--line); padding: 1px 5px; border-radius: 2px; }
+
+  .commit {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--line);
+    padding: 1px 6px;
+    border-radius: 2px;
+    letter-spacing: 0.03em;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+
+  .pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    padding: 2px 7px;
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .pill.muted { background: var(--muted); }
+  .pill.accent { background: var(--accent); color: #fff; }
+  .pill.ok { background: var(--ok); color: #fff; }
+
+  .timeline {
+    border-left: 1px solid var(--line-strong);
+    margin: 16px 0 8px;
+    padding-left: 18px;
+  }
+  .timeline .row {
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .timeline .row::before {
+    content: "";
+    position: absolute;
+    left: -23px;
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .timeline h4 {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  .timeline p { font-size: 13px; color: var(--ink); margin: 0; }
+  .timeline .meta { margin-top: 2px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 8px 0 14px;
+  }
+  th, td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  td.mono { font-family: var(--mono); font-size: 12px; }
+
+  blockquote {
+    border-left: 2px solid var(--line-strong);
+    margin: 8px 0;
+    padding: 4px 12px;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 13px;
+  }
+
+  footer.foot {
+    margin-top: 56px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+
+  @media print {
+    :root { --bg: #fff; --surface: #fff; --ink: #000; --muted: #444; }
+    body { padding: 0; }
+    .theme { display: none; }
+    .card, .timeline .row { page-break-inside: avoid; }
+    section { page-break-inside: avoid; }
+    h1, h2 { page-break-after: avoid; }
+    a { color: inherit; text-decoration: underline; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div>
+      <h1>Aside, recent session report</h1>
+      <div class="sub">branch clean-slate, commits ff488cf to c1ff50d</div>
+    </div>
+    <div class="theme" role="group" aria-label="Theme">
+      <button data-mode="light" class="active">LIGHT</button>
+      <button data-mode="dark">DARK</button>
+      <button data-mode="system">SYSTEM</button>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">00</span>Summary</h2>
+    <p>
+      Across these sessions Aside was rebuilt around the "live call assistant" concept,
+      with a transcript column on the right and a chat panel on the left where a passive
+      AI companion can drop in observations, answer typed questions, and produce
+      structured tickets. The underlying STT pipeline also gained a local Private mode
+      via a WhisperKit sidecar, with a model download UI and a health check.
+    </p>
+    <div class="grid">
+      <div class="card ok">
+        <div class="meta">ASSISTANT</div>
+        <p><strong>Passive chat companion</strong></p>
+        <p>Greets after a few utterances, ticks every 15 seconds, follows standing instructions from the user, answers typed questions, and now emits structured ticket cards when the conversation produces a scoped feature or fix.</p>
+      </div>
+      <div class="card accent">
+        <div class="meta">PRIVATE STT</div>
+        <p><strong>Local WhisperKit, opt-in</strong></p>
+        <p>Model <code>large-v3_turbo</code> at ~1.5 GB, runs on the Apple Neural Engine. Audio never leaves the machine. Heath probe + download progress wired into Settings.</p>
+      </div>
+      <div class="card warn">
+        <div class="meta">RESILIENCE</div>
+        <p><strong>System audio auto-reconnect</strong></p>
+        <p>ScreenCaptureKit gets killed by macOS for legitimate reasons (display reconfig, recording indicator clicked). The helper now respawns up to three times with backoff, with toast events surfaced to the UI.</p>
+      </div>
+      <div class="card">
+        <div class="meta">FOUNDATIONS</div>
+        <p><strong>Clean slate first</strong></p>
+        <p>The branch started by stripping back to audio capture, streaming transcription, and a single sentiment placeholder, deleting the previous cards, flags, tips, key quotes, ambient mode, mode selectors, and prompt config.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">01</span>Pipeline state</h2>
+    <table>
+      <thead><tr><th>Layer</th><th>Today</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Audio capture</td>
+          <td>cpal mic, 48 kHz to 16 kHz resample, ScreenCaptureKit helper for system audio</td>
+          <td>Mic and sys VU dots are clickable kill switches per stream</td>
+        </tr>
+        <tr>
+          <td>STT, default</td>
+          <td>Deepgram nova-2 over WebSocket, interim plus final entries</td>
+          <td>Echo cancel between user and remote streams, conservative Jaccard on finals</td>
+        </tr>
+        <tr>
+          <td>STT, Private mode</td>
+          <td>WhisperKit 0.18.0, openai_whisper-large-v3_turbo on ANE</td>
+          <td>Warmup transcribe on init, hallucination filter, 6 s force-finalize</td>
+        </tr>
+        <tr>
+          <td>Transcript store</td>
+          <td>200 entry rolling window in Rust</td>
+          <td>Verticals read from this single source of truth</td>
+        </tr>
+        <tr>
+          <td>Processor loop</td>
+          <td>12 s tick, no-op stub today</td>
+          <td>Ready for future analysis features to plug in</td>
+        </tr>
+        <tr>
+          <td>Call assistant</td>
+          <td>15 s tick, Claude Sonnet 4.5 via Anthropic API</td>
+          <td>Chat plus optional ticket emission, user typed input via mpsc channel</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>What landed, chronological</h2>
+    <div class="timeline">
+
+      <div class="row">
+        <h4>Strip to a clean slate</h4>
+        <p>Deleted cards, flags, tips, key quotes, ambient module, mode selectors, prompt config. Kept audio, Deepgram STT, sentiment shell, mini mode, and basic settings.</p>
+        <div class="meta"><span class="commit">ff488cf</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Private mode, take one</h4>
+        <p>Added a Swift Package at <code>helpers-swift/whisper-stt/</code> using WhisperKit, plus a Rust <code>stt::whisper</code> module that talks to it via a length prefixed stdin binary protocol. Settings gained a Private toggle.</p>
+        <div class="meta"><span class="commit">dd8c07d</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Health check and download UI</h4>
+        <p>Two new sidecar modes, <code>--probe</code> and <code>--download</code>. Settings now shows model status as a green check, an amber "needs download" with a button, or a red "helper not built". Live progress bar during download.</p>
+        <div class="meta"><span class="commit">b6f7453</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Model name fixes</h4>
+        <p>Two small but blocking fixes, the Hugging Face folder is <code>openai_whisper-large-v3_turbo</code> with an underscore, and WhisperKit's download API wants just the variant suffix, not the directory prefix.</p>
+        <div class="meta"><span class="commit">574e756</span> <span class="commit">454c09e</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Make Private actually transcribe</h4>
+        <p>Three fixes in sequence, the partial read bug on the sidecar stdin, then transcribe diagnostics with progress callback and timing, then the CoreML JIT warmup on init that cut tick 1 from 21 s to 4 s.</p>
+        <div class="meta"><span class="commit">38bb774</span> <span class="commit">cf56b61</span> <span class="commit">06c28ae</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Streaming, hallucinations, finalization</h4>
+        <p>Emit interim transcripts directly from the WhisperKit progress callback so text appears in 0.4 s steps. Drop hallucinated repetition with a unique word ratio guard. Force finalize every 6 s of continuous speech so the UI has scrollable history, not just one growing interim per speaker.</p>
+        <div class="meta"><span class="commit">b8fc789</span> <span class="commit">22e6d37</span> <span class="commit">eff596f</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Echo dedup, two attempts</h4>
+        <p>Tried longest contiguous word match because Jaccard missed overlapping mic and system audio. It dropped too much real content, reverted to the original conservative Jaccard on finals.</p>
+        <div class="meta"><span class="commit">83addf3</span> <span class="commit">a7a16e6</span></div>
+      </div>
+
+      <div class="row">
+        <h4>VU dots become mute switches</h4>
+        <p>Click the mic or sys dot in the header to mute that audio stream live. cpal keeps running, chunks just stop reaching STT, and the VU is force zeroed. Visual is a red dot, strikethrough label, faded opacity.</p>
+        <div class="meta"><span class="commit">4bc3430</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Pivot to call assistant</h4>
+        <p>Layout flipped, the big white area on the left is the assistant chat, the 360 px right column is the streaming transcript. Sentiment placeholder gone. Backend runs a 15 s assistant loop next to the processor.</p>
+        <div class="meta"><span class="commit">8a1e21e</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Chat input, role tinting</h4>
+        <p>Sticky textarea at the bottom of the chat. Enter to send, Shift Enter for newline. User typed messages travel through an mpsc channel into the assistant loop, Claude answers with the transcript and chat history in context. Subtle 2 px left rule colors per role.</p>
+        <div class="meta"><span class="commit">e4c5633</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Assistant became proactive</h4>
+        <p>The first pass was way too stingy, Claude picked silent on almost every tick. Flipped the prompt to default speak, with a wide menu of useful things to surface, and added a silent only fallback.</p>
+        <div class="meta"><span class="commit">b84b6be</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Standing instructions carry forward</h4>
+        <p>Typed user messages used to disappear after one tick because the prompt only forwarded prior assistant turns. Now user messages stay visible as standing instructions, matched both literally and semantically, and the assistant leads triggered messages with the match.</p>
+        <div class="meta"><span class="commit">238ca59</span> <span class="commit">1ee5df0</span></div>
+      </div>
+
+      <div class="row">
+        <h4>System audio auto-reconnect</h4>
+        <p>ScreenCaptureKit was getting killed by macOS mid call with error <code>-3821</code>. Helper lifecycle split into a single run plus a retry loop with linear backoff, up to three attempts. Frontend listens for <code>system-audio-event</code> and shows a transient toast.</p>
+        <div class="meta"><span class="commit">f57c03b</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Ticket detection feature</h4>
+        <p>Opt in checkbox in Settings. When on, the assistant emits a structured ticket payload alongside chat, on the same <code>assistant-message</code> event. Frontend renders a card with priority colored left rail, title, italic user story, arrow bulleted acceptance, and a TAGS plus EFFORT side panel.</p>
+        <div class="meta"><span class="commit">d97e40a</span></div>
+      </div>
+
+      <div class="row">
+        <h4>Synthesize stories from discussion</h4>
+        <p>First ticket pass required speakers to literally phrase a user story, which never happens in real conversation. The prompt now tells the model to synthesize the story from what was discussed, with concrete examples of the inference level expected. Order of operations was made explicit, standing instructions first, then ticket, then chat.</p>
+        <div class="meta"><span class="commit">c1ff50d</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>Architecture, current shape</h2>
+    <div class="card">
+      <h3 style="margin-top:0">Event flow</h3>
+      <pre class="mono" style="font-size:12px; line-height:1.5; white-space:pre-wrap; margin:0">
+mic (cpal)            sys (SCK helper)
+   |                       |
+   v                       v
+audio::levels (VU, mute gate)
+   |                       |
+   v                       v
+stt engine: Deepgram WS  OR  whisper sidecar over pipe
+   |                       |
+   '------ "transcript" ---'
+                |
+                v
+       analysis::store (rolling 200)
+        |               |
+        v               v
+processor loop      assistant loop (15 s)
+ (no-op stub)       |          |
+                    v          v
+               chat msg     ticket
+                    |          |
+                    '----------'
+                          |
+                  "assistant-message"
+                          |
+                          v
+                     frontend chat
+      </pre>
+    </div>
+
+    <h3>Notable invariants</h3>
+    <ul>
+      <li>Mic is authoritative for echo dedup, system audio is never used to retroactively edit mic.</li>
+      <li>Mute is a runtime kill at <code>audio::levels</code>, the capture stream keeps producing samples, so unmute is instant.</li>
+      <li>Sequential ticket IDs are assigned server side as <code>T-001</code>, <code>T-002</code>, so the LLM never has to invent IDs.</li>
+      <li>Tickets and chat ride one event channel, the frontend discriminates by the optional <code>ticket</code> field on each message.</li>
+      <li>The processor loop is a placeholder, the assistant loop is the only consumer of the transcript store today.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Tunables to remember</h2>
+    <table>
+      <thead><tr><th>Knob</th><th>Where</th><th>Default</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td>Tick interval</td><td class="mono">assistant/chat.rs</td><td>15 s</td><td>How often the passive assistant looks at the transcript</td></tr>
+        <tr><td>Greet threshold</td><td class="mono">assistant/chat.rs</td><td>3 finals</td><td>How many finalized utterances before the assistant greets</td></tr>
+        <tr><td>Whisper window</td><td class="mono">main.swift</td><td>5 s</td><td>How much audio each tick transcribes</td></tr>
+        <tr><td>Whisper tick</td><td class="mono">main.swift</td><td>2 s</td><td>How often the sidecar transcribes</td></tr>
+        <tr><td>Force finalize</td><td class="mono">main.swift</td><td>6 s</td><td>Hard cap on continuous speech without a silence break</td></tr>
+        <tr><td>Silence RMS</td><td class="mono">main.swift</td><td>0.012</td><td>Threshold to count a chunk as silence</td></tr>
+        <tr><td>Echo Jaccard</td><td class="mono">App.tsx</td><td>0.72</td><td>Word set overlap threshold for cross-speaker dedup</td></tr>
+        <tr><td>System retry</td><td class="mono">audio/system_audio.rs</td><td>3 attempts</td><td>How many times the SCK helper respawns before giving up</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span>Outstanding</h2>
+    <ul>
+      <li>Assistant feels too chatty at exactly the 15 s cadence on talky calls, may need a small dampener for back to back ticks where nothing new has been added since the last assistant message.</li>
+      <li>Tickets list lives only in the chat scroll, no separate "captured tickets" pane, copy out, or export.</li>
+      <li>Private mode helper takes ~4 s warmup on first start, ~5 s for the model load before that, no UI signal during this period beyond log lines.</li>
+      <li>Local LLM path for Pass 2 of the local models spec is still unbuilt, the assistant still calls Anthropic when Private STT is active.</li>
+      <li>Mic side bleed into system audio in a real call with speakers will incorrectly suppress legitimate remote speech, the current asymmetric direction assumes mic is always primary.</li>
+    </ul>
+  </section>
+
+  <footer class="foot">
+    Generated for the aside project, branch clean-slate. Files referenced live under
+    <span class="mono">src-tauri/src/</span>, <span class="mono">src/components/v2/</span>,
+    and <span class="mono">src-tauri/helpers-swift/whisper-stt/</span>.
+  </footer>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll('.theme button');
+  const apply = (mode) => {
+    root.classList.remove('dark', 'system');
+    if (mode === 'dark') root.classList.add('dark');
+    if (mode === 'system') root.classList.add('system');
+    buttons.forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
+    try { localStorage.setItem('aside-report-theme', mode); } catch (_) {}
+  };
+  buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.mode)));
+  apply(localStorage.getItem('aside-report-theme') || 'light');
+</script>
+</body>
+</html>
