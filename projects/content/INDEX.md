@@ -18,3 +18,4 @@
 | 2026-05-12 | reports | [article-scan.html](reports/article-scan.html) | Five practical AI article angles sourced from May 12 2026 scan | /Users/marcokotrotsos/PERSONAL/Content/drafts/practical-article-scan-2026-05-12/article-scan.html |
 | 2026-05-12 | reports | [draft.md](reports/draft.md) | Uber burned annual AI budget in four months, FinOps reframe for consumption-priced AI | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/draft.md |
 | 2026-05-12 | images | [hero.png](images/hero.png) | Hero image for Uber AI budget article, isometric gauge draining tokens into compute node | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/hero.png |
+| 2026-05-12 | reports | [draft.md](reports/draft.md) | Uber AI budget article, Humanizer and deep-detect passes applied | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/draft.md |

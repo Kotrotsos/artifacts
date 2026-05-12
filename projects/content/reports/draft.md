@@ -14,7 +14,7 @@ In December 2025, Uber rolled out Claude Code to 5,000 engineers. By February th
 
 The reaction in the press was predictable. AI is expensive. Engineers got carried away. Maybe the tools are not ready for production scale. Maybe the spend is irresponsible.
 
-It is none of those things. Look at the same data with finance eyes instead of engineering eyes and a different story emerges. Uber did not blow its budget because engineers were wasteful. Uber blew its budget because the pricing model of the tool and the budgeting model of the company are structurally incompatible. And every enterprise reading the headlines about Uber has the same problem, sitting in their own FY26 plan, waiting to surface.
+Look at the same data with finance eyes instead of engineering eyes and a different story emerges. The engineers were doing exactly what the company asked them to do. The budget itself was built on assumptions that no longer match the tool. Every enterprise reading the headlines about Uber has a version of the same problem sitting in their own FY26 plan, waiting to surface.
 
 This is the article I would want to read if I were running a finance review next week.
 
@@ -24,7 +24,7 @@ Start with the numbers, because the numbers tell the story better than the frami
 
 Uber's R&D budget for 2026 includes a $3.4 billion allocation, of which the AI line item is the fastest-growing slice. The CTO did not say AI costs were 6x what was forecast. He said the entire annual envelope, the full year of planned spend, was gone in four months. AI-related costs at Uber are up roughly 6x since 2024.
 
-The per-engineer numbers are the interesting part. Monthly Claude Code spend per engineer ranged from $500 to $2,000. That four-fold variance inside a single workforce is the first signal something different is happening. With a SaaS seat, the per-engineer cost is bounded by the per-engineer license price. With a consumption-priced tool, the per-engineer cost is bounded only by how many agent loops that engineer chooses to run.
+The per-engineer numbers are the interesting part. Monthly Claude Code spend per engineer ranged from $500 to $2,000. That four-fold variance inside a single workforce is the first signal something different is happening. With a SaaS seat, the per-engineer cost is bounded by the per-engineer license price. With a consumption-priced tool, the cost per engineer is bounded only by how many agent loops that engineer chooses to run.
 
 The adoption curve was the second signal. From December to March, the percentage of Uber engineers classified as agentic coders went from 32% to 84%. By April, 95% of all Uber engineers were using AI tools at least monthly, and 70% of committed code had some AI involvement. Approximately 11% of live backend code changes are now written by AI agents end-to-end. None of this is bad. All of it is the kind of adoption rate companies dream about when they sign a deal.
 
@@ -40,13 +40,11 @@ The license era had perpetual software. You paid once, you owned a copy, the bud
 
 Consumption pricing breaks both of those assumptions.
 
-With Claude Code, the unit of consumption is not the engineer. It is the agent loop. One engineer running one well-crafted prompt against a small codebase might cost $100 a month. The same engineer running an agentic workflow that spawns sub-agents, calls tools, reads thousands of files into context, executes multiple iterations, and merges back into a parent task might cost $2,000 a month. The capacity for spend is not bounded by headcount. It is bounded by the engineer's willingness to launch agent loops, multiplied by the average complexity of those loops.
+With Claude Code, the unit of consumption is the agent loop, not the engineer. One engineer running one well-crafted prompt against a small codebase might cost $100 a month. The same engineer running an agentic workflow that spawns sub-agents, calls tools, reads thousands of files into context, executes multiple iterations, and merges back into a parent task might cost $2,000 a month. The ceiling on spend has nothing to do with headcount and everything to do with how often each engineer chooses to launch agent loops, multiplied by the average complexity of those loops.
 
 Agentic AI uses 5 to 30 times more tokens per task than a standard chatbot interaction, depending on the workload. That is the multiplier that makes consumption-priced agents structurally different from any SaaS product your finance team has ever budgeted for.
 
-Annual budgets are built on the bounded assumption. You forecast a number based on expected seats, expected usage per seat, and a contingency. That math works when the per-seat ceiling is a hard ceiling. It does not work when the per-seat ceiling is the engineer's imagination plus the latency of a feedback loop they enjoy.
-
-That is what Uber discovered. The engineers were not wrong. The budget was wrong.
+Annual budgets are built on the bounded assumption. You forecast a number based on expected seats, expected usage per seat, and a contingency. That math works when the per-seat ceiling is a hard ceiling. It does not work when the per-seat ceiling is the engineer's imagination plus the latency of a feedback loop they enjoy. Uber discovered exactly this, the same way every enterprise running a Claude Code pilot will discover it on their own timeline. The engineers were not the problem, the budget model was.
 
 ## The internal leaderboard problem
 
@@ -58,11 +56,11 @@ The problem is that the same lever that drives adoption drives cost. There is no
 
 If your leaderboard rewards usage, your leaderboard is also rewarding spend. If your spend is uncapped per engineer, your leaderboard is an unhedged buy order on Anthropic's revenue, written in your engineering culture.
 
-This is not a reason to drop the leaderboard. Cultural pressure works. The point is to acknowledge that the cultural lever and the financial lever are now the same lever, and most companies have not thought through what that means.
+This is not a reason to drop the leaderboard. Cultural pressure works. The point is to acknowledge that the cultural lever and the financial lever are now the same lever. The cost implications of that linkage have not made it into the standard adoption playbook yet.
 
 ## Why every enterprise has this problem
 
-Uber is not unusual. Uber is just the public version of what is happening everywhere.
+Uber is just the public version of what is happening everywhere.
 
 The FinOps Foundation's 2026 State of FinOps report has the supporting numbers. 78% of IT leaders have experienced unexpected charges on a consumption-based SaaS bill in the past year. 98% of FinOps practitioners are now tasked with managing AI spend, up from 31% in 2024. The average enterprise AI budget went from $1.2 million in 2024 to $7 million in 2026, a 5.8x increase in two years.
 
@@ -76,17 +74,17 @@ I am going to give you four specific changes. None of them require slowing adopt
 
 **Move from annual fixed to quarterly elastic.** Annual envelopes were designed for predictable consumption. If your consumption shape is non-predictable, your envelope cadence has to match. Quarterly budgets with explicit re-forecast at each quarter close, ratified by finance, give you four chances to catch a runaway curve. Not one chance, with eight months of damage already done.
 
-**Set a per-engineer monthly soft cap with explicit overage approval.** Not a hard cut-off. A signal. If an engineer crosses the cap, their manager gets a ping, the engineer gets a brief justification ask, and the additional spend is approved or rerouted. This is how cloud spend is managed already. It is not new infrastructure. It is just applying the same governance to AI tools that you already apply to AWS.
+**Set a per-engineer monthly soft cap with explicit overage approval.** Not a hard cut-off, a signal that prompts a quick review. If an engineer crosses the cap, their manager gets a ping, the engineer gets a brief justification ask, and the additional spend is approved or rerouted. This is how cloud spend is managed already. It is the same governance you already apply to AWS, repurposed for AI tooling.
 
-**Measure cost per merged PR or cost per deployed feature, not cost per token.** Cost per token is the wrong unit. It compares well to other tokens. It compares badly to everything you actually care about. Cost per merged PR is the unit that lets you have an honest conversation about ROI. If the cost per merged PR is dropping while the cost per engineer is rising, the tool is winning. If the cost per merged PR is flat or rising, you have an adoption problem dressed up as a productivity story.
+**Measure cost per merged PR or cost per deployed feature, not cost per token.** Cost per token is the wrong unit. It compares well to other tokens. It compares badly to everything you actually care about. Cost per merged PR is the unit that lets you have an honest conversation about ROI. If the cost per merged PR is dropping while the cost per engineer is rising, the tool is winning. If the cost per merged PR is flat or rising while spend keeps climbing, you are funding adoption that is not yet producing matching engineering output.
 
 **Tier engineers by usage profile.** Light user, heavy user, agent runner. The agent runner is a different cost center than the light user. Mixing them in the same budget bucket lets a small number of agent runners distort the per-capita number, which makes the budget look better than it is on average and worse than it should be at the heavy end. Tiered budgets give you accuracy and let you say honest things to your CFO about where the money is going.
 
-These four moves are not novel. They are the standard FinOps playbook for any consumption-priced resource, applied to AI tooling. The novelty is that most companies have not yet realized AI tooling sits in the same category as cloud infrastructure for budgeting purposes, not the same category as Microsoft Office for budgeting purposes.
+These four moves are not novel. They are the standard FinOps playbook for any consumption-priced resource, applied to AI tooling. The novelty is that AI tooling now sits in the same budgeting category as cloud infrastructure. Most finance teams are still treating it like Microsoft Office, which is the wrong category, and that mismatch is the actual driver of the surprise bills.
 
 ## What to do in the next thirty days
 
-If you are reading this and you sit in front of a budget that includes an AI line item, three concrete moves.
+If you sit in front of a budget that includes an AI line item, three concrete moves.
 
 First, find out what your current per-engineer consumption looks like, by engineer, by month, broken down by tool. Most companies do not have this data. Get it. If the answer is "we cannot get it without a quarter of engineering work," that is your first finding. Build the visibility before you build the controls.
 
@@ -98,7 +96,7 @@ None of these require slowing adoption. None require punishing engineers. All of
 
 ## Closing
 
-The Uber number is not a warning about Claude Code specifically. It is a warning about an entire generation of consumption-priced AI tooling meeting a generation of annual-budgeting practices that were designed for a slower, more bounded category of software.
+The Uber number is a warning about an entire generation of consumption-priced AI tooling meeting a generation of annual-budgeting practices that were designed for a slower, more bounded category of software.
 
 Uber is the canary. The companies that read the canary correctly will spend the rest of 2026 quietly tuning their cost models while their competitors are stuck in emergency budget reviews. The companies that read it as an Uber problem will have their own version of the conversation by Q3.
 
