@@ -82,3 +82,4 @@
 | 2026-05-11 | elastofirm-profiler | reports | [ingeschreven-cirkel.html](projects/elastofirm-profiler/reports/ingeschreven-cirkel.html) | Explanation of inscribed circle in rubber profile curing |
 | 2026-05-11 | aside | reports | [ticket-detection-summary.html](projects/aside/reports/ticket-detection-summary.html) | Ticket detection feature ship summary with card preview |
 | 2026-05-11 | print | reports | [sole-gallery-2026-05-11T20-16-16.html](projects/print/reports/sole-gallery-2026-05-11T20-16-16.html) | Sole gallery — 1041 cropped sole shots for visual spot-check |
+| 2026-05-12 | elastofirm-profiler | reports | [profile-inscribed-circle.html](projects/elastofirm-profiler/reports/profile-inscribed-circle.html) | RP-25178 profile cross-section with inscribed circle overlay |
