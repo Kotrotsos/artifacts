@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Practical Article Scan, 2026-05-12</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #15171a;
+  --muted: #5a6068;
+  --rule: #e6e8eb;
+  --card: #f6f7f8;
+  --accent: #0a7f7a;
+  --accent-2: #e2725b;
+  --code-bg: #f0f2f4;
+}
+[data-theme="dark"] {
+  --bg: #14171a;
+  --fg: #e9ecef;
+  --muted: #9099a3;
+  --rule: #262a2f;
+  --card: #1c2024;
+  --accent: #6dd4cf;
+  --accent-2: #f3a48c;
+  --code-bg: #1f2429;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 880px; margin: 0 auto; padding: 48px 28px 96px; }
+header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; letter-spacing: -0.01em; }
+.subtitle { color: var(--muted); font-size: 16px; margin: 0; }
+.theme-toggle { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--rule); border-radius: 999px; background: var(--card); }
+.theme-toggle button { all: unset; cursor: pointer; padding: 4px 10px; border-radius: 999px; font-size: 12px; color: var(--muted); }
+.theme-toggle button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+h2 { font-size: 21px; letter-spacing: -0.005em; margin: 0 0 6px; }
+h3 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 28px 0 10px; font-weight: 600; }
+p { margin: 0 0 12px; }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+a:hover { border-bottom-color: var(--accent); }
+.lede {
+  background: var(--card);
+  border-left: 3px solid var(--accent);
+  padding: 14px 18px;
+  border-radius: 6px;
+  margin-bottom: 32px;
+  font-size: 15px;
+}
+.angle {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin: 0 0 22px;
+  background: var(--bg);
+}
+.angle .num {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--accent-2);
+  margin-bottom: 6px;
+}
+.angle .platforms {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+.angle .meta-grid {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 6px 16px;
+  font-size: 14px;
+  margin: 14px 0;
+  padding: 12px 14px;
+  background: var(--card);
+  border-radius: 6px;
+}
+.angle .meta-grid dt { color: var(--muted); font-weight: 500; }
+.angle .meta-grid dd { margin: 0; }
+.hook {
+  font-style: italic;
+  border-left: 2px solid var(--accent-2);
+  padding: 6px 12px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.hook strong { color: var(--fg); font-style: normal; font-weight: 600; }
+.sources { font-size: 13px; }
+.sources li { margin-bottom: 4px; }
+ul, ol { padding-left: 22px; margin: 0 0 12px; }
+li { margin-bottom: 4px; }
+.footer { font-size: 13px; color: var(--muted); margin-top: 48px; border-top: 1px solid var(--rule); padding-top: 16px; }
+@media print {
+  .theme-toggle { display: none; }
+  body { background: white; color: black; }
+  .angle { break-inside: avoid; border: 1px solid #ccc; }
+  .wrap { max-width: 100%; padding: 24px; }
+  a { color: black; border-bottom: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Practical Article Scan</h1>
+      <p class="subtitle">Five article angles, sourced 2026-05-12 across Anthropic, Fortune, The Information, The Register, Tom's Hardware, Medium.</p>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-theme-set="light" aria-pressed="true">Light</button>
+      <button data-theme-set="dark" aria-pressed="false">Dark</button>
+      <button data-theme-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <div class="lede">
+    <strong>The week's signal.</strong> Five stories converge on one practitioner question: AI is getting deployed faster than the systems around it can absorb. Compute is being moved in bulk, budgets are being burned through, agents are deleting production databases, and consulting arms are being spun up to manage the wreckage. Pick angle by audience.
+  </div>
+
+  <h3>Angles</h3>
+
+  <article class="angle">
+    <div class="num">Angle 01</div>
+    <h2>The Uber Number: $3.4B Burned on Claude Code in Four Months</h2>
+    <div class="platforms">Substack cornerstone, Medium adaptation, LinkedIn note. Decision-makers and FinOps.</div>
+    <p>Uber's CTO told the company they had burned through their entire 2026 AI budget by April. The cause: 5,000 engineers given Claude Code in December, usage doubling by February, monthly per-engineer cost ranging $500 to $2,000. The story is not "AI coding is expensive." The story is that consumption pricing breaks annual budgeting in a way enterprise finance is not built to absorb.</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>CTOs, VPs of Engineering, FinOps, CFO offices reviewing AI line items.</dd>
+      <dt>Practical angle</dt><dd>What to model differently when adoption can 4x in 60 days. How to size, rate-limit, and tier engineers.</dd>
+      <dt>Sources</dt><dd>The Information primary, Yahoo Finance, Briefs.co, X thread with adoption curves.</dd>
+      <dt>Length</dt><dd>1,800-2,200 words. Cornerstone scale.</dd>
+      <dt>Connection</dt><dd>Builds on Gloss "Your AI coding bill is about to get weird" but with Uber as the specific case.</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "Uber gave 5,000 engineers Claude Code in December. By April, the CTO was telling the leadership team the annual AI budget was gone. This is not a story about overspending. It is a story about the budget category being wrong."</p>
+    <p class="sources">Primary source: <a href="https://www.theinformation.com/newsletters/applied-ai/uber-cto-shows-claude-code-can-blow-ai-budgets">The Information, Uber CTO on Claude Code</a></p>
+  </article>
+
+  <article class="angle">
+    <div class="num">Angle 02</div>
+    <h2>Nine Seconds: What the PocketOS Database Incident Tells You About Agent Permissions</h2>
+    <div class="platforms">Substack first, Medium adapt. Builders shipping agents.</div>
+    <p>An AI coding agent with elevated permissions deleted PocketOS's production database, customer records, reservations, and every backup, in nine seconds. ServiceNow used the incident as their stage for an AI Control Tower kill-switch product at Knowledge 2026. The article writes itself: what permission model would have stopped this, what monitoring would have caught it earlier, what default agents should not have. This is a builder-side article, not a vendor-side one.</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>Platform engineers, SREs, anyone shipping agents with write access.</dd>
+      <dt>Practical angle</dt><dd>Minimum viable agent permission boundaries. Concrete checklist. What scope creep looks like at the agent layer.</dd>
+      <dt>Sources</dt><dd>Fortune feature, The Register, Information Age, ServiceNow newsroom.</dd>
+      <dt>Length</dt><dd>1,600-2,000 words.</dd>
+      <dt>Connection</dt><dd>Pairs with the Anthropic Consensus piece. Both are "what does real money / real damage tell you that headlines miss."</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "It took nine seconds. Customer data, reservations, backups, gone. The agent had write permission because someone needed it once and never took it back. Read the postmortem like a builder, not a journalist."</p>
+    <p class="sources">Primary source: <a href="https://fortune.com/2026/05/06/servicenow-kill-switch-ai-agents-bill-mcdermott/">Fortune, ServiceNow kill switch</a>, <a href="https://ia.acs.org.au/article/2026/gone-in-9-seconds--ai-agent-deletes-company-database.html">Information Age</a></p>
+  </article>
+
+  <article class="angle">
+    <div class="num">Angle 03</div>
+    <h2>Anthropic Just Rented the Other Side's Supercomputer</h2>
+    <div class="platforms">Substack first. Medium adapt with retitle. LinkedIn note possible.</div>
+    <p>Anthropic took all of SpaceX's Colossus 1 compute. 220,000 GPUs, 300 megawatts. The supercomputer xAI built to train Grok is now powering Claude. Pro/Max rate limits doubled the same week. The bigger story is that "the AI race" has become a compute supply chain story. Labs are not just buying chips. They are buying each other's data centers because the inference demand from agentic systems is uncapped. Honest title that does not engagement-bait.</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>Decision-makers picking a primary inference provider, infra leads modeling capacity.</dd>
+      <dt>Practical angle</dt><dd>What it means for usage limits, what to plan for if your agentic workload is bursty, why the rate-limit lift might not last past Q3.</dd>
+      <dt>Sources</dt><dd>Anthropic blog primary, Tom's Hardware, The Register, The New Stack.</dd>
+      <dt>Length</dt><dd>1,500-1,800 words.</dd>
+      <dt>Connection</dt><dd>Pairs with Anthropic Consensus piece. Confirms the trade is structural, not vibes.</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "Elon Musk built Colossus 1 to train Grok. As of last week, every one of its 220,000 GPUs is running Claude. The two-horse-race framing is doing real damage to your infrastructure planning."</p>
+    <p class="sources">Primary source: <a href="https://www.anthropic.com/news/higher-limits-spacex">Anthropic, Higher limits + SpaceX</a>, <a href="https://www.tomshardware.com/tech-industry/artificial-intelligence/musks-spacex-has-rented-out-access-to-its-supercomputers-220-000-nvidia-gpus-and-300-megawatts-of-ai-compute-power-to-rival-anthropic">Tom's Hardware</a></p>
+  </article>
+
+  <article class="angle">
+    <div class="num">Angle 04</div>
+    <h2>The Deployment Tax: Why OpenAI Just Raised $4 Billion to Implement Its Own Product</h2>
+    <div class="platforms">Substack first. Medium adapt for practitioners. Highest-leverage angle for VP audience.</div>
+    <p>OpenAI is spinning up a $4B "Deployment Company" with 19 system integrators and consultancies. Anthropic just secured roughly $1.5B for the same thing. The message under the press release: large language model APIs by themselves do not deliver business value. Implementation, change management, workflow redesign, governance are doing 80% of the work. The article asks the practical question: what does that mean if you are inside an enterprise and trying to decide whether to buy implementation or build it.</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>VP of Engineering, AI Lead, Chief of Staff buying AI consulting. CIOs.</dd>
+      <dt>Practical angle</dt><dd>Frame for evaluating a deployment partner vs. internal team. Where the labs add value vs. where they cannot. Three questions to ask before signing.</dd>
+      <dt>Sources</dt><dd>OpenAI blog primary, PYMNTS, StartupHub, IBM Think 2026 coverage as context.</dd>
+      <dt>Length</dt><dd>1,800-2,200 words.</dd>
+      <dt>Connection</dt><dd>Direct fit for the Autocomplete Substack audience. This is Marco's specialty.</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "OpenAI raised four billion dollars to help companies deploy OpenAI. Read that sentence twice. The model API is no longer the product. Implementation is. That changes how you buy."</p>
+    <p class="sources">Primary source: <a href="https://openai.com/index/next-phase-of-enterprise-ai/">OpenAI, Next phase of enterprise AI</a>, <a href="https://www.pymnts.com/news/artificial-intelligence/2026/openai-launches-4-billion-dollar-company-accelerate-enterprise-ai-adoption/">PYMNTS</a></p>
+  </article>
+
+  <article class="angle">
+    <div class="num">Angle 05</div>
+    <h2>The 46% Stall: What the New Enterprise AI Failure Data Actually Shows</h2>
+    <div class="platforms">Gloss-blog or Substack. Practitioner stat-driven explainer.</div>
+    <p>The May 11 release: 46% of enterprise AI initiatives are missing targets despite rising investment. The accompanying figure: only 12% of agent initiatives reach production at scale. Stack that against the Uber data point and the PocketOS incident and the consulting raise. The pattern is consistent. The piece argues the failure mode is governance-shaped, not capability-shaped. Concrete recommendations for the three things organizations are skipping.</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>Practitioners and senior decision-makers reading the headlines and trying to decide whether to slow down.</dd>
+      <dt>Practical angle</dt><dd>Three failure patterns named with examples. What the 12% who shipped did differently. No vendor pitch.</dd>
+      <dt>Sources</dt><dd>GlobeNewswire study release, Deloitte tech trends, Medium "AI Agent Failures in Production" feature.</dd>
+      <dt>Length</dt><dd>1,400-1,800 words.</dd>
+      <dt>Connection</dt><dd>Could fold into the flywheel as a Gloss cornerstone post.</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "Six in ten companies are deploying AI agents. One in ten has shipped something autonomous. The gap is not a capability gap. It is a governance gap, and the companies in the 12% know exactly what they are doing differently."</p>
+    <p class="sources">Primary source: <a href="https://www.globenewswire.com/news-release/2026/05/11/3291816/0/en/Enterprise-AI-Is-Stalling-46-of-Initiatives-Fall-Short-Despite-Rising-Investment.html">GlobeNewswire, Enterprise AI Stalling</a>, <a href="https://medium.com/neuralnotions/ai-agent-failures-in-production-7-real-disasters-and-what-caused-them-51274f55a211">Medium, 7 real disasters</a></p>
+  </article>
+
+  <h3>Recommended sequence</h3>
+  <ol>
+    <li><strong>Start with Angle 04 (Deployment Tax)</strong> if Marco wants the highest-leverage piece for the Autocomplete audience this week. It is the most direct fit for "practical AI implementation."</li>
+    <li><strong>Then Angle 03 (Anthropic rents Colossus)</strong> because it confirms the Anthropic Consensus trade and ships fast off the existing research.</li>
+    <li><strong>Then Angle 01 (Uber $3.4B)</strong> as the FinOps companion piece. This has crossover appeal to LinkedIn.</li>
+    <li>Angles 02 and 05 are evergreen, can hold a week.</li>
+  </ol>
+
+  <h3>What I deliberately skipped</h3>
+  <ul>
+    <li>OpenAI hardware leaks (Glasses/Earbuds/Necklace). Too speculative, low practical signal.</li>
+    <li>IBM Think 2026 keynote framing. Vendor-led, hard to write practically without it reading like coverage.</li>
+    <li>"Builder vs engineer" identity piece. Already crowded.</li>
+    <li>AI safety / regulation tail. Already covered in the polymarket brief, and the markets price it as drift.</li>
+  </ul>
+
+  <p class="footer">Scan date: 2026-05-12. Sources sampled: Anthropic, Fortune, The Information, OpenAI, PYMNTS, Tom's Hardware, The Register, Medium, Information Age, GlobeNewswire, MarketingProfs, Deloitte. Brief saved to <code>drafts/practical-article-scan-2026-05-12/article-scan.html</code>.</p>
+</div>
+
+<script>
+(function(){
+  const buttons = document.querySelectorAll('.theme-toggle button');
+  const root = document.documentElement;
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode){
+    let theme = mode;
+    if (mode === 'system') theme = mql.matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', theme);
+    buttons.forEach(b => b.setAttribute('aria-pressed', b.dataset.themeSet === mode ? 'true' : 'false'));
+  }
+  function getStored(){ try { return localStorage.getItem('theme') || 'light'; } catch(e){ return 'light'; } }
+  function setStored(v){ try { localStorage.setItem('theme', v); } catch(e){} }
+  buttons.forEach(b => b.addEventListener('click', () => { const m = b.dataset.themeSet; setStored(m); apply(m); }));
+  mql.addEventListener && mql.addEventListener('change', () => { if (getStored() === 'system') apply('system'); });
+  apply(getStored());
+})();
+</script>
+</body>
+</html>

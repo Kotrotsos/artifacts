@@ -15,3 +15,4 @@
 | 2026-05-03 | images | [hero.png](images/hero.png) | Substack watercolor hero image for AI displacement report article | /Users/marcokotrotsos/PERSONAL/Content/00_Content/ai-displacement-report/substack/hero.png |
 | 2026-05-09 | reports | [polymarket-ai-brief.html](reports/polymarket-ai-brief.html) | Polymarket AI prediction markets brief, May 9 2026, top 10 markets and weekly narrative signals | /Users/marcokotrotsos/PERSONAL/Content/drafts/polymarket-ai-brief-2026-05-09/polymarket-ai-brief.html |
 | 2026-05-09 | reports | [draft.md](reports/draft.md) | Draft: The Anthropic Consensus, Polymarket signal vs press framing of AI race | /Users/marcokotrotsos/PERSONAL/Content/drafts/anthropic-consensus/draft.md |
+| 2026-05-12 | reports | [article-scan.html](reports/article-scan.html) | Five practical AI article angles sourced from May 12 2026 scan | /Users/marcokotrotsos/PERSONAL/Content/drafts/practical-article-scan-2026-05-12/article-scan.html |

@@ -84,3 +84,4 @@
 | 2026-05-11 | print | reports | [sole-gallery-2026-05-11T20-16-16.html](projects/print/reports/sole-gallery-2026-05-11T20-16-16.html) | Sole gallery — 1041 cropped sole shots for visual spot-check |
 | 2026-05-12 | elastofirm-profiler | reports | [profile-inscribed-circle.html](projects/elastofirm-profiler/reports/profile-inscribed-circle.html) | RP-25178 profile cross-section with inscribed circle overlay |
 | 2026-05-12 | aside | reports | [session-report.html](projects/aside/reports/session-report.html) | Session report covering call-assistant pivot, tickets, Private mode, sys audio reconnect |
+| 2026-05-12 | content | reports | [article-scan.html](projects/content/reports/article-scan.html) | Five practical AI article angles sourced from May 12 2026 scan |
