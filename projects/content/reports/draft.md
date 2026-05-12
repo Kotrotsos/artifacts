@@ -1,102 +1,108 @@
-# The Anthropic Consensus
+# Uber Burned Its Annual AI Budget in Four Months
 
-*Three Polymarket positions are pricing the same trade. The press is still calling it a race.*
+*Five thousand engineers got Claude Code in December. The pricing model, not the engineers, did this.*
 
 **Key takeaways:**
 
-- Three independent Polymarket events are pricing Anthropic as the dominant AI lab, not a contender. 78.5% to hold the top Chatbot Arena rank at end of May, 70.45% at end of June, 88% to be valued higher than OpenAI by year end.
-- Real money agrees across three different bets. That convergence is a stronger signal than any single quote-driven "AI race" headline.
-- For builders and decision-makers, this is a planning input. The market is saying Claude is the current capability frontier and the structural shift is already happening, not coming.
+- Uber gave 5,000 engineers Claude Code in December 2025. By April 15, the CTO told the company the entire 2026 AI budget was spent. Per-engineer cost ran $500 to $2,000 a month.
+- This is not an engineering overreach story. It is a finance story. Consumption pricing and annual budgeting are structurally incompatible, and most enterprises are building their FY26 AI line item on assumptions that already broke at Uber.
+- The fix is not to slow adoption. The fix is to tier engineers, move to quarterly elastic budgets, and measure cost per merged PR instead of cost per token. Three moves you can make in the next thirty days.
 
 ---
 
-There are three numbers worth reading together.
+In December 2025, Uber rolled out Claude Code to 5,000 engineers. By February the usage had nearly doubled. By March, 84% of Uber's developers were classified as agentic coding users, up from 32% the prior December. On April 15, Chief Technology Officer Praveen Neppalli Naga told the company they had burned through the entire 2026 AI budget. Four months in.
 
-78.5%. That is the implied probability on Polymarket, as of May 9, that Anthropic owns the top spot on the Chatbot Arena LLM Leaderboard at the end of May. The same market gives OpenAI 3.45%. Google 17.5%. xAI 0.65%.
+The reaction in the press was predictable. AI is expensive. Engineers got carried away. Maybe the tools are not ready for production scale. Maybe the spend is irresponsible.
 
-70.45%. That is the same question, asked one month later, for end of June. The probability moved up 6.25 points in 24 hours.
+It is none of those things. Look at the same data with finance eyes instead of engineering eyes and a different story emerges. Uber did not blow its budget because engineers were wasteful. Uber blew its budget because the pricing model of the tool and the budgeting model of the company are structurally incompatible. And every enterprise reading the headlines about Uber has the same problem, sitting in their own FY26 plan, waiting to surface.
 
-88%. That is the probability that Anthropic is valued higher than OpenAI at any point during 2026.
+This is the article I would want to read if I were running a finance review next week.
 
-Each market resolves on different criteria. Each pulls from different liquidity. Each is taken by traders who could have placed money anywhere else. And all three are pricing the same position.
+## What actually happened at Uber
 
-Open any tech publication this week and you will read about "the AI race." You will read about model parity. You will read about competitive pressure between labs. The markets are not framing this as a race. They are framing it as a winner.
+Start with the numbers, because the numbers tell the story better than the framing.
 
-The gap between those two pictures is the most interesting story in AI right now.
+Uber's R&D budget for 2026 includes a $3.4 billion allocation, of which the AI line item is the fastest-growing slice. The CTO did not say AI costs were 6x what was forecast. He said the entire annual envelope, the full year of planned spend, was gone in four months. AI-related costs at Uber are up roughly 6x since 2024.
 
-## What the three markets are actually pricing
+The per-engineer numbers are the interesting part. Monthly Claude Code spend per engineer ranged from $500 to $2,000. That four-fold variance inside a single workforce is the first signal something different is happening. With a SaaS seat, the per-engineer cost is bounded by the per-engineer license price. With a consumption-priced tool, the per-engineer cost is bounded only by how many agent loops that engineer chooses to run.
 
-Polymarket runs the model-leadership question monthly. The resolution source is the Chatbot Arena leaderboard, which ranks models by head-to-head human preference votes. It is not a perfect benchmark, but it is public, replicable, and difficult to game without genuine model improvements.
+The adoption curve was the second signal. From December to March, the percentage of Uber engineers classified as agentic coders went from 32% to 84%. By April, 95% of all Uber engineers were using AI tools at least monthly, and 70% of committed code had some AI involvement. Approximately 11% of live backend code changes are now written by AI agents end-to-end. None of this is bad. All of it is the kind of adoption rate companies dream about when they sign a deal.
 
-The end-of-May market has $4.9 million in total volume and $118 thousand in 24-hour turnover. Anthropic's Yes side alone has traded $367 thousand. OpenAI's Yes side has $474 thousand of volume and trades at 3.45%. That is not a thin market with a stale price. It is a deep market that has decided.
+The third signal, the one I want to spend more time on, is what Uber did to drive that adoption. Engineers were ranked on internal dashboards by AI tool usage. Usage was a visible performance signal. Leadership was rewarding the people who used Claude Code the most.
 
-The end-of-June market is even larger, $5.6 million total. xAI's Yes side has $1 million of volume and prices at 1.3%. That is meaningful capital betting against a company that the press routinely lists as a frontier contender.
+Read those three signals together. The tool is consumption-priced. The workforce is incentivized to consume. The budget is annual and fixed. There is no version of those three statements that ends with the budget surviving the year.
 
-The valuation market is the smaller of the three at $49 thousand total, but the price has been remarkably stable around 88% for weeks. The traders are not flipping it. They have settled on a probability and are holding.
+## The pricing model mismatch
 
-Three different questions. Three different settlement criteria. Three different volume profiles. One implied position.
+Software has had two budgeting eras. Both worked because the pricing model matched the budgeting model.
 
-## Why three matters more than one
+The license era had perpetual software. You paid once, you owned a copy, the budget was capital expense, and depreciation handled the rest. Predictable. The SaaS era introduced per-seat subscriptions. Per-seat is bounded. Each licensed user can consume at most one unit of the service per period. You count seats, multiply by price, add a buffer, and you have a number. Annual budgeting works fine.
 
-A single market can be wrong. Liquidity is shallow. A few traders set a price and it drifts. The dataset is small, the resolution criterion is narrow.
+Consumption pricing breaks both of those assumptions.
 
-Three markets pricing the same trade is harder to dismiss. The end-of-May question and the end-of-June question are independent: a trader can hold a Yes on May and a No on June and lose money every time Anthropic ships a model that disrupts their own leaderboard position. The valuation question runs on completely different mechanics, depending on funding rounds and reported share prices.
+With Claude Code, the unit of consumption is not the engineer. It is the agent loop. One engineer running one well-crafted prompt against a small codebase might cost $100 a month. The same engineer running an agentic workflow that spawns sub-agents, calls tools, reads thousands of files into context, executes multiple iterations, and merges back into a parent task might cost $2,000 a month. The capacity for spend is not bounded by headcount. It is bounded by the engineer's willingness to launch agent loops, multiplied by the average complexity of those loops.
 
-For all three to converge, traders are not betting on one Anthropic event. They are betting on a window. They are saying Anthropic holds the leaderboard, holds it again the following month, and the capital structure follows the capability lead.
+Agentic AI uses 5 to 30 times more tokens per task than a standard chatbot interaction, depending on the workload. That is the multiplier that makes consumption-priced agents structurally different from any SaaS product your finance team has ever budgeted for.
 
-The 6.25 point jump on the June market in 24 hours is the freshest signal. Conviction is increasing, not decreasing.
+Annual budgets are built on the bounded assumption. You forecast a number based on expected seats, expected usage per seat, and a contingency. That math works when the per-seat ceiling is a hard ceiling. It does not work when the per-seat ceiling is the engineer's imagination plus the latency of a feedback loop they enjoy.
 
-## The press framing problem
+That is what Uber discovered. The engineers were not wrong. The budget was wrong.
 
-Every major outlet covering AI uses the language of competition. "OpenAI vs Anthropic." "The frontier race." "Neck and neck." "Trading the lead." These are the words you will see in the next ten articles you open.
+## The internal leaderboard problem
 
-There are structural reasons. A two-horse race is more readable than a one-horse race. Access journalism depends on staying neutral enough that all three labs return calls. Editors want a recurring storyline, not a settled outcome. The frame writes itself.
+This is the piece I want managers and execs to sit with.
 
-The frame is also doing real work. It tells the reader that the choice between Claude, GPT, and Gemini is roughly symmetric. It tells the buyer that infrastructure decisions are reversible because the leaderboard rotates. It tells the regulator that no single company is concentrating capability.
+Uber rolled out Claude Code with an explicit adoption push. Internal dashboards ranked engineers by AI tool usage. That is a textbook adoption strategy. Make the behavior visible, reward it, watch usage spread. It worked. 32% to 84% in three months is not a fluke. It is the result of well-designed internal incentives.
 
-The market disagrees with all three of those implicit claims.
+The problem is that the same lever that drives adoption drives cost. There is no separation between "engineer is being productive with AI" and "engineer is generating tokens." For a consumption-priced tool, productivity signal and cost signal are the same signal.
 
-## What the markets see that coverage misses
+If your leaderboard rewards usage, your leaderboard is also rewarding spend. If your spend is uncapped per engineer, your leaderboard is an unhedged buy order on Anthropic's revenue, written in your engineering culture.
 
-Read the markets and the picture becomes specific. Anthropic has held the top Arena rank through multiple model cycles in the past year. The Sonnet 4.6 release reset capability ceilings on agentic coding tasks. Computer Use shipped, then iterated, then matured. Managed Agents removed an entire infrastructure layer for builders. Each of these is a discrete shipping event.
+This is not a reason to drop the leaderboard. Cultural pressure works. The point is to acknowledge that the cultural lever and the financial lever are now the same lever, and most companies have not thought through what that means.
 
-OpenAI's pattern has been different. The cadence is incremental updates to GPT-4 and GPT-5 series, plus a steady stream of consumer features. The DevDay announcements have been polished. The hardware partnership leaks are real. None of it has retaken the Arena.
+## Why every enterprise has this problem
 
-The traders are reading shipping behavior, not press releases. Press releases describe ambition. Shipping describes capability. The markets weight the second.
+Uber is not unusual. Uber is just the public version of what is happening everywhere.
 
-There is a second thing the markets see. Anthropic is the lab that enterprise infrastructure has actually standardized on for the most demanding work. Cursor, Replit, Vercel, every coding agent serious enough to charge enterprise pricing defaults to Claude. That is not a leaderboard fact. It is a deployment fact, and it shows up in revenue, in funding momentum, and eventually in the valuation crossover number.
+The FinOps Foundation's 2026 State of FinOps report has the supporting numbers. 78% of IT leaders have experienced unexpected charges on a consumption-based SaaS bill in the past year. 98% of FinOps practitioners are now tasked with managing AI spend, up from 31% in 2024. The average enterprise AI budget went from $1.2 million in 2024 to $7 million in 2026, a 5.8x increase in two years.
 
-## What would break the trade
+The pattern is industry-wide. Companies are rolling out consumption-priced AI tools to broad engineering populations. The tools work. Adoption spreads. Token consumption scales with adoption. The annual budget, set in October of the previous year on assumptions that already do not match the tool, runs out somewhere in Q2 or Q3.
 
-A position priced at 70 to 88 percent is not certainty. It is a strong probability with real downside risk. Honest reading requires naming what would flip these markets.
+The companies talking publicly about this are doing the rest of us a favor. The ones not talking are either lucky, in a smaller pilot, or about to have the same conversation with their CFO in a less convenient context.
 
-OpenAI ships a model that retakes the Arena clearly. GPT-5.5 with a confirmed leaderboard lead would move both the May and June markets toward 30 to 40 percent OpenAI within a day.
+## A budgeting model that survives this
 
-Google ships Gemini 3 Pro and pushes ahead. Gemini has periodically taken the top Arena rank. If that happens cleanly in the next three weeks, Google's number rises and Anthropic's falls. The June market already prices Google at 21 percent, more than Anthropic plus OpenAI's losses combined would imply.
+I am going to give you four specific changes. None of them require slowing adoption. All of them are about restructuring the cost side to match the new revenue side of the tool's pricing model.
 
-Anthropic ships nothing for two months. Capacity constraints have been a real concern. If the next Claude update slips past June 30 without a clear capability bump, the market is forced to retreat from the dominance frame.
+**Move from annual fixed to quarterly elastic.** Annual envelopes were designed for predictable consumption. If your consumption shape is non-predictable, your envelope cadence has to match. Quarterly budgets with explicit re-forecast at each quarter close, ratified by finance, give you four chances to catch a runaway curve. Not one chance, with eight months of damage already done.
 
-Funding round comes in below OpenAI. The valuation market would crack hard if the next Anthropic round priced below the implied OpenAI mark, which is currently in the high three hundreds of billions.
+**Set a per-engineer monthly soft cap with explicit overage approval.** Not a hard cut-off. A signal. If an engineer crosses the cap, their manager gets a ping, the engineer gets a brief justification ask, and the additional spend is approved or rerouted. This is how cloud spend is managed already. It is not new infrastructure. It is just applying the same governance to AI tools that you already apply to AWS.
 
-These are the real risks. They are also the reasons the markets price 70 to 88 instead of 95 to 99.
+**Measure cost per merged PR or cost per deployed feature, not cost per token.** Cost per token is the wrong unit. It compares well to other tokens. It compares badly to everything you actually care about. Cost per merged PR is the unit that lets you have an honest conversation about ROI. If the cost per merged PR is dropping while the cost per engineer is rising, the tool is winning. If the cost per merged PR is flat or rising, you have an adoption problem dressed up as a productivity story.
 
-## What this means if you are building
+**Tier engineers by usage profile.** Light user, heavy user, agent runner. The agent runner is a different cost center than the light user. Mixing them in the same budget bucket lets a small number of agent runners distort the per-capita number, which makes the budget look better than it is on average and worse than it should be at the heavy end. Tiered budgets give you accuracy and let you say honest things to your CFO about where the money is going.
 
-The market signal is a planning input. It is not a prediction. Treat it like a weighted probability across the next sixty days.
+These four moves are not novel. They are the standard FinOps playbook for any consumption-priced resource, applied to AI tooling. The novelty is that most companies have not yet realized AI tooling sits in the same category as cloud infrastructure for budgeting purposes, not the same category as Microsoft Office for budgeting purposes.
 
-If you are picking a primary inference provider, the market is telling you that Claude is the current capability frontier and is favored to stay there through Q2. Pick accordingly. If you are doing the responsible thing and keeping a fallback, weight your fallback toward whichever lab the market signals as the most credible challenger over your investment horizon. Right now that is Google, not OpenAI.
+## What to do in the next thirty days
 
-If you are forecasting market structure for a roadmap, planning, or fundraising deck, the market is pricing in real consolidation. The three Anthropic positions are not just about one lab winning. They imply that the field flattens behind the leader, not that it broadens. That has implications for vendor risk, for procurement, for partnership strategy.
+If you are reading this and you sit in front of a budget that includes an AI line item, three concrete moves.
 
-If you read AI coverage, weight the market signal alongside the coverage. The race framing is not wrong, exactly. The race is on. But the position right now is asymmetric, and the press is structurally incentivized to under-report that asymmetry.
+First, find out what your current per-engineer consumption looks like, by engineer, by month, broken down by tool. Most companies do not have this data. Get it. If the answer is "we cannot get it without a quarter of engineering work," that is your first finding. Build the visibility before you build the controls.
+
+Second, talk to whichever engineering leader is closest to the adoption push and find out what the cultural incentives look like. Are engineers being ranked by usage? Are managers being told to drive adoption to a specific percentage? Are there internal leaderboards? If yes, surface the cost implications now, while you can still adjust the metric, instead of waiting for the bill.
+
+Third, run the numbers as if your AI line item is going to grow 5 to 10x over the next twelve months. That is the magnitude Uber and the FinOps data suggest is plausible. If a 5x growth in your AI budget is survivable, you have time. If a 5x growth would crater the rest of your tooling budget, you have a planning problem to solve before the curve catches you.
+
+None of these require slowing adoption. None require punishing engineers. All of them give you better data and better controls than the median Fortune 500 has right now.
 
 ## Closing
 
-The markets have made a call. Three different markets, three different questions, one position. Real money has converged on a single picture that the press has not yet caught up to.
+The Uber number is not a warning about Claude Code specifically. It is a warning about an entire generation of consumption-priced AI tooling meeting a generation of annual-budgeting practices that were designed for a slower, more bounded category of software.
 
-That is the divergence worth reading. Not because Polymarket is always right, it is not. Not because the press is always wrong, it is not. But because when a $1.7 million pool of real money positions agrees across independent bets and the headlines are still saying "race," somebody is wrong, and the side that has skin in the game tends to be wrong less often.
+Uber is the canary. The companies that read the canary correctly will spend the rest of 2026 quietly tuning their cost models while their competitors are stuck in emergency budget reviews. The companies that read it as an Uber problem will have their own version of the conversation by Q3.
 
-The Anthropic consensus is on. The question is whether you read it before the headlines do.
+You can adopt aggressively and budget sanely. The two are not in conflict. They just require you to update the budgeting model at the same speed you are updating the tooling.
 
 ---
 
