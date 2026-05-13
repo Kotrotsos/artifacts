@@ -1,0 +1,1401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APDOCS — SaaS design proposal</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff; --fg: #1a1a1a; --muted: #6a6a6a; --subtle: #8a8a8a;
+    --border: #e6e6e6; --border-strong: #d0d0d0; --hover: #f4f4f4;
+    --neutral-bg: #f8f8f8; --neutral-bg-2: #fafafa; --code-bg: #f4f4f4;
+    --accent: #1f6feb; --accent-bg: #eff6ff;
+    --ok: #166534; --ok-bg: #ecfdf5;
+    --warn: #b45309; --warn-bg: #fef3c7;
+    --bad: #991b1b; --bad-bg: #fef2f2;
+    --info: #0e7490; --info-bg: #ecfeff;
+    --purple: #7c3aed; --purple-bg: #f5f3ff;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.03);
+  }
+  [data-theme="dark"] {
+    --bg: #0d0f13; --fg: #e8e8e8; --muted: #9a9a9a; --subtle: #707070;
+    --border: #232730; --border-strong: #2f343d; --hover: #1a1d23;
+    --neutral-bg: #14171c; --neutral-bg-2: #181b21; --code-bg: #1a1d23;
+    --accent: #58a6ff; --accent-bg: #0c1a2e;
+    --ok: #4ade80; --ok-bg: #0d2116;
+    --warn: #fbbf24; --warn-bg: #2a1e0a;
+    --bad: #f87171; --bad-bg: #2a1212;
+    --info: #67e8f9; --info-bg: #0a2127;
+    --purple: #c084fc; --purple-bg: #1d1230;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
+  }
+  @media (prefers-color-scheme: dark) {
+    [data-theme="system"], html:not([data-theme]) {
+      --bg: #0d0f13; --fg: #e8e8e8; --muted: #9a9a9a; --subtle: #707070;
+      --border: #232730; --border-strong: #2f343d; --hover: #1a1d23;
+      --neutral-bg: #14171c; --neutral-bg-2: #181b21; --code-bg: #1a1d23;
+      --accent: #58a6ff; --accent-bg: #0c1a2e;
+      --ok: #4ade80; --ok-bg: #0d2116;
+      --warn: #fbbf24; --warn-bg: #2a1e0a;
+      --bad: #f87171; --bad-bg: #2a1212;
+      --info: #67e8f9; --info-bg: #0a2127;
+      --purple: #c084fc; --purple-bg: #1d1230;
+      --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px; line-height: 1.55;
+  }
+  .wrap { max-width: 1320px; margin: 0 auto; padding: 32px 24px 80px; }
+  h1 { font-size: 30px; margin: 0 0 6px; letter-spacing: -0.02em; font-weight: 700; }
+  h2 { font-size: 21px; margin: 48px 0 14px; padding-top: 20px; border-top: 1px solid var(--border); letter-spacing: -0.01em; font-weight: 600; }
+  h3 { font-size: 14px; margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  h4 { font-size: 15px; margin: 14px 0 6px; font-weight: 600; }
+  p.lede { color: var(--muted); margin: 0 0 24px; max-width: 880px; font-size: 15px; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+
+  /* Top bar */
+  .topbar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; gap: 24px; }
+  .theme-toggle { display: inline-flex; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; flex-shrink: 0; }
+  .theme-toggle button {
+    background: transparent; border: 0; color: var(--muted);
+    padding: 6px 12px; cursor: pointer; font-size: 12px;
+    border-right: 1px solid var(--border); font-family: inherit;
+  }
+  .theme-toggle button:last-child { border-right: 0; }
+  .theme-toggle button.active { background: var(--neutral-bg); color: var(--fg); }
+  .theme-toggle button:hover { background: var(--hover); }
+
+  /* Section intros */
+  .section-num {
+    display: inline-block; font-family: ui-monospace, monospace; font-size: 12px;
+    color: var(--accent); margin-right: 8px; font-weight: 600;
+    background: var(--accent-bg); padding: 2px 8px; border-radius: 4px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--neutral-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px;
+  }
+
+  /* Pillars */
+  .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0 32px; }
+  @media (max-width: 900px) { .pillars { grid-template-columns: repeat(2, 1fr); } }
+  .pillar { background: var(--neutral-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+  .pillar .p-num {
+    display: inline-block; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent); color: white; text-align: center; line-height: 24px;
+    font-size: 12px; font-weight: 700; margin-bottom: 8px;
+  }
+  .pillar h4 { margin: 0 0 4px; font-size: 14px; }
+  .pillar p { margin: 0; font-size: 12px; color: var(--muted); }
+
+  /* ========== MOCKUP UI ========== */
+  .mockup {
+    background: var(--bg); border: 1px solid var(--border-strong); border-radius: 10px;
+    overflow: hidden; margin: 12px 0 20px; box-shadow: var(--shadow);
+  }
+  .mockup-toolbar {
+    background: var(--neutral-bg); border-bottom: 1px solid var(--border);
+    padding: 8px 14px; display: flex; align-items: center; gap: 14px;
+    font-size: 12px; color: var(--muted);
+  }
+  .traffic { display: inline-flex; gap: 6px; }
+  .traffic-dot { width: 11px; height: 11px; border-radius: 50%; background: var(--border-strong); }
+  .url { font-family: ui-monospace, monospace; color: var(--subtle); }
+  .mockup-body { display: flex; min-height: 480px; }
+
+  /* sidebar */
+  .sidebar {
+    width: 200px; flex-shrink: 0; background: var(--neutral-bg);
+    border-right: 1px solid var(--border); padding: 14px 8px;
+    font-size: 13px;
+  }
+  .sidebar-logo {
+    padding: 6px 10px; font-weight: 700; font-size: 14px; letter-spacing: -0.01em;
+    color: var(--fg); margin-bottom: 12px;
+  }
+  .sidebar-section { padding: 14px 10px 6px; font-size: 11px; color: var(--subtle);
+                     text-transform: uppercase; letter-spacing: 0.05em; }
+  .nav-item { padding: 6px 10px; border-radius: 5px; cursor: pointer; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+  .nav-item.active { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+  .nav-item:hover { background: var(--hover); }
+  .nav-count { margin-left: auto; font-size: 11px; color: var(--subtle); font-family: ui-monospace, monospace; }
+  .nav-item.active .nav-count { color: var(--accent); }
+
+  /* main column */
+  .main { flex: 1; padding: 18px 22px; overflow-x: auto; min-width: 0; }
+
+  /* generic chip */
+  .chip {
+    display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px;
+    border-radius: 4px; font-size: 11px; font-weight: 600;
+    background: var(--neutral-bg); border: 1px solid var(--border); color: var(--muted);
+  }
+  .chip.ok    { background: var(--ok-bg);    color: var(--ok);    border-color: transparent; }
+  .chip.warn  { background: var(--warn-bg);  color: var(--warn);  border-color: transparent; }
+  .chip.bad   { background: var(--bad-bg);   color: var(--bad);   border-color: transparent; }
+  .chip.info  { background: var(--info-bg);  color: var(--info);  border-color: transparent; }
+  .chip.purple{ background: var(--purple-bg);color: var(--purple);border-color: transparent; }
+
+  .pbadge { /* provenance badge */
+    display: inline-flex; align-items: center; gap: 4px; padding: 1px 6px;
+    border-radius: 3px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase; font-family: ui-monospace, monospace;
+  }
+  .pbadge.det { background: var(--ok-bg);   color: var(--ok); }
+  .pbadge.hyb { background: var(--warn-bg); color: var(--warn); }
+  .pbadge.nond{ background: var(--purple-bg); color: var(--purple); }
+
+  /* engine header */
+  .engine-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 14px; gap: 16px;
+  }
+  .engine-title { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
+  .engine-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .engine-actions { display: flex; gap: 8px; }
+  .btn {
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--fg);
+    padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 500;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--hover); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+  .btn.primary:hover { filter: brightness(1.1); }
+
+  .stat-strip {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 0 0 18px;
+    font-size: 12px;
+  }
+  @media (max-width: 1000px) { .stat-strip { grid-template-columns: repeat(3, 1fr); } }
+  .stat {
+    background: var(--neutral-bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .stat .k { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .stat .v { font-size: 16px; font-weight: 600; margin-top: 2px; font-family: ui-monospace, monospace; }
+  .stat.alert .v { color: var(--bad); }
+
+  /* tab strip */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .tab {
+    padding: 8px 14px; font-size: 13px; color: var(--muted); cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  .tab.active { color: var(--fg); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab:hover { color: var(--fg); }
+  .tab .tab-count { color: var(--subtle); font-family: ui-monospace, monospace; font-size: 11px; margin-left: 4px; }
+  .tab.active .tab-count { color: var(--accent); }
+
+  /* TIMELINE — the headline feature */
+  .timeline-wrap {
+    background: var(--neutral-bg-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 18px 24px; margin-bottom: 16px;
+  }
+  .timeline-head {
+    display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px;
+  }
+  .timeline-title { font-size: 15px; font-weight: 600; }
+  .timeline-controls { display: flex; gap: 8px; font-size: 11px; }
+  .tl-control {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+    padding: 3px 8px; color: var(--muted); cursor: pointer;
+  }
+  .tl-control.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .timeline {
+    position: relative; padding: 30px 10px 14px;
+  }
+  .timeline-axis {
+    position: relative; height: 2px; background: var(--border-strong); margin: 20px 0 60px;
+  }
+  .axis-stop {
+    position: absolute; top: -7px; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--bg); border: 3px solid var(--accent); transform: translateX(-50%);
+  }
+  .axis-stop.warn  { border-color: var(--warn); }
+  .axis-stop.bad   { border-color: var(--bad); }
+  .axis-stop.ok    { border-color: var(--ok); }
+  .axis-stop.start { background: var(--accent); }
+  .axis-stop.end   { background: var(--bad); border-color: var(--bad); }
+  .axis-label {
+    position: absolute; transform: translateX(-50%); white-space: nowrap;
+    font-size: 11px; color: var(--muted); font-family: ui-monospace, monospace;
+  }
+  .axis-label.above { top: -28px; }
+  .axis-label.below { top: 28px; }
+
+  .stage-card {
+    position: absolute; padding: 10px 12px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    font-size: 11px; box-shadow: var(--shadow);
+    min-width: 140px;
+  }
+  .stage-card.ok { border-color: var(--ok); }
+  .stage-card.warn { border-color: var(--warn); }
+  .stage-card.bad { border-color: var(--bad); }
+  .stage-card .sc-kind { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .stage-card .sc-title { font-weight: 600; margin: 2px 0; font-size: 12px; }
+  .stage-card .sc-meta { color: var(--muted); font-size: 10px; }
+
+  /* Branch lines (swaps) */
+  .branch-row {
+    margin: 26px 0 0; padding-left: 12px; border-left: 2px solid var(--border);
+  }
+  .branch-row .br-head {
+    font-size: 12px; font-weight: 600; color: var(--purple); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .branch-line {
+    position: relative; height: 22px; background: linear-gradient(to bottom, transparent 9px, var(--purple) 9px, var(--purple) 11px, transparent 11px);
+  }
+  .branch-stop {
+    position: absolute; top: 6px; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--purple); transform: translateX(-50%);
+  }
+  .branch-tag {
+    position: absolute; top: -18px; transform: translateX(-50%);
+    font-size: 10px; font-family: ui-monospace, monospace; color: var(--purple); white-space: nowrap;
+    background: var(--bg); padding: 0 4px;
+  }
+  .branch-name {
+    margin-top: 4px; font-size: 11px; color: var(--muted); padding-left: 4px;
+  }
+
+  /* Table mockups */
+  table.t {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+  }
+  table.t th { text-align: left; padding: 8px 10px; color: var(--muted); font-weight: 600;
+               font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); }
+  table.t td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.t tr:last-child td { border-bottom: 0; }
+  table.t tr:hover { background: var(--neutral-bg-2); cursor: pointer; }
+  .t-name { font-weight: 600; }
+  .t-id { font-family: ui-monospace, monospace; font-size: 11px; color: var(--muted); }
+
+  /* Doc review — two-pane */
+  .doc-review { display: grid; grid-template-columns: 1.2fr 1fr; gap: 0; min-height: 460px; }
+  .pdf-pane { background: #2a2a2a; padding: 20px; position: relative; }
+  .pdf-page {
+    background: #f8f8f8; height: 100%; min-height: 420px; border-radius: 4px; position: relative;
+    color: #333; padding: 30px 26px; font-size: 11px; line-height: 1.7;
+    font-family: 'Times', serif;
+  }
+  .pdf-page strong { font-family: inherit; }
+  .pdf-pane.dark .pdf-page { background: #ebebeb; }
+  .pdf-highlight {
+    position: absolute; background: rgba(255, 200, 0, 0.4); border: 2px solid var(--warn);
+    border-radius: 2px; pointer-events: none; animation: pulse 2s ease infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 0.9 } 50% { opacity: 0.5 } }
+  .pdf-meta { position: absolute; top: 8px; left: 20px; right: 20px; color: rgba(255,255,255,0.7);
+              font-size: 11px; display: flex; justify-content: space-between; }
+  .fields-pane { background: var(--bg); padding: 18px; border-left: 1px solid var(--border); }
+  .field-row {
+    display: grid; grid-template-columns: 120px 1fr auto; gap: 10px; padding: 8px 0;
+    border-bottom: 1px solid var(--border); align-items: center;
+  }
+  .field-row:last-child { border-bottom: 0; }
+  .field-row.highlighted { background: var(--warn-bg); border-radius: 4px; margin: 0 -8px; padding: 8px; }
+  .field-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .field-value { font-family: ui-monospace, monospace; font-size: 13px; font-weight: 600; }
+  .field-actions { display: flex; gap: 4px; }
+  .field-btn {
+    border: 1px solid var(--border); background: var(--bg);
+    padding: 2px 6px; font-size: 10px; border-radius: 3px; cursor: pointer; color: var(--muted);
+  }
+
+  /* OIL kanban */
+  .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .kanban-col { background: var(--neutral-bg); border-radius: 8px; padding: 10px; }
+  .kanban-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em;
+    font-weight: 600; margin-bottom: 8px;
+  }
+  .kanban-count { font-family: ui-monospace, monospace; }
+  .oil-card {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px; margin-bottom: 8px; font-size: 12px; box-shadow: var(--shadow);
+  }
+  .oil-card .rule-id {
+    font-family: ui-monospace, monospace; font-size: 10px; color: var(--accent);
+    text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600;
+  }
+  .oil-card .oil-title { font-weight: 600; margin: 4px 0; line-height: 1.35; }
+  .oil-card .oil-meta { color: var(--muted); font-size: 11px; }
+  .oil-card.crit { border-left: 3px solid var(--bad); }
+  .oil-card.high { border-left: 3px solid var(--warn); }
+  .oil-card.med  { border-left: 3px solid var(--info); }
+
+  /* Smart Search bar */
+  .search {
+    background: var(--neutral-bg); border: 1px solid var(--border-strong);
+    border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 12px;
+    font-size: 13px;
+  }
+  .search-icon { color: var(--muted); }
+  .search input { background: transparent; border: 0; flex: 1; color: var(--fg); font-size: 13px; font-family: inherit; outline: none; }
+  .search-parsed {
+    margin-top: 8px; padding: 10px 14px; background: var(--info-bg); border-radius: 6px;
+    font-size: 11px; color: var(--info); font-family: ui-monospace, monospace;
+  }
+
+  /* Determinism panel */
+  .det-panel {
+    background: var(--neutral-bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 14px;
+  }
+  .det-row {
+    display: grid; grid-template-columns: max-content max-content 1fr max-content;
+    gap: 12px; padding: 6px 0; align-items: baseline;
+    border-bottom: 1px dashed var(--border);
+  }
+  .det-row:last-child { border-bottom: 0; }
+  .det-row .what { font-weight: 500; }
+  .det-row .src { color: var(--muted); font-size: 11px; font-family: ui-monospace, monospace; }
+
+  /* Personas */
+  .personas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px; }
+  @media (max-width: 1000px) { .personas { grid-template-columns: repeat(2, 1fr); } }
+  .persona {
+    background: var(--neutral-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px;
+  }
+  .persona-role { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 6px; }
+  .persona h4 { margin: 0 0 6px; font-size: 15px; }
+  .persona-needs { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .persona-uses { font-size: 12px; }
+  .persona-uses li { margin: 2px 0; }
+
+  /* Sitemap */
+  .sitemap {
+    background: var(--code-bg); border-radius: 8px; padding: 16px 18px;
+    font-family: ui-monospace, monospace; font-size: 12px; line-height: 1.7;
+    overflow-x: auto; white-space: pre;
+  }
+  .sitemap .h { color: var(--muted); }
+  .sitemap .a { color: var(--accent); font-weight: 600; }
+
+  /* Workflow swimlane */
+  .swimlane {
+    display: grid; grid-template-columns: 130px repeat(5, 1fr); gap: 0;
+    margin-top: 14px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .swim-head { background: var(--neutral-bg); padding: 10px 12px; font-size: 11px; font-weight: 600;
+               color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .swim-head:not(:last-child) { border-right: 1px solid var(--border); }
+  .swim-cell { padding: 12px; border-top: 1px solid var(--border); font-size: 12px; min-height: 70px; }
+  .swim-cell:not(:last-child) { border-right: 1px solid var(--border); }
+  .swim-role { background: var(--neutral-bg); font-weight: 600; }
+  .swim-step .step-num {
+    display: inline-block; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: white; text-align: center; line-height: 20px;
+    font-size: 11px; font-weight: 700; margin-right: 6px;
+  }
+  .swim-step.passive .step-num { background: var(--border-strong); }
+  .swim-step.passive { color: var(--muted); }
+
+  footer {
+    margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar">
+  <div>
+    <h1>APDOCS — SaaS design proposal</h1>
+    <p class="lede">An audit-first SaaS for managing Back-to-Birth document packages. The lifecycle timeline is the spine of the product; every feature attaches to it. Every fact carries provenance and a determinism profile, so a regulator or buyer can verify any claim in two clicks.</p>
+  </div>
+  <div class="theme-toggle" role="group" aria-label="Theme">
+    <button data-theme-set="light" type="button">Light</button>
+    <button data-theme-set="dark" type="button">Dark</button>
+    <button data-theme-set="system" type="button" class="active">System</button>
+  </div>
+</div>
+
+<!-- ============ FOUR PILLARS ============ -->
+<h2><span class="section-num">01</span> Design pillars</h2>
+<div class="pillars">
+  <div class="pillar">
+    <div class="p-num">1</div>
+    <h4>Timeline-first</h4>
+    <p>Every screen anchors to the engine's lifecycle. Documents, components, and open items all hang off the timeline as the primary axis.</p>
+  </div>
+  <div class="pillar">
+    <div class="p-num">2</div>
+    <h4>Audit-by-default</h4>
+    <p>Every value shown carries provenance — file, page, region, extraction method. Two clicks from any Trace Pack claim to its source PDF crop.</p>
+  </div>
+  <div class="pillar">
+    <div class="p-num">3</div>
+    <h4>Determinism contract visible</h4>
+    <p>Facts are tagged DET, HYB, NON. Reviewer can filter "show me all non-deterministic facts in this package" and verify them in one pass.</p>
+  </div>
+  <div class="pillar">
+    <div class="p-num">4</div>
+    <h4>Multi-actor by design</h4>
+    <p>Internal engineers, external suppliers, buyers, regulators — each gets the right view. Supplier portal is a first-class product, not an afterthought.</p>
+  </div>
+</div>
+
+<!-- ============ INFORMATION ARCHITECTURE ============ -->
+<h2><span class="section-num">02</span> Information architecture</h2>
+<p class="lede">Six top-level surfaces. Engines is the centre of gravity; everything else exists to feed or consume it.</p>
+
+<div class="sitemap"><span class="h">apdocs.apocaviation.com/</span>
+├── <span class="a">/dashboard</span>            Engines at risk, OIL summary, pending packages, recent activity
+├── <span class="a">/engines</span>              List of all engines. Filter by status, operator, OEM
+│   └── <span class="a">/engines/{esn}</span>
+│       ├── <span class="h">Overview</span>      Headline metrics, lifecycle summary, current status
+│       ├── <span class="h">Timeline</span>      Headline screen. Horizontal scroll. Stages + branches
+│       ├── <span class="h">Components</span>    20 LLPs, per-position history, swap diffs
+│       ├── <span class="h">Documents</span>     Every file, classified, searchable, with provenance
+│       ├── <span class="h">Open Items</span>    Per-engine OIL with severity, owner, status
+│       ├── <span class="h">Trace Pack</span>    Configure preset (MiniPack / Full / Sales), preview, export
+│       └── <span class="h">Audit Log</span>     Every action and every AI decision, immutable
+├── <span class="a">/packages</span>             Upload queue. Ingestion progress. New package = new ESN
+├── <span class="a">/oil</span>                  Cross-engine OIL. Kanban or table. Assign, escalate, resolve
+├── <span class="a">/documents</span>            Cross-engine search. The "Smart Search" target
+├── <span class="a">/reports</span>              Trace Packs (sent), audit exports, dashboards for management
+└── <span class="a">/admin</span>
+    ├── <span class="a">Users &amp; roles</span>     Entra ID integration, RBAC per engine/operator
+    ├── <span class="a">Validation rules</span>  F1-F10 + custom rules. Each rule has determinism tag
+    ├── <span class="a">Document types</span>    Catalogue with acceptance criteria
+    └── <span class="a">External portals</span>  Supplier portal links, expiring tokens, branding
+
+<span class="h">portal.apocaviation.com/</span>      <span class="h">(separate, lightweight, brandable per buyer)</span>
+└── <span class="a">/upload/{secure-token}</span>  Supplier upload. Drop docs, see open items, status</div>
+
+<!-- ============ SCREEN 1 — ENGINE DETAIL ============ -->
+<h2><span class="section-num">03</span> Screen 1 — Engine detail (the headline view)</h2>
+<p class="lede">The screen the documentation engineer lives in every day. The timeline takes ~60% of the visual weight. Component and OIL tabs are one click away. No information lives more than 2 clicks from this screen.</p>
+
+<div class="mockup">
+  <div class="mockup-toolbar">
+    <div class="traffic"><span class="traffic-dot"></span><span class="traffic-dot"></span><span class="traffic-dot"></span></div>
+    <span class="url">apdocs.apocaviation.com/engines/994738</span>
+  </div>
+  <div class="mockup-body">
+    <div class="sidebar">
+      <div class="sidebar-logo">APDOCS</div>
+      <div class="nav-item">Dashboard</div>
+      <div class="nav-item active">Engines<span class="nav-count">217</span></div>
+      <div class="nav-item">Packages<span class="nav-count">3</span></div>
+      <div class="nav-item">Open Items<span class="nav-count">47</span></div>
+      <div class="nav-item">Documents</div>
+      <div class="nav-item">Reports</div>
+      <div class="sidebar-section">Recent</div>
+      <div class="nav-item"><span class="mono">994738</span></div>
+      <div class="nav-item"><span class="mono">779125</span></div>
+      <div class="nav-item"><span class="mono">779114</span></div>
+      <div class="sidebar-section">Admin</div>
+      <div class="nav-item">Users &amp; roles</div>
+      <div class="nav-item">Validation rules</div>
+    </div>
+    <div class="main">
+
+      <div class="engine-head">
+        <div>
+          <h2 class="engine-title">ESN 994738 <span class="chip ok">Ready for sale</span></h2>
+          <div class="engine-sub">CF34-10E / General Electric · Manufactured 29 Apr 2009 · EOL 2 Oct 2024 · 18 LLP + 1 missing</div>
+        </div>
+        <div class="engine-actions">
+          <button class="btn">Export audit log</button>
+          <button class="btn">Generate Trace Pack</button>
+          <button class="btn primary">+ Add documents</button>
+        </div>
+      </div>
+
+      <div class="stat-strip">
+        <div class="stat"><div class="k">TSN</div><div class="v">27,547</div></div>
+        <div class="stat"><div class="k">CSN</div><div class="v">19,173</div></div>
+        <div class="stat"><div class="k">Operators</div><div class="v">3</div></div>
+        <div class="stat"><div class="k">Shop visits</div><div class="v">1</div></div>
+        <div class="stat"><div class="k">LLPs</div><div class="v">18</div></div>
+        <div class="stat alert"><div class="k">Open items</div><div class="v">4</div></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">Timeline</div>
+        <div class="tab">Components<span class="tab-count">18</span></div>
+        <div class="tab">Documents<span class="tab-count">321</span></div>
+        <div class="tab">Open Items<span class="tab-count">4</span></div>
+        <div class="tab">Trace Pack</div>
+        <div class="tab">Audit Log</div>
+      </div>
+
+      <div class="timeline-wrap">
+        <div class="timeline-head">
+          <div class="timeline-title">Lifecycle timeline</div>
+          <div class="timeline-controls">
+            <span class="tl-control active">All events</span>
+            <span class="tl-control">Operator changes</span>
+            <span class="tl-control">Shop visits</span>
+            <span class="tl-control">Swaps</span>
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-axis">
+            <!-- Stops along axis. Positions are percentages along the TSN scale (0 → 27,547). -->
+            <div class="axis-stop start"      style="left: 2%"></div>
+            <div class="axis-label above"     style="left: 2%">TSN 0</div>
+            <div class="axis-label below"     style="left: 2%">29 Apr 2009</div>
+
+            <div class="axis-stop ok"         style="left: 10%"></div>
+            <div class="axis-label above"     style="left: 10%">TSN 1,006</div>
+
+            <div class="axis-stop warn"      style="left: 42%"></div>
+            <div class="axis-label above"    style="left: 42%">TSN 11,343 · SV (IHI)</div>
+
+            <div class="axis-stop ok"        style="left: 48%"></div>
+            <div class="axis-label above"    style="left: 48%">TSN 12,861</div>
+
+            <div class="axis-stop ok"        style="left: 83%"></div>
+            <div class="axis-label above"    style="left: 83%">TSN 23,051</div>
+
+            <div class="axis-stop end"       style="left: 100%"></div>
+            <div class="axis-label above"    style="left: 100%">TSN 27,547 · EOL</div>
+            <div class="axis-label below"    style="left: 100%">2 Oct 2024</div>
+
+            <!-- Stage cards positioned along axis -->
+            <div class="stage-card ok" style="left: 2%; top: 50px;">
+              <div class="sc-kind">Operator</div>
+              <div class="sc-title">TACA · TI-BCG → N936TA</div>
+              <div class="sc-meta">MSN 215 · ERJ-190 · 2009-2015</div>
+              <div class="sc-meta"><span class="chip ok">5 docs</span> <span class="chip">re-reg</span></div>
+            </div>
+
+            <div class="stage-card warn" style="left: 32%; top: 50px;">
+              <div class="sc-kind">Shop visit</div>
+              <div class="sc-title">IHI (Japan)</div>
+              <div class="sc-meta">TSN 11,343 · 24 Sep 2015</div>
+              <div class="sc-meta"><span class="chip warn">SBs cited</span></div>
+            </div>
+
+            <div class="stage-card ok" style="left: 44%; top: 50px;">
+              <div class="sc-kind">Operator</div>
+              <div class="sc-title">Royal Jordanian</div>
+              <div class="sc-meta">JY-EMA · MSN 107 · 2017</div>
+              <div class="sc-meta"><span class="chip ok">all docs</span> <span class="chip">E7 thrust</span></div>
+            </div>
+
+            <div class="stage-card bad" style="left: 65%; top: 50px;">
+              <div class="sc-kind">Operator</div>
+              <div class="sc-title">Kenya · 5Y-FFE → 5Y-KYT</div>
+              <div class="sc-meta">MSN 586 → 544 · 2018-2024</div>
+              <div class="sc-meta"><span class="chip bad">missing Cert</span></div>
+            </div>
+          </div>
+
+          <!-- Branch row for what would be swaps. 994738 has none, so we show "all LLPs factory-original" -->
+          <div class="branch-row">
+            <div class="br-head">Component branches <span class="chip ok">0 swaps detected</span></div>
+            <div class="branch-name" style="color: var(--ok);">All 18 LLPs are factory-original. No sub-branches.</div>
+          </div>
+
+          <div class="branch-row" style="border-left-color: var(--purple);">
+            <div class="br-head">Anomalies <span class="chip warn">2 events to verify</span></div>
+            <div style="position: relative; height: 40px; padding-top: 6px;">
+              <div class="branch-stop" style="left: 10%;"></div>
+              <div class="branch-tag" style="left: 10%; top: -8px;">re-registration</div>
+              <div class="branch-name" style="position: absolute; left: 5%; top: 14px;">TI-BCG → N936TA, same airframe</div>
+
+              <div class="branch-stop" style="left: 45%;"></div>
+              <div class="branch-tag" style="left: 45%; top: -8px;">thrust rerate</div>
+              <div class="branch-name" style="position: absolute; left: 40%; top: 14px;">E6 → E7 → E6 across operators</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<p style="font-size: 13px; color: var(--muted); margin: -12px 0 24px;">
+The timeline encodes everything: dots are events, cards above are the stages between them, the bottom rows show swap sub-trees (none here) and "anomalies to verify" (re-registration and thrust rerate, both non-deterministic flags). Hovering any card shows full TSN/CSN/dates; clicking opens that stage's document list with provenance.
+</p>
+
+<!-- ============ SCREEN 2 — DOCUMENT REVIEW ============ -->
+<h2><span class="section-num">04</span> Screen 2 — Document review (side-by-side)</h2>
+<p class="lede">Reviewing a single document. PDF on the left with the source region highlighted; extracted fields on the right with provenance badges. Click a field → highlight bounces to the source. Click the source → field bounces back. This bidirectional link is what makes audit fast.</p>
+
+<div class="mockup">
+  <div class="mockup-toolbar">
+    <div class="traffic"><span class="traffic-dot"></span><span class="traffic-dot"></span><span class="traffic-dot"></span></div>
+    <span class="url">apdocs.apocaviation.com/engines/994738/documents/iacs-2017-rj</span>
+    <span style="margin-left: auto; font-size: 11px;">
+      <span class="chip ok">3 fields verified</span>
+      <span class="chip warn">1 field flagged</span>
+    </span>
+  </div>
+  <div class="mockup-body">
+    <div class="sidebar">
+      <div class="sidebar-logo">APDOCS</div>
+      <div class="sidebar-section">ESN 994738</div>
+      <div class="nav-item">Timeline</div>
+      <div class="nav-item">Components</div>
+      <div class="nav-item active">Documents<span class="nav-count">321</span></div>
+      <div class="nav-item">Open Items<span class="nav-count">4</span></div>
+      <div class="sidebar-section">Filter</div>
+      <div class="nav-item">By stage</div>
+      <div class="nav-item">By type</div>
+      <div class="nav-item">By provenance</div>
+      <div class="nav-item">Flagged only</div>
+    </div>
+    <div class="main" style="padding: 0;">
+      <div style="padding: 14px 22px 0; border-bottom: 1px solid var(--border);">
+        <div style="font-size: 11px; color: var(--muted); margin-bottom: 2px;">Royal Jordanian operator period · TSN 11,343-12,861</div>
+        <h4 style="margin: 0 0 8px;">IACS — Royal Jordanian for JY-EMA (April 2017)</h4>
+        <div style="display: flex; gap: 6px; margin-bottom: 12px;">
+          <span class="chip info">Type · IACS</span>
+          <span class="chip">Slot · 1</span>
+          <span class="chip">3 pages</span>
+          <span class="chip warn">F7 wording check pending</span>
+        </div>
+      </div>
+      <div class="doc-review">
+        <div class="pdf-pane dark">
+          <div class="pdf-meta"><span>page 2 of 3</span><span>zoom 100%</span></div>
+          <div class="pdf-page">
+            <div style="text-align: center; font-weight: 700; font-size: 13px; margin-bottom: 16px;">ROYAL JORDANIAN AIRLINES</div>
+            <div style="text-align: center; font-size: 10px; margin-bottom: 16px; color: #666;">Engineering &amp; Maintenance Department</div>
+
+            <div style="font-weight: 700; text-align: center; margin: 14px 0;">INCIDENT / ACCIDENT CLEARANCE STATEMENT</div>
+
+            <div style="margin: 12px 0;">To Whom It May Concern,</div>
+            <div style="margin: 8px 0;">With reference to the engine described below:</div>
+
+            <div style="background: rgba(0,0,0,0.04); padding: 10px; margin: 10px 0; border-radius: 3px; position: relative;">
+              <div class="pdf-highlight" style="left: 0; top: 0; right: 0; bottom: 0;"></div>
+              Engine type: CF34-10E7<br>
+              Engine S/N: <strong>994738</strong><br>
+              TSN: 12,861 hrs / CSN: 8,657 cyc<br>
+              Period covered: 8 Apr 2017 – 25 Oct 2017<br>
+              Installed on: A/C MSN 107, Reg JY-EMA
+            </div>
+
+            <div style="margin: 12px 0;">During the above operational period, the undersigned hereby declares that the said engine, in accordance with Annex 13 of the Chicago Convention, has <strong>not been involved in any reportable accident or incident</strong>...</div>
+
+            <div style="margin-top: 24px; font-size: 10px; color: #777;">[ signature ]<br>Capt. — Engineering Manager<br>Royal Jordanian, 26 Oct 2017</div>
+          </div>
+        </div>
+        <div class="fields-pane">
+          <h4 style="margin-top: 0;">Extracted fields</h4>
+
+          <div class="field-row">
+            <div class="field-label">ESN</div>
+            <div>
+              <div class="field-value">994738</div>
+              <div style="display: flex; gap: 4px; margin-top: 2px;">
+                <span class="pbadge det">DET · regex</span>
+                <span class="chip ok" style="font-size: 10px;">100%</span>
+              </div>
+            </div>
+            <div class="field-actions"><button class="field-btn">→</button></div>
+          </div>
+
+          <div class="field-row highlighted">
+            <div class="field-label">TSN at period start</div>
+            <div>
+              <div class="field-value">11,343</div>
+              <div style="display: flex; gap: 4px; margin-top: 2px;">
+                <span class="pbadge nond">NON · claude-vision</span>
+                <span class="chip warn" style="font-size: 10px;">72%</span>
+              </div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 3px;">OCR ambiguous — header was stylised. Verify.</div>
+            </div>
+            <div class="field-actions">
+              <button class="field-btn">✓</button>
+              <button class="field-btn">✎</button>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-label">MSN</div>
+            <div>
+              <div class="field-value">107</div>
+              <div style="display: flex; gap: 4px; margin-top: 2px;">
+                <span class="pbadge det">DET · regex</span>
+                <span class="chip ok" style="font-size: 10px;">100%</span>
+              </div>
+            </div>
+            <div class="field-actions"><button class="field-btn">→</button></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-label">Aircraft reg.</div>
+            <div>
+              <div class="field-value">JY-EMA</div>
+              <div style="display: flex; gap: 4px; margin-top: 2px;">
+                <span class="pbadge det">DET · regex</span>
+                <span class="chip ok" style="font-size: 10px;">100%</span>
+              </div>
+            </div>
+            <div class="field-actions"><button class="field-btn">→</button></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-label">Period</div>
+            <div>
+              <div class="field-value">8 Apr 2017 – 25 Oct 2017</div>
+              <div style="display: flex; gap: 4px; margin-top: 2px;">
+                <span class="pbadge hyb">HYB · ocr</span>
+                <span class="chip ok" style="font-size: 10px;">93%</span>
+              </div>
+            </div>
+            <div class="field-actions"><button class="field-btn">→</button></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-label">Chicago Conv.</div>
+            <div>
+              <div class="field-value" style="color: var(--ok);">✓ cited</div>
+              <div style="display: flex; gap: 4px; margin-top: 2px;">
+                <span class="pbadge nond">NON · claude</span>
+              </div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 3px;">Annex 13 referenced verbatim.</div>
+            </div>
+            <div class="field-actions"><button class="field-btn">→</button></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-label">Signature</div>
+            <div>
+              <div class="field-value" style="color: var(--ok);">✓ present</div>
+              <div style="display: flex; gap: 4px; margin-top: 2px;">
+                <span class="pbadge nond">NON · vision</span>
+                <span class="chip ok" style="font-size: 10px;">88%</span>
+              </div>
+            </div>
+            <div class="field-actions"><button class="field-btn">→</button></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field-label">Company stamp</div>
+            <div>
+              <div class="field-value" style="color: var(--warn);">⚠ not detected</div>
+              <div style="display: flex; gap: 4px; margin-top: 2px;">
+                <span class="pbadge nond">NON · vision</span>
+              </div>
+              <div style="font-size: 10px; color: var(--muted); margin-top: 3px;">Routed to OIL as F7 sub-flag.</div>
+            </div>
+            <div class="field-actions">
+              <button class="field-btn">flag</button>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; display: flex; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border);">
+            <button class="btn primary" style="flex: 1;">Approve all DET fields</button>
+            <button class="btn" style="flex: 1;">Send to supplier</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 3 — OIL KANBAN ============ -->
+<h2><span class="section-num">05</span> Screen 3 — Open Item List (cross-engine kanban)</h2>
+<p class="lede">The work board. Every flag from every package across every engine. Each card carries rule_id, severity, owner, and a one-click "send to supplier" action that triggers the external portal flow.</p>
+
+<div class="mockup">
+  <div class="mockup-toolbar">
+    <div class="traffic"><span class="traffic-dot"></span><span class="traffic-dot"></span><span class="traffic-dot"></span></div>
+    <span class="url">apdocs.apocaviation.com/oil</span>
+    <span style="margin-left: auto; font-size: 11px;">
+      <span class="chip bad">3 critical</span>
+      <span class="chip warn">11 high</span>
+      <span class="chip info">18 medium</span>
+      <span class="chip">15 low</span>
+    </span>
+  </div>
+  <div class="mockup-body" style="min-height: 480px;">
+    <div class="sidebar">
+      <div class="sidebar-logo">APDOCS</div>
+      <div class="nav-item">Dashboard</div>
+      <div class="nav-item">Engines</div>
+      <div class="nav-item active">Open Items<span class="nav-count">47</span></div>
+      <div class="sidebar-section">Filter</div>
+      <div class="nav-item">By engine</div>
+      <div class="nav-item">By severity</div>
+      <div class="nav-item">By rule (F1-F10)</div>
+      <div class="nav-item">By assignee</div>
+      <div class="nav-item">Provenance · NON</div>
+    </div>
+    <div class="main">
+      <div class="kanban">
+        <div class="kanban-col">
+          <div class="kanban-head"><span>Triage</span><span class="kanban-count">8</span></div>
+          <div class="oil-card crit">
+            <div class="rule-id">F4 · MISSING DOSSIER</div>
+            <div class="oil-title">Turbine Rear Frame dossier missing</div>
+            <div class="oil-meta">ESN 994738 · LLP PN 2226M25G05 · SN JHV746AU</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="pbadge det">DET</span>
+              <span class="chip bad" style="font-size: 10px;">Critical</span>
+            </div>
+          </div>
+          <div class="oil-card high">
+            <div class="rule-id">F3 · MISSING SLOT</div>
+            <div class="oil-title">Kenya OP missing Certification (slot 1)</div>
+            <div class="oil-meta">ESN 994738 · stage 5 · OP TSN 27,546</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="pbadge det">DET</span>
+              <span class="chip warn" style="font-size: 10px;">High</span>
+            </div>
+          </div>
+          <div class="oil-card med">
+            <div class="rule-id">F6 · MISFILE</div>
+            <div class="oil-title">"OP TSN 51,434 AD Status (dragged).pdf" in SV folder</div>
+            <div class="oil-meta">ESN 779125 · misfile, auto-moveable</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="pbadge det">DET</span>
+              <span class="chip info" style="font-size: 10px;">Medium</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kanban-col">
+          <div class="kanban-head"><span>In review</span><span class="kanban-count">5</span></div>
+          <div class="oil-card high">
+            <div class="rule-id">F10 · PN FAMILY CHANGE</div>
+            <div class="oil-title">Turbine Rear Frame PN went 336-031-632-0 → 338-061-627-0</div>
+            <div class="oil-meta">ESN 779125 · pos 561 · need SB cite</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="pbadge det">DET</span>
+              <span class="chip warn" style="font-size: 10px;">High</span>
+              <span class="chip" style="font-size: 10px;">@ marco</span>
+            </div>
+          </div>
+          <div class="oil-card high">
+            <div class="rule-id">F7 · IACS WORDING</div>
+            <div class="oil-title">Royal Jordanian IACS — no company stamp detected</div>
+            <div class="oil-meta">ESN 994738 · April 2017 statement</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="pbadge nond">NON</span>
+              <span class="chip warn" style="font-size: 10px;">High</span>
+            </div>
+          </div>
+          <div class="oil-card med">
+            <div class="rule-id">F8 · RE-REG VS SWAP</div>
+            <div class="oil-title">TI-BCG → N936TA needs confirmation</div>
+            <div class="oil-meta">ESN 994738 · TACA, MSN unchanged → likely re-reg</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="pbadge nond">NON</span>
+              <span class="chip info" style="font-size: 10px;">Medium</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kanban-col">
+          <div class="kanban-head"><span>Awaiting supplier</span><span class="kanban-count">12</span></div>
+          <div class="oil-card crit">
+            <div class="rule-id">F9 · THRUST RERATE</div>
+            <div class="oil-title">E6→E7 transition — find SB authorisation</div>
+            <div class="oil-meta">ESN 994738 · Royal Jordanian period start</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="pbadge nond">NON</span>
+              <span class="chip bad" style="font-size: 10px;">Critical</span>
+              <span class="chip" style="font-size: 10px;">RJ Eng.</span>
+            </div>
+            <div style="margin-top: 6px; font-size: 11px; color: var(--muted);">Sent: 14 days ago · Reminder due in 2 days</div>
+          </div>
+          <div class="oil-card high">
+            <div class="rule-id">F5 · CROSS-ESN</div>
+            <div class="oil-title">779114_NIS_2007.pdf in 779125 package</div>
+            <div class="oil-meta">ESN 779125 · likely sibling reference, confirm</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="pbadge det">DET</span>
+              <span class="chip warn" style="font-size: 10px;">High</span>
+              <span class="chip" style="font-size: 10px;">ELFC</span>
+            </div>
+            <div style="margin-top: 6px; font-size: 11px; color: var(--muted);">Sent: 3 days ago</div>
+          </div>
+        </div>
+
+        <div class="kanban-col">
+          <div class="kanban-head"><span>Resolved (this week)</span><span class="kanban-count">22</span></div>
+          <div class="oil-card med">
+            <div class="rule-id">F4 · MISSING DOSSIER</div>
+            <div class="oil-title" style="text-decoration: line-through; color: var(--muted);">HPC FWD Shaft dossier</div>
+            <div class="oil-meta">ESN 779125 · resolved by supplier upload 2 days ago</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="chip ok" style="font-size: 10px;">Resolved</span>
+              <span class="pbadge det">DET</span>
+            </div>
+          </div>
+          <div class="oil-card med">
+            <div class="rule-id">F3 · MISSING SLOT</div>
+            <div class="oil-title" style="text-decoration: line-through; color: var(--muted);">FiatAvio SV missing Carry Forward</div>
+            <div class="oil-meta">ESN 779125 · resolved</div>
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <span class="chip ok" style="font-size: 10px;">Resolved</span>
+              <span class="pbadge det">DET</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 4 — SUPPLIER PORTAL ============ -->
+<h2><span class="section-num">06</span> Screen 4 — Supplier portal (separate domain)</h2>
+<p class="lede">When an open item gets sent to an external supplier, they receive an expiring link to a lightweight, branded mini-portal. No login needed — the token is the credential. They see only the items addressed to them.</p>
+
+<div class="mockup">
+  <div class="mockup-toolbar">
+    <div class="traffic"><span class="traffic-dot"></span><span class="traffic-dot"></span><span class="traffic-dot"></span></div>
+    <span class="url">portal.apocaviation.com/upload/r7q3-x8nm-fp2a</span>
+    <span style="margin-left: auto; font-size: 11px; color: var(--muted);">Token expires in 14 days</span>
+  </div>
+  <div class="mockup-body" style="min-height: 460px; flex-direction: column;">
+    <div style="background: #1a1a1a; color: white; padding: 16px 28px;">
+      <div style="font-size: 12px; opacity: 0.7;">APOC Aviation · Document Corrections Portal</div>
+      <div style="font-size: 18px; font-weight: 700; margin-top: 4px;">Hi Royal Jordanian Engineering team</div>
+      <div style="font-size: 12px; opacity: 0.8; margin-top: 4px;">3 items pending for ESN 994738 · Royal Jordanian operating period (2017)</div>
+    </div>
+    <div style="padding: 24px 28px; flex: 1;">
+
+      <h4 style="margin-top: 0;">Items awaiting your documents</h4>
+
+      <div style="border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 600; margin-bottom: 4px;">1. SB authorisation for thrust rerate</div>
+            <div style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">When ESN 994738 was installed on JY-EMA, it was operated at E7 thrust rating (18,820 lbf). The CF34-10E was originally certified at E6 (17,390 lbf). We need the Service Bulletin or equivalent authorisation document for the rerate.</div>
+            <div style="font-size: 11px; color: var(--muted);">Acceptable formats: PDF or scanned image. Must include OEM identifier, applicability statement, and effective date.</div>
+          </div>
+          <span class="chip bad" style="flex-shrink: 0;">Critical</span>
+        </div>
+        <div style="margin-top: 10px; border: 1px dashed var(--border-strong); border-radius: 6px; padding: 14px; text-align: center; color: var(--muted); font-size: 12px;">
+          Drag a file here, or <span style="color: var(--accent); cursor: pointer; font-weight: 600;">browse</span>
+        </div>
+      </div>
+
+      <div style="border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 600; margin-bottom: 4px;">2. IACS — company stamp missing</div>
+            <div style="font-size: 12px; color: var(--muted);">The IACS statement dated 26 Oct 2017 carries a signature but no company stamp is detected on the document. Please re-issue with corporate stamp, or confirm in writing that signature alone is the authoritative authentication.</div>
+          </div>
+          <span class="chip warn" style="flex-shrink: 0;">High</span>
+        </div>
+        <div style="margin-top: 10px; background: var(--ok-bg); border-radius: 6px; padding: 10px; font-size: 12px; color: var(--ok);">
+          ✓ Uploaded 2 days ago · revised IACS with stamp · under review
+        </div>
+      </div>
+
+      <div style="border: 1px solid var(--border); border-radius: 8px; padding: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 600; margin-bottom: 4px;">3. Confirm coverage gap</div>
+            <div style="font-size: 12px; color: var(--muted);">Our records show TSN 11,343 (engine install) but the on-log shows first flight at TSN 11,350. Please confirm the 7-hour gap (likely ground run/test) and provide a brief written explanation.</div>
+          </div>
+          <span class="chip info" style="flex-shrink: 0;">Medium</span>
+        </div>
+        <div style="margin-top: 10px; border: 1px dashed var(--border-strong); border-radius: 6px; padding: 14px; text-align: center; color: var(--muted); font-size: 12px;">
+          Reply with a text statement or upload a document
+        </div>
+      </div>
+
+      <div style="margin-top: 18px; font-size: 11px; color: var(--muted);">Need help? Contact <span style="color: var(--accent);">docs@apocaviation.com</span> · This link is unique to your organisation and expires in 14 days.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 5 — TRACE PACK EXPORT ============ -->
+<h2><span class="section-num">07</span> Screen 5 — Trace Pack export</h2>
+<p class="lede">Final deliverable. The buyer-facing PDF. Three presets (MiniPack, Full Trace, Sales Pack), all configurable per inclusion. The right side shows the live preview; the bottom-right shows the provenance audit summary that will be attached as an appendix.</p>
+
+<div class="mockup">
+  <div class="mockup-toolbar">
+    <div class="traffic"><span class="traffic-dot"></span><span class="traffic-dot"></span><span class="traffic-dot"></span></div>
+    <span class="url">apdocs.apocaviation.com/engines/994738/trace-pack</span>
+  </div>
+  <div class="mockup-body" style="min-height: 460px;">
+    <div class="sidebar">
+      <div class="sidebar-logo">APDOCS</div>
+      <div class="sidebar-section">ESN 994738</div>
+      <div class="nav-item">Timeline</div>
+      <div class="nav-item">Components</div>
+      <div class="nav-item">Documents</div>
+      <div class="nav-item">Open Items</div>
+      <div class="nav-item active">Trace Pack</div>
+      <div class="nav-item">Audit Log</div>
+    </div>
+    <div class="main">
+      <h4 style="margin-top: 0;">Configure Trace Pack</h4>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+
+        <div>
+          <h3>Preset</h3>
+          <div style="display: flex; gap: 6px; margin-bottom: 14px;">
+            <span class="chip">MiniPack</span>
+            <span class="chip" style="background: var(--accent-bg); color: var(--accent); font-weight: 700;">Full Trace</span>
+            <span class="chip">Sales Pack</span>
+          </div>
+
+          <h3>Sections to include</h3>
+          <div style="font-size: 12px; line-height: 1.9;">
+            <label style="display: block;"><input type="checkbox" checked> Cover page (engine summary)</label>
+            <label style="display: block;"><input type="checkbox" checked> Lifecycle timeline (visual)</label>
+            <label style="display: block;"><input type="checkbox" checked> Per-component history (18 LLPs)</label>
+            <label style="display: block;"><input type="checkbox" checked> All certifications + IACS</label>
+            <label style="display: block;"><input type="checkbox" checked> AD / SB status (latest per stage)</label>
+            <label style="display: block;"><input type="checkbox"> Shop Findings Reports (full)</label>
+            <label style="display: block;"><input type="checkbox" checked> Bills of sale chain</label>
+            <label style="display: block;"><input type="checkbox" checked> Open Items resolved log</label>
+            <label style="display: block;"><input type="checkbox" checked> Provenance audit appendix</label>
+          </div>
+
+          <h3 style="margin-top: 18px;">Branding</h3>
+          <div style="font-size: 12px;">
+            <label style="display: block; margin: 4px 0;"><input type="checkbox" checked> APOC corporate cover</label>
+            <label style="display: block; margin: 4px 0;"><input type="checkbox" checked> Watermark "APOC Trace Pack"</label>
+            <label style="display: block; margin: 4px 0;"><input type="checkbox"> Buyer logo on cover</label>
+          </div>
+
+          <div style="margin-top: 22px;">
+            <button class="btn primary" style="width: 100%;">Generate Trace Pack (~45 sec)</button>
+            <div style="font-size: 11px; color: var(--muted); margin-top: 6px;">Output: ~280 MB PDF, 432 pages</div>
+          </div>
+        </div>
+
+        <div>
+          <h3>Live preview</h3>
+          <div style="background: var(--neutral-bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 12px; line-height: 1.7;">
+            <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">CF34-10E Engine Trace Pack</div>
+            <div style="color: var(--muted);">ESN 994738 · ready for sale to APOC</div>
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 10px 0;">
+            <strong>1. Engine identity</strong><br>
+            <strong>2. Lifecycle</strong>
+            <div style="color: var(--muted); font-size: 11px; padding-left: 12px;">3 operators, 1 shop visit, 15.5 years</div>
+            <strong>3. Components (18 LLPs)</strong>
+            <div style="color: var(--muted); font-size: 11px; padding-left: 12px;">All factory-original, lives remaining listed</div>
+            <strong>4. Documentation</strong>
+            <div style="color: var(--muted); font-size: 11px; padding-left: 12px;">317 documents, indexed, all referenced</div>
+            <strong>5. Open items log</strong>
+            <div style="color: var(--muted); font-size: 11px; padding-left: 12px;">4 historical, all resolved</div>
+            <strong>6. Provenance appendix</strong>
+            <div style="color: var(--muted); font-size: 11px; padding-left: 12px;">Every claim cited to source PDF + region</div>
+          </div>
+
+          <h3 style="margin-top: 18px;">Provenance appendix summary</h3>
+          <div class="det-panel">
+            <div class="det-row">
+              <span class="pbadge det">DET</span>
+              <span class="src">217 facts</span>
+              <span class="what">Folder/filename keys, regex extracts, rule-engine flags</span>
+              <span class="chip ok">auto-pass</span>
+            </div>
+            <div class="det-row">
+              <span class="pbadge hyb">HYB</span>
+              <span class="src">88 facts</span>
+              <span class="what">OCR-derived values with majority-vote reconciliation</span>
+              <span class="chip ok">auto-pass</span>
+            </div>
+            <div class="det-row">
+              <span class="pbadge nond">NON</span>
+              <span class="src">12 facts</span>
+              <span class="what">Claude vision/text judgement (IACS wording, stamps, dates)</span>
+              <span class="chip warn">all reviewed</span>
+            </div>
+          </div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 8px;">
+            Of the 12 non-deterministic facts, all 12 carry a "reviewer signed off" record in the audit log.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 6 — AUDIT LOG ============ -->
+<h2><span class="section-num">08</span> Screen 6 — Audit log &amp; Smart Search</h2>
+<p class="lede">Every action and every AI decision is logged. Immutable. Filterable. The same screen also hosts the Smart Search bar that translates Tim's slide-13 query into an executable structured search.</p>
+
+<div class="mockup">
+  <div class="mockup-toolbar">
+    <div class="traffic"><span class="traffic-dot"></span><span class="traffic-dot"></span><span class="traffic-dot"></span></div>
+    <span class="url">apdocs.apocaviation.com/engines/994738/audit-log</span>
+  </div>
+  <div class="mockup-body" style="min-height: 460px;">
+    <div class="sidebar">
+      <div class="sidebar-logo">APDOCS</div>
+      <div class="sidebar-section">ESN 994738</div>
+      <div class="nav-item">Timeline</div>
+      <div class="nav-item">Documents</div>
+      <div class="nav-item">Open Items</div>
+      <div class="nav-item">Trace Pack</div>
+      <div class="nav-item active">Audit Log</div>
+      <div class="sidebar-section">Filter</div>
+      <div class="nav-item">All events</div>
+      <div class="nav-item">User actions</div>
+      <div class="nav-item">AI decisions</div>
+      <div class="nav-item">Critical only</div>
+    </div>
+    <div class="main">
+
+      <div class="search">
+        <span class="search-icon">⌕</span>
+        <input value="IACS for PN 10-210101-006 of MSN 1451 in year 2021" />
+        <span class="chip" style="font-family: ui-monospace, monospace; font-size: 11px;">⏎ search</span>
+      </div>
+      <div class="search-parsed">
+        Parsed: doc_type=IACS · pn="10-210101-006" · msn=1451 · year=2021 · across_engines=true
+        <span style="float: right; color: var(--muted);">edit · run</span>
+      </div>
+
+      <h4 style="margin-top: 22px;">Recent activity on ESN 994738</h4>
+      <table class="t">
+        <thead>
+          <tr><th>When</th><th>Who</th><th>What</th><th>Target</th><th>Provenance</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="t-id">Today · 14:22</td>
+            <td>marco@apoc</td>
+            <td>Approved field <span class="mono">TSN_at_period_start = 11,343</span></td>
+            <td class="t-id">doc: IACS-RJ-2017</td>
+            <td><span class="pbadge nond">NON</span> → human ✓</td>
+          </tr>
+          <tr>
+            <td class="t-id">Today · 14:18</td>
+            <td><em>system</em></td>
+            <td>OCR pass on IACS-RJ-2017, page 2 (Tesseract → confidence 72%)</td>
+            <td class="t-id">doc: IACS-RJ-2017</td>
+            <td><span class="pbadge hyb">HYB</span></td>
+          </tr>
+          <tr>
+            <td class="t-id">Today · 14:18</td>
+            <td><em>system</em></td>
+            <td>Escalated to vision-LLM (Tesseract confidence below 70% threshold)</td>
+            <td class="t-id">page 2</td>
+            <td><span class="pbadge nond">NON</span></td>
+          </tr>
+          <tr>
+            <td class="t-id">Today · 11:05</td>
+            <td>jan@nxtphase</td>
+            <td>Raised severity Medium → High on F8 (re-reg vs swap)</td>
+            <td class="t-id">flag: F8-994738-TI-BCG</td>
+            <td><span class="pbadge nond">NON</span> override</td>
+          </tr>
+          <tr>
+            <td class="t-id">Today · 09:30</td>
+            <td><em>system</em></td>
+            <td>Detected swap on pos 561 in ESN 779125, Levenshtein distance 7</td>
+            <td class="t-id">pos: 561</td>
+            <td><span class="pbadge hyb">HYB</span></td>
+          </tr>
+          <tr>
+            <td class="t-id">Yesterday · 17:44</td>
+            <td>supplier@rj</td>
+            <td>Uploaded revised IACS (corporate stamp added)</td>
+            <td class="t-id">portal:r7q3-x8nm-fp2a</td>
+            <td>file SHA <span class="mono">e64b…</span></td>
+          </tr>
+          <tr>
+            <td class="t-id">3 days ago · 10:15</td>
+            <td>marco@apoc</td>
+            <td>Generated MiniPack Trace Pack v2 (sent to buyer)</td>
+            <td class="t-id">trace-pack-id 0034</td>
+            <td>SHA <span class="mono">31ac…</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size: 11px; color: var(--muted); margin-top: 14px;">
+        Every Trace Pack ever generated keeps a permanent hash. Buyer or regulator can ask "is this PDF authentic?" — answer is a SHA lookup against the audit log. Immutable.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PERSONAS ============ -->
+<h2><span class="section-num">09</span> Personas — who sees what</h2>
+<p class="lede">Same data, four lenses. Roles map to Entra ID groups; the UI filters automatically.</p>
+
+<div class="personas">
+  <div class="persona">
+    <div class="persona-role">Daily user</div>
+    <h4>Documentation Engineer</h4>
+    <div class="persona-needs">Lives in the engine timeline. Reviews flagged docs, approves fields, chases suppliers.</div>
+    <div class="persona-uses">Uses heavily:</div>
+    <ul class="persona-uses">
+      <li>Engine timeline</li>
+      <li>Document review pane</li>
+      <li>OIL kanban</li>
+      <li>Supplier portal send</li>
+    </ul>
+  </div>
+  <div class="persona">
+    <div class="persona-role">Approver</div>
+    <h4>VP Strategy (Tim)</h4>
+    <div class="persona-needs">Sees the dashboard: engines ready for sale, blockers, throughput. Approves Trace Pack delivery.</div>
+    <div class="persona-uses">Uses heavily:</div>
+    <ul class="persona-uses">
+      <li>Cross-engine dashboard</li>
+      <li>OIL severity overview</li>
+      <li>Trace Pack approval flow</li>
+      <li>Audit log (when challenged)</li>
+    </ul>
+  </div>
+  <div class="persona">
+    <div class="persona-role">External</div>
+    <h4>Supplier / Operator</h4>
+    <div class="persona-needs">Receives portal link. Uploads corrections. Sees only items addressed to them.</div>
+    <div class="persona-uses">Uses heavily:</div>
+    <ul class="persona-uses">
+      <li>Portal (read-only outside)</li>
+      <li>Upload zone</li>
+      <li>Status of own items</li>
+    </ul>
+  </div>
+  <div class="persona">
+    <div class="persona-role">External</div>
+    <h4>Buyer / Auditor</h4>
+    <div class="persona-needs">Receives the Trace Pack PDF. May log in via shared link to verify provenance. Can challenge any value.</div>
+    <div class="persona-uses">Uses heavily:</div>
+    <ul class="persona-uses">
+      <li>Trace Pack PDF</li>
+      <li>Provenance appendix</li>
+      <li>SHA verification page</li>
+      <li>Smart Search (subset)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============ WORKFLOW ============ -->
+<h2><span class="section-num">10</span> End-to-end workflow</h2>
+<p class="lede">A new package from drop to delivered Trace Pack. Five lanes, in order. Most of the heavy lifting is non-interactive; the human only steps in at the decision points marked with solid circles.</p>
+
+<div class="swimlane">
+  <div class="swim-head">Role</div>
+  <div class="swim-head">Day 0 — Ingest</div>
+  <div class="swim-head">Days 1-2 — Validate</div>
+  <div class="swim-head">Days 3-14 — Resolve</div>
+  <div class="swim-head">Day 15 — Approve</div>
+  <div class="swim-head">Delivered</div>
+
+  <div class="swim-cell swim-role">System</div>
+  <div class="swim-cell swim-step"><span class="step-num">1</span> Unzip, hash, OCR every page</div>
+  <div class="swim-cell swim-step"><span class="step-num">2</span> Build tree, run F1-F10, score</div>
+  <div class="swim-cell swim-step passive">↻ Re-validate on each supplier upload</div>
+  <div class="swim-cell swim-step passive">↻ Trace Pack render on demand</div>
+  <div class="swim-cell swim-step passive">↻ Maintain audit log forever</div>
+
+  <div class="swim-cell swim-role">Doc Engineer</div>
+  <div class="swim-cell swim-step passive">— wait for ingest</div>
+  <div class="swim-cell swim-step"><span class="step-num">3</span> Review red flags, approve DET, judge NON</div>
+  <div class="swim-cell swim-step"><span class="step-num">4</span> Send open items to suppliers via portal</div>
+  <div class="swim-cell swim-step"><span class="step-num">5</span> Sign off package complete</div>
+  <div class="swim-cell swim-step passive">— available for audit queries</div>
+
+  <div class="swim-cell swim-role">VP Strategy</div>
+  <div class="swim-cell swim-step passive">— notified of new package</div>
+  <div class="swim-cell swim-step passive">— monitors dashboard</div>
+  <div class="swim-cell swim-step passive">— monitors dashboard</div>
+  <div class="swim-cell swim-step"><span class="step-num">6</span> Approve Trace Pack delivery</div>
+  <div class="swim-cell swim-step passive">— sees engine moved to "Sold"</div>
+
+  <div class="swim-cell swim-role">Supplier</div>
+  <div class="swim-cell swim-step passive"></div>
+  <div class="swim-cell swim-step passive"></div>
+  <div class="swim-cell swim-step"><span class="step-num">7</span> Uploads via expiring portal link</div>
+  <div class="swim-cell swim-step passive"></div>
+  <div class="swim-cell swim-step passive"></div>
+
+  <div class="swim-cell swim-role">Buyer</div>
+  <div class="swim-cell swim-step passive"></div>
+  <div class="swim-cell swim-step passive"></div>
+  <div class="swim-cell swim-step passive"></div>
+  <div class="swim-cell swim-step passive"></div>
+  <div class="swim-cell swim-step"><span class="step-num">8</span> Receives Trace Pack, verifies SHA</div>
+</div>
+
+<p style="font-size: 12px; color: var(--muted); margin-top: 12px;">
+Total human time on a typical package: ~3-6 hours of doc-engineer time over 2 weeks, mostly waiting on suppliers, vs the current ~40-80 hours of manual review and chasing. Big claim — first PoC will measure it for real.
+</p>
+
+<!-- ============ DEPLOYMENT ============ -->
+<h2><span class="section-num">11</span> Deployment</h2>
+<p class="lede">Single-tenant per customer (APOC gets their own Azure tenant). The SaaS layer is the multi-tenant control plane; data and compute live in the tenant. Lines up with APOC's Workstream 1 (private Claude deployment).</p>
+
+<div class="card">
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 13px;">
+    <div>
+      <h4 style="margin-top: 0;">Customer tenant (APOC's Azure)</h4>
+      <ul style="margin: 4px 0; padding-left: 18px; line-height: 1.7;">
+        <li>Blob storage — source packages, OCR sidecars, Trace Packs</li>
+        <li>Postgres or Cosmos — the index from schema sketch</li>
+        <li>Azure AI Search — Smart Search index</li>
+        <li>Document Intelligence (fallback OCR)</li>
+        <li>Claude on Foundry (private endpoint)</li>
+        <li>Entra ID — auth, SSO, RBAC</li>
+        <li>App Service — UI + portal</li>
+        <li>Functions — pipeline workers</li>
+      </ul>
+    </div>
+    <div>
+      <h4 style="margin-top: 0;">Multi-tenant control plane (NxtPhase)</h4>
+      <ul style="margin: 4px 0; padding-left: 18px; line-height: 1.7;">
+        <li>Validation rule definitions (versioned)</li>
+        <li>Doc-type catalogue (versioned)</li>
+        <li>Skill: APDOCS (this skill)</li>
+        <li>SaaS UI image, redeployable per tenant</li>
+        <li>Determinism contract enforcement library</li>
+        <li>Monitoring &amp; metrics (anonymous)</li>
+        <li>Customer onboarding tooling</li>
+      </ul>
+    </div>
+  </div>
+  <p style="font-size: 12px; color: var(--muted); margin-top: 14px; margin-bottom: 0;">
+    APOC's data never leaves their tenant. NxtPhase ships rule and UI updates as versioned releases. Each release is reviewable as a diff — what new flags will be raised, what new fields will be extracted.
+  </p>
+</div>
+
+<!-- ============ THE PITCH ============ -->
+<h2><span class="section-num">12</span> The pitch in one paragraph</h2>
+<p style="font-size: 15px; line-height: 1.7;">
+APDOCS is a timeline-first SaaS for aviation Back-to-Birth document review. Every engine package becomes a navigable lifecycle. Every fact carries a determinism tag — deterministic rule, hybrid OCR, or AI judgement — so any claim in a delivered Trace Pack is verifiable in two clicks. The system runs in the customer's Azure tenant alongside their private Claude deployment; nothing leaves. Documentation engineers review and approve; suppliers correct via expiring portal links; buyers receive a signed PDF with a full provenance appendix. The first measurable outcome: reduce a typical 40-80 hour manual review to under 6 hours of decision-only human time, while making the result more defensible than the current manual process.
+</p>
+
+<footer>
+APDOCS SaaS design proposal · timeline-first, audit-by-default. Mockups are HTML/CSS wireframes — not functional UI. Wireframes derived from the actual data and processes validated on ESN 994738 (CF34-10E) and ESN 779125 (CFM56-5B2/P) packages. Architecture aligns with the project's Workstream 1 (private Azure Claude) and uses the relationship graph + determinism contract previously documented in <code>relationships.html</code> and <code>process_determinism.html</code>.
+</footer>
+
+</div>
+
+<script>
+  (function(){
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-theme-set]');
+    const stored = localStorage.getItem('apdocs-theme') || 'system';
+    function apply(theme) {
+      if (theme === 'system') root.removeAttribute('data-theme');
+      else root.setAttribute('data-theme', theme);
+      buttons.forEach(b => b.classList.toggle('active', b.dataset.themeSet === theme));
+      localStorage.setItem('apdocs-theme', theme);
+    }
+    buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeSet)));
+    apply(stored);
+  })();
+</script>
+
+</body>
+</html>

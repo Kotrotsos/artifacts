@@ -89,3 +89,4 @@
 | 2026-05-12 | content | images | [hero.png](projects/content/images/hero.png) | Hero image for Uber AI budget article, isometric gauge draining tokens into compute node |
 | 2026-05-12 | content | reports | [draft.md](projects/content/reports/draft.md) | Uber AI budget article, Humanizer and deep-detect passes applied |
 | 2026-05-13 | apdocs | reports | [relationships.html](projects/apdocs/reports/relationships.html) | Entity-relationship graph showing the 10 keys that connect every document in a BtB package |
+| 2026-05-13 | apdocs | reports | [saas_design.html](projects/apdocs/reports/saas_design.html) | SaaS design proposal — timeline-first UX with audit-by-default for BtB document management |
