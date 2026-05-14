@@ -38,3 +38,4 @@
 | 2026-05-14 | images | [diagram-2-anatomy.png](images/diagram-2-anatomy.png) | DESIGN.md definitive guide: diagram-2-anatomy.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/diagram-2-anatomy.png |
 | 2026-05-14 | images | [ui-generic.png](images/ui-generic.png) | DESIGN.md definitive guide: ui-generic.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/ui-generic.png |
 | 2026-05-14 | images | [ui-stripe-style.png](images/ui-stripe-style.png) | DESIGN.md definitive guide: ui-stripe-style.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/ui-stripe-style.png |
+| 2026-05-14 | images | [ui-linear-style.png](images/ui-linear-style.png) | DESIGN.md definitive guide: ui-linear-style.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/ui-linear-style.png |
