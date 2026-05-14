@@ -32,3 +32,4 @@
 | 2026-05-14 | images | [diagram-3-transformation.png](images/diagram-3-transformation.png) | Pen-drawing diagram, two kinds of work, transformation versus generation | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/diagram-3-transformation.png |
 | 2026-05-14 | images | [diagram-4-curve.png](images/diagram-4-curve.png) | Pen-drawing diagram, the compounding curve, iterated skill versus writing from scratch | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/diagram-4-curve.png |
 | 2026-05-14 | reports | [draft.md](reports/draft.md) | Draft with 4 pen-drawing diagrams embedded at anatomy, loading, transformation, and curve sections | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/draft.md |
+| 2026-05-14 | reports | [draft.md](reports/draft.md) | DESIGN.md definitive guide: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/draft.md |
