@@ -94,3 +94,4 @@
 | 2026-05-14 | content | reports | [claude-reading-list.html](projects/content/reports/claude-reading-list.html) | Curated reading list of 12 practical Claude articles across architecture, Opus 4.7, production, workflow, and model comparison |
 | 2026-05-14 | uno-rescan | reports | [retest-delta-2026-05-14.html](projects/uno-rescan/reports/retest-delta-2026-05-14.html) | unomundi pentest rescan delta with JWT leak deep dive and findings table |
 | 2026-05-14 | uno-rescan | reports | [README.md](projects/uno-rescan/reports/README.md) | unomundi rescan markdown source with findings table and recommendations |
+| 2026-05-14 | content | reports | [draft.md](projects/content/reports/draft.md) | Ten non-coding uses for Claude Skills, explainer plus high-value cases for non-engineers |

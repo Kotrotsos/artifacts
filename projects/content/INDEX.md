@@ -20,3 +20,4 @@
 | 2026-05-12 | images | [hero.png](images/hero.png) | Hero image for Uber AI budget article, isometric gauge draining tokens into compute node | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/hero.png |
 | 2026-05-12 | reports | [draft.md](reports/draft.md) | Uber AI budget article, Humanizer and deep-detect passes applied | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/draft.md |
 | 2026-05-14 | reports | [claude-reading-list.html](reports/claude-reading-list.html) | Curated reading list of 12 practical Claude articles across architecture, Opus 4.7, production, workflow, and model comparison | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-reading-list-2026-05-14/claude-reading-list.html |
+| 2026-05-14 | reports | [draft.md](reports/draft.md) | Ten non-coding uses for Claude Skills, explainer plus high-value cases for non-engineers | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/draft.md |

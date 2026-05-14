@@ -1,106 +1,168 @@
-# Uber Burned Its Annual AI Budget in Four Months
+# Ten Non-Coding Uses for Claude Skills
 
-*Five thousand engineers got Claude Code in December. The pricing model, not the engineers, did this.*
+*Skills are the most underused Claude feature for everyone who is not an engineer. Here is what they actually are, and ten high-value uses for the rest of us.*
 
 **Key takeaways:**
 
-- Uber gave 5,000 engineers Claude Code in December 2025. By April 15, the CTO told the company the entire 2026 AI budget was spent. Per-engineer cost ran $500 to $2,000 a month.
-- This is not an engineering overreach story. It is a finance story. Consumption pricing and annual budgeting are structurally incompatible, and most enterprises are building their FY26 AI line item on assumptions that already broke at Uber.
-- The fix is not to slow adoption. The fix is to tier engineers, move to quarterly elastic budgets, and measure cost per merged PR instead of cost per token. Three moves you can make in the next thirty days.
+- A Claude skill is a folder Claude reads automatically when relevant. Markdown instructions, optional scripts, optional reference files. You write it once, Claude loads it every time the situation matches. The mechanics are simple. The leverage is not.
+- Engineers were the first to write skills because Claude Code shipped them first. The rest of the knowledge-work world has barely started. The non-coding use cases are where most of the time savings live, and they compound.
+- The ten cases below are not "write a blog post for me." They are pre-meeting briefings, decision audit trails, hiring panel synthesis, contract redlines against your playbook, and six more. Each replaces 30 to 120 minutes of repetitive thinking that you currently do from scratch every time.
 
 ---
 
-In December 2025, Uber rolled out Claude Code to 5,000 engineers. By February the usage had nearly doubled. By March, 84% of Uber's developers were classified as agentic coding users, up from 32% the prior December. On April 15, Chief Technology Officer Praveen Neppalli Naga told the company they had burned through the entire 2026 AI budget. Four months in.
+Claude shipped skills in late 2025. Engineers used them first because they showed up inside Claude Code, the coding tool. Most of the writing about skills is therefore about coding skills. CLAUDE.md conventions, lint configurations, framework setups.
 
-The reaction in the press was predictable. AI is expensive. Engineers got carried away. Maybe the tools are not ready for production scale. Maybe the spend is irresponsible.
+That is the smallest possible interpretation of what skills can do.
 
-Look at the same data with finance eyes instead of engineering eyes and a different story emerges. The engineers were doing exactly what the company asked them to do. The budget itself was built on assumptions that no longer match the tool. Every enterprise reading the headlines about Uber has a version of the same problem sitting in their own FY26 plan, waiting to surface.
+A skill is a configured piece of expertise that Claude loads automatically when the situation matches. There is nothing about the mechanism that is specific to code. The most interesting uses are operational, executive, and creative. The non-coding uses are where most knowledge workers will quietly get a 10x leverage gain over the next twelve months without writing a single line of code.
 
-This is the article I would want to read if I were running a finance review next week.
+This piece explains what a skill actually is, then walks through ten high-value, non-obvious uses. The ones I have either built, watched a client build, or seen described well enough to know they work.
 
-## What actually happened at Uber
+## What a skill actually is in 2026
 
-Start with the numbers, because the numbers tell the story better than the framing.
+A skill is a folder. Inside the folder is a markdown file called SKILL.md, optionally accompanied by scripts, reference documents, templates, or example outputs.
 
-Uber's R&D budget for 2026 includes a $3.4 billion allocation, of which the AI line item is the fastest-growing slice. The CTO did not say AI costs were 6x what was forecast. He said the entire annual envelope, the full year of planned spend, was gone in four months. AI-related costs at Uber are up roughly 6x since 2024.
+The markdown file starts with YAML frontmatter that has two important fields. A name, and a description. The description is the most important line in the whole skill, because that is what Claude reads to decide whether to load the skill for the current task. If you write a vague description, the skill will not trigger when you need it. If you write a sharp description, Claude will reach for it the moment it sees the situation.
 
-The per-engineer numbers are the interesting part. Monthly Claude Code spend per engineer ranged from $500 to $2,000. That four-fold variance inside a single workforce is the first signal something different is happening. With a SaaS seat, the per-engineer cost is bounded by the per-engineer license price. With a consumption-priced tool, the cost per engineer is bounded only by how many agent loops that engineer chooses to run.
+Below the frontmatter is the instruction body. This is where you tell Claude how to do the task, what inputs to expect, what output to produce, what format to use, what to avoid. Think of it as the briefing document you would write for a new hire who is going to do this job 200 times.
 
-The adoption curve was the second signal. From December to March, the percentage of Uber engineers classified as agentic coders went from 32% to 84%. By April, 95% of all Uber engineers were using AI tools at least monthly, and 70% of committed code had some AI involvement. Approximately 11% of live backend code changes are now written by AI agents end-to-end. None of this is bad. All of it is the kind of adoption rate companies dream about when they sign a deal.
+You can attach scripts (Python, shell, whatever runs locally). You can attach reference files (a brand guide, a contract playbook, a list of company names). You can attach example outputs that show the format you want.
 
-The third signal, the one I want to spend more time on, is what Uber did to drive that adoption. Engineers were ranked on internal dashboards by AI tool usage. Usage was a visible performance signal. Leadership was rewarding the people who used Claude Code the most.
+Once the skill is saved in your skills directory, Claude reads it lazily. The full content only loads when Claude decides the skill applies. That means you can have hundreds of skills configured without bloating your context window. Only the relevant ones load.
 
-Read those three signals together. The tool is consumption-priced. The workforce is incentivized to consume. The budget is annual and fixed. There is no version of those three statements that ends with the budget surviving the year.
+For the non-engineer, the mental model that matters is this: a skill is a persistent capability you have configured once, that Claude reaches for automatically whenever the work calls for it. You are not retraining the model. You are giving it standing instructions.
 
-## The pricing model mismatch
+## Why the non-coding world has not caught up yet
 
-Software has had two budgeting eras. Both worked because the pricing model matched the budgeting model.
+Two reasons.
 
-The license era had perpetual software. You paid once, you owned a copy, the budget was capital expense, and depreciation handled the rest. Predictable. The SaaS era introduced per-seat subscriptions. Per-seat is bounded. Each licensed user can consume at most one unit of the service per period. You count seats, multiply by price, add a buffer, and you have a number. Annual budgeting works fine.
+First, the documentation was written for engineers. Most of the example skills shipped by Anthropic and the community are coding skills. If you are a marketer, an operator, a founder, a chief of staff, the examples do not match your work, so you assume the tool does not match either.
 
-Consumption pricing breaks both of those assumptions.
+Second, the format looks technical. YAML frontmatter, file paths, the word "directory." Non-engineers see this and stop, even though writing a skill is closer to writing a one-page brief than writing code.
 
-With Claude Code, the unit of consumption is the agent loop, not the engineer. One engineer running one well-crafted prompt against a small codebase might cost $100 a month. The same engineer running an agentic workflow that spawns sub-agents, calls tools, reads thousands of files into context, executes multiple iterations, and merges back into a parent task might cost $2,000 a month. The ceiling on spend has nothing to do with headcount and everything to do with how often each engineer chooses to launch agent loops, multiplied by the average complexity of those loops.
+Both are surmountable. The investment to learn the format is about an hour. The return is permanent. Every skill you write keeps paying you back every time the situation it matches comes up.
 
-Agentic AI uses 5 to 30 times more tokens per task than a standard chatbot interaction, depending on the workload. That is the multiplier that makes consumption-priced agents structurally different from any SaaS product your finance team has ever budgeted for.
+What follows are ten cases that are not on the standard list.
 
-Annual budgets are built on the bounded assumption. You forecast a number based on expected seats, expected usage per seat, and a contingency. That math works when the per-seat ceiling is a hard ceiling. It does not work when the per-seat ceiling is the engineer's imagination plus the latency of a feedback loop they enjoy. Uber discovered exactly this, the same way every enterprise running a Claude Code pilot will discover it on their own timeline. The engineers were not the problem, the budget model was.
+## Ten high-value, non-obvious skills for non-engineers
 
-## The internal leaderboard problem
+### 1. Pre-meeting context warmer
 
-This is the piece I want managers and execs to sit with.
+**Trigger phrase:** "prep for [name or company] meeting"
 
-Uber rolled out Claude Code with an explicit adoption push. Internal dashboards ranked engineers by AI tool usage. That is a textbook adoption strategy. Make the behavior visible, reward it, watch usage spread. It worked. 32% to 84% in three months is not a fluke. It is the result of well-designed internal incentives.
+You have a meeting with a client at 3pm. You vaguely remember the last conversation. You have not read the email thread in three weeks. Your CRM is half-updated. You walk in cold.
 
-The problem is that the same lever that drives adoption drives cost. There is no separation between "engineer is being productive with AI" and "engineer is generating tokens." For a consumption-priced tool, productivity signal and cost signal are the same signal.
+A pre-meeting skill changes that. It instructs Claude to pull together: the last six months of email exchanges with this contact, any documented meeting notes, current open threads, pending asks on either side, and concerns this person has named in past conversations. Output is a one-page briefing with relationship history at the top, open items in the middle, suggested talking points at the bottom.
 
-If your leaderboard rewards usage, your leaderboard is also rewarding spend. If your spend is uncapped per engineer, your leaderboard is an unhedged buy order on Anthropic's revenue, written in your engineering culture.
+This skill is not about generating a smart-sounding agenda. It is about walking into the meeting with the same context you would have if you had a chief of staff who had memorized the relationship. For sales leaders, founders, partners, and account executives, this is 20 to 45 minutes of recovered preparation time per meeting, compounded across every meeting in the week.
 
-This is not a reason to drop the leaderboard. Cultural pressure works. The point is to acknowledge that the cultural lever and the financial lever are now the same lever. The cost implications of that linkage have not made it into the standard adoption playbook yet.
+### 2. Decision audit trail
 
-## Why every enterprise has this problem
+**Trigger phrase:** "audit decision: [decision name]"
 
-Uber is just the public version of what is happening everywhere.
+Six months from now, someone is going to ask why your company chose the vendor it chose, the architecture it chose, the org structure it chose. The person who made the decision will be vague. The notes are scattered across Slack, Notion, Google Docs, and three abandoned email threads.
 
-The FinOps Foundation's 2026 State of FinOps report has the supporting numbers. 78% of IT leaders have experienced unexpected charges on a consumption-based SaaS bill in the past year. 98% of FinOps practitioners are now tasked with managing AI spend, up from 31% in 2024. The average enterprise AI budget went from $1.2 million in 2024 to $7 million in 2026, a 5.8x increase in two years.
+A decision audit skill solves this at decision time, not six months later. Instructions tell Claude to walk back through the recent meeting notes, Slack threads, and emails that mention the topic, pull the considered alternatives, the criteria used, who pushed in which direction, and the deciding factor. The output is a one-page memo titled "Why we decided X."
 
-The pattern is industry-wide. Companies are rolling out consumption-priced AI tools to broad engineering populations. The tools work. Adoption spreads. Token consumption scales with adoption. The annual budget, set in October of the previous year on assumptions that already do not match the tool, runs out somewhere in Q2 or Q3.
+This is institutional memory, automatic. The skill creates it as a byproduct of normal work, instead of relying on someone writing a postmortem they will never get around to. The unlock here is for new hires three months out, who can read a stack of decision memos and have the company's reasoning history before their first standup.
 
-The companies talking publicly about this are doing the rest of us a favor. The ones not talking are either lucky, in a smaller pilot, or about to have the same conversation with their CFO in a less convenient context.
+### 3. Consultant-speak translator
 
-## A budgeting model that survives this
+**Trigger phrase:** "translate this consultant deck"
 
-I am going to give you four specific changes. None of them require slowing adoption. All of them are about restructuring the cost side to match the new revenue side of the tool's pricing model.
+A Deloitte slide deck lands in your inbox. It has thirty-seven pages, six frameworks, and a confidence-inspiring color palette. You need to know in plain English what they are actually recommending, what is recycled from their last six engagements, and what is specific to your business.
 
-**Move from annual fixed to quarterly elastic.** Annual envelopes were designed for predictable consumption. If your consumption shape is non-predictable, your envelope cadence has to match. Quarterly budgets with explicit re-forecast at each quarter close, ratified by finance, give you four chances to catch a runaway curve. Not one chance, with eight months of damage already done.
+A consultant-speak skill instructs Claude to identify the actual recommendation under the framework layer, flag generic language, name the assumptions that have not been stated, and produce a one-page operator-friendly summary. It is calibrated against a list of consulting clichés ("strategic enablers," "value chain transformation," "next-generation operating model") that map to specific underlying claims or to nothing at all.
 
-**Set a per-engineer monthly soft cap with explicit overage approval.** Not a hard cut-off, a signal that prompts a quick review. If an engineer crosses the cap, their manager gets a ping, the engineer gets a brief justification ask, and the additional spend is approved or rerouted. This is how cloud spend is managed already. It is the same governance you already apply to AWS, repurposed for AI tooling.
+This is one of the highest-leverage skills for senior executives who get paid in part to read these documents and make calls on them. A deck that takes a VP three hours to interpret runs through this in two minutes. The remaining time is for the actual judgment call.
 
-**Measure cost per merged PR or cost per deployed feature, not cost per token.** Cost per token is the wrong unit. It compares well to other tokens. It compares badly to everything you actually care about. Cost per merged PR is the unit that lets you have an honest conversation about ROI. If the cost per merged PR is dropping while the cost per engineer is rising, the tool is winning. If the cost per merged PR is flat or rising while spend keeps climbing, you are funding adoption that is not yet producing matching engineering output.
+### 4. Investor update generator
 
-**Tier engineers by usage profile.** Light user, heavy user, agent runner. The agent runner is a different cost center than the light user. Mixing them in the same budget bucket lets a small number of agent runners distort the per-capita number, which makes the budget look better than it is on average and worse than it should be at the heavy end. Tiered budgets give you accuracy and let you say honest things to your CFO about where the money is going.
+**Trigger phrase:** "investor update for [month]"
 
-These four moves are not novel. They are the standard FinOps playbook for any consumption-priced resource, applied to AI tooling. The novelty is that AI tooling now sits in the same budgeting category as cloud infrastructure. Most finance teams are still treating it like Microsoft Office, which is the wrong category, and that mismatch is the actual driver of the surprise bills.
+Most founders write the first six investor updates carefully and then drift. Month seven is two weeks late. Month nine is just a Slack message. By month twelve, the discipline is gone.
 
-## What to do in the next thirty days
+An investor update skill protects the cadence. It instructs Claude to pull the month's headline metrics, the wins, the lowlights, the asks, and write the recurring monthly update in the founder's voice, using the recurring sections they have committed to. The skill stores the founder's voice samples and the running history of previous updates, so the new one builds on what came before.
 
-If you sit in front of a budget that includes an AI line item, three concrete moves.
+The value here is not better writing. It is keeping the practice alive when the founder is too tired to write at month eleven. Investor trust compounds through cadence. Cadence compounds through removal of activation energy. This skill removes the activation energy.
 
-First, find out what your current per-engineer consumption looks like, by engineer, by month, broken down by tool. Most companies do not have this data. Get it. If the answer is "we cannot get it without a quarter of engineering work," that is your first finding. Build the visibility before you build the controls.
+### 5. Hiring panel feedback synthesizer
 
-Second, talk to whichever engineering leader is closest to the adoption push and find out what the cultural incentives look like. Are engineers being ranked by usage? Are managers being told to drive adoption to a specific percentage? Are there internal leaderboards? If yes, surface the cost implications now, while you can still adjust the metric, instead of waiting for the bill.
+**Trigger phrase:** "synthesize panel feedback for [candidate]"
 
-Third, run the numbers as if your AI line item is going to grow 5 to 10x over the next twelve months. That is the magnitude Uber and the FinOps data suggest is plausible. If a 5x growth in your AI budget is survivable, you have time. If a 5x growth would crater the rest of your tooling budget, you have a planning problem to solve before the curve catches you.
+Five panelists write five different interview write-ups. The hiring manager reads all five, mostly remembers the last one and the loudest one, and writes a decision rationale that under-weights the quiet skeptic.
 
-None of these require slowing adoption. None require punishing engineers. All of them give you better data and better controls than the median Fortune 500 has right now.
+A panel synthesis skill reads the five write-ups side by side and produces a one-page document with: the collective signal across all panelists, the specific areas where panelists disagreed, the panelist whose concerns are most worth taking seriously (usually the most specific one, often not the loudest one), and a recommended hire or no-hire signal with rationale.
 
-## Closing
+The non-obvious value: surfacing the hidden veto. Most hiring committees lose good no-hire signals because one panelist's vague positive narrative overrides another panelist's specific concern. The skill is calibrated to weight specificity over volume, which is the right calibration in interview feedback.
 
-The Uber number is a warning about an entire generation of consumption-priced AI tooling meeting a generation of annual-budgeting practices that were designed for a slower, more bounded category of software.
+### 6. Competitor strategy reverse-engineer
 
-Uber is the canary. The companies that read the canary correctly will spend the rest of 2026 quietly tuning their cost models while their competitors are stuck in emergency budget reviews. The companies that read it as an Uber problem will have their own version of the conversation by Q3.
+**Trigger phrase:** "competitor read: [company name]"
 
-You can adopt aggressively and budget sanely. The two are not in conflict. They just require you to update the budgeting model at the same speed you are updating the tooling.
+What is your competitor actually building, hiring for, betting on, abandoning? Most teams read the competitor's press releases and feel informed. The press release is the least informative public signal a company emits.
+
+A competitor read skill pulls a broader set of public signals: the last twelve months of press releases, blog posts, job postings, pricing changes, executive movements, conference talks, and customer announcements. It classifies the signals by strategic vector (geographic expansion, product depth, segment shift, pricing strategy, talent posture) and produces a one-page memo titled "What [Company] is actually doing."
+
+The non-obvious part: job postings are the strongest leading indicator a company emits. A press release describes what is shipped. A job posting describes what is being built six months out. The skill weights accordingly. This is the kind of read that strategy consultants used to charge $80,000 for, on a monthly cadence, that you can now generate in two minutes against your own list of competitors.
+
+### 7. Customer feedback theme extractor
+
+**Trigger phrase:** "feedback themes for [time period]"
+
+Your support inbox has 400 tickets this month. Your app store has 60 reviews. Your customer Slack channel has 200 messages. Most analytics tools will classify these into 30 themes, which is too many to act on.
+
+A feedback theme skill is calibrated to the smaller, harder question: out of all the noise, which three patterns are worth escalating to product or executive review this month? Instructions tell Claude to distinguish "loud minority" complaints from "silent majority" indicators, to weight by customer segment value, to identify regressions from prior months, and to produce a one-page customer signal report with three specific recommendations.
+
+The unlock is the filter. Anyone can produce a list of 30 themes. The hard work is choosing the three. The skill is configured to know your priorities, so it makes that call instead of leaving the executive to wade through the long list every month.
+
+### 8. Conference talk to multi-channel assets
+
+**Trigger phrase:** "assets from [talk transcript or recording]"
+
+You give a 45-minute conference talk. You go home tired. You write one LinkedIn post about it and call it done. The talk is worth at least ten times that in surface area, but the activation energy to extract the rest is high.
+
+A talk-to-assets skill removes the activation energy. From a single transcript or recording, it produces: three LinkedIn posts with different hooks, one Substack article that adapts the talk's arc for a reading audience, a one-page handout for attendees who asked, five quote-card text snippets for graphics, one thank-you note to the conference organizer in the speaker's voice, and a draft email to send to the audience members who left contact information.
+
+This is a content multiplier configured once. It does not generate new ideas. It captures the ideas you already delivered live, in the formats your audience actually consumes them in. For speakers, founders, executives, and anyone with a real stage presence, this is the single highest-ROI skill on this list.
+
+### 9. Contract redline against your playbook
+
+**Trigger phrase:** paste contract draft into Claude
+
+A vendor sends you a master service agreement. Your lawyer will charge $1,500 an hour to redline it. Most of the changes are routine clauses you have negotiated before. The first pass is something you could do yourself if you had a written playbook.
+
+A contract redline skill stores your playbook: the eight clauses you care about (liability cap, IP ownership, payment terms, termination rights, indemnity, audit rights, data handling, exclusivity), your default negotiating position on each, the acceptable range, and the deal-breaker line. Claude reads the inbound contract, redlines it against your playbook, and produces rationale notes per change, prioritized by which to push hard versus which to accept.
+
+The value compounds with deal volume. Companies signing five contracts a year benefit modestly. Companies signing thirty benefit enormously. The lawyer still does the final read, but the skill handles the first 70% that the lawyer was charging full rate for. This is also a fantastic skill for procurement teams and sales operations groups that handle inbound order forms.
+
+### 10. Personal weekly review
+
+**Trigger phrase:** "weekly review"
+
+Most knowledge workers know they should do a weekly review. Most stop after three weeks because starting from a blank page on Friday afternoon is too hard.
+
+A weekly review skill reads your calendar entries from the past week, the meeting notes, the completed tasks (if logged), and the open threads. It produces a 200-word document in your voice, structured as: what got done, what did not, what to carry into next week, what to kill, who needs follow-up. The output is ready to send to yourself, to your chief of staff, or just to read once and file.
+
+The unlock is identical to the investor update skill. The activation energy is removed. The discipline survives. The weekly review is one of the highest-leverage personal practices for senior knowledge workers, and the reason almost nobody sustains it is the friction of the first paragraph. This skill removes the first paragraph problem permanently.
+
+## What ties these together
+
+Look at the ten use cases. None of them are about generation. They are all about transformation, synthesis, or filtering. Take a stack of unstructured inputs that already exist, produce a high-leverage output that someone smart would have produced if they had the time.
+
+This is the actual unlock of skills for non-engineers. The model can already write reasonable text on most topics. What you need configured is the specific input-to-output transformation that your job requires, repeatedly, in a consistent format, with the judgment calls you would make embedded into the instructions.
+
+A skill is not a prompt template. A prompt template is a starting point you customize each time. A skill is a standing capability that Claude reaches for without being asked. The difference in lived experience between the two is the difference between a one-time tool and a permanent team member.
+
+## How to write your first non-coding skill
+
+If you have not written one yet, start with the use case on this list that matches your job most directly. For founders, the investor update or competitor read. For executives, the consultant translator or panel synthesis. For sales and account roles, the pre-meeting context warmer. For anyone with a public profile, the conference talk to assets.
+
+Pick one. Write the description field carefully, because that determines whether Claude reaches for the skill at the right moment. Write the instruction body as if you were briefing a new hire on how to do this task for the first time. Include an example of the format you want, ideally a real one from your past work. Save it to your skills directory.
+
+Use it for two weeks. Watch where it gets things wrong. Update the instructions. After two iterations, the skill will probably be doing the task better than you would do it on a tired Friday afternoon, every time, in the same format. That is the unlock.
+
+The engineers got to skills first because the tool launched on their territory. The next twelve months belong to whoever in your function realizes the format applies to everything they do that has a repeatable shape. That is most of knowledge work, by volume. The leverage gain is still sitting on the table.
 
 ---
 
