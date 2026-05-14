@@ -102,3 +102,4 @@
 | 2026-05-14 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Substack version with repo URL in intro and closing CTA |
 | 2026-05-14 | content | reports | [draft.md](projects/content/reports/draft.md) | Ten non-coding uses for Claude Skills, each use case linked to its own repo folder |
 | 2026-05-14 | content | images | [diagram-1-anatomy.png](projects/content/images/diagram-1-anatomy.png) | Pen-drawing diagram, anatomy of a Claude Skill, folder with SKILL.md and frontmatter callouts |
+| 2026-05-14 | content | images | [diagram-2-loading.png](projects/content/images/diagram-2-loading.png) | Pen-drawing diagram, only the matching skill loads, ten folders with one activated |
