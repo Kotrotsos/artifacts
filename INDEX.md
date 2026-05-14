@@ -111,3 +111,4 @@
 | 2026-05-14 | content | images | [diagram-1-layers.png](projects/content/images/diagram-1-layers.png) | DESIGN.md definitive guide: diagram-1-layers.png |
 | 2026-05-14 | content | images | [diagram-2-anatomy.png](projects/content/images/diagram-2-anatomy.png) | DESIGN.md definitive guide: diagram-2-anatomy.png |
 | 2026-05-14 | content | images | [ui-generic.png](projects/content/images/ui-generic.png) | DESIGN.md definitive guide: ui-generic.png |
+| 2026-05-14 | content | images | [ui-stripe-style.png](projects/content/images/ui-stripe-style.png) | DESIGN.md definitive guide: ui-stripe-style.png |
