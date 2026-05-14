@@ -22,6 +22,8 @@ This piece explains what a skill actually is, then walks through ten high-value,
 
 A skill is a folder. Inside the folder is a markdown file called SKILL.md, optionally accompanied by scripts, reference documents, templates, or example outputs.
 
+![Anatomy of a skill: a folder containing SKILL.md, with name and description fields above and an instructions body below](diagram-1-anatomy.png)
+
 The markdown file starts with YAML frontmatter that has two important fields. A name, and a description. The description is the most important line in the whole skill, because that is what Claude reads to decide whether to load the skill for the current task. If you write a vague description, the skill will not trigger when you need it. If you write a sharp description, Claude will reach for it the moment it sees the situation.
 
 Below the frontmatter is the instruction body. This is where you tell Claude how to do the task, what inputs to expect, what output to produce, what format to use, what to avoid. Think of it as the briefing document you would write for a new hire who is going to do this job 200 times.
@@ -29,6 +31,8 @@ Below the frontmatter is the instruction body. This is where you tell Claude how
 You can attach scripts (Python, shell, whatever runs locally). You can attach reference files (a brand guide, a contract playbook, a list of company names). You can attach example outputs that show the format you want.
 
 Once the skill is saved in your skills directory, Claude reads it lazily. The full content only loads when Claude decides the skill applies. That means you can have hundreds of skills configured without bloating your context window. Only the relevant ones load.
+
+![A row of ten skill folders, with only the pre-meeting folder activated by the phrase "prep for ACME meeting" and the rest drawn in dashed outlines as dormant](diagram-2-loading.png)
 
 For the non-engineer, the mental model that matters is this: a skill is a persistent capability you have configured once, that Claude reaches for automatically whenever the work calls for it. You are not retraining the model. You are giving it standing instructions.
 
@@ -160,6 +164,8 @@ The unlock is identical to the investor update skill. The activation energy is r
 
 All ten share a structure. The skill reshapes inputs you already have (emails, meeting notes, panel write-ups, transcripts, contracts, calendar entries) into a one-page output that someone smart would produce if they had the time. The model is doing transformation, not generation.
 
+![Two kinds of work: transformation takes a cluster of messy inputs and produces a clean one-page output, while generation starts from a blank page and a prompt and produces a generic result](diagram-3-transformation.png)
+
 This is the actual unlock of skills for non-engineers. The model can already write reasonable text on most topics. What you need configured is the specific input-to-output transformation that your job requires, repeatedly, in a consistent format, with the judgment calls you would make embedded into the instructions.
 
 Compare this to a prompt template. With a template, you have to remember to use it, and you customize it each pass. A skill loads on its own when Claude sees the situation match. You configure it once and it runs every time the work calls for it, without you having to remember it exists. That is the operational difference, and it is much bigger than it sounds.
@@ -171,6 +177,8 @@ If you have not written one yet, start with the use case on this list that match
 Pick one. Write the description field carefully, because that determines whether Claude reaches for the skill at the right moment. Write the instruction body as if you were briefing a new hire on how to do this task for the first time. Include an example of the format you want, ideally a real one from your past work. Save it to your skills directory.
 
 Use it for two weeks. Watch where it gets things wrong. Update the instructions. After two iterations, the skill will probably be doing the task better than you would do it on a tired Friday afternoon, every time, in the same format. That is the unlock.
+
+![The compounding curve: writing from scratch each time stays flat, while a calibrated skill iterated weekly rises in distinct steps to a permanent high plateau](diagram-4-curve.png)
 
 Each of the ten skills above links to its own folder in [github.com/Kotrotsos/claude-skills-non-coding](https://github.com/Kotrotsos/claude-skills-non-coding), open-sourced under MIT. Clone the repo, copy the folders you want into `~/.claude/skills/`, customize the description field and any playbook sections, and you are running in under five minutes.
 

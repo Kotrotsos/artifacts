@@ -105,3 +105,4 @@
 | 2026-05-14 | content | images | [diagram-2-loading.png](projects/content/images/diagram-2-loading.png) | Pen-drawing diagram, only the matching skill loads, ten folders with one activated |
 | 2026-05-14 | content | images | [diagram-3-transformation.png](projects/content/images/diagram-3-transformation.png) | Pen-drawing diagram, two kinds of work, transformation versus generation |
 | 2026-05-14 | content | images | [diagram-4-curve.png](projects/content/images/diagram-4-curve.png) | Pen-drawing diagram, the compounding curve, iterated skill versus writing from scratch |
+| 2026-05-14 | content | reports | [draft.md](projects/content/reports/draft.md) | Draft with 4 pen-drawing diagrams embedded at anatomy, loading, transformation, and curve sections |
