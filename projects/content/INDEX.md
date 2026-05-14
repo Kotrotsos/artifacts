@@ -23,3 +23,4 @@
 | 2026-05-14 | reports | [draft.md](reports/draft.md) | Ten non-coding uses for Claude Skills, explainer plus high-value cases for non-engineers | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/draft.md |
 | 2026-05-14 | reports | [draft.md](reports/draft.md) | Ten non-coding uses for Claude Skills, Humanizer and deep-detect passes applied | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/draft.md |
 | 2026-05-14 | images | [hero.png](images/hero.png) | Hero image for Claude Skills article, central crystal module radiating to six knowledge-work document types | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/hero.png |
+| 2026-05-14 | reports | [substack-version.md](reports/substack-version.md) | Substack adaptation, personal intro and reader-engagement outro for Claude Skills article | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/substack-version.md |
