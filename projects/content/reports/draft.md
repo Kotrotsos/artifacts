@@ -162,6 +162,8 @@ Pick one. Write the description field carefully, because that determines whether
 
 Use it for two weeks. Watch where it gets things wrong. Update the instructions. After two iterations, the skill will probably be doing the task better than you would do it on a tired Friday afternoon, every time, in the same format. That is the unlock.
 
+If you want a head start on any of the ten skills above, I have open-sourced starter versions of all of them at [github.com/Kotrotsos/claude-skills-non-coding](https://github.com/Kotrotsos/claude-skills-non-coding) under MIT. Clone the repo, copy the ones that match your work into `~/.claude/skills/`, customize the description field and any playbook sections, and you are running in under five minutes.
+
 The engineers got to skills first because the tool launched on their territory. The next twelve months belong to whoever in your function realizes the format applies to everything they do that has a repeatable shape. That covers most of knowledge work by volume, and most of the leverage gain still sitting on the table this year.
 
 ---
