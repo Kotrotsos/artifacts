@@ -49,6 +49,7 @@ What follows are ten cases that are not on the standard list.
 ### 1. Pre-meeting context warmer
 
 **Trigger phrase:** "prep for [name or company] meeting"
+**Skill folder:** [pre-meeting-context](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/pre-meeting-context)
 
 You have a meeting with a client at 3pm. You vaguely remember the last conversation. You have not read the email thread in three weeks. Your CRM is half-updated. You walk in cold.
 
@@ -59,6 +60,7 @@ What this skill replaces is the cold walk-in. You arrive with the same context y
 ### 2. Decision audit trail
 
 **Trigger phrase:** "audit decision: [decision name]"
+**Skill folder:** [decision-audit-trail](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/decision-audit-trail)
 
 Six months from now, someone is going to ask why your company chose the vendor it chose, the architecture it chose, the org structure it chose. The person who made the decision will be vague. The notes are scattered across Slack, Notion, Google Docs, and three abandoned email threads.
 
@@ -69,6 +71,7 @@ This is institutional memory, automatic. The skill creates it as a byproduct of 
 ### 3. Consultant-speak translator
 
 **Trigger phrase:** "translate this consultant deck"
+**Skill folder:** [consultant-translator](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/consultant-translator)
 
 A Deloitte slide deck lands in your inbox. It has thirty-seven pages, six frameworks, and a confidence-inspiring color palette. You need to know in plain English what they are actually recommending, what is recycled from their last six engagements, and what is specific to your business.
 
@@ -79,6 +82,7 @@ This is one of the highest-leverage skills for senior executives who get paid in
 ### 4. Investor update generator
 
 **Trigger phrase:** "investor update for [month]"
+**Skill folder:** [investor-update](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/investor-update)
 
 Most founders write the first six investor updates carefully and then drift. Month seven is two weeks late. Month nine is just a Slack message. By month twelve, the discipline is gone.
 
@@ -89,6 +93,7 @@ The value here is keeping the practice alive when the founder is too tired to wr
 ### 5. Hiring panel feedback synthesizer
 
 **Trigger phrase:** "synthesize panel feedback for [candidate]"
+**Skill folder:** [panel-synthesizer](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/panel-synthesizer)
 
 Five panelists write five different interview write-ups. The hiring manager reads all five, mostly remembers the last one and the loudest one, and writes a decision rationale that under-weights the quiet skeptic.
 
@@ -99,6 +104,7 @@ The non-obvious value: surfacing the hidden veto. Most hiring committees lose go
 ### 6. Competitor strategy reverse-engineer
 
 **Trigger phrase:** "competitor read: [company name]"
+**Skill folder:** [competitor-read](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/competitor-read)
 
 What is your competitor actually building, hiring for, betting on, abandoning? Most teams read the competitor's press releases and feel informed. The press release is the least informative public signal a company emits.
 
@@ -109,6 +115,7 @@ The non-obvious part: job postings are the strongest leading indicator a company
 ### 7. Customer feedback theme extractor
 
 **Trigger phrase:** "feedback themes for [time period]"
+**Skill folder:** [feedback-themes](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/feedback-themes)
 
 Your support inbox has 400 tickets this month. Your app store has 60 reviews. Your customer Slack channel has 200 messages. Most analytics tools will classify these into 30 themes, which is too many to act on.
 
@@ -119,6 +126,7 @@ The unlock is the filter. Anyone can produce a list of 30 themes. The hard work 
 ### 8. Conference talk to multi-channel assets
 
 **Trigger phrase:** "assets from [talk transcript or recording]"
+**Skill folder:** [talk-to-assets](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/talk-to-assets)
 
 You give a 45-minute conference talk. You go home tired. You write one LinkedIn post about it and call it done. The talk is worth at least ten times that in surface area, but the activation energy to extract the rest is high.
 
@@ -129,6 +137,7 @@ This is a content multiplier configured once. The skill captures the ideas you a
 ### 9. Contract redline against your playbook
 
 **Trigger phrase:** paste contract draft into Claude
+**Skill folder:** [contract-redline](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/contract-redline)
 
 A vendor sends you a master service agreement. Your lawyer will charge $1,500 an hour to redline it. Most of the changes are routine clauses you have negotiated before. The first pass is something you could do yourself if you had a written playbook.
 
@@ -139,6 +148,7 @@ The value compounds with deal volume. Companies signing five contracts a year be
 ### 10. Personal weekly review
 
 **Trigger phrase:** "weekly review"
+**Skill folder:** [weekly-review](https://github.com/Kotrotsos/claude-skills-non-coding/tree/main/weekly-review)
 
 Most knowledge workers know they should do a weekly review. Most stop after three weeks because starting from a blank page on Friday afternoon is too hard.
 
@@ -162,7 +172,7 @@ Pick one. Write the description field carefully, because that determines whether
 
 Use it for two weeks. Watch where it gets things wrong. Update the instructions. After two iterations, the skill will probably be doing the task better than you would do it on a tired Friday afternoon, every time, in the same format. That is the unlock.
 
-If you want a head start on any of the ten skills above, I have open-sourced starter versions of all of them at [github.com/Kotrotsos/claude-skills-non-coding](https://github.com/Kotrotsos/claude-skills-non-coding) under MIT. Clone the repo, copy the ones that match your work into `~/.claude/skills/`, customize the description field and any playbook sections, and you are running in under five minutes.
+Each of the ten skills above links to its own folder in [github.com/Kotrotsos/claude-skills-non-coding](https://github.com/Kotrotsos/claude-skills-non-coding), open-sourced under MIT. Clone the repo, copy the folders you want into `~/.claude/skills/`, customize the description field and any playbook sections, and you are running in under five minutes.
 
 The engineers got to skills first because the tool launched on their territory. The next twelve months belong to whoever in your function realizes the format applies to everything they do that has a repeatable shape. That covers most of knowledge work by volume, and most of the leverage gain still sitting on the table this year.
 

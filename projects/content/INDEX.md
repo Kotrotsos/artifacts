@@ -26,3 +26,4 @@
 | 2026-05-14 | reports | [substack-version.md](reports/substack-version.md) | Substack adaptation, personal intro and reader-engagement outro for Claude Skills article | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/substack-version.md |
 | 2026-05-14 | reports | [draft.md](reports/draft.md) | Ten non-coding uses for Claude Skills, with repo URL added to article | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/draft.md |
 | 2026-05-14 | reports | [substack-version.md](reports/substack-version.md) | Substack version with repo URL in intro and closing CTA | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/substack-version.md |
+| 2026-05-14 | reports | [draft.md](reports/draft.md) | Ten non-coding uses for Claude Skills, each use case linked to its own repo folder | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/draft.md |
