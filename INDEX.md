@@ -99,3 +99,4 @@
 | 2026-05-14 | content | images | [hero.png](projects/content/images/hero.png) | Hero image for Claude Skills article, central crystal module radiating to six knowledge-work document types |
 | 2026-05-14 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Substack adaptation, personal intro and reader-engagement outro for Claude Skills article |
 | 2026-05-14 | content | reports | [draft.md](projects/content/reports/draft.md) | Ten non-coding uses for Claude Skills, with repo URL added to article |
+| 2026-05-14 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Substack version with repo URL in intro and closing CTA |

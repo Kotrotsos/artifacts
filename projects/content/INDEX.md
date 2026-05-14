@@ -25,3 +25,4 @@
 | 2026-05-14 | images | [hero.png](images/hero.png) | Hero image for Claude Skills article, central crystal module radiating to six knowledge-work document types | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/hero.png |
 | 2026-05-14 | reports | [substack-version.md](reports/substack-version.md) | Substack adaptation, personal intro and reader-engagement outro for Claude Skills article | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/substack-version.md |
 | 2026-05-14 | reports | [draft.md](reports/draft.md) | Ten non-coding uses for Claude Skills, with repo URL added to article | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/draft.md |
+| 2026-05-14 | reports | [substack-version.md](reports/substack-version.md) | Substack version with repo URL in intro and closing CTA | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/substack-version.md |

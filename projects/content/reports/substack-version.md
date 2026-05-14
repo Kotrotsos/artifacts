@@ -14,6 +14,8 @@ That framing is hiding the most interesting use cases. Skills are not a coding f
 
 This piece does two things. First, it explains what a skill actually is in 2026, in plain English, with no YAML in the explanation. Then it walks through ten use cases that are not on the standard list. The ones I have either built, watched a client build, or seen described well enough to know they work.
 
+I have also open-sourced starter versions of all ten skills at [github.com/Kotrotsos/claude-skills-non-coding](https://github.com/Kotrotsos/claude-skills-non-coding) under MIT. If you want to skip ahead to the code, that is where it is. Otherwise, read on.
+
 **Key takeaways:**
 
 - A Claude skill is a folder Claude reads automatically when relevant. Markdown instructions, optional scripts, optional reference files. You write it once, Claude loads it every time the situation matches. The mechanics are simple. The leverage is not.
@@ -30,7 +32,7 @@ This piece does two things. First, it explains what a skill actually is in 2026,
 
 The engineers got to skills first because the tool launched on their territory. The next twelve months belong to whoever in your function realizes the format applies to everything they do that has a repeatable shape. That covers most of knowledge work by volume, and most of the leverage gain still sitting on the table this year.
 
-I am going to keep building these and writing about what works. If you have built a non-coding skill that has saved you real time, hit reply on this email. I would like to feature the best ones in a follow-up.
+I am going to keep building these and writing about what works. If you have built a non-coding skill that has saved you real time, hit reply on this email. I would like to feature the best ones in a follow-up. If you want to contribute back to the repo, pull requests are open at [github.com/Kotrotsos/claude-skills-non-coding](https://github.com/Kotrotsos/claude-skills-non-coding).
 
 What I am building next: a client engagement memory skill that walks back through six months of email threads and meeting notes to produce the "who they are now, what they care about, what they last asked for" brief at the start of each engagement cycle. If you want a heads-up when that one is ready, you are on the right list.
 
