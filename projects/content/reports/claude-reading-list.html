@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Practical Claude Reading List, 2026-05-14</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #15171a;
+  --muted: #5a6068;
+  --rule: #e6e8eb;
+  --card: #f6f7f8;
+  --accent: #0a7f7a;
+  --accent-2: #e2725b;
+  --tag-bg: #eef3f3;
+  --tag-fg: #0a5754;
+}
+[data-theme="dark"] {
+  --bg: #14171a;
+  --fg: #e9ecef;
+  --muted: #9099a3;
+  --rule: #262a2f;
+  --card: #1c2024;
+  --accent: #6dd4cf;
+  --accent-2: #f3a48c;
+  --tag-bg: #1d2a2a;
+  --tag-fg: #8de2dc;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 880px; margin: 0 auto; padding: 48px 28px 96px; }
+header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; letter-spacing: -0.01em; }
+.subtitle { color: var(--muted); font-size: 16px; margin: 0; }
+.theme-toggle { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--rule); border-radius: 999px; background: var(--card); }
+.theme-toggle button { all: unset; cursor: pointer; padding: 4px 10px; border-radius: 999px; font-size: 12px; color: var(--muted); }
+.theme-toggle button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+h2 { font-size: 21px; letter-spacing: -0.005em; margin: 0 0 6px; }
+h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-2); margin: 36px 0 14px; font-weight: 600; }
+p { margin: 0 0 12px; }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+a:hover { border-bottom-color: var(--accent); }
+.lede {
+  background: var(--card);
+  border-left: 3px solid var(--accent);
+  padding: 14px 18px;
+  border-radius: 6px;
+  margin-bottom: 28px;
+  font-size: 15px;
+}
+.item {
+  border-bottom: 1px solid var(--rule);
+  padding: 18px 0;
+}
+.item:last-child { border-bottom: none; }
+.item h2 { font-size: 18px; margin: 0 0 4px; }
+.item h2 a { color: var(--fg); }
+.item h2 a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.source { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  border-radius: 999px;
+  margin-right: 6px;
+  font-weight: 500;
+}
+.why {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.why strong { color: var(--fg); font-weight: 600; }
+.footer { font-size: 13px; color: var(--muted); margin-top: 48px; border-top: 1px solid var(--rule); padding-top: 16px; }
+@media print {
+  .theme-toggle { display: none; }
+  body { background: white; color: black; }
+  .wrap { max-width: 100%; padding: 24px; }
+  a { color: black; border-bottom: none; }
+  .item { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Practical Claude Reading List</h1>
+      <p class="subtitle">Twelve articles worth reading this week. Curated for builders and decision-makers. Sourced 2026-05-14.</p>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-theme-set="light" aria-pressed="true">Light</button>
+      <button data-theme-set="dark" aria-pressed="false">Dark</button>
+      <button data-theme-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <div class="lede">
+    <strong>What this is.</strong> The strongest practical writing about Claude this month. Filtered for: actually used in production, named tradeoffs, opinion held, no marketing fluff. Ordered roughly by "read first." Five categories.
+  </div>
+
+  <h3>1. Architecture, the mental model</h3>
+
+  <div class="item">
+    <h2><a href="https://alexop.dev/posts/understanding-claude-code-full-stack/">Understanding Claude Code's Full Stack: MCP, Skills, Subagents, and Hooks Explained</a></h2>
+    <div class="source">alexop.dev</div>
+    <span class="tag">architecture</span><span class="tag">power-user</span>
+    <p class="why"><strong>Why read.</strong> The clearest one-page mental model for how the four extensibility primitives fit together. MCP is the data layer, Skills are reusable instructions, Subagents are isolated contexts, Hooks are deterministic control. If you have been confused about which to reach for, this resolves it.</p>
+  </div>
+
+  <div class="item">
+    <h2><a href="https://levelup.gitconnected.com/a-mental-model-for-claude-code-skills-subagents-and-plugins-3dea9924bf05">A Mental Model for Claude Code: Skills, Subagents, and Plugins</a></h2>
+    <div class="source">Level Up Coding, Dean Blank</div>
+    <span class="tag">architecture</span><span class="tag">decision-making</span>
+    <p class="why"><strong>Why read.</strong> Companion to alexop's piece. Frames the decision tree: when do you write a skill, when do you spawn a subagent, when do you ship a plugin. Plugin layer adds the publishing dimension most other guides skip.</p>
+  </div>
+
+  <div class="item">
+    <h2><a href="https://dev.to/owen_fox/claude-code-hooks-subagents-and-skills-complete-guide-hjm">Claude Code: Hooks, Subagents, and Skills, Complete Guide</a></h2>
+    <div class="source">DEV Community, Owen Fox</div>
+    <span class="tag">hooks</span><span class="tag">subagents</span><span class="tag">skills</span>
+    <p class="why"><strong>Why read.</strong> Working examples for each of the 25 hook lifecycle points. Particularly useful: the "block at submit time, not at write time" recommendation, which corrects a common mistake that breaks Claude's reasoning chain.</p>
+  </div>
+
+  <h3>2. Opus 4.7, what actually changed</h3>
+
+  <div class="item">
+    <h2><a href="https://www.mindstudio.ai/blog/claude-opus-4-7-review">Claude Opus 4.7 Review: What Actually Changed and What Got Worse</a></h2>
+    <div class="source">MindStudio</div>
+    <span class="tag">opus-4.7</span><span class="tag">honest-review</span>
+    <p class="why"><strong>Why read.</strong> Names the regression. SWE-Bench Pro jumped from 53.4% to 64.3%, task abandonment dropped 60%, but web research quality took a measurable hit and the tokenizer change bumps token counts 12 to 18% on typical workloads. This is the only Opus 4.7 review that calls out the loss.</p>
+  </div>
+
+  <div class="item">
+    <h2><a href="https://claudefa.st/blog/guide/development/opus-4-7-best-practices">Claude Opus 4.7 Best Practices: Detailed Plans Win</a></h2>
+    <div class="source">claudefa.st</div>
+    <span class="tag">opus-4.7</span><span class="tag">prompting</span>
+    <p class="why"><strong>Why read.</strong> The single best operational tip for 4.7: ask for a plan first with an explicit "don't implement yet" guard phrase, annotate the plan, send back. Without the guard phrase, 4.7 dives into code. With it, plan quality jumps substantially.</p>
+  </div>
+
+  <div class="item">
+    <h2><a href="https://tygartmedia.com/claude-opus-4-7-for-developers/">Opus 4.7 for Coding: xhigh, Task Budgets, and the Breaking API Changes in Practice</a></h2>
+    <div class="source">Tygart Media</div>
+    <span class="tag">opus-4.7</span><span class="tag">api</span>
+    <p class="why"><strong>Why read.</strong> The piece that warns you about the breaking API changes before they bite. Names what changed at the API level, what to migrate, what to leave alone. Read before you upgrade in production.</p>
+  </div>
+
+  <h3>3. Production deployment, the long game</h3>
+
+  <div class="item">
+    <h2><a href="https://www.zenml.io/llmops-database/building-production-ai-agents-lessons-from-claude-code-and-enterprise-deployments">Anthropic: Building Production AI Agents, Lessons from Claude Code and Enterprise Deployments</a></h2>
+    <div class="source">ZenML LLMOps Database</div>
+    <span class="tag">production</span><span class="tag">enterprise</span>
+    <p class="why"><strong>Why read.</strong> The most-cited number from this piece: 90% of agent failures are bad prompts, not bad models. Read alongside the Uber budget story, this is the operational counterweight. If your agents are failing, the model probably is not the problem.</p>
+  </div>
+
+  <div class="item">
+    <h2><a href="https://www.the-ai-corner.com/p/claude-managed-agents-guide-2026">Claude Managed Agents: Complete Guide to Building Production AI Agents (2026)</a></h2>
+    <div class="source">The AI Corner</div>
+    <span class="tag">managed-agents</span><span class="tag">infra</span>
+    <p class="why"><strong>Why read.</strong> Names the timeline shift: working demo in 2 days, production in 3 months, was the old shape. With Managed Agents, Notion, Rakuten, and Asana report 10x compression. Read for the deployment shape, not the vendor pitch.</p>
+  </div>
+
+  <div class="item">
+    <h2><a href="https://www.arcade.dev/blog/5-takeaways-2026-state-of-ai-agents-claude/">State of AI Agents 2026: Five Enterprise Trends</a></h2>
+    <div class="source">arcade.dev</div>
+    <span class="tag">production</span><span class="tag">data</span>
+    <p class="why"><strong>Why read.</strong> The integration finding: 46% of enterprise respondents cite integration with existing systems as the top challenge, not model capability. This is the practical headline behind every "AI is harder than it looks" anecdote.</p>
+  </div>
+
+  <h3>4. Power user playbooks</h3>
+
+  <div class="item">
+    <h2><a href="https://nimbalyst.com/blog/claude-code-skills-guide/">Claude Code Skills: A Practical 2026 Guide</a></h2>
+    <div class="source">Nimbalyst</div>
+    <span class="tag">skills</span><span class="tag">workflow</span>
+    <p class="why"><strong>Why read.</strong> Most skill guides explain what skills are. This one shows the file structure, the YAML frontmatter rules, and which patterns reuse cleanly across projects. The practical part most other guides skip.</p>
+  </div>
+
+  <div class="item">
+    <h2><a href="https://ranthebuilder.cloud/blog/claude-code-best-practices-lessons-from-real-projects/">Claude Code Best Practices: Lessons From Real Projects</a></h2>
+    <div class="source">ranthebuilder.cloud</div>
+    <span class="tag">workflow</span><span class="tag">lessons</span>
+    <p class="why"><strong>Why read.</strong> Focused on CLAUDE.md as a configuration practice. Names the 200-line limit, the conventions worth defining, the review checklists. If you have not written a real CLAUDE.md yet, start here.</p>
+  </div>
+
+  <h3>5. Where Claude fits in the model landscape</h3>
+
+  <div class="item">
+    <h2><a href="https://www.mindstudio.ai/blog/gpt-5-5-review-developers-builders">GPT-5.5 vs Claude Opus 4.7 vs Gemini 3.1 Pro for Builders</a></h2>
+    <div class="source">MindStudio</div>
+    <span class="tag">comparison</span><span class="tag">routing</span>
+    <p class="why"><strong>Why read.</strong> The practical routing rule: agentic coding to Claude, interactive chat and high-volume RAG to Gemini, GPT-5.5 as the balanced fallback. Skips the benchmark theater and lands on a one-paragraph decision rule any team can apply.</p>
+  </div>
+
+  <h3>Reading order, if you only pick three</h3>
+  <ol>
+    <li><a href="https://alexop.dev/posts/understanding-claude-code-full-stack/">alexop's full-stack explainer</a>, for the mental model.</li>
+    <li><a href="https://www.mindstudio.ai/blog/claude-opus-4-7-review">MindStudio's 4.7 review</a>, for the honest tradeoff list.</li>
+    <li><a href="https://www.zenml.io/llmops-database/building-production-ai-agents-lessons-from-claude-code-and-enterprise-deployments">ZenML's production lessons</a>, for the "it is your prompts, not the model" reframe.</li>
+  </ol>
+
+  <h3>What I deliberately skipped</h3>
+  <ul>
+    <li>Generic "Top 10 prompts for Claude" listicles. Read like SEO bait, no operational density.</li>
+    <li>Benchmark roundups without opinion. Numbers without recommendation is just a table.</li>
+    <li>Anything in the "Claude is dead, here is what's next" genre. Pattern flagged in CLAUDE.md as an AI tell.</li>
+    <li>Vendor-driven enterprise guides without independent customer detail.</li>
+  </ul>
+
+  <p class="footer">Scan date: 2026-05-14. Sources sampled: Anthropic docs, MindStudio, alexop.dev, ZenML, The AI Corner, claudefa.st, Tygart Media, DEV Community, Level Up Coding, Nimbalyst, ranthebuilder.cloud, arcade.dev. Brief saved to <code>drafts/claude-reading-list-2026-05-14/claude-reading-list.html</code>.</p>
+</div>
+
+<script>
+(function(){
+  const buttons = document.querySelectorAll('.theme-toggle button');
+  const root = document.documentElement;
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode){
+    let theme = mode;
+    if (mode === 'system') theme = mql.matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', theme);
+    buttons.forEach(b => b.setAttribute('aria-pressed', b.dataset.themeSet === mode ? 'true' : 'false'));
+  }
+  function getStored(){ try { return localStorage.getItem('theme') || 'light'; } catch(e){ return 'light'; } }
+  function setStored(v){ try { localStorage.setItem('theme', v); } catch(e){} }
+  buttons.forEach(b => b.addEventListener('click', () => { const m = b.dataset.themeSet; setStored(m); apply(m); }));
+  mql.addEventListener && mql.addEventListener('change', () => { if (getStored() === 'system') apply('system'); });
+  apply(getStored());
+})();
+</script>
+</body>
+</html>

@@ -91,3 +91,4 @@
 | 2026-05-13 | apdocs | reports | [relationships.html](projects/apdocs/reports/relationships.html) | Entity-relationship graph showing the 10 keys that connect every document in a BtB package |
 | 2026-05-13 | apdocs | reports | [saas_design.html](projects/apdocs/reports/saas_design.html) | SaaS design proposal — timeline-first UX with audit-by-default for BtB document management |
 | 2026-05-13 | apdocs | reports | [index_populated.html](projects/apdocs/reports/index_populated.html) | Populated index — relational tables filled with real data from ESN 994738 and 779125 |
+| 2026-05-14 | content | reports | [claude-reading-list.html](projects/content/reports/claude-reading-list.html) | Curated reading list of 12 practical Claude articles across architecture, Opus 4.7, production, workflow, and model comparison |

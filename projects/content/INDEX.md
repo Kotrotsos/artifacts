@@ -19,3 +19,4 @@
 | 2026-05-12 | reports | [draft.md](reports/draft.md) | Uber burned annual AI budget in four months, FinOps reframe for consumption-priced AI | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/draft.md |
 | 2026-05-12 | images | [hero.png](images/hero.png) | Hero image for Uber AI budget article, isometric gauge draining tokens into compute node | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/hero.png |
 | 2026-05-12 | reports | [draft.md](reports/draft.md) | Uber AI budget article, Humanizer and deep-detect passes applied | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/draft.md |
+| 2026-05-14 | reports | [claude-reading-list.html](reports/claude-reading-list.html) | Curated reading list of 12 practical Claude articles across architecture, Opus 4.7, production, workflow, and model comparison | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-reading-list-2026-05-14/claude-reading-list.html |
