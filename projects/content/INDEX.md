@@ -35,3 +35,4 @@
 | 2026-05-14 | reports | [draft.md](reports/draft.md) | DESIGN.md definitive guide: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/draft.md |
 | 2026-05-14 | images | [hero.png](images/hero.png) | DESIGN.md definitive guide: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/hero.png |
 | 2026-05-14 | images | [diagram-1-layers.png](images/diagram-1-layers.png) | DESIGN.md definitive guide: diagram-1-layers.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/diagram-1-layers.png |
+| 2026-05-14 | images | [diagram-2-anatomy.png](images/diagram-2-anatomy.png) | DESIGN.md definitive guide: diagram-2-anatomy.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/diagram-2-anatomy.png |
