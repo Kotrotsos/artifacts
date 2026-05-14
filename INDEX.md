@@ -107,3 +107,4 @@
 | 2026-05-14 | content | images | [diagram-4-curve.png](projects/content/images/diagram-4-curve.png) | Pen-drawing diagram, the compounding curve, iterated skill versus writing from scratch |
 | 2026-05-14 | content | reports | [draft.md](projects/content/reports/draft.md) | Draft with 4 pen-drawing diagrams embedded at anatomy, loading, transformation, and curve sections |
 | 2026-05-14 | content | reports | [draft.md](projects/content/reports/draft.md) | DESIGN.md definitive guide: draft.md |
+| 2026-05-14 | content | images | [hero.png](projects/content/images/hero.png) | DESIGN.md definitive guide: hero.png |

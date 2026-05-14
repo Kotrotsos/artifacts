@@ -33,3 +33,4 @@
 | 2026-05-14 | images | [diagram-4-curve.png](images/diagram-4-curve.png) | Pen-drawing diagram, the compounding curve, iterated skill versus writing from scratch | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/diagram-4-curve.png |
 | 2026-05-14 | reports | [draft.md](reports/draft.md) | Draft with 4 pen-drawing diagrams embedded at anatomy, loading, transformation, and curve sections | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-skills-non-coding/draft.md |
 | 2026-05-14 | reports | [draft.md](reports/draft.md) | DESIGN.md definitive guide: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/draft.md |
+| 2026-05-14 | images | [hero.png](images/hero.png) | DESIGN.md definitive guide: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/hero.png |
