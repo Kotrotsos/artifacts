@@ -54,7 +54,7 @@ You have a meeting with a client at 3pm. You vaguely remember the last conversat
 
 A pre-meeting skill changes that. It instructs Claude to pull together: the last six months of email exchanges with this contact, any documented meeting notes, current open threads, pending asks on either side, and concerns this person has named in past conversations. Output is a one-page briefing with relationship history at the top, open items in the middle, suggested talking points at the bottom.
 
-This skill is not about generating a smart-sounding agenda. It is about walking into the meeting with the same context you would have if you had a chief of staff who had memorized the relationship. For sales leaders, founders, partners, and account executives, this is 20 to 45 minutes of recovered preparation time per meeting, compounded across every meeting in the week.
+What this skill replaces is the cold walk-in. You arrive with the same context you would have if a chief of staff had memorized the relationship for you. For sales leaders, founders, partners, and account executives, this is 20 to 45 minutes of recovered preparation time per meeting, compounded across every meeting in the week.
 
 ### 2. Decision audit trail
 
@@ -84,7 +84,7 @@ Most founders write the first six investor updates carefully and then drift. Mon
 
 An investor update skill protects the cadence. It instructs Claude to pull the month's headline metrics, the wins, the lowlights, the asks, and write the recurring monthly update in the founder's voice, using the recurring sections they have committed to. The skill stores the founder's voice samples and the running history of previous updates, so the new one builds on what came before.
 
-The value here is not better writing. It is keeping the practice alive when the founder is too tired to write at month eleven. Investor trust compounds through cadence. Cadence compounds through removal of activation energy. This skill removes the activation energy.
+The value here is keeping the practice alive when the founder is too tired to write at month eleven. Investor trust compounds through cadence. Cadence survives through removal of activation energy. This skill removes the activation energy.
 
 ### 5. Hiring panel feedback synthesizer
 
@@ -124,7 +124,7 @@ You give a 45-minute conference talk. You go home tired. You write one LinkedIn 
 
 A talk-to-assets skill removes the activation energy. From a single transcript or recording, it produces: three LinkedIn posts with different hooks, one Substack article that adapts the talk's arc for a reading audience, a one-page handout for attendees who asked, five quote-card text snippets for graphics, one thank-you note to the conference organizer in the speaker's voice, and a draft email to send to the audience members who left contact information.
 
-This is a content multiplier configured once. It does not generate new ideas. It captures the ideas you already delivered live, in the formats your audience actually consumes them in. For speakers, founders, executives, and anyone with a real stage presence, this is the single highest-ROI skill on this list.
+This is a content multiplier configured once. The skill captures the ideas you already delivered live and reformats them for the channels your audience actually consumes. For speakers, founders, executives, and anyone with a real stage presence, this is the single highest-ROI skill on this list.
 
 ### 9. Contract redline against your playbook
 
@@ -148,11 +148,11 @@ The unlock is identical to the investor update skill. The activation energy is r
 
 ## What ties these together
 
-Look at the ten use cases. None of them are about generation. They are all about transformation, synthesis, or filtering. Take a stack of unstructured inputs that already exist, produce a high-leverage output that someone smart would have produced if they had the time.
+All ten share a structure. The skill reshapes inputs you already have (emails, meeting notes, panel write-ups, transcripts, contracts, calendar entries) into a one-page output that someone smart would produce if they had the time. The model is doing transformation, not generation.
 
 This is the actual unlock of skills for non-engineers. The model can already write reasonable text on most topics. What you need configured is the specific input-to-output transformation that your job requires, repeatedly, in a consistent format, with the judgment calls you would make embedded into the instructions.
 
-A skill is not a prompt template. A prompt template is a starting point you customize each time. A skill is a standing capability that Claude reaches for without being asked. The difference in lived experience between the two is the difference between a one-time tool and a permanent team member.
+Compare this to a prompt template. With a template, you have to remember to use it, and you customize it each pass. A skill loads on its own when Claude sees the situation match. You configure it once and it runs every time the work calls for it, without you having to remember it exists. That is the operational difference, and it is much bigger than it sounds.
 
 ## How to write your first non-coding skill
 
@@ -162,7 +162,7 @@ Pick one. Write the description field carefully, because that determines whether
 
 Use it for two weeks. Watch where it gets things wrong. Update the instructions. After two iterations, the skill will probably be doing the task better than you would do it on a tired Friday afternoon, every time, in the same format. That is the unlock.
 
-The engineers got to skills first because the tool launched on their territory. The next twelve months belong to whoever in your function realizes the format applies to everything they do that has a repeatable shape. That is most of knowledge work, by volume. The leverage gain is still sitting on the table.
+The engineers got to skills first because the tool launched on their territory. The next twelve months belong to whoever in your function realizes the format applies to everything they do that has a repeatable shape. That covers most of knowledge work by volume, and most of the leverage gain still sitting on the table this year.
 
 ---
 
