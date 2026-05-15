@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Security review: agentassist and virtuele-assistent</title>
+<style>
+  :root[data-theme="light"] {
+    --bg:#fff;--surface:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;
+    --accent:#2563eb;--code-bg:#f3f4f6;
+    --good:#15803d;--warn:#b45309;--bad:#b91c1c;
+    --good-bg:#dcfce7;--warn-bg:#fef3c7;--bad-bg:#fee2e2;
+    --col-a:#eff6ff;--col-a-fg:#1d4ed8;
+    --col-b:#fdf4ff;--col-b-fg:#9333ea;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0b0d10;--surface:#14181d;--text:#f3f4f6;--muted:#9ca3af;--border:#262d35;
+    --accent:#60a5fa;--code-bg:#1f2630;
+    --good:#4ade80;--warn:#fbbf24;--bad:#f87171;
+    --good-bg:#052e1a;--warn-bg:#3a2a08;--bad-bg:#3a0c0c;
+    --col-a:#0c1f3a;--col-a-fg:#93c5fd;
+    --col-b:#2a0f3a;--col-b-fg:#e9d5ff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1120px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+  header.page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  h1{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 0.25rem;letter-spacing:-0.01em;}
+  .sub{color:var(--muted);margin:0;max-width:64ch;}
+  .theme-toggle{background:var(--surface);color:var(--text);border:1px solid var(--border);
+                padding:0.45rem 0.85rem;border-radius:999px;font:inherit;font-size:0.85rem;cursor:pointer;}
+  .theme-toggle:hover{border-color:var(--accent);}
+  section{margin:2.5rem 0;}
+  h2{font-size:1.2rem;margin:0 0 0.6rem;letter-spacing:-0.005em;}
+  h2 .num{color:var(--muted);font-weight:500;margin-right:0.5rem;}
+  h3{font-size:1rem;margin:1.25rem 0 0.4rem;}
+  p.lead{color:var(--muted);margin:0 0 1rem;max-width:64ch;}
+  code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.86em;}
+  pre{background:var(--code-bg);padding:0.6rem 0.85rem;border-radius:8px;overflow-x:auto;font-size:0.82rem;line-height:1.45;}
+  pre code{background:transparent;padding:0;}
+
+  .scorecard{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0;}
+  @media (max-width:760px){.scorecard{grid-template-columns:1fr;}}
+  .score{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
+  .score h3{margin:0 0 0.5rem;font-size:1rem;}
+  .score .big{font-size:2rem;font-weight:600;letter-spacing:-0.02em;}
+  .score .why{color:var(--muted);font-size:0.9rem;margin-top:0.4rem;}
+  .grade-a{color:var(--good);}
+  .grade-c{color:var(--warn);}
+  .grade-d{color:var(--bad);}
+
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);
+        border-radius:12px;overflow:hidden;font-size:0.92rem;}
+  th,td{padding:0.6rem 0.85rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--border);}
+  thead th{background:var(--code-bg);font-weight:600;}
+  th.col-a{background:var(--col-a);color:var(--col-a-fg);}
+  th.col-b{background:var(--col-b);color:var(--col-b-fg);}
+  td.row-h{font-weight:600;color:var(--text);white-space:nowrap;width:22ch;}
+  tr:last-child td{border-bottom:none;}
+
+  .pill{display:inline-block;padding:1px 0.55rem;border-radius:999px;font-size:0.78rem;font-weight:500;}
+  .pill.good{background:var(--good-bg);color:var(--good);}
+  .pill.warn{background:var(--warn-bg);color:var(--warn);}
+  .pill.bad{background:var(--bad-bg);color:var(--bad);}
+
+  .finding{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border);
+           border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.75rem;}
+  .finding.p1{border-left-color:var(--bad);}
+  .finding.p2{border-left-color:var(--warn);}
+  .finding.p3{border-left-color:var(--muted);}
+  .finding .severity{display:inline-block;font-weight:600;font-size:0.78rem;margin-right:0.5rem;text-transform:uppercase;letter-spacing:0.04em;}
+  .finding.p1 .severity{color:var(--bad);}
+  .finding.p2 .severity{color:var(--warn);}
+  .finding.p3 .severity{color:var(--muted);}
+  .finding .where{color:var(--muted);font-size:0.85rem;}
+
+  .verdict{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
+           border-radius:10px;padding:1rem 1.25rem;margin:1rem 0;}
+  .verdict strong{color:var(--accent);}
+
+  @media print {
+    body{background:#fff;color:#000;} .theme-toggle{display:none;}
+    .wrap{padding:1rem;max-width:100%;}
+    section,.finding,.score{break-inside:avoid;}
+    table,.finding,.score,.verdict{border-color:#aaa;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page-header">
+  <div>
+    <h1>Security review: agentassist and virtuele-assistent</h1>
+    <p class="sub">Two solutions to the same brief, audited for security posture. Concrete file:line citations, severity tagged P1 (must fix before any exposure), P2 (should fix soon), P3 (nice-to-have).</p>
+  </div>
+  <button class="theme-toggle" id="themeToggle" type="button">Dark mode</button>
+</header>
+
+<div class="verdict">
+  <strong>Headline.</strong>
+  <code>agentassist</code> has the stronger security posture and a much smaller blast radius if someone deploys it carelessly.
+  <code>virtuele-assistent</code> has solid defense-in-depth where it matters (server-side PII redaction, inter-service auth, real RAG inside a closed network), but its shipped <code>docker-compose.yml</code> contains weak default secrets that an absent <code>.env</code> file silently uses; that alone is the most pressing issue across either project.
+</div>
+
+<section>
+  <h2><span class="num">1</span>Scorecards</h2>
+  <div class="scorecard">
+    <div class="score">
+      <h3>agentassist</h3>
+      <div class="big grade-a">A-</div>
+      <div class="why">
+        Single Flask service. HMAC-signed server-issued session tokens, four-tier rate limiting on the chat endpoint, per-tenant 24h token budget, concurrent-stream cap, origin pinning per tenant, full security-header set (CSP, X-Frame-Options, Permissions-Policy, Referrer-Policy, X-Content-Type-Options), <code>X-Request-ID</code> on every response, server-side PII redaction in the chat pipeline, DOM-only markdown rendering, <code>web_fetch</code> locked to a per-tenant host allowlist with usage cap.
+        Open: one Anthropic key rotation pending as an operator step, an unused <code>/redact</code> route still exposed, <code>ALLOWED_ORIGINS</code> defaults to <code>*</code>.
+      </div>
+    </div>
+    <div class="score">
+      <h3>virtuele-assistent</h3>
+      <div class="big grade-c">C</div>
+      <div class="why">
+        Strong server-side PII redaction (132 LOC Kotlin service with BSN elfproef), X-API-Key auth between proxy and backend, nginx rate-limit on the chat endpoint (10 r/s, burst 20), per-tenant Qdrant collections preventing cross-tenant data leakage at retrieval.
+        Held back by: weak default secrets baked into <code>docker-compose.yml</code> (a fresh deploy without <code>.env</code> uses them), wide-open CORS (<code>anyHost()</code>), no security headers in nginx, Qdrant published on host ports 6333 and 6334, no TLS termination configured in the repo.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2</span>agentassist findings</h2>
+
+  <div class="finding p1">
+    <div><span class="severity">P1</span>Anthropic API key not yet rotated</div>
+    <div class="where">operator action, not in code</div>
+    <p>The live API key was placed in a local <code>.env</code> file before the project had a <code>.gitignore</code>, and the literal value appeared in development chat logs. The current <code>.gitignore</code> protects it now, but the value should be considered compromised.</p>
+    <p><strong>Fix:</strong> generate a new key in console.anthropic.com, set on Railway with <code>railway variables --service agentassist --set "ANTHROPIC_API_KEY=&lt;new&gt;"</code>, revoke the old.</p>
+  </div>
+
+  <div class="finding p3">
+    <div><span class="severity">P3</span>Unused <code>/api/{tenant}/redact</code> endpoint still mounted</div>
+    <div class="where"><code>app.py:api_redact</code></div>
+    <p>The frontend redacts inside the chat pipeline; this endpoint is no longer called by any client. It is open, unauthenticated, and returns the redaction result plus pattern-hit counts. A black-box attacker could probe it to learn which BSN/IBAN/phone variants the regex matches.</p>
+    <p><strong>Fix:</strong> remove the route, or apply a rate limit if you intend to keep it as a debugging hook.</p>
+  </div>
+
+  <div class="finding p3">
+    <div><span class="severity">P3</span><code>SESSION_SECRET</code> not set as its own Railway variable</div>
+    <div class="where">env configuration on Railway</div>
+    <p><code>app.py</code> resolves it as <code>SESSION_SECRET = os.environ.get("SESSION_SECRET") or ADMIN_SECRET</code>. Today this is harmless: a stable <code>ADMIN_SECRET</code> backs both. But it means rotating the admin secret (good hygiene) silently invalidates every visitor's session token.</p>
+    <p><strong>Fix:</strong></p>
+    <pre><code>railway variables --service agentassist \
+  --set "SESSION_SECRET=$(python3 -c 'import secrets;print(secrets.token_hex(32))')"</code></pre>
+  </div>
+
+  <div class="finding p3">
+    <div><span class="severity">P3</span><code>ALLOWED_ORIGINS</code> defaults to <code>*</code></div>
+    <div class="where"><code>app.py</code> module init</div>
+    <p>Acceptable for a single-origin deploy and for the OSS demo. Production embeds should pin to the host site(s) explicitly.</p>
+  </div>
+
+  <div class="finding p3">
+    <div><span class="severity">P3</span>In-memory state grows without TTL</div>
+    <div class="where"><code>agent.py:_histories</code>, <code>ratelimit.py</code> bucket dict, <code>concurrency.py</code> counter dict</div>
+    <p>None of the in-memory dicts are pruned. On a long-running process with many unique sessions and IPs, memory grows. Not a security issue today, an operational one for long-lived deployments.</p>
+  </div>
+
+  <p style="margin-top:0.75rem;"><strong>What is already right.</strong></p>
+  <ul>
+    <li>Session tokens are HMAC-SHA256, server-issued, tenant-bound, with <code>hmac.compare_digest</code> for signature comparison and a 24-hour expiry. Cookie carries <code>Secure; HttpOnly; SameSite=Lax; Path=/api/{tenant}/</code>. Client-supplied <code>session_key</code> in request bodies is ignored.</li>
+    <li>Chat endpoint runs four rate-limit tiers (per IP/min, per IP/hour, per session/min, per tenant/min) plus a per-tenant 24-hour token budget enforced from a JSONL ledger plus a concurrent-stream cap (2 per IP, 20 per tenant). Origin pinning kicks in once <code>allowedOrigins</code> is set on the tenant.</li>
+    <li><code>web_fetch_20260209</code> tool declares <code>allowed_domains</code> per tenant with <code>max_uses=3</code>. The allowlist is enforced by Anthropic on the tool-execution side; prompt injection cannot redirect the fetch to an attacker-controlled host.</li>
+    <li>Server-side PII redaction (BSN with Dutch elfproef, IBAN, email, phone, postcode, doc-num) runs before the message reaches the model or the logs.</li>
+    <li>Security headers on every response: CSP, X-Frame-Options DENY, Permissions-Policy, Referrer-Policy no-referrer, X-Content-Type-Options nosniff.</li>
+    <li>Frontend markdown renderer builds DOM via <code>createElement</code> and <code>textContent</code> only. No <code>innerHTML</code>. Link href is filtered through <code>new URL(...)</code> with a protocol allowlist (<code>http</code>, <code>https</code>, <code>mailto</code>); <code>javascript:</code> and <code>data:</code> render as plain text.</li>
+    <li>Tenant ids regex-validated (<code>^[a-z][a-z0-9_-]{1,63}$</code>) before being used in filesystem paths; no path traversal.</li>
+    <li>Request body capped at 64 KB; chat messages capped at 4000 characters.</li>
+    <li>Error responses sanitized: stack-trace-shaped text dropped, generic Dutch fallback, full exception logged with <code>request_id</code> server-side only.</li>
+    <li>91 tests, run in under 3 seconds, no external services required.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">3</span>virtuele-assistent findings</h2>
+
+  <div class="finding p1">
+    <div><span class="severity">P1</span>Weak default secrets in <code>docker-compose.yml</code></div>
+    <div class="where">
+      <code>docker-compose.yml:15-16</code>,
+      <code>:91</code>,
+      <code>:125</code>,
+      <code>:172</code>,
+      <code>:200</code>
+    </div>
+    <p>The compose file ships with usable defaults: <code>AIRFLOW__API__SECRET_KEY:-super-secret-key-change-me</code>, <code>POSTGRES_PASSWORD:-adminpass123</code>, <code>ADMIN_PASSWORD:-changeme</code>, and a literal <code>POSTGRES_PASSWORD: airflow</code> on the Airflow postgres (no env-var indirection at all). Any environment that skipped a <code>.env</code> step deploys with these in place.</p>
+    <p><strong>Fix:</strong> change every <code>${VAR:-default}</code> to <code>${VAR:?error}</code> so the compose fails fast on missing values; remove the literal <code>airflow</code> password.</p>
+  </div>
+
+  <div class="finding p1">
+    <div><span class="severity">P1</span>CORS wide open on the backend</div>
+    <div class="where"><code>agent-backend/src/main/kotlin/Application.kt:99</code></div>
+    <p><code>install(CORS) { ... anyHost() }</code>. Any origin can issue authenticated cross-site requests once a session cookie or token is involved. There is no Origin allowlist on the backend itself; the nginx layer only proxies, it does not restrict origins.</p>
+    <p><strong>Fix:</strong> replace <code>anyHost()</code> with the production frontend origin(s) explicitly.</p>
+  </div>
+
+  <div class="finding p1">
+    <div><span class="severity">P1</span>Qdrant published on host ports</div>
+    <div class="where"><code>docker-compose.yml:73-74</code> &nbsp; <code>- "6333:6333"</code>, <code>- "6334:6334"</code></div>
+    <p>On a docker host with a public network interface, Qdrant's REST and gRPC ports are reachable without authentication. An attacker with port access can read or delete any collection.</p>
+    <p><strong>Fix:</strong> drop the host port mapping; keep Qdrant on the internal docker network only. If external admin access is required, put it behind an authenticated reverse proxy.</p>
+  </div>
+
+  <div class="finding p2">
+    <div><span class="severity">P2</span>No security headers in nginx</div>
+    <div class="where"><code>nginx.conf</code></div>
+    <p>No Content-Security-Policy, no X-Content-Type-Options, no Referrer-Policy, no X-Frame-Options. The frontends are React; React's default escaping mitigates basic reflected XSS, but a CSP would close the gap against any future inline-script or third-party-dependency injection.</p>
+    <p><strong>Fix:</strong> add <code>add_header</code> directives in nginx, or a top-level <code>map</code>. For an embeddable widget, do an explicit <code>frame-ancestors</code> allowlist of host sites.</p>
+  </div>
+
+  <div class="finding p2">
+    <div><span class="severity">P2</span>No TLS termination configured</div>
+    <div class="where"><code>nginx.conf</code> + compose</div>
+    <p>The nginx config listens on port 80 only. Behind a managed platform (cloud load balancer, Cloud Run) that terminates TLS, this is fine. The repo as shipped does not include a TLS path; production deploys need to add it (or document the assumption clearly).</p>
+  </div>
+
+  <div class="finding p2">
+    <div><span class="severity">P2</span>Large secret surface</div>
+    <div class="where"><code>.env.example</code></div>
+    <p>Production requires Langfuse public + secret keys, OpenAI key, Azure OpenAI key + endpoint + version, Airflow Fernet key, Airflow secret key, admin password, admin DB password, and the inter-service API key. Nine secrets across components. That is many places to leak from and many places to rotate.</p>
+    <p><strong>Fix:</strong> document a rotation runbook. Consider a secrets manager (AWS SSM, Doppler, Vault) so secrets are not all in a single <code>.env</code> file on every developer's machine.</p>
+  </div>
+
+  <div class="finding p2">
+    <div><span class="severity">P2</span>PII redaction has a fail-open fallback on the frontend</div>
+    <div class="where">spec PII-2, frontend redact integration</div>
+    <p>The frontend posts the user message to <code>/ai/redact</code> before sending it to the chat stream. The spec documents: "Bij redact-fail (404, timeout): fallback naar raw body met error in console; verzoek breekt niet." In worst case unredacted PII reaches the model and Langfuse traces. Defense in depth exists (the backend also redacts before logging), so this is P2 rather than P1.</p>
+  </div>
+
+  <div class="finding p3">
+    <div><span class="severity">P3</span>Single global admin password</div>
+    <div class="where">spec ADMIN-1 (project's own open punt)</div>
+    <p>Per-tenant credentials are the eventual fix.</p>
+  </div>
+
+  <p style="margin-top:0.75rem;"><strong>What is already right.</strong></p>
+  <ul>
+    <li>Server-side PII redaction is its own Kotlin service (132 LOC, six pattern classes including BSN elfproef), invoked on every chat request as defense in depth.</li>
+    <li>Inter-service authentication via <code>X-API-Key</code>: the backend rejects requests without the header (Application.kt:23, Application.kt:114). The proxy adds it; direct calls bypass the proxy and fail.</li>
+    <li>nginx rate-limits the chat endpoint to 10 req/sec/IP with a burst of 20, returning 429.</li>
+    <li>Per-tenant Qdrant collections prevent cross-tenant data leakage at the retrieval layer.</li>
+    <li><code>.gitignore</code> covers <code>.env</code> properly; no secrets are committed to the repo.</li>
+    <li>Airflow stack and Postgres are on the private Docker network for inter-service traffic.</li>
+    <li>Tenant isolation extends to Langfuse: spec PII-3 calls out that scores and traces are server-side filtered by tenant.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">4</span>Side-by-side: same controls, both projects</h2>
+  <table>
+    <thead>
+      <tr><th>Control</th><th class="col-a">agentassist</th><th class="col-b">virtuele-assistent</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="row-h">Secrets in repo</td>
+        <td><span class="pill good">None tracked</span> (gitignored)</td>
+        <td><span class="pill good">None tracked</span> (gitignored)</td></tr>
+      <tr><td class="row-h">Weak deploy defaults</td>
+        <td><span class="pill good">None; missing env fails closed</span></td>
+        <td><span class="pill bad">Multiple "changeme" / "adminpass123" defaults usable as-is</span></td></tr>
+      <tr><td class="row-h">Chat endpoint auth model</td>
+        <td>Anonymous by design; bounded by 4-tier rate-limit + token budget + concurrent cap + origin pin</td>
+        <td>X-API-Key between proxy and backend; nginx 10 r/s rate-limit</td></tr>
+      <tr><td class="row-h">Session ids</td>
+        <td>HMAC-signed, server-issued, tenant-bound, 24h TTL, in <code>Secure; HttpOnly; SameSite=Lax</code> cookie</td>
+        <td>HTTP session via frontend cookies (Next.js); backend stateless</td></tr>
+      <tr><td class="row-h">Tenant isolation</td>
+        <td>Filesystem directory per tenant, regex-validated id, path-scoped session cookie</td>
+        <td>Postgres rows + per-tenant Qdrant collection (strongest isolation at retrieval layer)</td></tr>
+      <tr><td class="row-h">Admin auth</td>
+        <td>HMAC bearer token, single global password</td>
+        <td>Password + admin DB; single global password</td></tr>
+      <tr><td class="row-h">Server-side PII redaction</td>
+        <td>In chat pipeline before model and logs</td>
+        <td>Dedicated service; called by frontend and mirrored by backend</td></tr>
+      <tr><td class="row-h">PII pattern coverage</td>
+        <td>IBAN, email, phone, postcode, doc-num, BSN with elfproef</td>
+        <td>IBAN, email, phone, paspoort, rijbewijs, BSN with elfproef. Postcode intentionally not masked.</td></tr>
+      <tr><td class="row-h">Prompt injection defense on tools</td>
+        <td><code>web_fetch</code> allowlist enforced by Anthropic, <code>max_uses=3</code></td>
+        <td>RAG only; no model-driven URL fetch</td></tr>
+      <tr><td class="row-h">Rate limiting</td>
+        <td>Four tiers in-app (per IP/min, IP/hour, session/min, tenant/min)</td>
+        <td>nginx <code>limit_req_zone</code> on <code>/ai/</code> (10 r/s, burst 20)</td></tr>
+      <tr><td class="row-h">Per-tenant cost ceiling</td>
+        <td><span class="pill good">24h token budget enforced</span> (JSONL ledger)</td>
+        <td><span class="pill warn">Not enforced</span> (relies on upstream provider quotas)</td></tr>
+      <tr><td class="row-h">Concurrent stream cap</td>
+        <td><span class="pill good">Yes (2/IP, 20/tenant)</span></td>
+        <td><span class="pill warn">Not explicit</span></td></tr>
+      <tr><td class="row-h">CORS posture</td>
+        <td><code>ALLOWED_ORIGINS</code> env-configurable; defaults <code>*</code></td>
+        <td><span class="pill bad"><code>anyHost()</code> in backend</span></td></tr>
+      <tr><td class="row-h">Security headers</td>
+        <td>CSP, X-Frame-Options DENY, Permissions-Policy, Referrer-Policy, X-Content-Type-Options</td>
+        <td><span class="pill bad">None set in nginx</span></td></tr>
+      <tr><td class="row-h">Network exposure</td>
+        <td>One process behind Railway TLS</td>
+        <td><span class="pill bad">Qdrant on host ports 6333/6334</span></td></tr>
+      <tr><td class="row-h">TLS</td>
+        <td>Provided by Railway edge</td>
+        <td><span class="pill warn">Not in repo</span> (assumes upstream LB)</td></tr>
+      <tr><td class="row-h">XSS surface (bot output)</td>
+        <td>DOM-only markdown renderer, link href protocol allowlist</td>
+        <td>React JSX (default escaping); markdown via library</td></tr>
+      <tr><td class="row-h">Body size cap</td>
+        <td>64 KB request, 4000 chars message</td>
+        <td>nginx and Ktor defaults; not explicitly capped at the app layer</td></tr>
+      <tr><td class="row-h">Logging hygiene</td>
+        <td>Only redacted text logged; <code>X-Request-ID</code> on every response</td>
+        <td>Langfuse receives post-redaction; tester traces filtered from BSAT</td></tr>
+      <tr><td class="row-h">Number of secrets to rotate</td>
+        <td>1 critical (Anthropic key) + 2 internal (admin password, admin/session secret)</td>
+        <td>9 across components</td></tr>
+      <tr><td class="row-h">Attack surface (services x LOC)</td>
+        <td>1 service x ~2,300 LOC of hand-written code</td>
+        <td>16 services x ~13,400 LOC + Airflow worker, Qdrant, Postgres</td></tr>
+      <tr><td class="row-h">Time to audit completely</td>
+        <td>An afternoon</td>
+        <td>A multi-day engagement</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">5</span>What this looks like in production</h2>
+  <p class="lead">A practical way to think about it: what happens if either project is dropped onto a host with the shipped configuration?</p>
+
+  <h3>agentassist, shipped configuration</h3>
+  <ul>
+    <li>Requires <code>ANTHROPIC_API_KEY</code> and (for admin) <code>ADMIN_PASSWORD</code> to be set; otherwise the app refuses to start or the admin login returns 503. Fails closed on missing secrets.</li>
+    <li>If you forget to set <code>SESSION_SECRET</code> and <code>ADMIN_SECRET</code> in the environment, they default to a random value generated at process start; this works but means a process restart invalidates existing tokens. Documented.</li>
+    <li>Anonymous chat is bounded by rate limits and a per-tenant token budget. A scripted abuser can burn at most one tenant's daily budget before the endpoint returns 503.</li>
+  </ul>
+
+  <h3>virtuele-assistent, shipped configuration</h3>
+  <ul>
+    <li>If you skip the <code>.env</code> step, <code>docker compose up</code> still works. It deploys with <code>POSTGRES_PASSWORD=adminpass123</code>, <code>ADMIN_PASSWORD=changeme</code>, and an Airflow secret literally named <code>super-secret-key-change-me</code>. Anyone with port access can log into the admin DB and the admin UI.</li>
+    <li>Qdrant is exposed on host ports 6333 and 6334 by default. If the host has a public IP, an attacker with port access can read or delete every tenant's collection.</li>
+    <li>The backend accepts any origin once authenticated against the X-API-Key. The X-API-Key is added by nginx for proxied calls; direct calls to the backend on its container port (8080) bypass the proxy.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">6</span>If both went to a public URL today</h2>
+
+  <h3>agentassist: one operator action</h3>
+  <ol>
+    <li>Rotate <code>ANTHROPIC_API_KEY</code>.</li>
+  </ol>
+  <p>Optionally, before OSS release: remove or rate-limit the unused <code>/redact</code> endpoint, set <code>SESSION_SECRET</code> as its own variable, pin <code>ALLOWED_ORIGINS</code>.</p>
+
+  <h3>virtuele-assistent: three code changes</h3>
+  <ol>
+    <li>Eliminate every <code>${VAR:-foo}</code> default in <code>docker-compose.yml</code>; replace with <code>${VAR:?error}</code> so missing values fail fast. Remove the literal <code>POSTGRES_PASSWORD: airflow</code>.</li>
+    <li>Replace <code>anyHost()</code> with an explicit Origin allowlist in <code>Application.kt:99</code>; add an <code>after</code> hook for security headers (CSP, X-Frame-Options, Referrer-Policy).</li>
+    <li>Drop the host port mapping for Qdrant in <code>docker-compose.yml</code>; keep it on the internal network. If admin access is needed, terminate behind an authenticated reverse proxy.</li>
+  </ol>
+</section>
+
+<div class="verdict">
+  <strong>Bottom line.</strong>
+  Both projects do PII redaction well and isolate tenants at their respective storage layers. The gap is at the deployment boundary.
+  <code>agentassist</code> fails closed on missing configuration and applies modern web-security headers; <code>virtuele-assistent</code> fails open on missing configuration and exposes infrastructure (Qdrant, weak admin defaults) that does not need to be reachable.
+  For an OSS release, where the worst-case operator drops the project on a host without reading the docs, agentassist's posture is materially safer.
+</div>
+
+</div>
+
+<script>
+(function () {
+  const btn = document.getElementById("themeToggle");
+  const root = document.documentElement;
+  const stored = (() => { try { return localStorage.getItem("secfresh.theme"); } catch (_) { return null; } })();
+  if (stored) root.setAttribute("data-theme", stored);
+  function sync(){ btn.textContent = root.getAttribute("data-theme") === "dark" ? "Light mode" : "Dark mode"; }
+  sync();
+  btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("secfresh.theme", next); } catch (_) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
