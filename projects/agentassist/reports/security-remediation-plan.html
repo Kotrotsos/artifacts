@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Security remediation plan - agentassist</title>
+<style>
+  :root[data-theme="light"] {
+    --bg:#fff;--surface:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;
+    --accent:#2563eb;--code-bg:#f3f4f6;
+    --good:#15803d;--warn:#b45309;--bad:#b91c1c;
+    --p1-bg:#fee2e2;--p1-fg:#991b1b;
+    --p2-bg:#fef3c7;--p2-fg:#92400e;
+    --p3-bg:#dbeafe;--p3-fg:#1e40af;
+    --done-bg:#dcfce7;--done-fg:#166534;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0b0d10;--surface:#14181d;--text:#f3f4f6;--muted:#9ca3af;--border:#262d35;
+    --accent:#60a5fa;--code-bg:#1f2630;
+    --good:#4ade80;--warn:#fbbf24;--bad:#f87171;
+    --p1-bg:#3a0c0c;--p1-fg:#fca5a5;
+    --p2-bg:#3a2a08;--p2-fg:#fde68a;
+    --p3-bg:#0c1f3a;--p3-fg:#93c5fd;
+    --done-bg:#052e1a;--done-fg:#86efac;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+  header.page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  h1{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 0.25rem;letter-spacing:-0.01em;}
+  .sub{color:var(--muted);margin:0;max-width:62ch;}
+  .theme-toggle{background:var(--surface);color:var(--text);border:1px solid var(--border);
+                padding:0.45rem 0.85rem;border-radius:999px;font:inherit;font-size:0.85rem;cursor:pointer;}
+  .theme-toggle:hover{border-color:var(--accent);}
+  section{margin:2rem 0;}
+  h2{font-size:1.2rem;margin:0 0 0.6rem;letter-spacing:-0.005em;}
+  h3{font-size:1rem;margin:1.25rem 0 0.4rem;}
+  p.lead{color:var(--muted);margin:0 0 1rem;max-width:62ch;}
+  code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.86em;}
+  pre{background:var(--code-bg);padding:0.85rem 1rem;border-radius:8px;overflow-x:auto;font-size:0.85rem;line-height:1.5;}
+  pre code{background:transparent;padding:0;}
+
+  .summary{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;font-size:0.9rem;}
+  th,td{padding:0.55rem 0.75rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--border);}
+  thead th{background:var(--code-bg);font-weight:600;}
+  tr:last-child td{border-bottom:none;}
+
+  .fix{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;}
+  .fix header.fix-head{display:flex;align-items:center;justify-content:space-between;gap:0.5rem;margin-bottom:0.5rem;flex-wrap:wrap;}
+  .fix h3{margin:0;font-size:1.05rem;}
+  .badges{display:flex;gap:0.4rem;align-items:center;}
+  .badge{display:inline-block;font-size:0.7rem;font-weight:600;padding:2px 0.6rem;border-radius:999px;letter-spacing:0.04em;text-transform:uppercase;}
+  .badge.p1{background:var(--p1-bg);color:var(--p1-fg);}
+  .badge.p2{background:var(--p2-bg);color:var(--p2-fg);}
+  .badge.p3{background:var(--p3-bg);color:var(--p3-fg);}
+  .badge.size{background:var(--code-bg);color:var(--muted);}
+  .badge.done{background:var(--done-bg);color:var(--done-fg);}
+  .fix h4{margin:0.9rem 0 0.25rem;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.04em;color:var(--muted);}
+  .fix ul{margin:0.25rem 0;padding-left:1.25rem;}
+  .fix ul li{margin-bottom:0.2rem;}
+
+  .order-list{counter-reset:item;list-style:none;padding-left:0;}
+  .order-list li{counter-increment:item;padding:0.5rem 0.75rem 0.5rem 2.5rem;position:relative;border-left:1px solid var(--border);margin-bottom:0.4rem;border-radius:0 8px 8px 0;}
+  .order-list li::before{content:counter(item);position:absolute;left:0.5rem;top:0.5rem;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--accent);color:#fff;font-weight:600;font-size:0.8rem;display:flex;align-items:center;justify-content:center;}
+
+  @media print {
+    body{background:#fff;color:#000;}
+    .theme-toggle{display:none;}
+    .wrap{padding:1rem;max-width:100%;}
+    .fix,.summary,table{border-color:#aaa;}
+    section,.fix{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page-header">
+  <div>
+    <h1>Security remediation plan</h1>
+    <p class="sub">Six findings from the audit, ordered by leverage. The chat endpoint stays public on purpose; abuse is bounded with layered controls, not authentication.</p>
+  </div>
+  <button class="theme-toggle" id="themeToggle" type="button">Dark mode</button>
+</header>
+
+<div class="summary">
+  <strong>Guiding constraint.</strong> agentassist is a public-facing chatbot. The chat endpoint <em>has</em> to be reachable without login from any visitor. So "fix" for that endpoint is not authentication, it is making abuse expensive: origin pinning, multi-tier rate limits, per-tenant token budgets, concurrent-stream caps, and an optional bot challenge. Everything else (session ids, CSP, error sanitization, admin per-tenant passwords, the key rotation) is straightforward.
+</div>
+
+<section>
+  <h2>Order of operations</h2>
+  <p class="lead">Top of the list is highest leverage per minute of work. Items 1 and 2 should ship together as the first PR.</p>
+  <ol class="order-list">
+    <li><strong>Rotate the leaked Anthropic key.</strong> Manual, 5 minutes, zero code. Cleans up the existing leak before anything else lands. <em>(Fix 3 below.)</em></li>
+    <li><strong>Server-issued session ids + abuse controls + CSP + error sanitization.</strong> One coherent PR. Touches <code>app.py</code>, <code>auth.py</code>, <code>tenants.py</code>, the frontend. About a day of work. <em>(Fixes 1, 2, 4, 5.)</em></li>
+    <li><strong>Per-tenant admin passwords.</strong> Standalone, ~half a day. Defer until after OSS launch unless you need it sooner. <em>(Fix 6.)</em></li>
+  </ol>
+</section>
+
+<!-- =================== FIX 1 =================== -->
+<div class="fix" id="fix-chat-abuse">
+  <header class="fix-head">
+    <h3>1. Chat endpoint: abuse controls, not authentication</h3>
+    <div class="badges"><span class="badge p1">P1</span><span class="badge size">~1 day</span></div>
+  </header>
+
+  <h4>Goal</h4>
+  <p>Make it costly to abuse the public chat endpoint without making it inaccessible to legitimate visitors. Five layered defenses, each cheap on its own.</p>
+
+  <h4>Design</h4>
+  <p><strong>Layer A. Origin pinning per tenant.</strong> Each tenant gets an <code>allowedOrigins</code> field (list of host strings, optional). When set, <code>POST /api/{tenant}/chat</code> rejects requests whose <code>Origin</code> header is not on the list, returning 403. Empty list means "no origin check" (the open default for the demo and for OSS users who haven't configured it). Stops casual scrapers from pointing their script at your URL.</p>
+
+  <p><strong>Layer B. Multi-tier rate limits.</strong> Today there is one limit (per IP per minute). Add three more so an attacker can't shrug it off by rotating IPs:</p>
+  <ul>
+    <li>Per IP per minute: 20 (existing).</li>
+    <li>Per IP per hour: 200 (new, soaks IP rotation).</li>
+    <li>Per session per minute: 10 (new, since sessions become server-issued in Fix 2).</li>
+    <li>Per tenant per minute: 200 (new, global ceiling so one tenant's abuse can't starve another's traffic).</li>
+  </ul>
+  <p>All four limiters use the existing <code>RateLimiter</code> sliding-window primitive. No new dependency.</p>
+
+  <p><strong>Layer C. Per-tenant token budget.</strong> Each tenant has a daily input + output token budget (configurable, default e.g. 200K tokens). The agent records actual usage from <code>response.usage</code> after each turn and accumulates per-tenant in a JSONL file (one line per turn: <code>{tenant, session, ts, in, out}</code>). When the rolling 24-hour total crosses the budget, return a friendly 503 with a "service paused" message and a <code>Retry-After</code> header set to the next reset. Cap your worst-case Anthropic spend predictably.</p>
+
+  <p><strong>Layer D. Concurrent-stream cap per IP and per tenant.</strong> A semaphore-style counter that increments before <code>iter_turn</code> and decrements on exit (or on disconnect). Defaults: 2 concurrent streams per IP, 20 per tenant. Blocks the trivial "open 100 connections" pattern.</p>
+
+  <p><strong>Layer E. Optional bot challenge.</strong> Wire up Cloudflare Turnstile or hCaptcha as an opt-in via <code>BOT_CHALLENGE=turnstile</code> env var. Frontend embeds the challenge widget on the welcome screen; first chat request includes the challenge token; backend verifies it server-to-server. Off by default for OSS demo; documented for production deployments.</p>
+
+  <h4>Code touch points</h4>
+  <ul>
+    <li><code>tenants.py</code>: add <code>allowedOrigins: list[str]</code>, <code>dailyTokenBudget: int</code> to <code>Tenant</code>.</li>
+    <li><code>app.py</code>: new helper <code>_check_origin(tenant)</code>; expand <code>_rate_limit</code> calls in <code>api_chat</code> to all four tiers; new <code>UsageLedger</code> reading/writing <code>tenants/{id}/usage.jsonl</code>; concurrent-stream context manager around <code>iter_turn</code>.</li>
+    <li><code>agent.py</code>: after stream completes, call <code>ledger.record(tenant_id, session_id, response.usage)</code>.</li>
+    <li><code>static/admin.html</code>: editor fields for <code>allowedOrigins</code> and <code>dailyTokenBudget</code>.</li>
+    <li>(Optional) <code>app.py</code>: <code>_verify_bot_challenge(token)</code> helper, fetches Turnstile's verify URL.</li>
+  </ul>
+
+  <h4>Tests</h4>
+  <ul>
+    <li><code>tests/test_routes.py</code>: chat with disallowed origin returns 403.</li>
+    <li><code>tests/test_routes.py</code>: rate-limit per IP per hour blocks the 201st request.</li>
+    <li><code>tests/test_ratelimit.py</code>: tenant-wide bucket independent of IP bucket.</li>
+    <li><code>tests/test_app.py</code>: usage ledger writes <code>tenants/{id}/usage.jsonl</code> after a turn, daily budget enforcement blocks 503 once exceeded.</li>
+    <li>Concurrent-stream cap: spawn 3 threads, third gets 429 / 503.</li>
+  </ul>
+
+  <h4>Trade-offs</h4>
+  <ul>
+    <li>Token budget needs persistence to survive restarts. JSONL on local disk is fine for one Railway instance; document Redis for multi-instance.</li>
+    <li>Turnstile makes the demo less friendly. Keep it strictly opt-in.</li>
+    <li>Origin pinning breaks server-to-server callers; document that pattern as "leave allowedOrigins empty or include the calling host".</li>
+  </ul>
+</div>
+
+<!-- =================== FIX 2 =================== -->
+<div class="fix" id="fix-session-ids">
+  <header class="fix-head">
+    <h3>2. Server-issued session ids</h3>
+    <div class="badges"><span class="badge p1">P1</span><span class="badge size">~2-3 hours</span></div>
+  </header>
+
+  <h4>Goal</h4>
+  <p>The browser never picks its own session id. Every session is an opaque, unguessable, HMAC-signed token issued by the server, bound to a tenant, with an expiry.</p>
+
+  <h4>Design</h4>
+  <p>Reuse <code>auth.make_token</code> / <code>verify_token</code> (we already use HMAC for admin). New helper:</p>
+<pre><code>def make_session_token(tenant_id: str) -&gt; str:
+    sid = secrets.token_urlsafe(16)
+    return make_token({"t": tenant_id, "sid": sid}, ADMIN_SECRET, ttl_seconds=24*3600)</code></pre>
+
+  <p>Two issuance paths:</p>
+  <ul>
+    <li><strong>Same-origin (full-screen mode)</strong>: <code>GET /api/{tenant}/config</code> sets a cookie <code>aa_session=&lt;token&gt;</code> with <code>HttpOnly; Secure; SameSite=Lax; Path=/api/{tenant}/</code> if not already present.</li>
+    <li><strong>Cross-origin (embed widget mode, future)</strong>: the same config endpoint returns the token in the JSON body so the widget can store it client-side. Cookies don't reliably work in third-party iframes; the body path is the workaround.</li>
+  </ul>
+
+  <p>On every chat / reset request:</p>
+  <ul>
+    <li>Resolve token from cookie OR <code>Authorization: Session &lt;token&gt;</code> header.</li>
+    <li>Verify HMAC + expiry + that <code>claims["t"] == tenant_id</code>. Mismatch returns 401.</li>
+    <li>Pass <code>claims["sid"]</code> down as the session key to <code>agent.iter_turn</code>. Reject any <code>session_key</code> in the request body.</li>
+  </ul>
+
+  <h4>Code touch points</h4>
+  <ul>
+    <li><code>auth.py</code>: add <code>make_session_token</code>, <code>verify_session_token(tok, tenant_id)</code>.</li>
+    <li><code>app.py</code>: new helper <code>_resolve_session(tenant)</code>; remove all reads of <code>data["session_key"]</code> from chat / reset endpoints; set cookie on <code>/api/{tenant}/config</code>; include token in config JSON for widget mode.</li>
+    <li><code>static/index.html</code>: drop sessionStorage logic; read token from <code>/api/{tenant}/config</code> response and pass it via <code>Authorization</code> header on subsequent chat calls.</li>
+  </ul>
+
+  <h4>Tests</h4>
+  <ul>
+    <li>Chat without a valid session token returns 401.</li>
+    <li>Chat with a token issued for a different tenant returns 401.</li>
+    <li>Reset works with a valid token; rejected without.</li>
+    <li>Cookie is set on config GET and not on subsequent requests.</li>
+    <li>Expired token returns 401 with a clear reason.</li>
+  </ul>
+
+  <h4>Trade-offs</h4>
+  <ul>
+    <li>Existing in-flight sessions break on deploy. Acceptable for an alpha; mention in the release note.</li>
+    <li>For cross-origin embedding later, the token-in-body path bypasses cookie issues but requires the widget to keep the token in <code>sessionStorage</code> (still server-signed, still unforgeable).</li>
+  </ul>
+</div>
+
+<!-- =================== FIX 3 =================== -->
+<div class="fix" id="fix-rotate-key">
+  <header class="fix-head">
+    <h3>3. Rotate the Anthropic API key</h3>
+    <div class="badges"><span class="badge p1">P1</span><span class="badge size">5 minutes, manual</span></div>
+  </header>
+
+  <h4>Procedure</h4>
+  <ol>
+    <li>Open <code>https://console.anthropic.com/settings/keys</code> and create a new API key with the same workspace + permissions as the current one.</li>
+    <li>Run: <code>railway variables --service agentassist --set "ANTHROPIC_API_KEY=&lt;new-key&gt;"</code>. Railway redeploys automatically.</li>
+    <li>Smoke-test: <code>curl -sS -N -X POST "$URL/api/montferland/chat" -d ... | head -5</code> should still stream.</li>
+    <li>Revoke the old key in the Anthropic console.</li>
+    <li>Overwrite the local <code>.env</code> with the new value (or delete it entirely; the deploy uses Railway env vars).</li>
+  </ol>
+
+  <h4>Permanent runbook</h4>
+  <p>Add <code>docs/SECURITY.md</code> with a "Rotating ANTHROPIC_API_KEY" section. Frequency: at least every 90 days, plus immediately on any suspected leak. Document the same procedure for <code>ADMIN_PASSWORD</code> and <code>ADMIN_SECRET</code>.</p>
+
+  <h4>Note</h4>
+  <p>If you want to scrub the literal key from this conversation's transcript before any of it is archived elsewhere, do that step before rotating. Once rotated, the leaked value is dead, but cleaning the transcript prevents future confusion.</p>
+</div>
+
+<!-- =================== FIX 4 =================== -->
+<div class="fix" id="fix-csp">
+  <header class="fix-head">
+    <h3>4. Content-Security-Policy + frame protection</h3>
+    <div class="badges"><span class="badge p2">P2</span><span class="badge size">~1 hour</span></div>
+  </header>
+
+  <h4>Design</h4>
+  <p>Single <code>after_request</code> change in <code>app.py</code>. Use one CSP for app routes, a separate (looser) CSP for the future embed-widget bundle if it ever ships.</p>
+  <pre><code>CSP = (
+  "default-src 'self'; "
+  "connect-src 'self'; "
+  "img-src 'self' data:; "
+  "style-src 'self' 'unsafe-inline'; "
+  "script-src 'self' 'unsafe-inline'; "
+  "base-uri 'none'; "
+  "form-action 'self'; "
+  "frame-ancestors 'none'"
+)
+resp.headers.setdefault("Content-Security-Policy", CSP)
+resp.headers.setdefault("X-Frame-Options", "DENY")
+resp.headers.setdefault("Permissions-Policy",
+    "geolocation=(), microphone=(), camera=(), payment=()")</code></pre>
+
+  <p><strong>Why 'unsafe-inline'.</strong> Inline <code>&lt;style&gt;</code> and <code>&lt;script&gt;</code> blocks in the static HTML are how we keep the app dependency-free. A nonce-based CSP would require server-side templating to inject a per-response nonce, which contradicts the "ship static HTML, edit-and-refresh" workflow. Acceptable trade-off documented in <code>docs/SECURITY.md</code>.</p>
+
+  <h4>Tests</h4>
+  <ul>
+    <li>Every HTML response carries CSP, X-Frame-Options, Permissions-Policy headers.</li>
+    <li>API responses do as well (since fetch could be mounted in an iframe).</li>
+  </ul>
+
+  <h4>Follow-up</h4>
+  <p>If the project ever ships a third-party-embeddable widget bundle, give the bundle its own route (<code>/widget.js</code>) and serve it with a relaxed CSP that allows the iframe parent. Do not relax the main app's CSP.</p>
+</div>
+
+<!-- =================== FIX 5 =================== -->
+<div class="fix" id="fix-error-sanitization">
+  <header class="fix-head">
+    <h3>5. Sanitize error messages</h3>
+    <div class="badges"><span class="badge p2">P2</span><span class="badge size">~30 minutes</span></div>
+  </header>
+
+  <h4>Design</h4>
+  <p>Two changes:</p>
+  <ol>
+    <li><strong>Generic fallback in <code>agent.friendly_error</code>.</strong> Replace the current <code>return f"{type(e).__name__}"</code> with a static "Er ging iets mis. Probeer het zo opnieuw." Log the full exception (with request id) server-side via <code>log.exception(...)</code>.</li>
+    <li><strong>Generic <code>_err_response</code> in <code>app.py</code>.</strong> Today the body includes <code>err.description</code> verbatim. Most callers pass a known-good string, but it's load-bearing to keep it that way. Add a guard: never echo strings that contain <code>Traceback</code>, <code>at line</code>, file paths, or anything matching a heuristic "looks like a stack trace" check. Always include a server-generated <code>request_id</code> in the response body so support can correlate.</li>
+  </ol>
+
+  <h4>Code touch points</h4>
+  <ul>
+    <li><code>agent.py:friendly_error</code> + <code>iter_turn</code> error path.</li>
+    <li><code>app.py:_err_response</code> + each <code>errorhandler</code> wraps the description in a safe formatter.</li>
+    <li><code>app.py</code> request middleware: generate <code>g.request_id = secrets.token_hex(8)</code>; attach to log records; return in <code>X-Request-ID</code> header.</li>
+  </ul>
+
+  <h4>Tests</h4>
+  <ul>
+    <li>Inject a non-transient exception (e.g. a fake <code>RuntimeError("filesystem path /etc/...")</code>); confirm the streamed error event contains the generic message, not the path.</li>
+    <li>Confirm every response carries <code>X-Request-ID</code>.</li>
+    <li>Confirm server logs include the full exception when sanitization happens.</li>
+  </ul>
+</div>
+
+<!-- =================== FIX 6 =================== -->
+<div class="fix" id="fix-admin-passwords">
+  <header class="fix-head">
+    <h3>6. Per-tenant admin passwords</h3>
+    <div class="badges"><span class="badge p2">P2</span><span class="badge size">~half a day</span></div>
+  </header>
+
+  <h4>Goal</h4>
+  <p>Two roles: a super-admin who manages the platform (creates tenants, sets per-tenant passwords) and per-tenant editors who can only manage their own tenant. Same flow as the spec describes (ADMIN-1 open point).</p>
+
+  <h4>Design</h4>
+  <p><strong>Storage.</strong> Add <code>passwordHash: str | None</code> to <code>Tenant</code> config. Hash with <code>argon2id</code> (single-file dependency, <code>pip install argon2-cffi</code>). Empty hash means "no per-tenant password set; only super-admin can manage this tenant".</p>
+
+  <p><strong>Endpoints.</strong></p>
+  <ul>
+    <li><code>POST /api/admin/login</code> accepts <code>{ password }</code> (super-admin) or <code>{ tenant_id, password }</code> (tenant-scoped). Body shape disambiguates.</li>
+    <li>Token claims include <code>role: "super" | "tenant"</code> and <code>tenant_id?</code>.</li>
+    <li>Existing admin routes check claims: tenant-scoped tokens can only operate on their own tenant id; super-admin tokens can access anything.</li>
+  </ul>
+
+  <p><strong>Admin UI.</strong> A "set tenant password" field in the editor, visible only when logged in as super-admin. Hash-and-save flow.</p>
+
+  <h4>Code touch points</h4>
+  <ul>
+    <li><code>tenants.py</code>: new <code>passwordHash</code> field; <code>set_password(tenant_id, password)</code> + <code>verify_password(tenant_id, password)</code> helpers using argon2.</li>
+    <li><code>auth.py</code>: <code>make_token</code> already accepts arbitrary claims; just add <code>role</code> + <code>tenant_id</code>.</li>
+    <li><code>app.py:_require_admin</code>: support tenant-scoped tokens; new <code>_require_admin_for(tenant_id)</code> that checks both super-admin and matching tenant-scope.</li>
+    <li><code>static/admin.html</code>: tenant password field; UI branches by role; tenant list filtered for tenant-scoped users.</li>
+    <li><code>requirements.txt</code>: add <code>argon2-cffi&gt;=23.1.0</code>.</li>
+  </ul>
+
+  <h4>Tests</h4>
+  <ul>
+    <li>Tenant-scoped token cannot read or write a different tenant's config.</li>
+    <li>Super-admin can set a per-tenant password; subsequent tenant-scoped login with that password works.</li>
+    <li>argon2 hash round-trip; old hashes still verify after a parameter bump.</li>
+    <li>Login rate limit still applies to per-tenant logins.</li>
+  </ul>
+
+  <h4>Stretch</h4>
+  <ul>
+    <li>Optional: lockout / progressive backoff after N failed tenant-scoped logins.</li>
+    <li>Optional: password reset via super-admin-only endpoint.</li>
+  </ul>
+
+  <h4>OSS recommendation</h4>
+  <p>Ship the simple single-password model for v1 OSS release. Add this feature in v0.2 with a CHANGELOG note. It is a real feature, not a security gap, and adding it before launch slows down the release with no urgent benefit (single-operator deployments are common).</p>
+</div>
+
+<section>
+  <h2>What we are explicitly not doing</h2>
+  <ul>
+    <li><strong>Locking down the chat endpoint with auth.</strong> Public chatbots must accept anonymous visitors. The "fix" is making abuse expensive, not impossible.</li>
+    <li><strong>Adding a WAF or DDoS service.</strong> Railway already fronts the service. Cloudflare in front is one DNS change away if needed; not in scope for the code base.</li>
+    <li><strong>Encrypting tenant config at rest.</strong> Filesystem-only storage on Railway is already private to the service; encryption adds key management overhead without changing the threat model.</li>
+    <li><strong>Implementing markdown rendering or feedback collection.</strong> Mentioned earlier as nice-to-haves; not part of the security plan.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Done definition</h2>
+  <table>
+    <thead><tr><th>Fix</th><th>Ship gate</th></tr></thead>
+    <tbody>
+      <tr><td>1. Chat abuse controls</td><td>Origin pinning + 4 rate-limit tiers + token budget + concurrent cap all covered by tests, configurable in admin UI</td></tr>
+      <tr><td>2. Server-issued sessions</td><td><code>session_key</code> from request body fully ignored; tokens HMAC-signed and tenant-bound; tests for forge / wrong-tenant / expiry</td></tr>
+      <tr><td>3. Key rotation</td><td>New Anthropic key set on Railway, old key revoked, runbook in <code>docs/SECURITY.md</code></td></tr>
+      <tr><td>4. CSP</td><td>Headers present on every response, regression test in <code>test_routes.py</code></td></tr>
+      <tr><td>5. Error sanitization</td><td>No exception text reaches the client outside the known-friendly set; <code>X-Request-ID</code> on every response; server logs carry the full trace</td></tr>
+      <tr><td>6. Per-tenant admin passwords</td><td>argon2 hash stored per tenant; role-based token claims; UI gates editor by role</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+
+<script>
+(function () {
+  const btn = document.getElementById("themeToggle");
+  const root = document.documentElement;
+  const stored = (() => { try { return localStorage.getItem("plan.theme"); } catch (_) { return null; } })();
+  if (stored) root.setAttribute("data-theme", stored);
+  function sync(){ btn.textContent = root.getAttribute("data-theme") === "dark" ? "Light mode" : "Dark mode"; }
+  sync();
+  btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("plan.theme", next); } catch (_) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
