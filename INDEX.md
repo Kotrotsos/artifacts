@@ -114,3 +114,4 @@
 | 2026-05-14 | content | images | [ui-stripe-style.png](projects/content/images/ui-stripe-style.png) | DESIGN.md definitive guide: ui-stripe-style.png |
 | 2026-05-14 | content | images | [ui-linear-style.png](projects/content/images/ui-linear-style.png) | DESIGN.md definitive guide: ui-linear-style.png |
 | 2026-05-15 | agentassist | reports | [chat-request-flow.html](projects/agentassist/reports/chat-request-flow.html) | Sequence diagram of the multi-tenant chat request flow |
+| 2026-05-15 | agentassist | reports | [comparison-vs-virtuele-assistent.html](projects/agentassist/reports/comparison-vs-virtuele-assistent.html) | Comparison of agentassist and virtuele-assistent: maintainability, efficiency, OSS readiness |

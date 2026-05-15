@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>agentassist vs virtuele-assistent: which to maintain, which to open source</title>
+<style>
+  :root[data-theme="light"] {
+    --bg: #ffffff; --surface: #ffffff; --text: #111827; --muted: #6b7280;
+    --border: #e5e7eb; --accent: #2563eb; --code-bg: #f3f4f6;
+    --good: #15803d; --warn: #b45309; --bad: #b91c1c;
+    --col-a: #eff6ff; --col-a-fg: #1d4ed8;
+    --col-b: #fdf4ff; --col-b-fg: #9333ea;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b0d10; --surface: #14181d; --text: #f3f4f6; --muted: #9ca3af;
+    --border: #262d35; --accent: #60a5fa; --code-bg: #1f2630;
+    --good: #4ade80; --warn: #fbbf24; --bad: #f87171;
+    --col-a: #0c1f3a; --col-a-fg: #93c5fd;
+    --col-b: #2a0f3a; --col-b-fg: #e9d5ff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+  header.page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  h1{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 0.25rem;letter-spacing:-0.01em;}
+  .sub{color:var(--muted);margin:0;max-width:60ch;}
+  .theme-toggle{background:var(--surface);color:var(--text);border:1px solid var(--border);
+                padding:0.45rem 0.85rem;border-radius:999px;font:inherit;font-size:0.85rem;cursor:pointer;}
+  .theme-toggle:hover{border-color:var(--accent);}
+  section{margin:2.5rem 0;}
+  h2{font-size:1.2rem;margin:0 0 0.6rem;letter-spacing:-0.005em;}
+  h2 .num{color:var(--muted);font-weight:500;margin-right:0.5rem;}
+  h3{font-size:1rem;margin:1.25rem 0 0.4rem;}
+  p.lead{color:var(--muted);margin:0 0 1rem;max-width:62ch;}
+  code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.86em;}
+  .verdict{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
+           border-radius:10px;padding:1rem 1.25rem;margin:1rem 0;}
+  .verdict strong{color:var(--accent);}
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);
+        border-radius:12px;overflow:hidden;font-size:0.92rem;}
+  th,td{padding:0.6rem 0.85rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--border);}
+  thead th{background:var(--code-bg);font-weight:600;}
+  th.col-a{background:var(--col-a);color:var(--col-a-fg);}
+  th.col-b{background:var(--col-b);color:var(--col-b-fg);}
+  td.row-h{font-weight:600;color:var(--muted);white-space:nowrap;width:18ch;}
+  tr:last-child td{border-bottom:none;}
+  .pill{display:inline-block;padding:0 0.45rem;border-radius:999px;font-size:0.78rem;font-weight:500;}
+  .pill.good{background:color-mix(in srgb,var(--good) 14%,transparent);color:var(--good);}
+  .pill.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn);}
+  .pill.bad{background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad);}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  @media (max-width:760px){.grid-2{grid-template-columns:1fr;}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;}
+  .card h3{margin-top:0;}
+  ul.tight{margin:0.25rem 0;padding-left:1.25rem;}
+  ul.tight li{margin-bottom:0.2rem;}
+  .when{display:grid;grid-template-columns:max-content 1fr;gap:0.5rem 1rem;}
+  .when dt{font-weight:600;}
+  .when dd{margin:0;color:var(--muted);}
+
+  @media print {
+    body{background:#fff;color:#000;}
+    .theme-toggle{display:none;}
+    .wrap{padding:1rem;max-width:100%;}
+    table,.card,.verdict{border-color:#aaa;}
+    section{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page-header">
+  <div>
+    <h1>agentassist vs virtuele-assistent</h1>
+    <p class="sub">Two solutions to the same brief. Which one to keep maintaining and which one to release as open source.</p>
+  </div>
+  <button class="theme-toggle" id="themeToggle" type="button">Dark mode</button>
+</header>
+
+<div class="verdict">
+  <strong>TL;DR.</strong>
+  Keep both, but keep them for different jobs.
+  <code>virtuele-assistent</code> is the production-grade Montferland system: full RAG, Airflow scraping, admin database, Helm-deployable. Maintain it for the customer.
+  <code>agentassist</code> is the lightweight reference design: same product surface (multi-tenant chat, admin, PII, streaming, source citations) implemented with one Flask process and an agent-with-tools instead of a RAG stack. It is the candidate for an OSS release.
+</div>
+
+<section>
+  <h2><span class="num">1</span>What is each thing?</h2>
+  <div class="grid-2">
+    <div class="card">
+      <h3>agentassist</h3>
+      <p style="color:var(--muted);margin:0 0 0.5rem;">This project, deployed on Railway.</p>
+      <ul class="tight">
+        <li><strong>1 process</strong>: a single Flask + gunicorn container.</li>
+        <li><strong>Per-tenant config.json + context.md on disk</strong>: no database.</li>
+        <li><strong>Agent-with-tools</strong>: a per-request <code>messages.stream</code> against Claude with <code>web_fetch</code> capped to the tenant's allowed_domains and <code>max_uses=3</code>.</li>
+        <li><strong>No ingestion</strong>: no scraping pipeline, no vector store. Knowledge comes from the per-tenant <code>context.md</code> plus live web_fetch.</li>
+        <li><strong>Vanilla HTML/JS frontend</strong> for chat (full-screen + bubble) and admin (token auth).</li>
+        <li><strong>62 unit + integration tests</strong>, runs in under 3 seconds, no external services required.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>virtuele-assistent</h3>
+      <p style="color:var(--muted);margin:0 0 0.5rem;">The production Montferland repo.</p>
+      <ul class="tight">
+        <li><strong>16 services</strong> in docker-compose (Airflow alone is 6 containers: postgres, redis, init, api-server, scheduler, dag-processor, triggerer, worker).</li>
+        <li><strong>Real RAG</strong>: Qdrant vector store, hybrid search (semantic + BM25), optional HyDE, cross-encoder reranker.</li>
+        <li><strong>Airflow-scheduled scraping per tenant</strong> with chunking and embedding.</li>
+        <li><strong>Two Next.js frontends</strong> (chat + admin) on TypeScript, Tailwind, Radix.</li>
+        <li><strong>Kotlin/Ktor backend</strong>, Postgres for admin, Helm charts for prod.</li>
+        <li><strong>Langfuse observability</strong>, prompt management, BSAT scoring.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2</span>Side-by-side</h2>
+  <table>
+    <thead>
+      <tr><th>Dimension</th><th class="col-a">agentassist</th><th class="col-b">virtuele-assistent</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="row-h">Languages</td>
+        <td>Python only (server), vanilla JS (client)</td>
+        <td>Kotlin (server), TypeScript x2 (clients), Python (ingestion)</td></tr>
+      <tr><td class="row-h">Services / containers</td>
+        <td><span class="pill good">1</span></td>
+        <td><span class="pill bad">16</span> (Airflow stack alone = 6)</td></tr>
+      <tr><td class="row-h">External datastores</td>
+        <td><span class="pill good">None</span> (filesystem)</td>
+        <td>Postgres, Qdrant, Redis</td></tr>
+      <tr><td class="row-h">Code size (approx LOC)</td>
+        <td>~1,150 Python + ~1,140 HTML/JS = <span class="pill good">~2,290 hand-written</span></td>
+        <td>~4,400 Kotlin + ~5,900 TS + ~3,100 Python ingestion = <span class="pill warn">~13,400</span></td></tr>
+      <tr><td class="row-h">Test suite</td>
+        <td>62 tests, &lt; 3 s, no external services</td>
+        <td>831 LOC Kotlin tests; frontend tests vary</td></tr>
+      <tr><td class="row-h">Local "hello world" time</td>
+        <td><code>pip install -r requirements.txt &amp;&amp; python app.py</code> &nbsp; <span class="pill good">~1 minute</span></td>
+        <td><code>docker compose up -d --build</code> &nbsp; <span class="pill warn">~15-30 minutes first time</span></td></tr>
+      <tr><td class="row-h">Production hosting</td>
+        <td>Railway, Fly.io, App Runner, anything with a Dockerfile</td>
+        <td>Kubernetes via Helm; runs on a single Docker host with effort</td></tr>
+      <tr><td class="row-h">Cost floor (idle)</td>
+        <td><span class="pill good">Near zero</span></td>
+        <td>Substantial: 3 databases + workers always on</td></tr>
+      <tr><td class="row-h">Knowledge retrieval</td>
+        <td>Per-tenant <code>context.md</code> + Anthropic <code>web_fetch</code> on allowlisted hosts</td>
+        <td>Scrape -&gt; chunk -&gt; embed -&gt; Qdrant; hybrid + HyDE + reranker</td></tr>
+      <tr><td class="row-h">Retrieval quality on large knowledge bases</td>
+        <td>Limited by context.md size + what the model fetches per turn</td>
+        <td>Designed for thousands of documents per tenant</td></tr>
+      <tr><td class="row-h">Multi-tenant</td>
+        <td>URL path <code>/{tenant}</code>, files under <code>tenants/{id}/</code></td>
+        <td>URL path + Postgres rows + Qdrant collection per tenant</td></tr>
+      <tr><td class="row-h">Admin UX</td>
+        <td>Single-password HTML page, edits config.json + context.md</td>
+        <td>Next.js dashboard, draft/publish flow, analytics, prompt vars wizard</td></tr>
+      <tr><td class="row-h">Observability</td>
+        <td>Python logging, log redaction; Railway logs</td>
+        <td>Langfuse traces, BSAT scoring, prompt versioning</td></tr>
+      <tr><td class="row-h">PII redaction</td>
+        <td>Server-side <code>pii.py</code>, runs in chat pipeline</td>
+        <td><code>PiiRedactionService</code> in Kotlin, called from frontend before chat</td></tr>
+      <tr><td class="row-h">Auth</td>
+        <td>Admin HMAC token, optional CORS allowlist</td>
+        <td>X-API-Key between services, admin DB password, Airflow auth</td></tr>
+      <tr><td class="row-h">Customer scope it actually fits</td>
+        <td>Small org with one allowlisted public website + a paragraph of context</td>
+        <td>City government with thousands of pages and an editorial team</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">3</span>Most efficient and maintainable</h2>
+  <p class="lead">"Efficient" and "maintainable" depend on what problem you are solving. The honest answer is: pick by knowledge-base size and team size.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>If knowledge base &le; ~50 KB and the source is one public website</h3>
+      <p style="margin:0 0 0.5rem;"><span class="pill good">Pick agentassist.</span></p>
+      <ul class="tight">
+        <li>One service to run, one language to know, one process to monitor.</li>
+        <li>New tenant = new directory under <code>tenants/</code>, no migrations, no Airflow DAG to author.</li>
+        <li>If the model needs more than the local context, <code>web_fetch</code> handles it. Anthropic enforces the host allowlist; prompt injection cannot redirect the fetch.</li>
+        <li>Tests are unit + integration, no test containers, no external services.</li>
+        <li>Operationally: a single Railway service. No Postgres backup, no Qdrant snapshots, no Airflow scheduler to babysit.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>If knowledge base is thousands of pages, or you need PO analytics, or you have an editorial team</h3>
+      <p style="margin:0 0 0.5rem;"><span class="pill warn">Stay on virtuele-assistent.</span></p>
+      <ul class="tight">
+        <li><code>web_fetch</code> on its own is not a retrieval strategy at that scale. You want real RAG with hybrid search and reranking, which virtuele-assistent already has.</li>
+        <li>The Airflow ingestion pipeline gives you scheduled scraping, idempotent updates, and per-tenant collections. Building that into agentassist would erase its main advantage.</li>
+        <li>The admin Next.js app + Postgres state are necessary if multiple editors per tenant are common.</li>
+        <li>Langfuse + BSAT + topic analytics are nontrivial to add to a smaller stack and matter for Product Owners.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Maintenance load over a year, rough estimate</h3>
+  <table>
+    <thead><tr><th>Task</th><th class="col-a">agentassist</th><th class="col-b">virtuele-assistent</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h">Onboard a new contributor</td><td>~1 hour to read all code</td><td>~1 week to understand the moving parts</td></tr>
+      <tr><td class="row-h">Add a new tenant</td><td>Drop a directory, restart (or just refresh files)</td><td>DB row + Qdrant collection + ingestion config + first DAG run</td></tr>
+      <tr><td class="row-h">Update knowledge for a tenant</td><td>Edit <code>context.md</code> in the admin UI</td><td>Wait for next Airflow run, or trigger manually; re-embed</td></tr>
+      <tr><td class="row-h">Track down a bad answer</td><td>Read the system prompt, read <code>context.md</code>, read the agent log</td><td>Trace in Langfuse + check Qdrant retrieval + check reranker output</td></tr>
+      <tr><td class="row-h">Patch a security finding</td><td>Edit one file, push, redeploy in 2 min</td><td>Patch service(s), rebuild image(s), Helm release, infra coordination</td></tr>
+    </tbody>
+  </table>
+
+  <div class="verdict">
+    <strong>Verdict on efficiency + maintainability:</strong>
+    For 80 percent of municipal-assistant deployments (one website, modest content), <em>agentassist is meaningfully easier to run and harder to break</em>. For the 20 percent that need real RAG + scheduled scraping + editor workflows, virtuele-assistent earns its complexity.
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">4</span>Best candidate for OSS release</h2>
+  <p class="lead">The qualities that make a project a good open-source candidate are largely the opposite of what makes a project a good enterprise system.</p>
+
+  <table>
+    <thead><tr><th>OSS-readiness criterion</th><th class="col-a">agentassist</th><th class="col-b">virtuele-assistent</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h">"Clone, run, get a chatbot" in &lt; 5 minutes</td>
+        <td><span class="pill good">Yes</span></td><td><span class="pill bad">No</span></td></tr>
+      <tr><td class="row-h">No required external services</td>
+        <td><span class="pill good">Yes</span> (only an Anthropic key)</td><td><span class="pill bad">No</span> (Postgres, Qdrant, Redis, Airflow)</td></tr>
+      <tr><td class="row-h">Single language stack</td>
+        <td><span class="pill good">Python + vanilla JS</span></td><td><span class="pill warn">Kotlin + TS + Python + Helm</span></td></tr>
+      <tr><td class="row-h">Surface area readable in one sitting</td>
+        <td><span class="pill good">~2.3K LOC</span></td><td><span class="pill warn">~13K LOC</span></td></tr>
+      <tr><td class="row-h">Tests pass on a fresh checkout</td>
+        <td><span class="pill good">Yes</span> in &lt; 3 s</td><td>Requires test containers, harder</td></tr>
+      <tr><td class="row-h">Production secrets surface</td>
+        <td>One env var (<code>ANTHROPIC_API_KEY</code>)</td><td>Many: DB pw, Airflow Fernet key, Langfuse keys, Reranker URL, Azure / OpenAI keys</td></tr>
+      <tr><td class="row-h">Vendor lock-in</td>
+        <td>Anthropic SDK (could be swapped to OpenAI / Azure with a small adapter)</td><td>Coupled to Qdrant, Airflow, Langfuse, Azure OpenAI, Helm</td></tr>
+      <tr><td class="row-h">Hostable on free tiers</td>
+        <td><span class="pill good">Yes</span> (Railway hobby, Fly.io, etc.)</td><td><span class="pill bad">No</span></td></tr>
+      <tr><td class="row-h">Educational value</td>
+        <td>Reads like a tutorial on building agentic chatbots</td><td>Reads like an enterprise system</td></tr>
+      <tr><td class="row-h">Sensitive customer data in repo</td>
+        <td>None</td><td>Has Montferland CA certs, prompts, eval data tied to customer</td></tr>
+    </tbody>
+  </table>
+
+  <div class="verdict">
+    <strong>OSS candidate:</strong> <code>agentassist</code>, by a wide margin.
+    It is small, runnable in minutes, and demonstrates the patterns (multi-tenant, PII redaction, streaming, source citations, admin) cleanly enough that a developer can adapt it. virtuele-assistent could be open-sourced, but it would mostly be admired, not used.
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">5</span>Concrete plan to OSS agentassist</h2>
+  <ol>
+    <li><strong>License + repo hygiene.</strong> MIT or Apache 2. Add a <code>CONTRIBUTING.md</code>, code of conduct, GitHub Actions for <code>pytest</code>. Strip any sensitive defaults from <code>.env.example</code>.</li>
+    <li><strong>Position the README.</strong> "Multi-tenant agent-based chatbot. One Flask process. Drop a <code>context.md</code> per tenant, set <code>ANTHROPIC_API_KEY</code>, deploy anywhere with a Dockerfile."</li>
+    <li><strong>Generalize the tenant language.</strong> Today the defaults assume Dutch municipalities. Make org type pluggable (e.g. <code>library</code>, <code>school</code>, <code>support-team</code>) with their own default suggestion sets.</li>
+    <li><strong>Provider abstraction.</strong> Wrap the <code>Anthropic()</code> client behind a small <code>LLMProvider</code> interface so contributors can plug OpenAI, Azure, or a local model later. Keeps Anthropic as the default.</li>
+    <li><strong>Optional RAG mode.</strong> Document a "if you outgrow context.md, here is how to plug a vector store" extension point. Do not implement it in core. Refer interested users to virtuele-assistent for the production version.</li>
+    <li><strong>Examples.</strong> Ship two tenants out of the box (one Dutch municipality, one English support-team) so the demo works in two languages.</li>
+    <li><strong>Brand it.</strong> Pick a name that signals the philosophy: <em>agentassist</em>, <em>civichat</em>, or <em>tenantbot</em>. The current name fits.</li>
+    <li><strong>Cross-link.</strong> The README points to virtuele-assistent as the "enterprise-grade upgrade path." Two repos, one design philosophy, different scales.</li>
+  </ol>
+</section>
+
+<section>
+  <h2><span class="num">6</span>What I would NOT port back from virtuele-assistent</h2>
+  <p class="lead">Some of the things virtuele-assistent has are valuable in production but would dilute agentassist's main pitch. Resist adding them unless a real OSS user asks.</p>
+  <ul class="tight">
+    <li><strong>Postgres for admin state.</strong> File-based is the whole point.</li>
+    <li><strong>Airflow.</strong> A scheduled scraper is its own product. If users want it, document a cron + ingest script extension.</li>
+    <li><strong>Reranker microservice.</strong> A second service halves the "easy to run" property.</li>
+    <li><strong>Langfuse.</strong> Add a lightweight OpenTelemetry adapter or stick to structured logs.</li>
+    <li><strong>Two separate Next.js apps.</strong> One vanilla HTML admin is enough for the OSS demo.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">7</span>What I WOULD borrow from virtuele-assistent</h2>
+  <ul class="tight">
+    <li><strong>Draft / publish flow in admin.</strong> Today agentassist publishes on save. A "save as draft" toggle is a small change and editor-friendly.</li>
+    <li><strong>Prompt-preview endpoint.</strong> Show the editor exactly what system prompt will be sent. One Flask route, one editor button.</li>
+    <li><strong>Tenant-scoped admin passwords.</strong> Replace the single <code>ADMIN_PASSWORD</code> with a per-tenant secret store.</li>
+    <li><strong>Markdown rendering in the chat bubble.</strong> Bot output has <code>**bold**</code> and links, currently shown as plain text. Add micromark + DOMPurify.</li>
+    <li><strong>Feedback per message.</strong> Thumbs up/down written to a JSONL file is two endpoints and is genuinely useful.</li>
+    <li><strong>Component toggles in admin.</strong> Even a single "available / maintenance" switch covers most of the use case.</li>
+  </ul>
+</section>
+
+</div>
+
+<script>
+(function () {
+  const btn = document.getElementById("themeToggle");
+  const root = document.documentElement;
+  const stored = (() => { try { return localStorage.getItem("cmp.theme"); } catch (_) { return null; } })();
+  if (stored) root.setAttribute("data-theme", stored);
+  function sync(){ btn.textContent = root.getAttribute("data-theme") === "dark" ? "Light mode" : "Dark mode"; }
+  sync();
+  btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("cmp.theme", next); } catch (_) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
