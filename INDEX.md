@@ -117,3 +117,4 @@
 | 2026-05-15 | agentassist | reports | [comparison-vs-virtuele-assistent.html](projects/agentassist/reports/comparison-vs-virtuele-assistent.html) | Comparison of agentassist and virtuele-assistent: maintainability, efficiency, OSS readiness |
 | 2026-05-15 | agentassist | reports | [security-audit.html](projects/agentassist/reports/security-audit.html) | Security audit and comparison: agentassist vs virtuele-assistent |
 | 2026-05-15 | agentassist | reports | [security-remediation-plan.html](projects/agentassist/reports/security-remediation-plan.html) | Security remediation plan for the six P1/P2 findings (chat-endpoint abuse controls, session ids, key rotation, CSP, error sanitization, per-tenant admin) |
+| 2026-05-15 | reverse-engineer | reports | [REPORT.html](projects/reverse-engineer/reports/REPORT.html) | Claude.app v1.7196.0 reverse engineering report vs v1.5354.0 |

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Claude.app v1.7196.0 – Reverse Engineering Report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #fbfaf7;
+  --fg: #1b1b1b;
+  --muted: #5c5c5c;
+  --rule: #d9d6cf;
+  --accent: #c15f3c;
+  --code-bg: #f1efe8;
+  --new: #2e7d32;
+  --del: #b3261e;
+  --chg: #8a6d1c;
+}
+@media (prefers-color-scheme: dark) {
+  :root.auto { --bg:#1b1a17; --fg:#ecebe6; --muted:#9a9a93; --rule:#3a3833; --code-bg:#26241f; }
+}
+html { background: var(--bg); color: var(--fg); }
+body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 15px; line-height: 1.55; max-width: 880px; margin: 0 auto; padding: 56px 28px 96px; }
+h1 { font-size: 30px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 19px; font-weight: 600; margin: 44px 0 12px; padding-bottom: 4px; border-bottom: 1px solid var(--rule); }
+h3 { font-size: 16px; font-weight: 600; margin: 24px 0 8px; }
+.sub { color: var(--muted); margin: 0 0 28px; }
+code, pre { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+ul, ol { padding-left: 22px; }
+li { margin: 4px 0; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0 18px; font-size: 14px; }
+th, td { border-bottom: 1px solid var(--rule); padding: 8px 10px; text-align: left; vertical-align: top; }
+th { font-weight: 600; }
+.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 10px;
+  background: var(--code-bg); color: var(--muted); margin-right: 6px; vertical-align: 1px; letter-spacing: 0.02em; }
+.tag-new { background: rgba(46,125,50,0.12); color: var(--new); }
+.tag-del { background: rgba(179,38,30,0.12); color: var(--del); }
+.tag-chg { background: rgba(138,109,28,0.12); color: var(--chg); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 16px 0; }
+.card { padding: 14px 16px; border: 1px solid var(--rule); border-radius: 6px; }
+.card h4 { margin: 0 0 4px; font-size: 14px; font-weight: 600; }
+.card p { margin: 0; font-size: 13px; color: var(--muted); }
+.meta { font-size: 13px; color: var(--muted); }
+.callout { border-left: 3px solid var(--accent); background: var(--code-bg); padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 16px 0; }
+@media print {
+  body { max-width: none; padding: 0 0 18mm; font-size: 11pt; }
+  h1 { font-size: 20pt; }
+  h2 { font-size: 14pt; }
+  pre { font-size: 9pt; }
+  .callout { border-left-color: #555; }
+}
+.toggle { float: right; font-size: 12px; color: var(--muted); cursor: pointer; user-select: none; }
+</style>
+</head>
+<body>
+<span class="toggle" onclick="document.documentElement.classList.toggle('auto')">toggle dark</span>
+<h1>Claude.app v1.7196.0</h1>
+<p class="sub">Static reverse-engineering report. Compared against v1.5354.0 (~2 weeks prior). Analyzed 2026-05-15.</p>
+
+<div class="callout">
+<strong>Headline:</strong> Operon (Anthropic's cloud workspace system) has been completely removed from the desktop IPC surface — 22 interfaces gone, both <code>@anthropic-ai/operon-core</code> and <code>@anthropic-ai/operon-web</code> dropped from <code>package.json</code>. The desktop is consolidating around Local Agent Mode + Cowork + Buddy, with cloud workspace state now living entirely server-side. The IPC channel count fell from 770 to 636 (–17%) in one release.
+</div>
+
+<h2>Build profile</h2>
+<table>
+<tr><th>Field</th><th>v1.5354.0</th><th>v1.7196.0</th></tr>
+<tr><td>Version</td><td>1.5354.0</td><td>1.7196.0</td></tr>
+<tr><td>Bundle ID</td><td colspan="2"><code>com.anthropic.claudefordesktop</code></td></tr>
+<tr><td>Electron</td><td>41.3.0</td><td>41.5.0</td></tr>
+<tr><td>Node</td><td colspan="2">&ge; 22.0.0</td></tr>
+<tr><td>Main bundle size</td><td>~14 MB</td><td>~12.5 MB</td></tr>
+<tr><td>IPC channels</td><td>770</td><td>636</td></tr>
+<tr><td>IPC interfaces</td><td>83</td><td>63</td></tr>
+<tr><td>Sentry release</td><td>—</td><td><code>2dbd7802ab037cbb97d77be1a063241009b5e598</code></td></tr>
+</table>
+
+<h2>The five biggest changes</h2>
+
+<h3>1. Operon teardown <span class="tag tag-del">REMOVED</span></h3>
+<p>All 22 <code>Operon*</code> IPC interfaces removed: <code>OperonAgents</code>, <code>OperonAnnotations</code>, <code>OperonApiKeys</code>, <code>OperonArtifactDownloads</code>, <code>OperonArtifacts</code>, <code>OperonAttachments</code>, <code>OperonBootstrap</code>, <code>OperonCloud</code>, <code>OperonConversations</code>, <code>OperonEvents</code>, <code>OperonExportBundle</code>, <code>OperonFolders</code>, <code>OperonFrames</code>, <code>OperonHostAccess</code>, <code>OperonMcp</code>, <code>OperonNotes</code>, <code>OperonPreferences</code>, <code>OperonProjects</code>, <code>OperonSecrets</code>, <code>OperonSkills</code>, <code>OperonSystem</code>, <code>OperonAnalytics</code>. Both <code>operon-core</code> and <code>operon-web</code> packages are dropped from <code>package.json</code>. Cloud workspace work is now entirely server-side.</p>
+
+<h3>2. GrandPrix pairing surface <span class="tag tag-new">NEW</span></h3>
+<p>New IPC interface <code>claude.web_$_GrandPrix</code> with <code>pair(partnerId: string)</code>, <code>disconnect()</code>, and a Zustand-style <code>grandPrixStatus_$store$_*</code> triplet. The <code>partnerId</code> argument and origin-validated <code>claude.web</code> namespace look like a desktop-to-peer pairing flow (probably mobile companion or multi-device handoff), not a hardware device. No BLE transport accompanies it. See <code>BUDDY.md</code> for hypotheses.</p>
+
+<h3>3. Unified Interactive Auth replaces Vertex + Gateway SSO <span class="tag tag-chg">CHANGED</span></h3>
+<p><code>LocalAgentModeSessions</code> now has <code>triggerInteractiveAuth</code>, <code>revokeInteractiveAuth</code>, and an <code>interactiveAuth_$store$_*</code> store. The old provider-specific <code>triggerVertexAuth</code>, <code>revokeVertexAuth</code>, <code>vertexAuth_$store$_*</code>, <code>Custom3pSetup::gatewaySsoUserCode</code>, and <code>triggerGatewaySso</code> are gone. One OAuth/interactive flow now covers Vertex, MCP, and any future SSO provider.</p>
+
+<h3>4. Custom MCP credential helpers <span class="tag tag-new">NEW</span></h3>
+<p>New interface <code>Custom3pHelperRun</code> with <code>runCredentialHelper</code> and <code>getCredentialHelperLastRun</code>. Plus four new <code>Custom3pSetup</code> methods: <code>authorizeAndProbeMcpServer</code>, <code>probeMcpServer</code>, <code>forgetMcpOAuth</code>, <code>openDeviceCodeWindowForE2e</code>. Third-party MCP setup now feels like configuring a git remote — probe the endpoint, run a credential helper, persist via OAuth. Direction of travel: plug-and-play enterprise MCP.</p>
+
+<h3>5. Cowork artifact sharing live <span class="tag tag-new">NEW</span></h3>
+<p><code>CoworkArtifacts</code> gains <code>shareArtifact</code>, <code>unshareArtifact</code>, <code>isSharingEnabled</code>, <code>refreshImportedArtifact</code>. The old <code>exportArtifact</code> is removed. Artifacts can be shared between users now and pulled in fresh when the shared source changes — a live link rather than a one-shot export.</p>
+
+<h2>New IPC interfaces</h2>
+<div class="cards">
+  <div class="card">
+    <h4>Custom3pHelperRun <span class="tag tag-new">NEW</span></h4>
+    <p>Custom credential helpers for 3rd-party MCP servers, analog to git's credential helpers. 2 methods.</p>
+  </div>
+  <div class="card">
+    <h4>GrandPrix <span class="tag tag-new">NEW</span></h4>
+    <p>Peer pairing by <code>partnerId</code> string. 5 methods. Most likely a desktop-to-mobile companion pairing channel.</p>
+  </div>
+</div>
+
+<h2>Buddy continues to mature</h2>
+<p>Buddy IPC is byte-identical to v1.5354.0: 14 methods on the <code>Buddy</code> interface, 4 on <code>BuddyBleTransport</code>, 2 on <code>BuddyRemoteFeed</code>. New in v1.7196: Buddy now has its own renderer window (<code>buddy_window/</code>) and a dedicated 59 KB preload (<code>buddy.js</code>). The <code>install + pickFolder + preview + progress</code> cluster confirms the device receives content from the desktop — not just a remote control, but something that displays or executes payloads pushed over BLE.</p>
+<p>BLE library: <code>noble</code>. Custom service UUID unchanged from v1.5354 (still <code>584ef9d9-…4cec</code>). Nordic UART Service UUIDs retained.</p>
+
+<h2>What didn't change</h2>
+<ul>
+<li>LAM (Local Agent Mode) microVM at <code>~/Library/Application Support/Claude/vm_bundles/claudevm.bundle/</code> — same layout, same gVisor netstack, same Apple Virtualization / Hyper-V split.</li>
+<li>Framebuffer / VNC tool surface (13 <code>framebuffer_*</code> tools, 11 <code>FramebufferPreview</code> IPC methods).</li>
+<li>iOS Simulator integration (5 methods).</li>
+<li>CoworkMemory (7 methods, account + global memory).</li>
+<li>Office "Pivot" Excel add-in (12 <code>OfficeAddinFiles</code> methods, manifest at <code>pivot.claude.ai/manifest.xml</code>).</li>
+<li>Chrome extension + native messaging bridge.</li>
+<li>Production model identifiers: <code>claude-opus-4-6</code>, <code>claude-sonnet-4-6</code>, <code>claude-sonnet-4-5-20250929</code>, <code>claude-haiku-4-5-20251001</code>. No new SKU yet.</li>
+</ul>
+
+<h2>Interesting endpoints discovered</h2>
+<ul>
+<li><code>https://microsoft365.mcp.claude.com/mcp</code> — hosted Microsoft 365 MCP endpoint.</li>
+<li><code>https://mcp-proxy.anthropic.com</code> — central Anthropic-hosted MCP proxy.</li>
+<li><code>https://platform.claude.com/v1/oauth/token</code> — the OAuth token path (was previously under <code>console.anthropic.com</code>).</li>
+<li><code>https://platform.claude.com/buy_credits</code> — direct credit-purchase entry point.</li>
+<li><code>https://code.claude.com/docs/en/chrome</code> — Chrome extension docs (separate host).</li>
+<li><code>https://downloads.claude.ai/vms/linux/</code> — LAM VM rootfs distribution.</li>
+<li><code>http://localhost:8205</code>, <code>http://localhost:8969/stream</code> — local services the renderer expects.</li>
+</ul>
+
+<h2>Interpretation</h2>
+<p>Two themes:</p>
+<ol>
+<li><strong>Desktop scope narrowing.</strong> Operon's removal plus the <code>releaseWorktree</code> / <code>exportArtifact</code> drops say the desktop is consolidating around <em>local agent sessions, Cowork, Buddy, and the web view</em>. Cloud workspace management is no longer the desktop's job.</li>
+<li><strong>OAuth flow generalisation.</strong> One <code>triggerInteractiveAuth</code> replaces Vertex- and Gateway-specific code paths, and MCP setup gains probe + credential-helper machinery. This is enterprise-MCP plumbing maturing — the kind of work that makes a 3rd-party MCP integration feel like configuring a git remote.</li>
+</ol>
+<p>The largest unknown is <strong>GrandPrix</strong>. Its <code>partnerId</code>-based pairing, web-origin caller, and total absence of BLE transport suggest a peer pairing channel — a v2 of the existing mobile bridge, a multi-account desktop pairing, or a hook for an upcoming Anthropic mobile/companion app.</p>
+
+<h2>Files in this report</h2>
+<table>
+<tr><th>File</th><th>Contents</th></tr>
+<tr><td><code>OVERVIEW.md</code></td><td>Bundle profile, dependencies, headline summary</td></tr>
+<tr><td><code>DELTA.md</code></td><td>Full v1.5354 → v1.7196 diff</td></tr>
+<tr><td><code>IPC.md</code></td><td>All 63 interfaces with method counts</td></tr>
+<tr><td><code>ENDPOINTS.md</code></td><td>All 147 URLs, grouped and annotated</td></tr>
+<tr><td><code>MODELS.md</code></td><td>Model and build-channel strings</td></tr>
+<tr><td><code>SECRETS.md</code></td><td>Env vars, persisted tokens, Sentry IDs</td></tr>
+<tr><td><code>BUDDY.md</code></td><td>Buddy + GrandPrix detail</td></tr>
+<tr><td><code>asar_full/</code></td><td>Extracted app.asar tree</td></tr>
+</table>
+
+<p class="meta">Workspace: <code>/Users/marcokotrotsos/PERSONAL/reverse-engineer/claude-app-analysis-v1.7196.0/</code></p>
+
+<script>
+document.documentElement.classList.add('auto');
+</script>
+</body>
+</html>
