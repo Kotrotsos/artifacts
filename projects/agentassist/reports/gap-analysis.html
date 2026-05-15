@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gap analysis: agentassist and virtuele-assistent</title>
+<style>
+  :root[data-theme="light"] {
+    --bg:#fff;--surface:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;
+    --accent:#2563eb;--code-bg:#f3f4f6;
+    --good:#15803d;--warn:#b45309;--bad:#b91c1c;
+    --good-bg:#dcfce7;--warn-bg:#fef3c7;--bad-bg:#fee2e2;
+    --col-a:#eff6ff;--col-a-fg:#1d4ed8;
+    --col-b:#fdf4ff;--col-b-fg:#9333ea;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0b0d10;--surface:#14181d;--text:#f3f4f6;--muted:#9ca3af;--border:#262d35;
+    --accent:#60a5fa;--code-bg:#1f2630;
+    --good:#4ade80;--warn:#fbbf24;--bad:#f87171;
+    --good-bg:#052e1a;--warn-bg:#3a2a08;--bad-bg:#3a0c0c;
+    --col-a:#0c1f3a;--col-a-fg:#93c5fd;
+    --col-b:#2a0f3a;--col-b-fg:#e9d5ff;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+  header.page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  h1{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 0.25rem;letter-spacing:-0.01em;}
+  .sub{color:var(--muted);margin:0;max-width:62ch;}
+  .theme-toggle{background:var(--surface);color:var(--text);border:1px solid var(--border);
+                padding:0.45rem 0.85rem;border-radius:999px;font:inherit;font-size:0.85rem;cursor:pointer;}
+  .theme-toggle:hover{border-color:var(--accent);}
+  section{margin:2.5rem 0;}
+  h2{font-size:1.2rem;margin:1.5rem 0 0.6rem;letter-spacing:-0.005em;}
+  h2 .num{color:var(--muted);font-weight:500;margin-right:0.5rem;}
+  h3{font-size:1rem;margin:1.25rem 0 0.4rem;}
+  h4{font-size:0.95rem;margin:1rem 0 0.3rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
+  p.lead{color:var(--muted);margin:0 0 1rem;max-width:62ch;}
+  code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.86em;}
+
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem;}
+  .panel.left{border-left:4px solid var(--col-a-fg);}
+  .panel.right{border-left:4px solid var(--col-b-fg);}
+
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;font-size:0.9rem;}
+  th,td{padding:0.5rem 0.7rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--border);}
+  thead th{background:var(--code-bg);font-weight:600;}
+  th.col-a{background:var(--col-a);color:var(--col-a-fg);}
+  th.col-b{background:var(--col-b);color:var(--col-b-fg);}
+  tr:last-child td{border-bottom:none;}
+  td.row-h{font-weight:600;width:22ch;}
+  td.cat{background:var(--code-bg);font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;font-size:0.78rem;}
+
+  .pill{display:inline-block;padding:1px 0.5rem;border-radius:999px;font-size:0.74rem;font-weight:500;line-height:1.55;}
+  .pill.full{background:var(--good-bg);color:var(--good);}
+  .pill.partial{background:var(--warn-bg);color:var(--warn);}
+  .pill.none{background:var(--bad-bg);color:var(--bad);}
+  .pill.na{background:var(--code-bg);color:var(--muted);}
+
+  .prio{display:inline-block;font-size:0.72rem;font-weight:600;padding:1px 0.45rem;border-radius:999px;letter-spacing:0.04em;text-transform:uppercase;}
+  .prio.must{background:var(--bad-bg);color:var(--bad);}
+  .prio.should{background:var(--warn-bg);color:var(--warn);}
+  .prio.nice{background:var(--code-bg);color:var(--muted);}
+
+  .verdict{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
+           border-radius:10px;padding:1rem 1.25rem;margin:1rem 0;}
+  .verdict strong{color:var(--accent);}
+
+  .effort{font-size:0.78rem;color:var(--muted);}
+
+  @media print {
+    body{background:#fff;color:#000;} .theme-toggle{display:none;}
+    .wrap{padding:1rem;max-width:100%;}
+    section{break-inside:avoid;}
+    table,.panel,.verdict{border-color:#aaa;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page-header">
+  <div>
+    <h1>Gap analysis: agentassist and virtuele-assistent</h1>
+    <p class="sub">Where each project sits relative to a complete multi-tenant chatbot, and what would close each gap. Priorities: Must (block release / production), Should (close before scale), Nice (later).</p>
+  </div>
+  <button class="theme-toggle" id="themeToggle" type="button">Dark mode</button>
+</header>
+
+<section>
+  <h2><span class="num">0</span>What "complete" means here</h2>
+  <p class="lead">A complete deployment of a public-facing multi-tenant chatbot, in the spirit of the Montferland spec, covers ten categories. The scoring below is against this target. "Full" means the capability is present and production-shaped; "Partial" means it is present but reduced; "None" means absent; "n/a" means out of scope for that project's design philosophy.</p>
+  <ul>
+    <li>Core chat experience</li>
+    <li>Bubble / widget mode</li>
+    <li>Multi-tenant architecture</li>
+    <li>Admin and configurability</li>
+    <li>Knowledge retrieval</li>
+    <li>Tooling and external calls</li>
+    <li>Security</li>
+    <li>PII and privacy</li>
+    <li>Observability and analytics</li>
+    <li>Operational maturity</li>
+    <li>Accessibility</li>
+    <li>OSS / distributability</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">1</span>Coverage matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:30%;">Capability</th>
+        <th class="col-a" style="width:35%;">agentassist</th>
+        <th class="col-b" style="width:35%;">virtuele-assistent</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="cat" colspan="3">Core chat experience</td></tr>
+      <tr><td class="row-h">Welcome screen with PII warning</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Starter suggestions (4)</td>
+        <td><span class="pill full">Full</span> per-tenant + org-type defaults</td>
+        <td><span class="pill full">Full</span> per-tenant + defaults</td></tr>
+      <tr><td class="row-h">Streaming responses (token level)</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Markdown rendering</td>
+        <td><span class="pill full">Full</span> (DOM-only renderer)</td>
+        <td><span class="pill full">Full</span> (React-based)</td></tr>
+      <tr><td class="row-h">Source chips / citations</td>
+        <td><span class="pill full">Full</span> (extracted from <code>web_fetch_tool_result</code>)</td>
+        <td><span class="pill full">Full</span> (from RAG matches)</td></tr>
+      <tr><td class="row-h">Copy + regenerate</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Edit own message</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Branch navigation between versions</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Stop generation</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Scroll-to-bottom button</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+
+      <tr><td class="cat" colspan="3">Bubble / widget mode</td></tr>
+      <tr><td class="row-h">Full-screen + bubble UI</td>
+        <td><span class="pill full">Full</span> (URL-driven mode)</td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Embeddable on third-party sites</td>
+        <td><span class="pill partial">Partial</span> (no widget bundle yet)</td>
+        <td><span class="pill full">Full</span> (<code>dist-widget/</code> bundle)</td></tr>
+      <tr><td class="row-h">Focus trap + escape close</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Responsive reflow (320px, 200% zoom)</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+
+      <tr><td class="cat" colspan="3">Multi-tenant</td></tr>
+      <tr><td class="row-h">URL-based tenant routing</td>
+        <td><span class="pill full">Full</span> (filesystem)</td>
+        <td><span class="pill full">Full</span> (Postgres + Qdrant)</td></tr>
+      <tr><td class="row-h">Add tenant without code deploy</td>
+        <td><span class="pill full">Full</span> (drop directory)</td>
+        <td><span class="pill full">Full</span> (DB row + ingestion config)</td></tr>
+      <tr><td class="row-h">Strict tenant isolation</td>
+        <td><span class="pill partial">Partial</span> (filesystem, session-scoped)</td>
+        <td><span class="pill full">Full</span> (DB + Qdrant collection)</td></tr>
+      <tr><td class="row-h">Per-tenant defaults by org-type</td>
+        <td><span class="pill full">Full</span> (municipality, ggd)</td>
+        <td><span class="pill full">Full</span></td></tr>
+
+      <tr><td class="cat" colspan="3">Admin / configurability</td></tr>
+      <tr><td class="row-h">Login</td>
+        <td><span class="pill full">Full</span> (HMAC token)</td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Tenant overview / switching</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Edit welcome / PII / suggestions</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Edit prompt variables (tone, contact, etc.)</td>
+        <td><span class="pill partial">Partial</span> (single <code>toneOfVoice</code> field)</td>
+        <td><span class="pill full">Full</span> (wizard with ~20 fields)</td></tr>
+      <tr><td class="row-h">Draft / publish flow</td>
+        <td><span class="pill none">None</span> (immediate publish)</td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Prompt preview endpoint</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Component on/off toggles</td>
+        <td><span class="pill partial">Partial</span> (available flag only)</td>
+        <td><span class="pill full">Full</span> per component</td></tr>
+      <tr><td class="row-h">Per-tenant admin password</td>
+        <td><span class="pill none">None</span> (global)</td>
+        <td><span class="pill none">None</span> (global; spec open punt)</td></tr>
+      <tr><td class="row-h">PO analytics dashboard</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span> (Langfuse + BSAT)</td></tr>
+      <tr><td class="row-h">Tenant status endpoint</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+
+      <tr><td class="cat" colspan="3">Knowledge retrieval</td></tr>
+      <tr><td class="row-h">Local per-tenant context</td>
+        <td><span class="pill full">Full</span> (<code>context.md</code>)</td>
+        <td><span class="pill partial">Partial</span> (inline prompt vars only)</td></tr>
+      <tr><td class="row-h">Vector store + embeddings</td>
+        <td><span class="pill none">None</span> (by design)</td>
+        <td><span class="pill full">Full</span> (Qdrant)</td></tr>
+      <tr><td class="row-h">Hybrid search (semantic + BM25)</td>
+        <td><span class="pill na">n/a</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">HyDE retrieval</td>
+        <td><span class="pill na">n/a</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Cross-encoder reranker</td>
+        <td><span class="pill na">n/a</span></td>
+        <td><span class="pill full">Full</span> (own service)</td></tr>
+      <tr><td class="row-h">Scheduled scraping per tenant</td>
+        <td><span class="pill na">n/a</span></td>
+        <td><span class="pill full">Full</span> (Airflow DAG)</td></tr>
+      <tr><td class="row-h">Idempotent ingestion</td>
+        <td><span class="pill na">n/a</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+
+      <tr><td class="cat" colspan="3">Tooling and external calls</td></tr>
+      <tr><td class="row-h">Server-side web_fetch</td>
+        <td><span class="pill full">Full</span> (allowlist + max_uses)</td>
+        <td><span class="pill none">None</span></td></tr>
+      <tr><td class="row-h">Custom tools per tenant</td>
+        <td><span class="pill partial">Partial</span> (web_fetch only)</td>
+        <td><span class="pill full">Full</span> (configurable)</td></tr>
+      <tr><td class="row-h">Tool cards / status UI</td>
+        <td><span class="pill partial">Partial</span> (aggregated activity pill)</td>
+        <td><span class="pill full">Full</span> (per-tool cards)</td></tr>
+
+      <tr><td class="cat" colspan="3">Security</td></tr>
+      <tr><td class="row-h">Server-issued session tokens</td>
+        <td><span class="pill full">Full</span> (HMAC, tenant-bound)</td>
+        <td><span class="pill partial">Partial</span> (Next.js session cookies)</td></tr>
+      <tr><td class="row-h">Multi-tier rate limits</td>
+        <td><span class="pill full">Full</span> (4 tiers in app)</td>
+        <td><span class="pill partial">Partial</span> (nginx 10 r/s, one tier)</td></tr>
+      <tr><td class="row-h">Per-tenant cost / token budget</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill none">None</span></td></tr>
+      <tr><td class="row-h">Concurrent stream cap</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill none">None</span></td></tr>
+      <tr><td class="row-h">Origin pinning per tenant</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill none">None</span> (anyHost CORS)</td></tr>
+      <tr><td class="row-h">CSP + security headers</td>
+        <td><span class="pill full">Full</span> (CSP, X-Frame-Options, Permissions-Policy)</td>
+        <td><span class="pill none">None</span> in nginx</td></tr>
+      <tr><td class="row-h">Inter-service auth</td>
+        <td><span class="pill na">n/a</span> (single process)</td>
+        <td><span class="pill full">Full</span> (X-API-Key)</td></tr>
+      <tr><td class="row-h">TLS termination configured</td>
+        <td><span class="pill full">Full</span> (Railway edge)</td>
+        <td><span class="pill none">None</span> in repo</td></tr>
+      <tr><td class="row-h">Secrets management</td>
+        <td><span class="pill full">Full</span> (3 env vars, no defaults)</td>
+        <td><span class="pill partial">Partial</span> (9 secrets, weak defaults in compose)</td></tr>
+      <tr><td class="row-h">No exposed datastore ports</td>
+        <td><span class="pill na">n/a</span> (no datastore)</td>
+        <td><span class="pill none">None</span> (Qdrant 6333/6334 exposed)</td></tr>
+
+      <tr><td class="cat" colspan="3">PII and privacy</td></tr>
+      <tr><td class="row-h">Server-side redaction in pipeline</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Frontend redact pre-flight</td>
+        <td><span class="pill none">None</span> (not needed, in-pipeline)</td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">BSN with elfproef</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">IBAN, email, phone, postcode</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Paspoort + rijbewijs as distinct categories</td>
+        <td><span class="pill partial">Partial</span> (one DOCNUM class)</td>
+        <td><span class="pill full">Full</span> (two classes)</td></tr>
+      <tr><td class="row-h">No PII in logs</td>
+        <td><span class="pill full">Full</span> (log only redacted body)</td>
+        <td><span class="pill full">Full</span> (Langfuse post-redaction)</td></tr>
+
+      <tr><td class="cat" colspan="3">Observability and analytics</td></tr>
+      <tr><td class="row-h">Request id correlation</td>
+        <td><span class="pill full">Full</span> (<code>X-Request-ID</code>)</td>
+        <td><span class="pill partial">Partial</span> (Langfuse trace id)</td></tr>
+      <tr><td class="row-h">Structured logging</td>
+        <td><span class="pill partial">Partial</span> (Python logging, text)</td>
+        <td><span class="pill full">Full</span> (slf4j + Langfuse)</td></tr>
+      <tr><td class="row-h">LLM tracing (prompts, tool calls)</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span> (Langfuse)</td></tr>
+      <tr><td class="row-h">Per-message feedback</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span> (Langfuse scores)</td></tr>
+      <tr><td class="row-h">BSAT / quality KPIs</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Cost tracking</td>
+        <td><span class="pill full">Full</span> (token budget ledger)</td>
+        <td><span class="pill partial">Partial</span> (provider usage only)</td></tr>
+
+      <tr><td class="cat" colspan="3">Operational maturity</td></tr>
+      <tr><td class="row-h">Single-container deploy</td>
+        <td><span class="pill full">Full</span> (Railway)</td>
+        <td><span class="pill na">n/a</span> (multi-service by design)</td></tr>
+      <tr><td class="row-h">docker-compose local stack</td>
+        <td><span class="pill partial">Partial</span> (Dockerfile only)</td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Helm / k8s deploy</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">CI pipeline</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span> (GitLab CI)</td></tr>
+      <tr><td class="row-h">Test suite passing without externals</td>
+        <td><span class="pill full">Full</span> (91 tests, &lt;3s)</td>
+        <td><span class="pill partial">Partial</span> (831 LOC Kotlin tests; needs containers for full)</td></tr>
+      <tr><td class="row-h">Memory bounds / TTL on in-memory state</td>
+        <td><span class="pill partial">Partial</span> (no TTL, rate-limit dict grows)</td>
+        <td><span class="pill na">n/a</span> (stateless)</td></tr>
+      <tr><td class="row-h">Multi-instance horizontal scale</td>
+        <td><span class="pill none">None</span> (in-memory session + budget state)</td>
+        <td><span class="pill full">Full</span> (stateless services + shared stores)</td></tr>
+      <tr><td class="row-h">Health check endpoint</td>
+        <td><span class="pill full">Full</span> (<code>/healthz</code>)</td>
+        <td><span class="pill full">Full</span></td></tr>
+
+      <tr><td class="cat" colspan="3">Accessibility (WCAG 2.1 AA)</td></tr>
+      <tr><td class="row-h">role=log + aria-live polite</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Dutch aria-labels everywhere</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Focus trap on bubble dialog</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">prefers-reduced-motion respect</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">Keyboard navigation</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+
+      <tr><td class="cat" colspan="3">OSS readiness</td></tr>
+      <tr><td class="row-h">License file</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill full">Full</span></td></tr>
+      <tr><td class="row-h">README</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill partial">Partial</span> (single line)</td></tr>
+      <tr><td class="row-h">SECURITY.md</td>
+        <td><span class="pill none">None</span></td>
+        <td><span class="pill none">None</span></td></tr>
+      <tr><td class="row-h">No customer artifacts in repo</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill none">None</span> (CA certs, customer prompts, eval data)</td></tr>
+      <tr><td class="row-h">No required external services</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill none">None</span> (Postgres, Qdrant, Redis, Airflow)</td></tr>
+      <tr><td class="row-h">Hostable on free tiers</td>
+        <td><span class="pill full">Full</span></td>
+        <td><span class="pill none">None</span></td></tr>
+      <tr><td class="row-h">Vendor-neutrality (provider swap)</td>
+        <td><span class="pill partial">Partial</span> (Anthropic only)</td>
+        <td><span class="pill partial">Partial</span> (Azure OpenAI or OpenAI)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">2</span>agentassist gaps, prioritized</h2>
+  <p class="lead">Each gap framed as a short outcome with priority and effort estimate.</p>
+
+  <h4>Must close before public OSS release</h4>
+  <table>
+    <thead><tr><th style="width:35%;">Gap</th><th>Why it matters</th><th style="width:10ch;">Effort</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h"><span class="prio must">Must</span> Rotate Anthropic API key</td>
+        <td>Key was written to local env + chat logs during development. Treat as compromised.</td>
+        <td class="effort">5 min</td></tr>
+      <tr><td class="row-h"><span class="prio must">Must</span> LICENSE + README + SECURITY.md</td>
+        <td>An OSS repo without these is effectively unsharable. MIT or Apache 2; SECURITY.md describes the threat model and trade-offs.</td>
+        <td class="effort">2-3 h</td></tr>
+      <tr><td class="row-h"><span class="prio must">Must</span> CI pipeline running pytest on push</td>
+        <td>A green-test badge is table stakes for OSS. GitHub Actions, ~30 lines of YAML.</td>
+        <td class="effort">1 h</td></tr>
+      <tr><td class="row-h"><span class="prio must">Must</span> Remove or rate-limit the unused <code>/api/{tenant}/redact</code> route</td>
+        <td>Unauth black-box oracle for PII pattern coverage. Remove since nothing calls it.</td>
+        <td class="effort">10 min</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Should close before serving real users</h4>
+  <table>
+    <thead><tr><th style="width:35%;">Gap</th><th>Why it matters</th><th style="width:10ch;">Effort</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h"><span class="prio should">Should</span> Per-tenant admin passwords</td>
+        <td>Today every tenant editor shares one password. Argon2id hashes + role-based token claims unlock multi-customer deployments.</td>
+        <td class="effort">half day</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Draft / publish flow in admin</td>
+        <td>Today every save publishes. Editors expect a "save as draft" toggle before changes go live.</td>
+        <td class="effort">2-3 h</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Prompt-preview endpoint + admin button</td>
+        <td>Lets editors see exactly what system prompt Claude receives. One Flask route + one button.</td>
+        <td class="effort">1-2 h</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Per-message feedback (thumbs up/down)</td>
+        <td>Two endpoints, one JSONL file. Critical input for product owners; one-day build.</td>
+        <td class="effort">half day</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> LLM provider abstraction</td>
+        <td>Today the code calls <code>anthropic.Anthropic()</code> directly. A small <code>LLMProvider</code> interface lets contributors plug OpenAI, Azure, or local models. Keeps Anthropic as the default.</td>
+        <td class="effort">1 day</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Vector-store extension point (optional RAG mode)</td>
+        <td>For tenants whose knowledge outgrows a single <code>context.md</code>. Document an interface + example adapter (e.g. Qdrant or SQLite-VSS); do not implement in core.</td>
+        <td class="effort">1-2 days</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Memory TTL on histories / rate-limit buckets / session locks</td>
+        <td>Three in-memory dicts that grow without pruning. One periodic-prune helper covers all three.</td>
+        <td class="effort">2 h</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Tighten <code>ALLOWED_ORIGINS</code> default</td>
+        <td>Default is <code>*</code>. For production, document the env-var override.</td>
+        <td class="effort">15 min</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Set <code>SESSION_SECRET</code> as its own Railway variable</td>
+        <td>Decouples session lifetime from admin token rotation. 30-second operator change.</td>
+        <td class="effort">30 sec</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Nice when time permits</h4>
+  <table>
+    <thead><tr><th style="width:35%;">Gap</th><th>Why it matters</th><th style="width:10ch;">Effort</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Edit own message + branch navigation</td>
+        <td>Requires a tree-of-versions model on the server. A lot of code; modest user value compared to copy + regenerate, which already exists.</td>
+        <td class="effort">2-3 days</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Embeddable widget bundle</td>
+        <td>Today the bubble runs on the project's own domain. A <code>widget.js</code> shipped on third-party sites needs scoped CSS, cross-origin token handling, and a CSP carve-out for embedders.</td>
+        <td class="effort">2-3 days</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> docker-compose for local dev</td>
+        <td>Useful for contributors who want LLM + admin + chat front-end in one command. Currently a single Dockerfile.</td>
+        <td class="effort">2 h</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Lightweight observability adapter</td>
+        <td>Optional OpenTelemetry exporter (or even just JSONL trace per turn) so users who want Langfuse / Helicone / their own analytics can plug in.</td>
+        <td class="effort">half day</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Multi-instance scale support</td>
+        <td>Today the in-memory token budget and concurrency cap are per worker. Document Redis backends as a follow-up.</td>
+        <td class="effort">1-2 days</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Paspoort and rijbewijs as separate redaction classes</td>
+        <td>Today both collapse into DOCNUM. Two extra regexes; better labels in admin logs.</td>
+        <td class="effort">1 h</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Generalize org-type defaults beyond Dutch municipalities</td>
+        <td>Suggestion presets for <code>library</code>, <code>school</code>, <code>support-team</code> with English defaults. Widens OSS audience.</td>
+        <td class="effort">2 h</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:0.75rem;"><strong>Estimated total to "OSS-ready":</strong> roughly 2 days of focused work for Must + the top three Should items.</p>
+</section>
+
+<section>
+  <h2><span class="num">3</span>virtuele-assistent gaps, prioritized</h2>
+  <p class="lead">Different shape: the project is feature-complete by spec, so most gaps here are about hardening and operational hygiene rather than missing capability.</p>
+
+  <h4>Must close before public exposure</h4>
+  <table>
+    <thead><tr><th style="width:35%;">Gap</th><th>Why it matters</th><th style="width:10ch;">Effort</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h"><span class="prio must">Must</span> Eliminate weak default secrets in docker-compose</td>
+        <td>Replace every <code>${VAR:-default}</code> with <code>${VAR:?error}</code>; remove the literal <code>POSTGRES_PASSWORD: airflow</code>. Today a deploy without a <code>.env</code> file silently uses <code>changeme</code> / <code>adminpass123</code>.</td>
+        <td class="effort">30 min</td></tr>
+      <tr><td class="row-h"><span class="prio must">Must</span> Restrict CORS on the backend</td>
+        <td><code>anyHost()</code> in <code>Application.kt:99</code>. Pin to the production frontend origin(s) explicitly.</td>
+        <td class="effort">15 min</td></tr>
+      <tr><td class="row-h"><span class="prio must">Must</span> Drop Qdrant host port mappings</td>
+        <td><code>"6333:6333"</code> and <code>"6334:6334"</code> in compose. Keep Qdrant on the internal docker network only.</td>
+        <td class="effort">5 min</td></tr>
+      <tr><td class="row-h"><span class="prio must">Must</span> Add security headers in nginx</td>
+        <td>CSP, X-Content-Type-Options, Referrer-Policy, X-Frame-Options. Five <code>add_header</code> directives.</td>
+        <td class="effort">1 h</td></tr>
+      <tr><td class="row-h"><span class="prio must">Must</span> Fix ingestion container restart loop</td>
+        <td>Spec techdebt: ingestion service in compose has no CMD/ENTRYPOINT, crashes on boot. Decide: long-running service with uvicorn entry, or remove from compose.</td>
+        <td class="effort">half day</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Should close before scale</h4>
+  <table>
+    <thead><tr><th style="width:35%;">Gap</th><th>Why it matters</th><th style="width:10ch;">Effort</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h"><span class="prio should">Should</span> Per-tenant token / cost budget</td>
+        <td>Cost ceiling per tenant, enforced server-side. Today only provider-side quota stops spend; one bad day from a single tenant is uncapped.</td>
+        <td class="effort">1 day</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Concurrent stream cap per IP and per tenant</td>
+        <td>Today nginx rate-limits requests but not concurrent open streams. A handful of long-running SSE connections from one IP is uncapped.</td>
+        <td class="effort">half day</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Per-tenant admin passwords</td>
+        <td>Project's own "open punt" in the spec. Argon2id-hashed tenant passwords + role-based admin tokens.</td>
+        <td class="effort">1 day</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Tenant-scoped admin password via secrets manager</td>
+        <td>Document a runbook for storing the 9 production secrets (Langfuse keys, OpenAI, Azure, Airflow Fernet, etc.) outside <code>.env</code> files. AWS SSM, Doppler, or Vault.</td>
+        <td class="effort">1 day</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Document TLS termination in repo</td>
+        <td>nginx listens on port 80 only. Production deploys assume an upstream LB does TLS; write that down explicitly or add a TLS-terminating ingress.</td>
+        <td class="effort">2 h</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Widget build artifact tracked in package.json scripts</td>
+        <td>Spec techdebt: <code>agent-frontend/dist-widget/</code> is an untracked build output; <code>npm run build-widget</code> script missing.</td>
+        <td class="effort">1 h</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Frontend PII redact fail-closed option</td>
+        <td>Spec PII-2 allows fall-back to raw body on redact failure. Add an env-toggle for fail-closed mode so privacy officers can opt in.</td>
+        <td class="effort">half day</td></tr>
+      <tr><td class="row-h"><span class="prio should">Should</span> Tightened reranker fallback path</td>
+        <td>Reranker service falls back gracefully when slow; document timeout thresholds and observability when fallback fires.</td>
+        <td class="effort">half day</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Nice when time permits</h4>
+  <table>
+    <thead><tr><th style="width:35%;">Gap</th><th>Why it matters</th><th style="width:10ch;">Effort</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Origin pinning per tenant</td>
+        <td>Today CORS is wide open; once tightened (Must above), allow per-tenant Origin allowlists for the embed widget.</td>
+        <td class="effort">half day</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Per-tenant overrides for nginx rate limit</td>
+        <td>Today 10 r/s applies to all tenants. Document how to scope per-tenant via Lua or app-side limits.</td>
+        <td class="effort">1 day</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Move aria-additions out of <code>assistant-ui/thread.tsx</code></td>
+        <td>Spec techdebt: a11y additions are vulnerable to assistant-ui CLI upgrades. Extract to <code>components/civai/</code>.</td>
+        <td class="effort">2 h</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Memory-tool / agent loop for richer multi-turn</td>
+        <td>Today the agent is a single LLM pass per turn with tool-call. Extending to a multi-step agent loop would close the gap with agentassist's web_fetch approach for live data.</td>
+        <td class="effort">3-5 days</td></tr>
+      <tr><td class="row-h"><span class="prio nice">Nice</span> Cleanup of aui-* upgrade markers in civai/ files</td>
+        <td>Spec techdebt: cosmetic, no risk.</td>
+        <td class="effort">15 min</td></tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top:0.75rem;"><strong>Estimated total for Must items:</strong> about a day; mostly compose edits + nginx headers + a couple of Kotlin lines.</p>
+</section>
+
+<section>
+  <h2><span class="num">4</span>The biggest single gap per project</h2>
+  <div class="panel left">
+    <h3 style="margin-top:0;">agentassist</h3>
+    <p>The biggest gap is <strong>OSS readiness</strong>. The product itself is solid (security, a11y, multi-tenant, streaming, markdown, admin all in place), but the repo today is missing a license, README, SECURITY.md, and CI. Without those four files, the project is not actually distributable, regardless of how good the code is. Two-to-three hours of work would change that.</p>
+    <p>The second-biggest gap is <strong>provider abstraction</strong>. Bound directly to Anthropic. For an OSS template this is a friction point for evaluators who want to try with their own provider. A small <code>LLMProvider</code> interface keeps Anthropic as the default while letting contributors plug others.</p>
+  </div>
+
+  <div class="panel right">
+    <h3 style="margin-top:0;">virtuele-assistent</h3>
+    <p>The biggest gap is <strong>shipped configuration safety</strong>. The product itself is feature-complete (real RAG, admin dashboard, Langfuse analytics, multi-tenant, scheduled ingestion), but the deploy posture is fragile: weak default secrets in compose, Qdrant on host ports, anyHost CORS, no security headers. A careless deploy gives an attacker the keys to the admin DB and the vector store. Roughly a day of work would close all of it.</p>
+    <p>The second-biggest gap is <strong>per-tenant cost controls</strong>. Today there is no enforced token / spend ceiling per tenant. For an enterprise system that should be an operational surprise rather than an unsolved problem.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">5</span>Cross-cutting observations</h2>
+  <ul>
+    <li><strong>The two projects are inverses on configuration safety.</strong> agentassist fails closed (missing env vars stop the app); virtuele-assistent fails open (missing env vars deploy with usable weak defaults). The difference is one design choice, not effort.</li>
+    <li><strong>Both projects have the same admin-password gap.</strong> Each is single-password; each spec already lists this as an open point. Same fix shape on each side (argon2 hash per tenant + role-bound token claims).</li>
+    <li><strong>Each project has one thing the other lacks at the retrieval layer.</strong> agentassist has live <code>web_fetch</code> with an allowlist (fresh information, no ingestion); virtuele-assistent has real RAG with hybrid + HyDE + reranker (large knowledge bases, no live data). The most capable solution would combine both: RAG for breadth, allowlisted web_fetch for currency.</li>
+    <li><strong>Observability is the largest functional asymmetry.</strong> virtuele-assistent has Langfuse + BSAT + analytics dashboards; agentassist has request id + structured log + JSONL token ledger. For a project owner who wants conversation analytics, agentassist needs an explicit observability story (export traces to Langfuse, or a small built-in analytics page).</li>
+    <li><strong>Tests favor agentassist for iteration speed.</strong> 91 tests in &lt; 3 seconds with no external dependencies vs ~830 LOC Kotlin tests that need container fixtures. Both are fine; agentassist's setup encourages tighter iteration.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">6</span>Suggested next 30 / 60 / 90 days</h2>
+  <h3>agentassist roadmap to v1 OSS</h3>
+  <ul>
+    <li><strong>Week 1.</strong> Rotate Anthropic key. Add LICENSE, README, SECURITY.md, CONTRIBUTING.md. GitHub Actions for pytest. Remove the unused redact route. Set SESSION_SECRET on Railway.</li>
+    <li><strong>Week 2.</strong> Provider abstraction (LLMProvider). Draft / publish flow in admin. Prompt-preview endpoint. Per-message feedback (thumbs up/down to JSONL).</li>
+    <li><strong>Week 3.</strong> Memory TTL helper. Per-tenant admin passwords. Generalized org-type defaults for non-Dutch deployments. Vector-store extension point + one example adapter.</li>
+    <li><strong>Week 4.</strong> docker-compose for local dev with optional Redis. Documentation pass. v1.0 OSS release.</li>
+  </ul>
+
+  <h3>virtuele-assistent hardening sprint</h3>
+  <ul>
+    <li><strong>Week 1.</strong> Compose fail-closed secrets. CORS lockdown. Drop Qdrant host ports. nginx security headers. Fix ingestion restart loop.</li>
+    <li><strong>Week 2.</strong> Per-tenant token / cost budget service (mirrors agentassist pattern). Concurrent-stream cap. Secrets-manager runbook.</li>
+    <li><strong>Week 3.</strong> Per-tenant admin passwords. Frontend PII fail-closed option. Reranker observability.</li>
+    <li><strong>Week 4.</strong> Widget build artifact in CI. Move aria-additions to civai/. Documented TLS termination path.</li>
+  </ul>
+</section>
+
+<div class="verdict">
+  <strong>Bottom line.</strong>
+  Neither project has an architectural gap that requires a rewrite. agentassist's gaps are mostly "missing OSS metadata + provider abstraction + a few admin niceties" — under a month of work to v1 OSS. virtuele-assistent's gaps are mostly "shipped-config hygiene + cost controls" — under a month of focused hardening to a defensible production posture. Both lists fit in a single sprint.
+</div>
+
+</div>
+
+<script>
+(function () {
+  const btn = document.getElementById("themeToggle");
+  const root = document.documentElement;
+  const stored = (() => { try { return localStorage.getItem("gap.theme"); } catch (_) { return null; } })();
+  if (stored) root.setAttribute("data-theme", stored);
+  function sync(){ btn.textContent = root.getAttribute("data-theme") === "dark" ? "Light mode" : "Dark mode"; }
+  sync();
+  btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("gap.theme", next); } catch (_) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

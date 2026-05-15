@@ -120,3 +120,4 @@
 | 2026-05-15 | reverse-engineer | reports | [REPORT.html](projects/reverse-engineer/reports/REPORT.html) | Claude.app v1.7196.0 reverse engineering report vs v1.5354.0 |
 | 2026-05-15 | agentassist | reports | [security-audit-v2.html](projects/agentassist/reports/security-audit-v2.html) | Security audit v2 after remediation: B- to A-, two new P3s flagged |
 | 2026-05-15 | agentassist | reports | [security-review.html](projects/agentassist/reports/security-review.html) | Fresh security review and comparison: agentassist (A-) vs virtuele-assistent (C) |
+| 2026-05-15 | agentassist | reports | [gap-analysis.html](projects/agentassist/reports/gap-analysis.html) | Gap analysis: agentassist and virtuele-assistent against a complete multi-tenant chatbot target, prioritized with effort estimates |
