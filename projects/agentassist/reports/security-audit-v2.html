@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Security audit v2 - post remediation - agentassist</title>
+<style>
+  :root[data-theme="light"] {
+    --bg:#fff;--surface:#fff;--text:#111827;--muted:#6b7280;--border:#e5e7eb;
+    --accent:#2563eb;--code-bg:#f3f4f6;
+    --good:#15803d;--warn:#b45309;--bad:#b91c1c;
+    --good-bg:#dcfce7;--warn-bg:#fef3c7;--bad-bg:#fee2e2;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0b0d10;--surface:#14181d;--text:#f3f4f6;--muted:#9ca3af;--border:#262d35;
+    --accent:#60a5fa;--code-bg:#1f2630;
+    --good:#4ade80;--warn:#fbbf24;--bad:#f87171;
+    --good-bg:#052e1a;--warn-bg:#3a2a08;--bad-bg:#3a0c0c;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+  header.page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  h1{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 0.25rem;letter-spacing:-0.01em;}
+  .sub{color:var(--muted);margin:0;max-width:62ch;}
+  .theme-toggle{background:var(--surface);color:var(--text);border:1px solid var(--border);
+                padding:0.45rem 0.85rem;border-radius:999px;font:inherit;font-size:0.85rem;cursor:pointer;}
+  .theme-toggle:hover{border-color:var(--accent);}
+  section{margin:2.5rem 0;}
+  h2{font-size:1.2rem;margin:0 0 0.6rem;letter-spacing:-0.005em;}
+  h2 .num{color:var(--muted);font-weight:500;margin-right:0.5rem;}
+  h3{font-size:1rem;margin:1.25rem 0 0.4rem;}
+  p.lead{color:var(--muted);margin:0 0 1rem;max-width:62ch;}
+  code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.86em;}
+  pre{background:var(--code-bg);padding:0.6rem 0.85rem;border-radius:8px;overflow-x:auto;font-size:0.82rem;line-height:1.45;}
+  pre code{background:transparent;padding:0;}
+
+  .score{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem 1.75rem;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap;}
+  .score .big{font-size:2.5rem;font-weight:700;letter-spacing:-0.03em;}
+  .score .arrow{color:var(--muted);font-size:1.5rem;}
+  .grade-b{color:#16a34a;}
+  .grade-a{color:var(--good);}
+  .score .why{flex:1;min-width:200px;color:var(--muted);font-size:0.92rem;}
+
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;font-size:0.92rem;}
+  th,td{padding:0.55rem 0.85rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--border);}
+  thead th{background:var(--code-bg);font-weight:600;}
+  td.row-h{font-weight:600;width:34ch;}
+  tr:last-child td{border-bottom:none;}
+
+  .pill{display:inline-block;padding:1px 0.55rem;border-radius:999px;font-size:0.78rem;font-weight:500;}
+  .pill.fixed{background:var(--good-bg);color:var(--good);}
+  .pill.partial{background:var(--warn-bg);color:var(--warn);}
+  .pill.open{background:var(--bad-bg);color:var(--bad);}
+  .pill.defer{background:var(--code-bg);color:var(--muted);}
+
+  .finding{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--border);
+           border-radius:10px;padding:0.85rem 1rem;margin-bottom:0.75rem;}
+  .finding.p1{border-left-color:var(--bad);}
+  .finding.p2{border-left-color:var(--warn);}
+  .finding.p3{border-left-color:var(--muted);}
+  .finding .severity{display:inline-block;font-weight:600;font-size:0.78rem;margin-right:0.5rem;text-transform:uppercase;letter-spacing:0.04em;}
+  .finding.p1 .severity{color:var(--bad);}
+  .finding.p2 .severity{color:var(--warn);}
+  .finding.p3 .severity{color:var(--muted);}
+  .finding .where{color:var(--muted);font-size:0.85rem;}
+
+  .verdict{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
+           border-radius:10px;padding:1rem 1.25rem;margin:1rem 0;}
+  .verdict strong{color:var(--accent);}
+
+  @media print { body{background:#fff;color:#000;} .theme-toggle{display:none;} .wrap{padding:1rem;max-width:100%;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page-header">
+  <div>
+    <h1>Security audit, v2</h1>
+    <p class="sub">Re-audit of agentassist after the remediation work. Each previous finding revisited against the running code, plus a fresh look for new issues.</p>
+  </div>
+  <button class="theme-toggle" id="themeToggle" type="button">Dark mode</button>
+</header>
+
+<section>
+  <div class="score">
+    <div><span class="big grade-b">B-</span></div>
+    <div class="arrow">to</div>
+    <div><span class="big grade-a">A-</span></div>
+    <div class="why">
+      4 of 6 findings closed in code; 1 (admin per-tenant) explicitly deferred per plan; 1 (API key rotation) is a manual operator step the user has been notified about.
+      No new P1 introduced. Two small new P3s noted below.
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">1</span>Status of previous findings</h2>
+  <table>
+    <thead>
+      <tr><th>Finding</th><th>Status</th><th>Evidence</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="row-h">P1. Chat endpoint unauthenticated</td>
+        <td><span class="pill fixed">Closed (by abuse controls)</span></td>
+        <td>Per-tenant <code>allowedOrigins</code>, four rate-limit tiers (per IP/min, IP/hr, session/min, tenant/min), per-tenant 24h <code>dailyTokenBudget</code> with JSONL ledger, concurrent-stream cap (2/IP, 20/tenant). Endpoint stays anonymous by design; abuse is bounded.</td>
+      </tr>
+      <tr>
+        <td class="row-h">P1. session_key client-controlled</td>
+        <td><span class="pill fixed">Closed</span></td>
+        <td>Server issues HMAC-SHA256-signed tokens bound to the tenant. Cookie attrs verified live: <code>Secure; HttpOnly; SameSite=Lax; Path=/api/{tenant}/; Max-Age=86400</code>. Request body <code>session_key</code> field is now ignored entirely.</td>
+      </tr>
+      <tr>
+        <td class="row-h">P1. Anthropic key leaked to .env / chat log</td>
+        <td><span class="pill open">Open (manual)</span></td>
+        <td>Code-side nothing more to do. The user still needs to: generate a new key in the Anthropic console, set <code>ANTHROPIC_API_KEY</code> on Railway, revoke the old. Listed in deploy notes.</td>
+      </tr>
+      <tr>
+        <td class="row-h">P2. No Content-Security-Policy</td>
+        <td><span class="pill fixed">Closed</span></td>
+        <td>Live header: <code>default-src 'self'; connect-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'</code>. Plus <code>X-Frame-Options: DENY</code>, <code>Permissions-Policy</code>, <code>Referrer-Policy: no-referrer</code>, <code>X-Content-Type-Options: nosniff</code>.</td>
+      </tr>
+      <tr>
+        <td class="row-h">P2. Error text from upstream may bleed</td>
+        <td><span class="pill fixed">Closed</span></td>
+        <td><code>friendly_error</code> falls back to a static safe message; <code>_safe_error_text</code> drops stack-trace-shaped strings; generic Exception handler logs full trace server-side and returns sanitized body. Every response carries <code>X-Request-ID</code> for support correlation.</td>
+      </tr>
+      <tr>
+        <td class="row-h">P2. Single global admin password</td>
+        <td><span class="pill defer">Deferred (per plan)</span></td>
+        <td>Remediation plan §6 recommended shipping v1 OSS with single password, adding per-tenant in v0.2. No change here.</td>
+      </tr>
+      <tr>
+        <td class="row-h">P3. _histories has no TTL</td>
+        <td><span class="pill open">Open (memory only)</span></td>
+        <td>Still unbounded across <code>(tenant, session)</code> pairs. Bounded by sessions-per-day; relevant only for long-uptime processes.</td>
+      </tr>
+      <tr>
+        <td class="row-h">P3. CORS defaults to wildcard</td>
+        <td><span class="pill partial">Configurable</span></td>
+        <td>Env var <code>ALLOWED_ORIGINS</code> still defaults to <code>*</code>. Acceptable demo default; production deploys should set this. Documented.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">2</span>New findings introduced by the remediation work</h2>
+  <p class="lead">Two minor things turned up while reading the changes. Neither is a regression of an existing protection, both are small additions that became visible because the rest got tighter.</p>
+
+  <div class="finding p3">
+    <div><span class="severity">P3</span><code>/api/{tenant}/redact</code> still exposed and unrate-limited</div>
+    <div class="where"><code>app.py:api_redact</code></div>
+    <p>The frontend no longer calls this endpoint (redaction happens inside <code>api_chat</code>). It is still mounted and returns the same redacted output plus counts. An attacker could use it as a black-box oracle to probe which patterns the server matches (e.g., test variant BSN spacings).</p>
+    <p><strong>Fix:</strong> either remove the route entirely (recommended, since nothing calls it) or apply a rate limit (e.g., 20/min/IP).</p>
+    <p>Live probe just now: <code>POST /api/montferland/redact</code> returned 200 with no auth, no rate limit.</p>
+  </div>
+
+  <div class="finding p3">
+    <div><span class="severity">P3</span><code>SESSION_SECRET</code> not set explicitly on Railway</div>
+    <div class="where"><code>app.py</code> env wiring</div>
+    <p>Live env check shows <code>ADMIN_SECRET</code> is set but <code>SESSION_SECRET</code> is not. Today this is harmless: <code>SESSION_SECRET</code> falls back to <code>ADMIN_SECRET</code> at startup (<code>SESSION_SECRET = os.environ.get("SESSION_SECRET") or ADMIN_SECRET</code>), so sessions persist across restarts as long as <code>ADMIN_SECRET</code> doesn't change.</p>
+    <p>The risk is operational: if someone rotates <code>ADMIN_SECRET</code> (good admin hygiene), every visitor's session token also gets invalidated. Setting <code>SESSION_SECRET</code> independently breaks the coupling so the two can rotate on different cadences.</p>
+    <p><strong>Fix:</strong></p>
+    <pre><code>railway variables --service agentassist \
+  --set "SESSION_SECRET=$(python3 -c 'import secrets;print(secrets.token_hex(32))')"</code></pre>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">3</span>Fresh look at the new code</h2>
+  <p class="lead">Spot-checked every module that changed or was added.</p>
+
+  <h3>Session tokens (<code>auth.py</code>)</h3>
+  <ul>
+    <li>HMAC-SHA256 with <code>hmac.compare_digest</code> for sig comparison: not timing-leaky.</li>
+    <li>Token claims are <code>{t: tenant_id, sid: random16Bytes_base64url, exp: unix_ts}</code>. Body is base64'd JSON, not encrypted. Nothing sensitive in the claims; the <code>sid</code> is opaque random.</li>
+    <li>Tenant binding enforced: <code>verify_session_token</code> returns <code>None</code> if <code>claims["t"]</code> doesn't match the tenant id from the URL.</li>
+    <li>Cookie attrs verified on production response: <code>Secure</code>, <code>HttpOnly</code>, <code>SameSite=Lax</code>, path-scoped per tenant, 24h expiry.</li>
+  </ul>
+
+  <h3>Markdown renderer (<code>static/index.html</code> MD module)</h3>
+  <ul>
+    <li>Builds DOM via <code>createElement</code> + <code>textContent</code> only. No <code>innerHTML</code>. Model output cannot inject HTML.</li>
+    <li>Link URLs filtered: <code>new URL(url, window.location.origin)</code> then protocol allowlist (<code>http:</code>, <code>https:</code>, <code>mailto:</code>). <code>javascript:</code> and <code>data:</code> URLs render as plain text.</li>
+    <li>Inline regex uses lazy quantifiers + negated character classes, no nested unbounded quantifiers, no catastrophic backtracking risk.</li>
+    <li>Link text and code content are set via <code>textContent</code>: even if the model emits <code>[&lt;script&gt;](javascript:...)</code> nothing executes.</li>
+  </ul>
+
+  <h3>Budget ledger (<code>budget.py</code>)</h3>
+  <ul>
+    <li>JSONL file per tenant. Append-only writes under per-tenant lock. Reads are O(file size); at the default 200K tokens/day budget that's hundreds of bytes per day per tenant.</li>
+    <li>File path uses the regex-validated tenant id from <code>tenants.py</code>: no path traversal.</li>
+    <li><code>tokens_last_24h</code> tolerates malformed JSON lines (skips them); no parse-error crash path.</li>
+  </ul>
+
+  <h3>Concurrency cap (<code>concurrency.py</code>)</h3>
+  <ul>
+    <li>Counter dict guarded by a single <code>Lock</code>. Acquire / release pair around the SSE generator; finally-block in <code>app.py</code> ensures release even on disconnect.</li>
+    <li>Per-worker only. If you ever scale to multiple gunicorn workers or instances, the cap becomes per-worker, not global. Document for production.</li>
+  </ul>
+
+  <h3>Origin pinning (<code>app.py:_origin_allowed</code>)</h3>
+  <ul>
+    <li>Empty allowlist = open (right default for OSS demo).</li>
+    <li>Absent Origin = allowed (server-to-server, curl, same-origin form post).</li>
+    <li>Hostname extracted with <code>urlparse(...).hostname</code> and lowercased; allowlist compared case-insensitively.</li>
+    <li>Defeats casual cross-site scraping from a browser, not curl. Documented trade-off; pair with the rate limits.</li>
+  </ul>
+
+  <h3>Rate limiters (<code>ratelimit.py</code>)</h3>
+  <ul>
+    <li>Sliding-window deques per key. Working as designed.</li>
+    <li>Bucket dict is not pruned. With many unique IPs, memory grows. Same caveat as the histories dict; flag for long-running deployments.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">4</span>Side-by-side: what changed</h2>
+  <table>
+    <thead><tr><th>Control</th><th>Before</th><th>Now</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h">Chat endpoint auth</td><td>1-tier rate limit only</td><td>Origin pin + 4-tier rate limit + 24h token budget + concurrent cap</td></tr>
+      <tr><td class="row-h">Session id source</td><td>Client-supplied string</td><td>HMAC-signed, server-issued, tenant-bound, 24h TTL</td></tr>
+      <tr><td class="row-h">Cookie attrs</td><td>n/a</td><td>Secure, HttpOnly, SameSite=Lax, path-scoped per tenant</td></tr>
+      <tr><td class="row-h">CSP</td><td>None</td><td>default-src 'self', frame-ancestors 'none', etc.</td></tr>
+      <tr><td class="row-h">Frame protection</td><td>None</td><td><code>X-Frame-Options: DENY</code> + <code>frame-ancestors 'none'</code></td></tr>
+      <tr><td class="row-h">Permissions-Policy</td><td>None</td><td>geolocation, microphone, camera, payment all disabled</td></tr>
+      <tr><td class="row-h">Request correlation</td><td>None</td><td><code>X-Request-ID</code> on every response, in error bodies, in logs</td></tr>
+      <tr><td class="row-h">Error message hygiene</td><td>Type name leaked on unknown errors</td><td>Generic Dutch message; full trace server-side only</td></tr>
+      <tr><td class="row-h">Bot output XSS surface</td><td>textContent only (plain)</td><td>Markdown renderer, still DOM-only, no innerHTML</td></tr>
+      <tr><td class="row-h">Link href safety</td><td>n/a</td><td>Protocol allowlist (http/https/mailto)</td></tr>
+      <tr><td class="row-h">Test count</td><td>62</td><td>91 (+29: budget, concurrency, session tokens, abuse controls)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">5</span>Outstanding work</h2>
+  <p class="lead">In rough order of "what to do next."</p>
+  <ol>
+    <li><strong>Rotate the Anthropic API key.</strong> Operator step. Documented in the deploy notes. No code change required.</li>
+    <li><strong>Set <code>SESSION_SECRET</code> as its own Railway variable.</strong> 30 seconds; decouples session lifetime from admin token lifetime.</li>
+    <li><strong>Decide on <code>/api/{tenant}/redact</code>.</strong> Either remove the route (no callers in the current frontend) or add a rate limit. Removing is cleaner.</li>
+    <li><strong>OSS release prep.</strong> Add <code>SECURITY.md</code> documenting: the threat model, the documented trade-offs (unsafe-inline CSP, wildcard CORS default, single admin password), the things this project does and does not protect against (e.g. no DDoS), how to report a vulnerability.</li>
+    <li><strong>Per-tenant admin passwords (v0.2).</strong> Already planned; not a regression of any previous protection.</li>
+    <li><strong>Bucket / lock / history TTL.</strong> One periodic-prune helper covers all three. Add when you see real-world memory growth, not before.</li>
+  </ol>
+</section>
+
+<div class="verdict">
+  <strong>Verdict.</strong> The remediation moved the project from "small but with real holes" to "small with documented trade-offs." The chat endpoint is now legitimately defensible as a public surface: no auth (intended), four independent abuse layers, a hard per-tenant token budget, and CSP+frame protection on every response. Two operator actions remain: rotate the leaked key, and set <code>SESSION_SECRET</code>. After those, the project is ready for OSS release with a <code>SECURITY.md</code>.
+</div>
+
+</div>
+
+<script>
+(function () {
+  const btn = document.getElementById("themeToggle");
+  const root = document.documentElement;
+  const stored = (() => { try { return localStorage.getItem("sec2.theme"); } catch (_) { return null; } })();
+  if (stored) root.setAttribute("data-theme", stored);
+  function sync(){ btn.textContent = root.getAttribute("data-theme") === "dark" ? "Light mode" : "Dark mode"; }
+  sync();
+  btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("sec2.theme", next); } catch (_) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
