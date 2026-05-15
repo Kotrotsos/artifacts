@@ -113,3 +113,4 @@
 | 2026-05-14 | content | images | [ui-generic.png](projects/content/images/ui-generic.png) | DESIGN.md definitive guide: ui-generic.png |
 | 2026-05-14 | content | images | [ui-stripe-style.png](projects/content/images/ui-stripe-style.png) | DESIGN.md definitive guide: ui-stripe-style.png |
 | 2026-05-14 | content | images | [ui-linear-style.png](projects/content/images/ui-linear-style.png) | DESIGN.md definitive guide: ui-linear-style.png |
+| 2026-05-15 | agentassist | reports | [chat-request-flow.html](projects/agentassist/reports/chat-request-flow.html) | Sequence diagram of the multi-tenant chat request flow |
