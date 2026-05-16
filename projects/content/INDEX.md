@@ -54,3 +54,4 @@
 | 2026-05-16 | reports | [draft.md](reports/draft.md) | Skills MCP Tools three layers: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/skills-mcp-tools-three-layers/draft.md |
 | 2026-05-16 | reports | [substack-version.md](reports/substack-version.md) | Skills MCP Tools three layers: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/skills-mcp-tools-three-layers/substack-version.md |
 | 2026-05-16 | images | [hero.png](images/hero.png) | Skills MCP Tools three layers: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/skills-mcp-tools-three-layers/hero.png |
+| 2026-05-16 | images | [diagram-1-anatomy.png](images/diagram-1-anatomy.png) | Skills MCP Tools three layers: diagram-1-anatomy.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/skills-mcp-tools-three-layers/diagram-1-anatomy.png |
