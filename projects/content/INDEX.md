@@ -51,3 +51,4 @@
 | 2026-05-16 | images | [diagram-1-crossover.png](images/diagram-1-crossover.png) | The Great Flip: diagram-1-crossover.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-great-flip-anthropic-openai/diagram-1-crossover.png |
 | 2026-05-16 | images | [diagram-2-revenue.png](images/diagram-2-revenue.png) | The Great Flip: diagram-2-revenue.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-great-flip-anthropic-openai/diagram-2-revenue.png |
 | 2026-05-16 | images | [diagram-3-cracks.png](images/diagram-3-cracks.png) | The Great Flip: diagram-3-cracks.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-great-flip-anthropic-openai/diagram-3-cracks.png |
+| 2026-05-16 | reports | [draft.md](reports/draft.md) | Skills MCP Tools three layers: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/skills-mcp-tools-three-layers/draft.md |

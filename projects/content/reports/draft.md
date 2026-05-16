@@ -1,126 +1,160 @@
-# The Great Flip: How Anthropic Overtook OpenAI in Enterprise AI
+# Skills, MCP, and Tool Calling: The Three Layers of Agent Extension
 
-*For the first time in the modern AI era, more U.S. businesses paid for Claude than for ChatGPT in April 2026. The data is real money on real corporate cards. The lead is real. And the cracks underneath it are also real.*
+*Skills are loud right now. Building agents on Skills alone gives you half an agent. Here is what each of the three layers actually does, when to use which, and why "just write a Skill" is the most common architectural mistake I see in 2026.*
 
-![Two abstract crystalline figures on an isometric stage, the teal one elevated slightly above the coral one, with a quiet line chart showing the crossover beneath them](hero.png)
+![Three stacked layers, the bottom labeled tools, the middle labeled MCP, the top labeled Skills, rendered as a clean isometric stack of teal slabs with coral side icons](hero.png)
 
 **Key takeaways:**
 
-- The Ramp AI Index for May 2026 shows Anthropic at 34.4% U.S. business adoption versus OpenAI at 32.3%. This is not a survey of intent. Ramp tracks over $100 billion in annual spend across 50,000 companies, which means real money on real corporate cards is now choosing Claude over ChatGPT. Three years ago Anthropic was at 0.03% of businesses. Today it is the market leader.
-- The engine is Claude Code. By February 2026, this single product was generating over $2.5 billion in annualized revenue, business subscriptions had quadrupled in six weeks, and an estimated 4% of all public GitHub commits worldwide were authored by Claude Code. Anthropic won by going deep into developer workflows while OpenAI was distracted with browsers, Sora, and consumer mindshare.
-- The crown is not stable. Anthropic faces three structural problems that smart procurement teams are already pricing in: a token-based business model that misaligns the vendor's incentives with the customer's, runaway customer spend (Uber burned its full 2026 AI budget in four months), and quality cracks under 80x year-over-year growth that the company explicitly planned for only 10x. The lead is real. So is the question of whether it holds.
+- Three different extension mechanisms get conflated in 2026 because they all touch the same problem: making an agent do something useful. They are not interchangeable. Tool calling is the agent's hands. MCP is its outlets to external systems. Skills are its playbooks. Each one solves a problem the other two cannot.
+- The Skills hype is loud because Skills shipped most recently (October 2025) and they are easy to write. The hype is also misleading. Skills cannot authenticate to your database. They cannot maintain state. They cannot expose one capability to every agent in your fleet at once. The teams treating Skills as the universal answer are quietly hitting walls.
+- The 2026 architecture that actually works is hybrid. Skills provide the procedure. MCP provides the connectors with auth, state, and isolation. Tools provide the deterministic local operations. The decision is not "Skill or MCP" but "Skill for the how, MCP for the where, Tool for the what."
 
 ---
 
-For years, the AI industry operated on one simple assumption. OpenAI was the market. ChatGPT was the product everyone knew. GPT was the model every competitor compared against. OpenAI was the default.
+If you have spent any time inside the Claude or AI-engineering communities in the last six months, you have watched a quiet civil war play out. One camp is shipping Skills for everything. Another camp is wiring up MCP servers. A third camp is hand-rolling tools through the agent's tool-use API and ignoring both of the new shiny things. Most of the writing about this conflict is either tribal (one camp arguing the other is wrong) or vague (one paragraph each on three things, with no decision framework).
 
-That assumption just broke.
+The actual answer is mundane. The three mechanisms are complementary, not competing. They solve different problems, and teams that have shipped real agents in production are using all three, often in the same agent.
 
-According to the May 2026 Ramp AI Index, more U.S. businesses paid for Anthropic's Claude than for OpenAI's ChatGPT in April 2026. It is the first time in the AI industry's short history that the San Francisco-based safety lab has held the top position. The headline is real. The story underneath the headline is more interesting than a single data point, and that is what the rest of this article is about.
+This article gives you the clean version of the mental model, the decision tree, and the answer to the question I get most: "Why can't I just write a Skill for everything?"
 
-This is the story of a methodical company that built its way to the top by doing one thing exceptionally well, while the reigning champion looked elsewhere. It is also the story of why a one-month lead is not yet a moat, and why three specific cracks in Anthropic's position deserve attention now rather than after they widen.
+The short answer is that Skills are instructions. They are not capability. If your agent needs to authenticate to a real database, talk to a SaaS API, run a sandboxed script, or expose one piece of logic to ten different agent flows, a Skill on its own will not get you there.
 
-## The numbers
+Let me walk through what each layer is, and then how to decide which one to reach for.
 
-Anthropic's adoption rose 3.8 percentage points in April to 34.4% of U.S. businesses, per the May 2026 Ramp AI Index. OpenAI's adoption fell 2.9 points to 32.3%. Overall business AI adoption rose 0.2 points to 50.6%, which means the market is still growing, and the gain at Anthropic came partially from net new adoption and partially from a real shift away from OpenAI.
+## What each layer actually is
 
-Ramp's methodology is worth pausing on. The dataset behind these numbers is over $100 billion in annual business spend across 50,000 companies. Ramp watches money move, not intent. When Ramp says businesses are choosing Anthropic, it means businesses are paying invoices and swiping corporate cards to Anthropic.
+The conflation happens because all three of these get pitched the same way in the docs. "Extend your agent." "Give Claude new capabilities." "Plug in to your stack." The pitch is the same. The mechanics are entirely different.
 
-The trajectory in Ramp's data is the part that should make you sit up. Anthropic climbed from 0.03% of businesses in June 2023, to 7.94% by April 2025, to 34.44% by April 2026. OpenAI peaked near 36.5% in mid-2025 and has been gently declining since.
+![Three columns showing the anatomy of tool calling (a JSON-like rectangle), MCP server (a box with outlet and data arrows), and Agent Skill (a manila folder with SKILL.md), each with a one-line description of what it is](diagram-1-anatomy.png)
 
-![A pen-drawn line chart showing Anthropic climbing from near zero in 2023 to 34.4 percent in April 2026, while OpenAI peaks around 36.5 percent in mid-2025 and declines to 32.3 percent](diagram-1-crossover.png)
+### Tool calling: the agent's hands
 
-Three years ago Anthropic was a rounding error. Today it is the market leader. That curve is one of the fastest enterprise software climbs in modern history.
+A tool, in the modern agent sense, is a function the model can decide to invoke. It has a name, a description, an input schema (usually JSON Schema), and a returned result. The agent reads the description, decides the situation matches, calls the tool with arguments, gets a response back, and continues reasoning.
 
-## One product changed everything
+Tools are the foundation. Every other mechanism on this list is built on top of tool calling, or wraps it. When Claude Code reads a file, it is calling the built-in `Read` tool. When it runs a shell command, that is the `Bash` tool. Tool calling has been the agent extensibility primitive since GPT-4 introduced function-calling in mid-2023, and it remains the lowest-level interface to "the agent can do this specific thing."
 
-Ask anyone inside the industry what drove the crossover and you get the same answer. Claude Code.
+Tools are bounded. They run a defined function with defined inputs and return a defined output. They are local in the sense that they run in the agent's runtime, not on a remote server. When you write a tool, you are writing code the agent can call, not a server the agent can connect to.
 
-By February 2026, Claude Code was generating more than $2.5 billion in annualized revenue, per Anthropic's Series G announcement. Business subscriptions for the product had quadrupled since January 1. An estimated 4% of all public GitHub commits worldwide were being authored by Claude Code, double the percentage from one month prior.
+### MCP: the agent's outlets
 
-The product anchored the swing. Anthropic expanded from technical teams into finance, legal, and research workflows on the back of Claude Code's pull. Once a tool is the default in engineering, it tends to spread sideways across the rest of the organization, and that is exactly what happened.
+Model Context Protocol is the protocol Anthropic published in November 2024 and open-sourced under Apache 2.0. The mental model is plumbing. MCP defines how a server (a program that exposes some capability) talks to a client (the AI application that wants to use that capability). The protocol is JSON-RPC 2.0 over either stdio (for local servers) or HTTP and SSE (for remote ones).
 
-The strategy was deliberate. Rather than racing OpenAI for consumer mindshare, the viral moments, the flashy demos, the headline-grabbing features, Anthropic went deep into developer workflows. It made Claude genuinely useful in the terminal, inside the codebase, across the enterprise stack. Cat Wu, Anthropic's head of product for Claude Code and Cowork, framed the philosophy crisply: "The main thing that we design for is staying on the exponential. We don't think about competitors. I think if you do think about competitors, you end up being perpetually two weeks, or like a month behind how fast you can execute."
+An MCP server exposes three kinds of things: tools (functions the client can call), resources (data the client can read), and prompts (templates the client can use). The agent on the other end gets a standardized way to discover what is available and how to call it.
 
-While OpenAI was building a browser, shipping Sora, flirting with hardware partnerships, and chasing consumer mindshare, enterprise users quietly fell in love with Claude Code. The crossover in the Ramp data is the visible end of that quieter accumulation.
+The point of MCP is that the integration is built once and works for any client that speaks the protocol. Build a GitHub MCP server, and every agent that speaks MCP can use GitHub. Build a Notion MCP server, and you can wire it up to Claude Desktop, Claude Code, Cursor, Continue, and any future agent that adopts MCP. The protocol turns "we integrated GitHub into our agent" into "we exposed GitHub through a standard outlet."
 
-## The revenue story is the part most people miss
+MCP also handles three things that pure tool calling does not. Authentication and credentials live inside the server boundary, which means the agent never sees your API keys. State can be maintained across calls, because the server is its own process. Multi-tenant isolation is built in, because each tenant can have its own server instance with its own credentials.
 
-The adoption number is the headline. The revenue number is the substance.
+### Agent Skills: the agent's playbooks
 
-On April 7, 2026, Anthropic announced annualized revenue of $30 billion, more than triple the roughly $9 billion the company posted at the end of 2025. By the company's May developer conference, that number had moved again. CEO Dario Amodei reported annualized revenue over $44 billion. Gross margins on inference had risen from 38% a year earlier to over 70%. The number of enterprise customers spending over $1 million annually had grown from just over a dozen two years ago to more than 1,000, including eight of the Fortune 10.
+Anthropic shipped Agent Skills in October 2025. A Skill is a folder. Inside the folder is a markdown file called SKILL.md with YAML frontmatter (name and description) and a markdown body with instructions. Optionally, the folder includes reference files, scripts, and example outputs.
 
-![A pen-drawn bar chart showing Anthropic annualized revenue at 9 billion at end of 2025, 30 billion in April 2026, and 44 billion by May 2026, with margin notes on enterprise customers and Dario Amodei quote](diagram-2-revenue.png)
+The Skill is loaded lazily. At session start, the agent reads only the metadata (the description). The full content loads only when the agent decides the situation matches. This progressive disclosure is the design trick that lets you have hundreds of Skills installed without bloating context.
 
-Amodei reportedly told the room: "I hope the 80-fold growth doesn't continue. It is too insane and too difficult to manage."
+Skills are not capability. They are configured procedural knowledge. A Skill named `pr-review` does not give the agent the ability to read code or post comments on GitHub. It gives the agent a calibrated procedure for reviewing pull requests: what to look for, what to flag, how to format the feedback, what voice to use. The agent already had to be able to read files and post comments (via Tools or MCP). The Skill tells it how to use those capabilities well for this specific task.
 
-As of April 2026, Anthropic crossed $30 billion in annualized revenue while OpenAI sits at roughly $24 billion. The company most associated with starting the modern AI era is, by some measures, no longer the top revenue generator in it.
+The mental model that lands cleanly: a Skill teaches Claude what to do. A Tool gives Claude something to do it with. An MCP server gives Claude somewhere to do it.
 
-## The valuation tells you what the market thinks
+## When to use which
 
-Anthropic is reportedly in talks to raise between $30 and $50 billion in a new funding round that would value the company at up to $950 billion, per a New York Times report in May 2026. For context, OpenAI's most recent valuation was $852 billion in a round completed in March. If the Anthropic round closes at the top of its range, the AI safety lab founded by ex-OpenAI employees will be the more valuable AI company on paper.
+Here is the actual decision tree. Three questions, in order.
 
-The structural advantage that earned this valuation is worth naming explicitly. Anthropic has received billion-dollar commitments from Google (up to $40 billion in April 2026) and Amazon (up to $25 billion). Claude is the only frontier AI model available on all three major cloud platforms: AWS, Google Cloud, and Microsoft Azure.
+![A decision tree showing three questions: does the agent already have this capability, does it need to reach an external system, does it need a new local capability, with arrows pointing to USE A SKILL, USE MCP, or USE A TOOL respectively](diagram-2-decision.png)
 
-That last fact deserves a moment. In enterprise procurement, the question "does this run on our existing cloud?" is often the first one asked and the hardest one to negotiate around. Claude says yes to all three. OpenAI runs on Azure. In a world where enterprise procurement decisions hinge on existing cloud relationships, this is an asymmetric advantage that compounds every quarter.
+**Question 1: Does the agent already have this capability built in?**
 
-## How the underdog built the giant
+If yes, you do not need a new capability layer. You need a procedural layer. Write a Skill. Example: Claude Code already has `Read`, `Write`, `Edit`, `Bash`, and `WebFetch` tools built in. If the task is "review my pull requests against the style guide," the agent has everything it needs already. The job is to encode the procedure (what to check, what to flag, what format to output). That is a Skill.
 
-Anthropic was founded in 2021 by a group of former OpenAI employees. From day one, the company framed itself around safety and reliability, sometimes to the point of being seen as the boring choice. While OpenAI launched Sora, built a browser, flirted with hardware, and made tabloid news, Anthropic kept its head down.
+**Question 2: Does the agent need to reach an external system?**
 
-That patience compounded. The company released at least six models in 2025 and has already released almost as many this year. Enterprise customers, who care about reliability, safety, and auditability over viral features, noticed.
+If yes, reach for MCP. Example: the agent needs to read Jira tickets, query your production database, post to Slack, or look up customer records in your CRM. Each of those is an external system with its own authentication, its own schema, its own rate limits. The right answer is an MCP server that wraps that system and exposes it to the agent through the protocol. The agent gets a standardized way to call it. The credentials stay on the server side. If the API changes, you update the server and every agent that uses it benefits.
 
-Ramp's lead economist Ara Kharazian noted that Anthropic had already been leading "amongst the high adoption groups like finance, tech, professional services" before the crossover became official. What changed in 2026 was that Anthropic broadened into industries where OpenAI previously held comfortable margins. Once the developer foothold was secure, the company moved sideways into the parts of the enterprise that take longer to adopt anything new.
+**Question 3: Does the agent need a new bounded local capability?**
 
-The takeaway for anyone watching this play out: Anthropic's apparent slowness was actually a different speed. Slow on consumer surface area. Fast on the enterprise depth that matters when annual contracts get signed.
+If yes, write a tool. Example: the agent needs to parse a specific file format you have, run a calculation, or perform a deterministic transformation that does not warrant a full external server. A custom tool, defined in the agent's tool list at runtime, is the right shape.
 
-## OpenAI is responding, and the response is serious
+The hidden fourth question, which most teams skip: **does this workflow need multiple of the above?** It almost always does. A real workflow rarely fits cleanly into one layer.
 
-OpenAI did not take this quietly. Its response to the Ramp data was pointed and pragmatic.
+## The hybrid pattern most real workflows use
 
-An OpenAI spokesperson noted that Ramp's methodology captures card and invoice payments, which skews toward small and mid-sized businesses. The spokesperson said: "We are driving enterprise transformation at scale. These are not engagements where customers pay with a credit card." The point has merit. OpenAI's largest enterprise contracts, the kind involving six and seven-figure annual commitments paid through procurement systems, may not be fully captured in Ramp's view.
+Take a concrete example: "Fix a bug reported in Linear, in our production repo, with a tested PR."
 
-OpenAI did not stop at rebuttals. On May 11, the company launched the OpenAI Deployment Company, a standalone unit backed by more than $4 billion from 19 private equity firms, consultancies, and systems integrators, including TPG, Bain Capital, Goldman Sachs, Capgemini, and McKinsey. The unit places Forward Deployed Engineers directly inside client organizations to redesign workflows around AI. This is OpenAI's response to a structural advantage Anthropic has built. The cloud-platform asymmetry will take years to flip. The deployment-services gap can be closed faster, especially with $4 billion behind it.
+![A diagram showing an agent in the center connected to three clusters: a bug-fixer Skill at the top, GitHub and Linear MCP servers to the right, and Read/Write/Bash tools at the bottom, with annotations showing how each layer contributes to the workflow](diagram-3-architecture.png)
 
-OpenAI's chief revenue officer told employees in a recent memo, per Axios: "The market is as competitive as I have ever seen it." That is not the language of a company that thinks the crossover is an artifact of methodology. It is the language of a company recalibrating to a real loss of position.
+You need three things. You need the procedure (read the issue, reproduce the bug, write the fix, verify with tests, open a PR with a proper description). You need access (the Linear issue, the repo, the PR system). You need execution (read files, run tests, write the fix).
 
-## Three cracks in the crown
+If you build this with Skills alone, you cannot read the Linear ticket, because Skills cannot authenticate to Linear. You also cannot post a PR, because Skills cannot post to GitHub.
 
-The Ramp economist who published the numbers crowning Anthropic the market leader also published a bearish note on the company in the same release. That kind of intellectual honesty is rare and worth taking seriously. Three structural risks deserve attention.
+If you build this with MCP alone, the agent has access but no procedure. It can hit the GitHub API and the Linear API all day, but without a calibrated workflow it will write inconsistent PRs, miss test runs, and produce different bug fixes for the same root cause depending on which prompt triggers it.
 
-![A pen-drawn three-panel diagram showing the misaligned business model, the budget bomb at Uber, and the quality cracks under 80x growth](diagram-3-cracks.png)
+If you build this with tools alone, you have to hand-roll an integration for every external system, and your tool list grows linearly with every new system the agent touches.
 
-### 1. A misaligned business model
+The right architecture for this workflow uses all three:
 
-Anthropic makes more money when businesses consume more tokens. The structural problem is that Anthropic is therefore incentivized to drive users toward more expensive models, even when cheaper or faster models would be sufficient for many tasks.
+- A `bug-fixer` Skill that defines the procedure: read, reproduce, fix, verify, open PR. It also encodes your conventions: how branch names are formatted, what the PR description must include, when to wait for review versus self-merge.
+- A GitHub MCP server and a Linear MCP server that provide authenticated access to the relevant systems.
+- The built-in Read, Write, Edit, and Bash tools that give the agent the local execution hands.
 
-This is a tension every token-priced vendor lives with, but at Anthropic's scale, the tension becomes visible. CFOs notice when their AI bill keeps climbing without an obvious capability change. Procurement teams notice when the vendor's recommended configuration always seems to favor the higher-margin SKU. The vendor and customer are pointed in subtly different directions, and at scale that gap gets priced in.
+Skill for the how. MCP for the where. Tools for the what.
 
-### 2. The budget bomb
+## Why "just Skills" is the most common architectural mistake
 
-The most public version of this risk is the Uber case. Uber's CTO disclosed that the company spent its entire 2026 AI budget in four months, largely on Claude Code and Cursor. Engineers reported monthly API costs between $500 and $2,000 per person. Adoption jumped from 32% to 84% of Uber engineers in a matter of months. About 70% of committed code at Uber now comes from AI.
+Skills are loud right now for understandable reasons. They are the newest of the three mechanisms, they look easy because they are just markdown, and the file format makes great LinkedIn content. The teams that have only just discovered Skills tend to overcorrect and try to push everything through them.
 
-When a tool is so effective that a Fortune 500 company burns through its full-year AI budget in one quarter, that is not a sustainability story. That is a procurement warning sign. The next budget cycle will not have surprise overruns built in, and the conversation around it will sound very different. Some of that spend will get capped. Some of it will get redirected toward whichever vendor offers more predictable pricing. Anthropic's quarter-over-quarter revenue growth depends on a wave of adoption that may also be the wave that triggers backlash from finance teams.
+Five specific things that Skills cannot do, which I see teams discover the hard way.
 
-### 3. Quality under pressure
+**Skills cannot authenticate.** A Skill is an instruction pack. It does not hold credentials, it cannot refresh tokens, it cannot make authenticated API calls on its own. The moment your workflow involves a real external system with real auth, you are out of Skills territory.
 
-Quality and reliability have visibly suffered under demand. In recent weeks, users have reported frequent outages, more aggressive rate limits, and growing dissatisfaction with Claude's results on harder tasks. Anthropic has responded by resetting usage limits and by striking a compute deal with SpaceX for access to over 300 megawatts of new capacity at the Colossus 1 data center in Memphis.
+**Skills cannot maintain state.** A Skill is loaded into the agent's context each time it activates. There is no persistent process. If you need to remember session state across calls, you need either a Tool that manages it locally or an MCP server that holds it.
 
-Amodei has said the company saw 80x year-over-year growth in revenue and usage in Q1 2026, against a plan that called for 10x. Eight times your own growth projections is an extraordinary problem to have, but it is still a problem. The cracks in service quality are real. The compute deal is the right response. The question is whether the response moves fast enough to keep customers in the window where service degradation does not become migration.
+**Skills cannot enforce isolation.** If you have multiple tenants, multiple environments, or multiple credentials, you cannot use a Skill as your security boundary. Skill instructions can be ignored by a sufficiently distracted agent. MCP servers run in their own process and can enforce hard isolation.
 
-## What this moment actually means
+**Skills do not centralize.** Every Skill file has to be installed on every machine that runs an agent. If your team has fifty engineers and a Skill needs updating, you have fifty manual updates. An MCP server is one deployment, and every agent reading from it gets the new behavior immediately.
 
-As both companies race toward what may become some of the biggest IPOs in history, enterprise adoption is the metric that matters most. Enterprise revenue compounds. Consumer mindshare does not, at least not in the way investors price in.
+**Skills are static prompts.** They cannot dynamically discover what is available, query a database for the current schema, or adapt to runtime state. They tell the agent what to do, not what is reachable.
 
-Kharazian wrote that the April 2026 numbers mark "a stunning reversal in the competitive market dynamics for AI model providers." That phrasing is right. So is his accompanying caveat. The AI industry has never seen software this dynamic, where newcomers can disrupt market leaders in months, and where the pace of model development overrides the typical forces of vendor stickiness.
+The teams I have advised who tried to push everything through Skills had the same three symptoms. Their Skill files grew long and hard to maintain. Their agent started doing things it should not (because the Skill said "do X" but had no mechanism to enforce it). And every external integration was a custom bespoke job that nobody else on the team could reuse.
 
-A one-month lead is not yet a moat. Six months from now, DeepSeek could be eating both companies' lunch. A surprise OpenAI model drop could flip the numbers. Google's I/O announcements next week could change the conversation entirely. The OpenAI Deployment Company has real money behind it and will start to land contracts within two quarters.
+The fix is to use Skills for the thing Skills are good at (procedural knowledge, voice, conventions, calibrated judgment), use MCP for the thing MCP is good at (capability extension with auth and isolation), and use Tools for the thing Tools are good at (bounded deterministic local ops). Skills do not get abandoned. They get scoped.
 
-What we are watching is not a final verdict. It is a snapshot of a market moving faster than anyone can fully track. The forces that compound in Anthropic's favor (cloud distribution, developer love, enterprise revenue, capital) are real. The forces that compound against it (token incentives, customer budget revolts, quality strain under hypergrowth) are also real. Both will keep moving.
+## The hidden cost: tokens
 
-For the period covered by the data, one fact holds. In April 2026, more American businesses chose Claude over ChatGPT. A safety lab founded by ex-OpenAI employees, built on the premise that responsible AI could also be the best AI, pulled ahead of the company that sparked the modern era of generative AI.
+There is a real tradeoff most write-ups gloss over. The three layers have different context costs.
 
-That is the most consequential snapshot of the AI enterprise market this year, even if it is not a final answer. The next twelve months will tell us how much of it sticks.
+**Tool calling**, at the schema layer, is cheap. A well-defined tool with a tight schema and a short description costs maybe 100 to 300 tokens. Ten of these is fine.
+
+**MCP**, historically, has been expensive. One MCP server can expose 90 or more tools (the GitHub server is a famous case), and connecting three popular MCP servers on a 200K-token model could consume over 70% of the available context before the agent did anything. This was the legitimate basis for the "MCP is heavy" criticism that circulated through 2025.
+
+Anthropic addressed this in January 2026 with MCP Tool Search, which dynamically loads tools on demand when they would consume more than 10% of context. The penalty has dropped substantially. The criticism is now mostly historical. But you should still audit how many tools a given MCP server exposes before connecting it.
+
+**Skills** are the most context-efficient by design. The progressive disclosure pattern means only the descriptions are loaded at session start, and only the relevant Skill body loads when the agent decides it matches. You can have hundreds of Skills installed without a noticeable context hit. This is the design move that makes Skills genuinely useful for procedural knowledge at scale.
+
+The token math has moved fast enough in the last year that any benchmarks older than three months are probably stale. Treat token efficiency as a tiebreaker, not a primary criterion.
+
+## The architecture I would build in 2026
+
+If I were starting a serious agent build today, here is what the stack looks like.
+
+**The runtime.** Claude Code or Claude API with the Agent SDK. Both speak MCP natively, both load Skills natively, both expose the built-in tools that cover 80% of local operations.
+
+**The MCP layer.** One server per external system. GitHub, Linear or Jira, Notion or your wiki, Slack, your primary database, the SaaS tools you actually use. Most of these have official or community-maintained servers already. Run them locally or in your infrastructure depending on your security posture.
+
+**The Skill layer.** One Skill per repeatable workflow. The PR review skill, the bug fixer, the customer feedback theme extractor, the consultant-translator, the contract redline against your playbook. The Skills directory grows with use. By month six, you should have ten to twenty Skills covering the most common procedural work in your team.
+
+**The Tool layer.** Built-in tools cover most of what you need. Custom tools are rare and tightly bounded: a parser for a specific file format, a calculator for a domain-specific number, a transformer for a specific input. If you find yourself writing a custom tool every week, your work probably belongs in an MCP server instead.
+
+The split that works in practice: 70% of your extensibility energy goes into Skills (procedural know-how is the highest-return thing you can encode), 25% goes into MCP servers (one solid server per external system), 5% goes into custom Tools (only when nothing else fits).
+
+If your distribution looks very different from that, it is worth asking why. Teams that go 100% on Skills are usually missing the external-systems layer. Teams that go 100% on MCP are usually missing the procedural-knowledge layer. Teams that go 100% on custom Tools are usually reinventing what MCP gives you for free.
+
+## Closing
+
+The three layers are not in competition. They cover different surface area. The teams that get this right are pragmatic: Skills for the playbooks, MCP for the connectors, Tools for the deterministic native ops. The teams that get it wrong are usually the ones being loud on one of these and quiet on the others.
+
+The most common mistake in 2026 is not "they picked the wrong layer." It is "they only picked one." The right architecture spans all three deliberately, and the question to ask of any new agent capability is the same one in three forms: is this a procedure, an outlet, or a hand?
+
+Get the question right and the layer falls out almost automatically.
 
 ---
 
@@ -129,5 +163,3 @@ That is the most consequential snapshot of the AI enterprise market this year, e
 *This article is published in [Autocomplete](https://medium.com/autocomplete-real-world-ai), a Medium publication about real-world AI for practitioners and decision-makers. We're always looking for writers. If you're building with AI and have something worth sharing, reach out.*
 
 *My free Substack newsletter, also called Autocomplete, can be found here: https://acdigest.substack.com.*
-
-*Sources: Ramp AI Index (May 2026), VentureBeat, Axios, Bloomberg, TechTimes, eWeek, TechCrunch, The Rundown AI, Sherwood News, Anthropic Series G announcement, OpenAI Deployment Company launch.*
