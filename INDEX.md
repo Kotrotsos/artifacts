@@ -130,3 +130,4 @@
 | 2026-05-16 | agentassist | reports | [architecture-map.html](projects/agentassist/reports/architecture-map.html) | Architecture map v2: wider canvas, no node overlap, click-to-highlight-flow, complete flow coverage (chat, tool call, feedback, admin, telemetry) |
 | 2026-05-16 | agentassist | reports | [comparison.html](projects/agentassist/reports/comparison.html) | Fresh side-by-side comparison: agentassist vs virtuele-assistent, current state of both projects |
 | 2026-05-16 | agentassist | reports | [memory-dreams-trifecta.html](projects/agentassist/reports/memory-dreams-trifecta.html) | Trifecta article (three-act long-form piece) on Anthropic's memory primitive and the new Dreaming process, based on a talk by Mahes |
+| 2026-05-16 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Substack adaptation of Mac mini production inference tutorial, personal voice, reply CTA, what-is-coming-next preview |
