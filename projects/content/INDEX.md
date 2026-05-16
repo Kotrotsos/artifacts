@@ -46,3 +46,4 @@
 | 2026-05-16 | images | [diagram-3-ram.png](images/diagram-3-ram.png) | Mac mini production inference tutorial: diagram-3-ram.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/mac-mini-production-inference/diagram-3-ram.png |
 | 2026-05-16 | reports | [substack-version.md](reports/substack-version.md) | Substack adaptation of Mac mini production inference tutorial, personal voice, reply CTA, what-is-coming-next preview | /Users/marcokotrotsos/PERSONAL/Content/drafts/mac-mini-production-inference/substack-version.md |
 | 2026-05-16 | reports | [draft.md](reports/draft.md) | The Great Flip: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-great-flip-anthropic-openai/draft.md |
+| 2026-05-16 | reports | [substack-version.md](reports/substack-version.md) | The Great Flip: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-great-flip-anthropic-openai/substack-version.md |

@@ -132,3 +132,4 @@
 | 2026-05-16 | agentassist | reports | [memory-dreams-trifecta.html](projects/agentassist/reports/memory-dreams-trifecta.html) | Trifecta article (three-act long-form piece) on Anthropic's memory primitive and the new Dreaming process, based on a talk by Mahes |
 | 2026-05-16 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Substack adaptation of Mac mini production inference tutorial, personal voice, reply CTA, what-is-coming-next preview |
 | 2026-05-16 | content | reports | [draft.md](projects/content/reports/draft.md) | The Great Flip: draft.md |
+| 2026-05-16 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | The Great Flip: substack-version.md |
