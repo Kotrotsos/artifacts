@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>agentassist vs virtuele-assistent - clean comparison</title>
+<style>
+  :root[data-theme="light"] {
+    --bg:#fff; --surface:#fff; --surface-2:#f8fafc; --text:#0f172a; --muted:#64748b;
+    --border:#e5e7eb; --border-strong:#cbd5e1;
+    --accent:#2563eb; --accent-soft:#dbeafe;
+    --good:#15803d; --warn:#b45309; --bad:#b91c1c;
+    --good-bg:#dcfce7; --warn-bg:#fef3c7; --bad-bg:#fee2e2;
+    --code-bg:#f1f5f9;
+    --col-a:#eff6ff; --col-a-fg:#1d4ed8;
+    --col-b:#fdf4ff; --col-b-fg:#9333ea;
+    --shadow:0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  :root[data-theme="dark"] {
+    --bg:#0b0d10; --surface:#14181d; --surface-2:#1c2127; --text:#f1f5f9; --muted:#94a3b8;
+    --border:#262d35; --border-strong:#374151;
+    --accent:#60a5fa; --accent-soft:#1e3a8a;
+    --good:#4ade80; --warn:#fbbf24; --bad:#f87171;
+    --good-bg:#052e1a; --warn-bg:#3a2a08; --bad-bg:#3a0c0c;
+    --code-bg:#1e242b;
+    --col-a:#0c1f3a; --col-a-fg:#93c5fd;
+    --col-b:#2a0f3a; --col-b-fg:#e9d5ff;
+    --shadow:0 1px 3px rgba(0,0,0,0.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1120px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+  header.page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+  h1{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 0.25rem;letter-spacing:-0.01em;}
+  .sub{color:var(--muted);margin:0;max-width:64ch;}
+  .theme-toggle{background:var(--surface);color:var(--text);border:1px solid var(--border-strong);
+                padding:0.45rem 0.85rem;border-radius:999px;font:inherit;font-size:0.85rem;cursor:pointer;}
+  .theme-toggle:hover{border-color:var(--accent);}
+
+  section{margin:2.25rem 0;}
+  h2{font-size:1.2rem;margin:0 0 0.6rem;letter-spacing:-0.005em;}
+  h2 .num{color:var(--muted);font-weight:500;margin-right:0.5rem;}
+  h3{font-size:0.98rem;margin:1.1rem 0 0.4rem;}
+  p.lead{color:var(--muted);margin:0 0 1rem;max-width:64ch;}
+  code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.86em;}
+
+  .scorecard{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  @media (max-width:780px){.scorecard{grid-template-columns:1fr;}}
+  .score{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
+  .score.left{border-left:4px solid var(--col-a-fg);}
+  .score.right{border-left:4px solid var(--col-b-fg);}
+  .score h3{margin:0 0 0.5rem;font-size:1.05rem;}
+  .score .strap{color:var(--muted);font-size:0.85rem;margin-bottom:0.6rem;}
+  .score .stats{display:grid;grid-template-columns:max-content 1fr;gap:0.2rem 0.85rem;font-size:0.88rem;}
+  .score .stats dt{font-weight:500;}
+  .score .stats dd{margin:0;color:var(--muted);}
+
+  table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);
+        border-radius:12px;overflow:hidden;font-size:0.92rem;}
+  th,td{padding:0.55rem 0.8rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--border);}
+  thead th{background:var(--code-bg);font-weight:600;}
+  th.col-a{background:var(--col-a);color:var(--col-a-fg);}
+  th.col-b{background:var(--col-b);color:var(--col-b-fg);}
+  td.row-h{font-weight:600;color:var(--text);width:24ch;}
+  tr:last-child td{border-bottom:none;}
+
+  .pill{display:inline-block;padding:1px 0.55rem;border-radius:999px;font-size:0.78rem;font-weight:500;}
+  .pill.good{background:var(--good-bg);color:var(--good);}
+  .pill.warn{background:var(--warn-bg);color:var(--warn);}
+  .pill.bad{background:var(--bad-bg);color:var(--bad);}
+  .pill.na{background:var(--code-bg);color:var(--muted);}
+
+  .verdict{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
+           border-radius:10px;padding:1rem 1.25rem;margin:1rem 0;}
+  .verdict strong{color:var(--accent);}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  @media (max-width:780px){.grid-2{grid-template-columns:1fr;}}
+  .panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem 1.25rem;}
+  .panel h3{margin-top:0;}
+  .panel ul{margin:0.25rem 0;padding-left:1.25rem;}
+  .panel ul li{margin-bottom:0.2rem;}
+
+  @media print {
+    body{background:#fff;color:#000;}
+    .theme-toggle{display:none;}
+    .wrap{padding:1rem;max-width:100%;}
+    section{break-inside:avoid;}
+    table,.panel,.score,.verdict{border-color:#aaa;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page-header">
+  <div>
+    <h1>agentassist vs virtuele-assistent</h1>
+    <p class="sub">Two solutions to the same brief: a multi-tenant chatbot you can drop into a public website. Snapshot of where each project is right now.</p>
+  </div>
+  <button class="theme-toggle" id="themeToggle" type="button">Dark mode</button>
+</header>
+
+<section>
+  <h2><span class="num">1</span>Snapshot</h2>
+  <div class="scorecard">
+    <div class="score left">
+      <h3>agentassist</h3>
+      <div class="strap">One Flask process. Agent with tools. Filesystem-only state.</div>
+      <dl class="stats">
+        <dt>Services</dt><dd>1 container (Flask + gunicorn)</dd>
+        <dt>Languages</dt><dd>Python + vanilla HTML/JS</dd>
+        <dt>External services required</dt><dd>none (Anthropic API only)</dd>
+        <dt>Python LOC</dt><dd>2,338 across 13 modules</dd>
+        <dt>Frontend LOC</dt><dd>1,779 (chat + admin, vanilla)</dd>
+        <dt>Tests</dt><dd>123 passing in ~3 seconds</dd>
+        <dt>Knowledge per tenant</dt><dd>context.md (file) + live web_fetch on allowlist</dd>
+        <dt>Deployment</dt><dd>Dockerfile or compose; Railway, Fly.io, App Runner</dd>
+        <dt>OSS metadata</dt><dd>LICENSE, README, SECURITY.md, CONTRIBUTING, CHANGELOG, CI</dd>
+      </dl>
+    </div>
+    <div class="score right">
+      <h3>virtuele-assistent</h3>
+      <div class="strap">Multi-service RAG stack. Kotlin backend, Next.js frontends, Airflow ingestion.</div>
+      <dl class="stats">
+        <dt>Services</dt><dd>16 containers in compose</dd>
+        <dt>Languages</dt><dd>Kotlin, TypeScript (x2), Python</dd>
+        <dt>External services required</dt><dd>Postgres, Qdrant, Redis, Airflow stack, Langfuse, reranker</dd>
+        <dt>Backend LOC</dt><dd>4,400 Kotlin</dd>
+        <dt>Frontend LOC</dt><dd>5,905 TS (chat + admin, Next.js)</dd>
+        <dt>Ingestion LOC</dt><dd>3,112 Python</dd>
+        <dt>Knowledge per tenant</dt><dd>Qdrant collection populated by scheduled scrape; hybrid retrieval + HyDE + reranker</dd>
+        <dt>Deployment</dt><dd>docker-compose for local; Helm for k8s production</dd>
+        <dt>OSS metadata</dt><dd>LICENSE present; README is one line</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2</span>Feature parity</h2>
+  <p class="lead">Both projects target the same product surface. Differences are in mechanism, not requirement.</p>
+  <table>
+    <thead><tr><th>Capability</th><th class="col-a">agentassist</th><th class="col-b">virtuele-assistent</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h">Multi-tenant via URL</td><td><span class="pill good">Yes</span> filesystem dirs</td><td><span class="pill good">Yes</span> DB rows + Qdrant collections</td></tr>
+      <tr><td class="row-h">Welcome + PII warning + suggestions</td><td><span class="pill good">Yes</span></td><td><span class="pill good">Yes</span></td></tr>
+      <tr><td class="row-h">Streaming response with sources</td><td><span class="pill good">Yes</span> (SSE)</td><td><span class="pill good">Yes</span> (SSE)</td></tr>
+      <tr><td class="row-h">Markdown rendering</td><td><span class="pill good">Yes</span> (DOM-only renderer)</td><td><span class="pill good">Yes</span> (React-based)</td></tr>
+      <tr><td class="row-h">Copy + regenerate + thumbs</td><td><span class="pill good">Yes</span></td><td><span class="pill good">Yes</span></td></tr>
+      <tr><td class="row-h">Edit message + branch nav</td><td><span class="pill warn">Not yet</span> (planned)</td><td><span class="pill good">Yes</span></td></tr>
+      <tr><td class="row-h">Bubble + full-screen modes</td><td><span class="pill good">Yes</span></td><td><span class="pill good">Yes</span></td></tr>
+      <tr><td class="row-h">Embeddable widget bundle</td><td><span class="pill warn">Not yet</span> (planned)</td><td><span class="pill good">Yes</span> (dist-widget)</td></tr>
+      <tr><td class="row-h">Admin: edit welcome/PII/suggestions</td><td><span class="pill good">Yes</span></td><td><span class="pill good">Yes</span></td></tr>
+      <tr><td class="row-h">Admin: prompt variables wizard</td><td><span class="pill warn">Partial</span> (single tone field)</td><td><span class="pill good">Yes</span> (20+ fields)</td></tr>
+      <tr><td class="row-h">Admin: draft / publish flow</td><td><span class="pill good">Yes</span></td><td><span class="pill good">Yes</span></td></tr>
+      <tr><td class="row-h">Admin: prompt preview</td><td><span class="pill good">Yes</span></td><td><span class="pill good">Yes</span></td></tr>
+      <tr><td class="row-h">Admin: per-tenant passwords</td><td><span class="pill good">Yes</span> (argon2id, super + tenant roles)</td><td><span class="pill warn">No</span> (single global password)</td></tr>
+      <tr><td class="row-h">Admin: feedback viewer</td><td><span class="pill good">Yes</span></td><td><span class="pill good">Yes</span></td></tr>
+      <tr><td class="row-h">Admin: PO analytics / BSAT</td><td><span class="pill warn">No</span></td><td><span class="pill good">Yes</span> (Langfuse + BSAT)</td></tr>
+      <tr><td class="row-h">Per-tenant context (small KB)</td><td><span class="pill good">Yes</span> (context.md)</td><td><span class="pill warn">Limited</span> (inline prompt vars)</td></tr>
+      <tr><td class="row-h">Vector retrieval (large KB)</td><td><span class="pill warn">Extension point</span> (interface + InMemoryRetriever example)</td><td><span class="pill good">Yes</span> (Qdrant + hybrid + HyDE + reranker)</td></tr>
+      <tr><td class="row-h">Scheduled scraping per tenant</td><td><span class="pill na">n/a</span> (by design)</td><td><span class="pill good">Yes</span> (Airflow DAG)</td></tr>
+      <tr><td class="row-h">Live web_fetch (allowlisted)</td><td><span class="pill good">Yes</span> (Anthropic-enforced)</td><td><span class="pill warn">No</span></td></tr>
+      <tr><td class="row-h">Server-side PII redaction</td><td><span class="pill good">Yes</span> (in pipeline)</td><td><span class="pill good">Yes</span> (dedicated service)</td></tr>
+      <tr><td class="row-h">Per-tenant 24h token budget</td><td><span class="pill good">Yes</span> (JSONL ledger)</td><td><span class="pill warn">No</span></td></tr>
+      <tr><td class="row-h">Concurrent stream cap</td><td><span class="pill good">Yes</span></td><td><span class="pill warn">No</span> (nginx rate-limit only)</td></tr>
+      <tr><td class="row-h">Origin pinning per tenant</td><td><span class="pill good">Yes</span></td><td><span class="pill bad">No</span> (anyHost CORS)</td></tr>
+      <tr><td class="row-h">CSP + security headers</td><td><span class="pill good">Yes</span> (CSP, X-Frame, Permissions, Referrer)</td><td><span class="pill bad">No</span> (nothing set in nginx)</td></tr>
+      <tr><td class="row-h">Server-issued visitor sessions</td><td><span class="pill good">Yes</span> (HMAC, tenant-bound)</td><td><span class="pill warn">Partial</span> (Next.js cookies)</td></tr>
+      <tr><td class="row-h">Request id correlation</td><td><span class="pill good">Yes</span> (X-Request-ID)</td><td><span class="pill good">Yes</span> (Langfuse trace id)</td></tr>
+      <tr><td class="row-h">LLM tracing</td><td><span class="pill good">Optional</span> (OpenTelemetry)</td><td><span class="pill good">Yes</span> (Langfuse)</td></tr>
+      <tr><td class="row-h">Provider swap (OpenAI/Azure/local)</td><td><span class="pill good">Yes</span> (Provider interface)</td><td><span class="pill warn">Partial</span> (Azure OpenAI or OpenAI)</td></tr>
+      <tr><td class="row-h">A11y (WCAG 2.1 AA)</td><td><span class="pill good">Yes</span></td><td><span class="pill good">Yes</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">3</span>Architecture in one sentence</h2>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>agentassist</h3>
+      <p>The chat endpoint runs four rate-limit tiers + a per-tenant 24-hour token budget + a concurrent-stream cap + an origin allowlist + server-side PII redaction, hands an HMAC-signed visitor session to <code>agent.iter_turn</code>, which streams Claude's response over SSE with optional retrieval and optional OpenTelemetry, and Anthropic itself enforces the per-tenant <code>web_fetch</code> host allowlist on the tool-execution side.</p>
+    </div>
+    <div class="panel">
+      <h3>virtuele-assistent</h3>
+      <p>A Kotlin/Ktor backend authenticated via X-API-Key from nginx runs a real RAG loop (Qdrant collections populated by Airflow-scheduled scrapers, hybrid semantic+BM25 retrieval, optional HyDE, cross-encoder reranking) and streams the assistant's response to a Next.js chat frontend, while a Next.js admin frontend backed by Postgres lets editors manage prompts and watch BSAT scores in Langfuse.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">4</span>Operational characteristics</h2>
+  <table>
+    <thead><tr><th>Dimension</th><th class="col-a">agentassist</th><th class="col-b">virtuele-assistent</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h">Local hello-world</td><td><code>pip install -r requirements.txt &amp;&amp; python3 app.py</code> &mdash; under a minute</td><td><code>docker compose up --build</code> &mdash; 15-30 minutes first time</td></tr>
+      <tr><td class="row-h">Idle infrastructure cost</td><td>Near zero (single process)</td><td>Substantial (3 databases + Airflow workers always on)</td></tr>
+      <tr><td class="row-h">New tenant</td><td>Drop a directory; no migration</td><td>DB row + Qdrant collection + ingestion config + first DAG run</td></tr>
+      <tr><td class="row-h">Update knowledge for a tenant</td><td>Edit <code>context.md</code> in admin UI (or commit a file)</td><td>Wait for next Airflow scrape; or trigger manually + re-embed</td></tr>
+      <tr><td class="row-h">Patch and ship a bug fix</td><td>Edit, push, redeploy &mdash; ~2 minutes</td><td>Patch service(s), rebuild image(s), Helm release</td></tr>
+      <tr><td class="row-h">Onboard a new contributor</td><td>~1 hour to read all code</td><td>~1 week to map the moving parts</td></tr>
+      <tr><td class="row-h">Multi-instance horizontal scale</td><td>Needs Redis swap for budget + concurrency (documented)</td><td>Stateless services, ready out of the box</td></tr>
+      <tr><td class="row-h">Production hosting</td><td>Railway, Fly.io, App Runner, any Dockerfile host</td><td>Kubernetes via Helm; single-host Docker with effort</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">5</span>Where each one is genuinely stronger</h2>
+  <div class="grid-2">
+    <div class="panel">
+      <h3>agentassist wins on</h3>
+      <ul>
+        <li>Cost ceiling per tenant (24h token budget, enforced server-side)</li>
+        <li>Visitor session security (HMAC + tenant-bound + Secure;HttpOnly;SameSite cookies)</li>
+        <li>Default security headers (CSP, X-Frame, Permissions-Policy, Referrer)</li>
+        <li>Per-tenant admin passwords with role-based tokens</li>
+        <li>Live-information access (Anthropic-enforced web_fetch allowlist)</li>
+        <li>Iteration speed (tests run in ~3 seconds with no external services)</li>
+        <li>Distribution (clone-to-running in under a minute)</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>virtuele-assistent wins on</h3>
+      <ul>
+        <li>Knowledge base scale (real RAG with hybrid + HyDE + reranker)</li>
+        <li>Scheduled, idempotent ingestion (Airflow per tenant)</li>
+        <li>Tenant isolation at retrieval layer (per-tenant Qdrant collection is harder to bypass than a directory)</li>
+        <li>Product-owner observability (Langfuse traces, BSAT, topic analytics)</li>
+        <li>Editor workflow depth (prompt-variables wizard with ~20 fields)</li>
+        <li>Edit-message + branch navigation (implemented)</li>
+        <li>Embeddable widget bundle (shipped)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">6</span>OSS readiness</h2>
+  <table>
+    <thead><tr><th>Signal</th><th class="col-a">agentassist</th><th class="col-b">virtuele-assistent</th></tr></thead>
+    <tbody>
+      <tr><td class="row-h">License file</td><td><span class="pill good">MIT</span></td><td><span class="pill good">Present</span></td></tr>
+      <tr><td class="row-h">README (substantive)</td><td><span class="pill good">152 lines, with env table + arch + extension points</span></td><td><span class="pill warn">One line</span></td></tr>
+      <tr><td class="row-h">SECURITY.md</td><td><span class="pill good">Threat model + trade-offs + reporting</span></td><td><span class="pill warn">Missing</span></td></tr>
+      <tr><td class="row-h">CONTRIBUTING.md</td><td><span class="pill good">Yes</span></td><td><span class="pill warn">Missing</span></td></tr>
+      <tr><td class="row-h">CHANGELOG.md</td><td><span class="pill good">Yes</span></td><td><span class="pill warn">Missing</span></td></tr>
+      <tr><td class="row-h">CI on push + PR</td><td><span class="pill good">GitHub Actions</span></td><td><span class="pill good">GitLab CI</span></td></tr>
+      <tr><td class="row-h">Clone-to-running</td><td><span class="pill good">Under a minute</span></td><td><span class="pill bad">15-30 minutes first time</span></td></tr>
+      <tr><td class="row-h">Required external services</td><td><span class="pill good">None</span> (Anthropic key only)</td><td><span class="pill bad">Postgres, Qdrant, Redis, Airflow, Langfuse, reranker</span></td></tr>
+      <tr><td class="row-h">No customer artifacts</td><td><span class="pill good">Clean</span></td><td><span class="pill warn">Has customer CA certs, eval data, customer prompts</span></td></tr>
+      <tr><td class="row-h">Hostable on free tiers</td><td><span class="pill good">Yes</span></td><td><span class="pill bad">No</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">7</span>Decision rule</h2>
+  <p class="lead">A simple two-question test.</p>
+  <table>
+    <thead><tr><th>Question</th><th>If yes</th><th>If no</th></tr></thead>
+    <tbody>
+      <tr><td>Tenant knowledge fits in a single Markdown file (under ~50 KB), maybe supplemented by one public website?</td><td>agentassist</td><td>continue</td></tr>
+      <tr><td>You have an editorial team that needs BSAT scoring, full prompt-variables wizard, and scheduled scraping per tenant?</td><td>virtuele-assistent</td><td>agentassist (with the optional retrieval extension point if you grow into it)</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:0.5rem;">For the original Montferland use case (one public website, modest content, single editor team), both work. agentassist runs at near-zero idle cost; virtuele-assistent has more polish at the editorial workflow layer.</p>
+</section>
+
+<div class="verdict">
+  <strong>Bottom line.</strong>
+  agentassist is the right choice for most public-facing chatbot deployments today: one container, no external services, full security posture, drop-in deployable, and OSS-ready. virtuele-assistent earns its complexity only when the knowledge base genuinely needs real RAG (thousands of pages, frequent updates, scheduled scraping) or when editor analytics are a hard requirement. The two are not in opposition; agentassist is the lightweight default, virtuele-assistent is the heavy specialist.
+</div>
+
+</div>
+
+<script>
+(function () {
+  const btn = document.getElementById("themeToggle");
+  const root = document.documentElement;
+  const stored = (() => { try { return localStorage.getItem("cmp2.theme"); } catch (_) { return null; } })();
+  if (stored) root.setAttribute("data-theme", stored);
+  function sync(){ btn.textContent = root.getAttribute("data-theme") === "dark" ? "Light mode" : "Dark mode"; }
+  sync();
+  btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("cmp2.theme", next); } catch (_) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
