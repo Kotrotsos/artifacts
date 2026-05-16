@@ -140,3 +140,4 @@
 | 2026-05-16 | nxtmemo | reports | [nxtmemo-sharepoint-overview.html](projects/nxtmemo/reports/nxtmemo-sharepoint-overview.html) | Overview and working UI mockups for the nxtmemo-sharepoint MCP App |
 | 2026-05-16 | content | reports | [draft.md](projects/content/reports/draft.md) | Skills MCP Tools three layers: draft.md |
 | 2026-05-16 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Skills MCP Tools three layers: substack-version.md |
+| 2026-05-16 | content | images | [hero.png](projects/content/images/hero.png) | Skills MCP Tools three layers: hero.png |
