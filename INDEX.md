@@ -145,3 +145,4 @@
 | 2026-05-16 | content | images | [diagram-2-decision.png](projects/content/images/diagram-2-decision.png) | Skills MCP Tools three layers: diagram-2-decision.png |
 | 2026-05-16 | content | images | [diagram-3-architecture.png](projects/content/images/diagram-3-architecture.png) | Skills MCP Tools three layers: diagram-3-architecture.png |
 | 2026-05-16 | content | images | [diagram-1-anatomy.png](projects/content/images/diagram-1-anatomy.png) | Skills MCP Tools three layers, restyled to match hero: diagram-1-anatomy.png |
+| 2026-05-16 | content | images | [diagram-2-decision.png](projects/content/images/diagram-2-decision.png) | Skills MCP Tools three layers, restyled to match hero: diagram-2-decision.png |
