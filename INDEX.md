@@ -142,3 +142,4 @@
 | 2026-05-16 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Skills MCP Tools three layers: substack-version.md |
 | 2026-05-16 | content | images | [hero.png](projects/content/images/hero.png) | Skills MCP Tools three layers: hero.png |
 | 2026-05-16 | content | images | [diagram-1-anatomy.png](projects/content/images/diagram-1-anatomy.png) | Skills MCP Tools three layers: diagram-1-anatomy.png |
+| 2026-05-16 | content | images | [diagram-2-decision.png](projects/content/images/diagram-2-decision.png) | Skills MCP Tools three layers: diagram-2-decision.png |
