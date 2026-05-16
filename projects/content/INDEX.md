@@ -39,3 +39,4 @@
 | 2026-05-14 | images | [ui-generic.png](images/ui-generic.png) | DESIGN.md definitive guide: ui-generic.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/ui-generic.png |
 | 2026-05-14 | images | [ui-stripe-style.png](images/ui-stripe-style.png) | DESIGN.md definitive guide: ui-stripe-style.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/ui-stripe-style.png |
 | 2026-05-14 | images | [ui-linear-style.png](images/ui-linear-style.png) | DESIGN.md definitive guide: ui-linear-style.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/design-md-definitive-guide/ui-linear-style.png |
+| 2026-05-16 | reports | [draft.md](reports/draft.md) | Mac mini production inference tutorial: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/mac-mini-production-inference/draft.md |
