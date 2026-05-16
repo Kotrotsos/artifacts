@@ -134,3 +134,4 @@
 | 2026-05-16 | content | reports | [draft.md](projects/content/reports/draft.md) | The Great Flip: draft.md |
 | 2026-05-16 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | The Great Flip: substack-version.md |
 | 2026-05-16 | content | images | [hero.png](projects/content/images/hero.png) | The Great Flip: hero.png |
+| 2026-05-16 | content | images | [diagram-1-crossover.png](projects/content/images/diagram-1-crossover.png) | The Great Flip: diagram-1-crossover.png |
