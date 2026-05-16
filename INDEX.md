@@ -121,3 +121,4 @@
 | 2026-05-15 | agentassist | reports | [security-audit-v2.html](projects/agentassist/reports/security-audit-v2.html) | Security audit v2 after remediation: B- to A-, two new P3s flagged |
 | 2026-05-15 | agentassist | reports | [security-review.html](projects/agentassist/reports/security-review.html) | Fresh security review and comparison: agentassist (A-) vs virtuele-assistent (C) |
 | 2026-05-15 | agentassist | reports | [gap-analysis.html](projects/agentassist/reports/gap-analysis.html) | Gap analysis: agentassist and virtuele-assistent against a complete multi-tenant chatbot target, prioritized with effort estimates |
+| 2026-05-16 | agentassist | reports | [architecture-map.html](projects/agentassist/reports/architecture-map.html) | Interactive architecture map: 19 nodes across 5 layers, 27 edges, flow filters (chat/admin/feedback/tool call), detail panel, dark/light toggle |

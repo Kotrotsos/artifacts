@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Architecture map - agentassist</title>
+<style>
+  :root[data-theme="light"] {
+    --bg:#f8fafc; --surface:#fff; --surface-2:#f1f5f9; --text:#0f172a; --muted:#64748b;
+    --border:#e2e8f0; --border-strong:#cbd5e1;
+    --accent:#2563eb; --accent-soft:#dbeafe; --accent-fg:#1e40af;
+    --code-bg:#f1f5f9; --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+
+    --node-client-bg:#eef2ff; --node-client-fg:#4338ca; --node-client-border:#a5b4fc;
+    --node-gateway-bg:#f0f9ff; --node-gateway-fg:#075985; --node-gateway-border:#7dd3fc;
+    --node-domain-bg:#f0fdf4; --node-domain-fg:#166534; --node-domain-border:#86efac;
+    --node-data-bg:#fef3c7; --node-data-fg:#92400e; --node-data-border:#fcd34d;
+    --node-external-bg:#fff7ed; --node-external-fg:#9a3412; --node-external-border:#fdba74;
+
+    --edge-default:#94a3b8;
+    --edge-chat:#2563eb;
+    --edge-admin:#9333ea;
+    --edge-feedback:#16a34a;
+    --edge-tool:#ea580c;
+    --edge-dim:#e2e8f0;
+
+    --panel-bg:rgba(255,255,255,0.96);
+  }
+  :root[data-theme="dark"] {
+    --bg:#0b0d10; --surface:#14181d; --surface-2:#1c2127; --text:#f1f5f9; --muted:#94a3b8;
+    --border:#262d35; --border-strong:#374151;
+    --accent:#60a5fa; --accent-soft:#1e3a8a; --accent-fg:#bfdbfe;
+    --code-bg:#1e242b; --shadow: 0 1px 3px rgba(0,0,0,0.3);
+
+    --node-client-bg:#1e1b4b; --node-client-fg:#c7d2fe; --node-client-border:#4338ca;
+    --node-gateway-bg:#0c2236; --node-gateway-fg:#bae6fd; --node-gateway-border:#075985;
+    --node-domain-bg:#0c1f14; --node-domain-fg:#bbf7d0; --node-domain-border:#166534;
+    --node-data-bg:#2a1f0a; --node-data-fg:#fcd34d; --node-data-border:#92400e;
+    --node-external-bg:#281a0a; --node-external-fg:#fed7aa; --node-external-border:#9a3412;
+
+    --edge-default:#64748b;
+    --edge-chat:#60a5fa;
+    --edge-admin:#c084fc;
+    --edge-feedback:#4ade80;
+    --edge-tool:#fb923c;
+    --edge-dim:#1e2530;
+
+    --panel-bg:rgba(20,24,29,0.96);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;font-size:14px;}
+
+  header.bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;
+             padding:0.85rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface);
+             position:sticky;top:0;z-index:5;flex-wrap:wrap;}
+  header h1{margin:0;font-size:1rem;letter-spacing:-0.005em;}
+  header .sub{color:var(--muted);font-size:0.82rem;margin-left:0.5rem;}
+  .filters{display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;}
+  .filters .label{color:var(--muted);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.04em;margin-right:0.25rem;}
+  .pill{padding:0.35rem 0.7rem;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);
+        color:var(--text);font:inherit;font-size:0.82rem;cursor:pointer;}
+  .pill:hover{border-color:var(--accent);}
+  .pill.active{color:#fff;border-color:transparent;}
+  .pill[data-flow="all"].active{background:var(--accent);}
+  .pill[data-flow="chat"].active{background:var(--edge-chat);}
+  .pill[data-flow="admin"].active{background:var(--edge-admin);}
+  .pill[data-flow="feedback"].active{background:var(--edge-feedback);}
+  .pill[data-flow="tool"].active{background:var(--edge-tool);}
+  .right{display:flex;gap:0.4rem;align-items:center;}
+  .theme-toggle{padding:0.35rem 0.7rem;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font:inherit;font-size:0.82rem;cursor:pointer;}
+  .theme-toggle:hover{border-color:var(--accent);}
+
+  .canvas-wrap{position:relative;overflow:auto;padding:1.25rem;min-height:calc(100vh - 60px);}
+  .canvas{position:relative;width:1280px;height:880px;margin:0 auto;}
+  .canvas svg.edges{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+  .canvas svg.edges path{stroke:var(--edge-default);stroke-width:1.5;fill:none;opacity:0.7;transition:stroke 0.2s ease,opacity 0.2s ease,stroke-width 0.2s ease;pointer-events:stroke;}
+  .canvas svg.edges path.flow-chat{stroke:var(--edge-chat);}
+  .canvas svg.edges path.flow-admin{stroke:var(--edge-admin);}
+  .canvas svg.edges path.flow-feedback{stroke:var(--edge-feedback);}
+  .canvas svg.edges path.flow-tool{stroke:var(--edge-tool);}
+  .canvas svg.edges path.dim{opacity:0.15;}
+  .canvas svg.edges path.highlight{stroke-width:2.5;opacity:1;}
+  .canvas svg.edges marker path{fill:var(--edge-default);}
+  .canvas svg.edges path.flow-chat ~ marker path{fill:var(--edge-chat);}
+
+  .cluster{position:absolute;border:1px dashed var(--border);border-radius:14px;}
+  .cluster-label{position:absolute;top:-10px;left:14px;background:var(--bg);padding:0 6px;color:var(--muted);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;}
+
+  .node{position:absolute;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;
+        padding:0.55rem 0.7rem;width:200px;cursor:pointer;box-shadow:var(--shadow);
+        transition:transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease, border-color 0.12s ease;
+        z-index:2;}
+  .node:hover{transform:translateY(-1px);border-color:var(--accent);}
+  .node.dim{opacity:0.35;}
+  .node.selected{outline:2px solid var(--accent);outline-offset:2px;}
+  .node .ntitle{font-weight:600;font-size:0.88rem;line-height:1.25;}
+  .node .ndesc{color:var(--muted);font-size:0.74rem;margin-top:0.18rem;line-height:1.35;}
+  .node .nbadge{display:inline-block;font-size:0.65rem;padding:0 0.4rem;border-radius:4px;background:var(--surface-2);color:var(--muted);margin-right:0.3rem;}
+
+  .node[data-type=client]   {background:var(--node-client-bg);border-color:var(--node-client-border);}
+  .node[data-type=client]   .ntitle{color:var(--node-client-fg);}
+  .node[data-type=gateway]  {background:var(--node-gateway-bg);border-color:var(--node-gateway-border);}
+  .node[data-type=gateway]  .ntitle{color:var(--node-gateway-fg);}
+  .node[data-type=domain]   {background:var(--node-domain-bg);border-color:var(--node-domain-border);}
+  .node[data-type=domain]   .ntitle{color:var(--node-domain-fg);}
+  .node[data-type=data]     {background:var(--node-data-bg);border-color:var(--node-data-border);}
+  .node[data-type=data]     .ntitle{color:var(--node-data-fg);}
+  .node[data-type=external] {background:var(--node-external-bg);border-color:var(--node-external-border);}
+  .node[data-type=external] .ntitle{color:var(--node-external-fg);}
+
+  /* Wider Flask gateway node */
+  .node.gateway-big{width:240px;}
+
+  /* Detail panel */
+  .panel{position:fixed;top:60px;right:0;width:380px;max-width:90vw;height:calc(100vh - 60px);
+         background:var(--panel-bg);border-left:1px solid var(--border);padding:1.25rem;
+         transform:translateX(100%);transition:transform 0.2s ease;overflow-y:auto;
+         backdrop-filter:blur(10px);z-index:6;}
+  .panel.open{transform:translateX(0);}
+  .panel h2{margin:0 0 0.25rem;font-size:1.05rem;letter-spacing:-0.005em;}
+  .panel .ptype{display:inline-block;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;padding:1px 0.55rem;border-radius:999px;background:var(--surface-2);color:var(--muted);}
+  .panel .pdesc{color:var(--muted);font-size:0.9rem;margin:0.5rem 0 1rem;}
+  .panel h3{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin:1rem 0 0.4rem;}
+  .panel ul{margin:0;padding-left:1.1rem;line-height:1.6;}
+  .panel ul li code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.84em;}
+  .panel .close{position:absolute;top:0.6rem;right:0.6rem;background:transparent;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:0.3rem 0.5rem;}
+  .panel .close:hover{color:var(--text);}
+  .panel a.linkbtn{display:inline-block;background:var(--surface);border:1px solid var(--border-strong);padding:2px 0.55rem;border-radius:6px;font-size:0.8rem;color:var(--text);text-decoration:none;margin:2px 4px 2px 0;cursor:pointer;}
+  .panel a.linkbtn:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* Hover tooltip for edges */
+  .tooltip{position:fixed;background:var(--surface);border:1px solid var(--border-strong);border-radius:6px;
+           padding:4px 0.55rem;font-size:0.78rem;color:var(--text);box-shadow:var(--shadow);pointer-events:none;
+           display:none;z-index:7;}
+
+  .legend{position:fixed;left:1.25rem;bottom:1rem;display:flex;gap:0.5rem;align-items:center;background:var(--surface);
+          border:1px solid var(--border);border-radius:999px;padding:0.35rem 0.85rem;font-size:0.78rem;color:var(--muted);
+          box-shadow:var(--shadow);}
+  .legend .swatch{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:0.3rem;vertical-align:middle;}
+  .legend .item{display:inline-flex;align-items:center;}
+  @media (max-width: 1320px) { .canvas{margin-left:0;} }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div>
+    <h1>agentassist - architecture map</h1>
+    <span class="sub">click any node for details, filter by flow</span>
+  </div>
+  <div class="filters" role="tablist" aria-label="Flow filters">
+    <span class="label">Flow:</span>
+    <button class="pill active" data-flow="all" type="button">All</button>
+    <button class="pill" data-flow="chat" type="button">Chat</button>
+    <button class="pill" data-flow="admin" type="button">Admin</button>
+    <button class="pill" data-flow="feedback" type="button">Feedback</button>
+    <button class="pill" data-flow="tool" type="button">Tool call</button>
+  </div>
+  <div class="right">
+    <button class="theme-toggle" id="themeBtn" type="button">Dark</button>
+  </div>
+</header>
+
+<div class="canvas-wrap">
+  <div class="canvas" id="canvas">
+    <svg class="edges" id="edges" viewBox="0 0 1280 880" preserveAspectRatio="none">
+      <defs>
+        <marker id="ah-default" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L7,3 z" fill="var(--edge-default)"/>
+        </marker>
+        <marker id="ah-chat" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L7,3 z" fill="var(--edge-chat)"/>
+        </marker>
+        <marker id="ah-admin" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L7,3 z" fill="var(--edge-admin)"/>
+        </marker>
+        <marker id="ah-feedback" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L7,3 z" fill="var(--edge-feedback)"/>
+        </marker>
+        <marker id="ah-tool" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L7,3 z" fill="var(--edge-tool)"/>
+        </marker>
+      </defs>
+    </svg>
+    <!-- Nodes and clusters rendered by JS -->
+  </div>
+</div>
+
+<aside class="panel" id="panel" aria-hidden="true">
+  <button class="close" id="panelClose" aria-label="Close details">x</button>
+  <span class="ptype" id="ptype"></span>
+  <h2 id="ptitle"></h2>
+  <p class="pdesc" id="pdesc"></p>
+  <h3>Files</h3>
+  <ul id="pfiles"></ul>
+  <h3>Key API</h3>
+  <ul id="papi"></ul>
+  <h3>Connected to</h3>
+  <div id="pconn"></div>
+</aside>
+
+<div class="tooltip" id="tip"></div>
+
+<div class="legend">
+  <span class="item"><span class="swatch" style="background:var(--node-client-bg);border:1px solid var(--node-client-border);"></span> client</span>
+  <span class="item"><span class="swatch" style="background:var(--node-gateway-bg);border:1px solid var(--node-gateway-border);"></span> gateway</span>
+  <span class="item"><span class="swatch" style="background:var(--node-domain-bg);border:1px solid var(--node-domain-border);"></span> domain</span>
+  <span class="item"><span class="swatch" style="background:var(--node-data-bg);border:1px solid var(--node-data-border);"></span> data</span>
+  <span class="item"><span class="swatch" style="background:var(--node-external-bg);border:1px solid var(--node-external-border);"></span> external</span>
+</div>
+
+<script>
+"use strict";
+
+/* ============== THEME ============== */
+const themeBtn = document.getElementById("themeBtn");
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeBtn.textContent = t === "dark" ? "Light" : "Dark";
+  try { localStorage.setItem("arch.theme", t); } catch (_) {}
+}
+setTheme((() => { try { return localStorage.getItem("arch.theme") || "light"; } catch (_) { return "light"; } })());
+themeBtn.addEventListener("click", () => {
+  setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+});
+
+/* ============== DATA ============== */
+const NODES = [
+  // Clients
+  { id:"browser-chat",  type:"client",   x: 30,  y: 60,  title:"Browser - chat UI",
+    desc:"Full-screen + bubble chat, markdown rendering, SSE consumer.",
+    files:["static/index.html"],
+    api:["MD.renderInto(el, text)","sendMessage()","appendActivity(text)"] },
+  { id:"browser-admin", type:"client",   x: 30,  y: 180, title:"Browser - admin UI",
+    desc:"Tenant editor with draft/publish, prompt preview, feedback viewer.",
+    files:["static/admin.html"],
+    api:["selectTenant(id)","saveDraft()","publishDraft()","openPromptPreview()"] },
+
+  // Gateway
+  { id:"flask",         type:"gateway",  x: 320, y: 340, title:"Flask app", gatewayBig:true,
+    desc:"Routes, security middleware, SSE wrapping. Anonymous chat protected by 4-tier rate limit + token budget + concurrent cap + origin pin.",
+    files:["app.py"],
+    api:[
+      "POST /api/{tenant}/chat (SSE)",
+      "POST /api/{tenant}/feedback",
+      "GET  /api/{tenant}/config",
+      "POST /api/admin/login (super or tenant)",
+      "POST /api/admin/{t}/config (save draft)",
+      "POST /api/admin/{t}/publish",
+      "GET  /api/admin/{t}/prompt-preview",
+      "GET  /api/admin/{t}/feedback",
+      "POST /api/admin/{t}/password (super)",
+    ] },
+
+  // Middleware (technically inside Flask but shown separately to make the
+  // pipeline legible).
+  { id:"ratelimit", type:"domain", x: 320, y: 60,  title:"RateLimiter",
+    desc:"Sliding-window per key. Four tiers: per IP/min, per IP/hour, per session/min, per tenant/min.",
+    files:["ratelimit.py"],
+    api:["RateLimiter(capacity, window)","check(key) -> {allowed, retry_after}"] },
+  { id:"concurrency", type:"domain", x: 320, y: 160, title:"ConcurrencyCap",
+    desc:"Per-IP and per-tenant concurrent stream cap. Slot acquired before SSE, released in finally.",
+    files:["concurrency.py"],
+    api:["try_acquire(key, limit)","release(key)","current(key)"] },
+  { id:"pii", type:"domain", x: 320, y: 240, title:"PII redaction",
+    desc:"Dutch patterns: IBAN, email, phone, postcode, paspoort, rijbewijs, BSN (elfproef). Idempotent.",
+    files:["pii.py"],
+    api:["redact(text)","redact_with_details(text) -> RedactionResult"] },
+  { id:"auth", type:"domain", x: 320, y: 540, title:"Auth tokens",
+    desc:"HMAC-SHA256 signed tokens for both admin and visitor sessions. Tenant-bound. compare_digest used for verify.",
+    files:["auth.py"],
+    api:["make_token(claims, secret)","verify_token(tok, secret)","make_session_token(tenant, secret)","verify_session_token(tok, tenant, secret)"] },
+  { id:"passwords", type:"domain", x: 320, y: 640, title:"argon2 passwords",
+    desc:"Per-tenant admin password hashing. argon2id via argon2-cffi.",
+    files:["passwords.py"],
+    api:["hash_password(pw)","verify_password(hash, pw)","needs_rehash(hash)"] },
+  { id:"budget-check", type:"domain", x: 320, y: 740, title:"TokenBudget (check)",
+    desc:"24h per-tenant token budget. Checked before turn; 503 + Retry-After if exceeded.",
+    files:["budget.py"],
+    api:["tokens_last_24h(tenant)","retry_after_seconds(tenant)"] },
+
+  // Agent stack
+  { id:"agent", type:"domain", x: 620, y: 60, title:"agent.iter_turn",
+    desc:"Per-tenant streaming agent. Per-session lock, retry on transient errors, source extraction, optional retrieval.",
+    files:["agent.py"],
+    api:["iter_turn(client, tenant, sid, msg, on_usage, retriever)","build_system_prompt(tenant, retrieved)"] },
+  { id:"providers", type:"domain", x: 620, y: 160, title:"LLM provider",
+    desc:"AnthropicProvider is the default. Subclass Provider with messages_stream() to add OpenAI/Azure/local.",
+    files:["providers.py"],
+    api:["Provider.messages_stream(**kwargs)","AnthropicProvider","default_provider()"] },
+  { id:"retriever", type:"domain", x: 620, y: 260, title:"Retriever",
+    desc:"NullRetriever default. InMemoryRetriever (BM25-ish) example. Subclass to plug a vector store.",
+    files:["retrieval.py"],
+    api:["Retriever.retrieve(tenant, query, k)","NullRetriever","InMemoryRetriever"] },
+  { id:"otel", type:"domain", x: 620, y: 360, title:"OpenTelemetry adapter",
+    desc:"Optional. Active when OTEL_EXPORTER_OTLP_ENDPOINT set. One span per turn with tenant, session, model, tokens.",
+    files:["otel.py"],
+    api:["init() -> bool","chat_span(tenant, sid, model)","is_enabled()"] },
+
+  // Data stores
+  { id:"tenants", type:"data", x: 620, y: 480, title:"TenantStore",
+    desc:"Filesystem-backed tenant config + context + draft overlay. Atomic writes.",
+    files:["tenants.py", "tenants/{id}/config.json", "tenants/{id}/context.md"],
+    api:["load(id)","save_config(tenant)","save_context(id, text)","Tenant.with_overlay(draft)"] },
+  { id:"budget", type:"data", x: 620, y: 580, title:"TokenBudget (ledger)",
+    desc:"Append-only JSONL ledger. One row per completed turn. 24h rolling sum.",
+    files:["budget.py", "tenants/{id}/usage.jsonl"],
+    api:["record(tenant, sid, in_t, out_t)","tokens_last_24h(tenant)"] },
+  { id:"feedback", type:"data", x: 620, y: 680, title:"FeedbackStore",
+    desc:"Thumbs up/down with optional comment + excerpt. JSONL per tenant.",
+    files:["feedback.py", "tenants/{id}/feedback.jsonl"],
+    api:["record(tenant, sid, rating, comment, excerpt)","recent(tenant, limit)","summary(tenant, window)"] },
+
+  // External
+  { id:"anthropic", type:"external", x: 940, y: 60, title:"Anthropic API",
+    desc:"messages.stream() endpoint. Server-side web_fetch tool enforced against per-tenant allowed_domains.",
+    files:[],
+    api:["client.messages.stream(model, system, tools, messages)","web_fetch_20260209 tool"] },
+  { id:"webhosts", type:"external", x: 940, y: 200, title:"Allowlisted hosts",
+    desc:"Per-tenant web_fetch targets (e.g. montferland.info). Allowlist enforced by Anthropic, not the local server.",
+    files:["tenants/{id}/config.json -> allowedDomains"], api:[] },
+  { id:"otel-collector", type:"external", x: 940, y: 340, title:"OTel collector",
+    desc:"Optional OTLP/HTTP destination. Set OTEL_EXPORTER_OTLP_ENDPOINT to enable.",
+    files:[], api:[] },
+  { id:"filesystem", type:"external", x: 940, y: 540, title:"Filesystem",
+    desc:"tenants/{id}/{config.json, context.md, usage.jsonl, feedback.jsonl}. Single source of truth, no DB.",
+    files:["tenants/<id>/config.json","tenants/<id>/context.md","tenants/<id>/usage.jsonl","tenants/<id>/feedback.jsonl"],
+    api:[] },
+];
+
+const EDGES = [
+  // Chat flow (visitor message in, streaming text out)
+  { from:"browser-chat", to:"flask", flow:"chat", label:"POST /api/{tenant}/chat" },
+  { from:"flask", to:"ratelimit", flow:"chat", label:"4-tier check" },
+  { from:"flask", to:"concurrency", flow:"chat", label:"acquire slot" },
+  { from:"flask", to:"budget-check", flow:"chat", label:"check 24h budget" },
+  { from:"flask", to:"pii", flow:"chat", label:"redact body" },
+  { from:"flask", to:"auth", flow:"chat", label:"verify/issue session" },
+  { from:"flask", to:"agent", flow:"chat", label:"iter_turn(...)" },
+  { from:"agent", to:"tenants", flow:"chat", label:"build system prompt" },
+  { from:"agent", to:"retriever", flow:"chat", label:"optional retrieve" },
+  { from:"agent", to:"providers", flow:"chat", label:"messages_stream" },
+  { from:"agent", to:"otel", flow:"chat", label:"chat_span" },
+  { from:"providers", to:"anthropic", flow:"chat", label:"messages.stream" },
+  { from:"agent", to:"budget", flow:"chat", label:"record usage" },
+  { from:"otel", to:"otel-collector", flow:"chat", label:"OTLP/http" },
+  { from:"flask", to:"browser-chat", flow:"chat", label:"SSE response" },
+
+  // Tool sub-flow (server-side web_fetch on Anthropic side)
+  { from:"anthropic", to:"webhosts", flow:"tool", label:"GET (allowlisted)" },
+
+  // Admin flow
+  { from:"browser-admin", to:"flask", flow:"admin", label:"POST /api/admin/login" },
+  { from:"flask", to:"passwords", flow:"admin", label:"verify (tenant scope)" },
+  { from:"flask", to:"auth", flow:"admin", label:"sign super/tenant token" },
+  { from:"flask", to:"tenants", flow:"admin", label:"load/save config + draft" },
+  { from:"flask", to:"feedback", flow:"admin", label:"summary + recent" },
+  { from:"flask", to:"browser-admin", flow:"admin", label:"JSON" },
+
+  // Feedback flow (visitor thumbs)
+  { from:"browser-chat", to:"flask", flow:"feedback", label:"POST /api/{tenant}/feedback" },
+  { from:"flask", to:"feedback", flow:"feedback", label:"record" },
+
+  // Storage links (rendered as default-color, always visible)
+  { from:"tenants", to:"filesystem", flow:"default", label:"config.json + context.md" },
+  { from:"budget", to:"filesystem", flow:"default", label:"usage.jsonl" },
+  { from:"feedback", to:"filesystem", flow:"default", label:"feedback.jsonl" },
+];
+
+const NODE_W = 200;
+const NODE_W_BIG = 240;
+const NODE_H = 60;
+
+/* ============== RENDER NODES ============== */
+const canvas = document.getElementById("canvas");
+const svg = document.getElementById("edges");
+const nodeIndex = new Map();
+
+for (const n of NODES) {
+  const div = document.createElement("div");
+  div.className = "node" + (n.gatewayBig ? " gateway-big" : "");
+  div.dataset.id = n.id;
+  div.dataset.type = n.type;
+  div.style.left = n.x + "px";
+  div.style.top = n.y + "px";
+
+  const t = document.createElement("div"); t.className = "ntitle"; t.textContent = n.title;
+  const d = document.createElement("div"); d.className = "ndesc"; d.textContent = n.desc;
+  div.appendChild(t); div.appendChild(d);
+  div.addEventListener("click", () => openPanel(n.id));
+  canvas.appendChild(div);
+  nodeIndex.set(n.id, { node: n, el: div });
+}
+
+/* ============== RENDER EDGES ============== */
+function nodeCenter(id) {
+  const e = nodeIndex.get(id);
+  if (!e) return null;
+  const w = e.node.gatewayBig ? NODE_W_BIG : NODE_W;
+  return { x: e.node.x + w / 2, y: e.node.y + NODE_H / 2, w, h: NODE_H };
+}
+
+function edgeAnchor(from, to, side) {
+  // Pick the side of the source rectangle that points toward target.
+  const w = from.w, h = from.h;
+  const dx = to.x - from.x, dy = to.y - from.y;
+  let x = from.x, y = from.y;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    x = from.x + (dx > 0 ? w / 2 : -w / 2);
+    y = from.y;
+  } else {
+    x = from.x;
+    y = from.y + (dy > 0 ? h / 2 : -h / 2);
+  }
+  return { x, y };
+}
+
+function curvePath(a, b) {
+  // Cubic bezier with horizontal-ish control points
+  const dx = b.x - a.x;
+  const c1x = a.x + dx * 0.5;
+  const c1y = a.y;
+  const c2x = b.x - dx * 0.5;
+  const c2y = b.y;
+  return `M ${a.x} ${a.y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${b.x} ${b.y}`;
+}
+
+const edgeIndex = [];
+for (const e of EDGES) {
+  const from = nodeCenter(e.from);
+  const to = nodeCenter(e.to);
+  if (!from || !to) continue;
+  const a = edgeAnchor(from, to);
+  const b = edgeAnchor(to, from);
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", curvePath(a, b));
+  path.setAttribute("class", "flow-" + e.flow);
+  const markerByFlow = { chat:"ah-chat", admin:"ah-admin", feedback:"ah-feedback", tool:"ah-tool", default:"ah-default" };
+  path.setAttribute("marker-end", `url(#${markerByFlow[e.flow] || "ah-default"})`);
+  path.dataset.flow = e.flow;
+  path.dataset.from = e.from;
+  path.dataset.to = e.to;
+  path.dataset.label = e.label;
+  path.addEventListener("mouseenter", (ev) => showTip(ev, e.label));
+  path.addEventListener("mousemove", (ev) => showTip(ev, e.label));
+  path.addEventListener("mouseleave", hideTip);
+  svg.appendChild(path);
+  edgeIndex.push({ data: e, el: path });
+}
+
+/* ============== FLOW FILTER ============== */
+let activeFlow = "all";
+document.querySelectorAll(".pill").forEach((p) => {
+  p.addEventListener("click", () => {
+    document.querySelectorAll(".pill").forEach((q) => q.classList.toggle("active", q === p));
+    activeFlow = p.dataset.flow;
+    applyFilter();
+  });
+});
+
+function applyFilter() {
+  // Compute the set of nodes touched by the active flow
+  let activeNodeIds = null;
+  if (activeFlow !== "all") {
+    activeNodeIds = new Set();
+    for (const e of EDGES) {
+      if (e.flow === activeFlow) {
+        activeNodeIds.add(e.from);
+        activeNodeIds.add(e.to);
+      }
+    }
+  }
+  // Edges
+  for (const e of edgeIndex) {
+    const match = activeFlow === "all" || e.data.flow === activeFlow;
+    e.el.classList.toggle("dim", !match);
+  }
+  // Nodes
+  for (const [id, entry] of nodeIndex) {
+    const match = activeNodeIds === null || activeNodeIds.has(id);
+    entry.el.classList.toggle("dim", !match);
+  }
+}
+
+/* ============== DETAIL PANEL ============== */
+const panel = document.getElementById("panel");
+const ptitle = document.getElementById("ptitle");
+const ptype = document.getElementById("ptype");
+const pdesc = document.getElementById("pdesc");
+const pfiles = document.getElementById("pfiles");
+const papi = document.getElementById("papi");
+const pconn = document.getElementById("pconn");
+
+function openPanel(nodeId) {
+  const entry = nodeIndex.get(nodeId);
+  if (!entry) return;
+  const n = entry.node;
+  ptitle.textContent = n.title;
+  ptype.textContent = n.type;
+  pdesc.textContent = n.desc;
+  while (pfiles.firstChild) pfiles.removeChild(pfiles.firstChild);
+  for (const f of n.files || []) {
+    const li = document.createElement("li"); const c = document.createElement("code"); c.textContent = f;
+    li.appendChild(c); pfiles.appendChild(li);
+  }
+  if (!(n.files || []).length) {
+    const li = document.createElement("li"); li.style.color = "var(--muted)"; li.textContent = "(none)";
+    pfiles.appendChild(li);
+  }
+  while (papi.firstChild) papi.removeChild(papi.firstChild);
+  for (const a of n.api || []) {
+    const li = document.createElement("li"); const c = document.createElement("code"); c.textContent = a;
+    li.appendChild(c); papi.appendChild(li);
+  }
+  if (!(n.api || []).length) {
+    const li = document.createElement("li"); li.style.color = "var(--muted)"; li.textContent = "(public)";
+    papi.appendChild(li);
+  }
+  while (pconn.firstChild) pconn.removeChild(pconn.firstChild);
+  const seen = new Set();
+  for (const e of EDGES) {
+    if (e.from === nodeId && !seen.has(e.to)) {
+      seen.add(e.to);
+      const a = document.createElement("a"); a.className = "linkbtn"; a.textContent = "to " + entry2title(e.to);
+      a.addEventListener("click", () => openPanel(e.to));
+      pconn.appendChild(a);
+    }
+    if (e.to === nodeId && !seen.has("from-" + e.from)) {
+      seen.add("from-" + e.from);
+      const a = document.createElement("a"); a.className = "linkbtn"; a.textContent = "from " + entry2title(e.from);
+      a.addEventListener("click", () => openPanel(e.from));
+      pconn.appendChild(a);
+    }
+  }
+  document.querySelectorAll(".node").forEach((el) => el.classList.toggle("selected", el.dataset.id === nodeId));
+  panel.classList.add("open");
+  panel.setAttribute("aria-hidden", "false");
+}
+function entry2title(id) {
+  const e = nodeIndex.get(id);
+  return e ? e.node.title : id;
+}
+document.getElementById("panelClose").addEventListener("click", () => {
+  panel.classList.remove("open");
+  panel.setAttribute("aria-hidden", "true");
+  document.querySelectorAll(".node").forEach((el) => el.classList.remove("selected"));
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    panel.classList.remove("open");
+    panel.setAttribute("aria-hidden", "true");
+    document.querySelectorAll(".node").forEach((el) => el.classList.remove("selected"));
+  }
+});
+
+/* ============== EDGE TOOLTIPS ============== */
+const tip = document.getElementById("tip");
+function showTip(ev, text) {
+  tip.textContent = text;
+  tip.style.display = "block";
+  tip.style.left = (ev.clientX + 10) + "px";
+  tip.style.top = (ev.clientY + 12) + "px";
+}
+function hideTip() { tip.style.display = "none"; }
+
+</script>
+</body>
+</html>
