@@ -124,3 +124,4 @@
 | 2026-05-16 | agentassist | reports | [architecture-map.html](projects/agentassist/reports/architecture-map.html) | Interactive architecture map: 19 nodes across 5 layers, 27 edges, flow filters (chat/admin/feedback/tool call), detail panel, dark/light toggle |
 | 2026-05-16 | content | reports | [draft.md](projects/content/reports/draft.md) | Mac mini production inference tutorial: draft.md |
 | 2026-05-16 | content | images | [hero.png](projects/content/images/hero.png) | Mac mini production inference tutorial: hero.png |
+| 2026-05-16 | content | images | [diagram-1-stack.png](projects/content/images/diagram-1-stack.png) | Mac mini production inference tutorial: diagram-1-stack.png |
