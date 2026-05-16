@@ -137,3 +137,4 @@
 | 2026-05-16 | content | images | [diagram-1-crossover.png](projects/content/images/diagram-1-crossover.png) | The Great Flip: diagram-1-crossover.png |
 | 2026-05-16 | content | images | [diagram-2-revenue.png](projects/content/images/diagram-2-revenue.png) | The Great Flip: diagram-2-revenue.png |
 | 2026-05-16 | content | images | [diagram-3-cracks.png](projects/content/images/diagram-3-cracks.png) | The Great Flip: diagram-3-cracks.png |
+| 2026-05-16 | nxtmemo | reports | [nxtmemo-sharepoint-overview.html](projects/nxtmemo/reports/nxtmemo-sharepoint-overview.html) | Overview and working UI mockups for the nxtmemo-sharepoint MCP App |

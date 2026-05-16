@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>nxtmemo-sharepoint — overview &amp; UI</title>
+<style>
+:root {
+    --page-bg: #fafafa;
+    --bg: #ffffff;
+    --surface: #f5f6f8;
+    --border: #e5e7eb;
+    --text: #111827;
+    --muted: #6b7280;
+    --soft: #9ca3af;
+    --accent: #2563eb;
+    --accent-soft: #eff6ff;
+    --row-hover: #f3f4f6;
+    --error-bg: #fef2f2;
+    --error-text: #b91c1c;
+    --code-bg: #f3f4f6;
+}
+[data-theme="dark"] {
+    --page-bg: #0a0c10;
+    --bg: #0f1115;
+    --surface: #161922;
+    --border: #2a2f3a;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --soft: #6b7280;
+    --accent: #60a5fa;
+    --accent-soft: #1e2a3d;
+    --row-hover: #1c212c;
+    --error-bg: #2a1414;
+    --error-text: #fca5a5;
+    --code-bg: #161922;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+    background: var(--page-bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+}
+main { max-width: 880px; margin: 0 auto; padding: 56px 28px 96px; }
+header.page { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 40px; }
+h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 6px; }
+h2 { font-size: 19px; font-weight: 700; letter-spacing: -0.005em; margin: 48px 0 16px; padding-top: 6px; border-top: 1px solid var(--border); padding-top: 32px; }
+h3 { font-size: 15px; font-weight: 700; margin: 28px 0 10px; color: var(--text); }
+p { margin: 0 0 12px; color: var(--text); }
+p.lead { color: var(--muted); font-size: 15.5px; margin-bottom: 0; max-width: 640px; }
+ul, ol { margin: 0 0 16px; padding-left: 22px; }
+li { margin: 4px 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, kbd { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; background: var(--code-bg); padding: 1px 6px; border-radius: 4px; }
+pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; line-height: 1.55; }
+pre code { background: transparent; padding: 0; }
+table { width: 100%; border-collapse: collapse; margin: 8px 0 16px; font-size: 13.5px; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+.theme-switch { display: inline-flex; gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg); }
+.theme-switch button { background: transparent; border: none; padding: 6px 10px; font-size: 12px; color: var(--muted); cursor: pointer; font-family: inherit; }
+.theme-switch button.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.meta-grid { display: grid; grid-template-columns: 130px 1fr; gap: 4px 16px; font-size: 13px; margin: 24px 0 32px; padding: 16px 18px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; }
+.meta-grid dt { color: var(--muted); }
+.meta-grid dd { margin: 0; color: var(--text); }
+.meta-grid code { background: transparent; padding: 0; }
+.note { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; font-size: 13.5px; color: var(--muted); margin: 16px 0; }
+.note strong { color: var(--text); font-weight: 600; }
+.screen-grid { display: grid; grid-template-columns: 1fr; gap: 28px; margin: 18px 0 24px; }
+.screen { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.screen-label { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.screen-label .name { font-size: 13px; font-weight: 600; }
+.screen-label .desc { font-size: 12px; color: var(--muted); }
+.screen-stage { padding: 18px; background: var(--page-bg); display: flex; justify-content: center; }
+.diagram { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 10px 0 20px; padding: 18px; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; }
+.diagram .node { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-weight: 500; }
+.diagram .node.user { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.diagram .node.ext { background: var(--code-bg); }
+.diagram .arrow { color: var(--soft); font-family: ui-monospace, monospace; }
+
+/* ------ Embedded card styles — kept in sync with src/ui.ts ------ */
+.card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 640px;
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+.card .toolbar { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--border); background: var(--surface); }
+.card .crumbs { flex: 1; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-size: 12.5px; color: var(--muted); min-height: 24px; }
+.card .crumb { color: var(--accent); padding: 2px 6px; border-radius: 6px; }
+.card .crumb.current { color: var(--text); font-weight: 600; }
+.card .crumb-sep { color: var(--muted); }
+.card .search-box { display: flex; align-items: center; gap: 6px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.card .search-input { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); font-size: 13px; outline: none; font-family: inherit; }
+.card .btn { padding: 7px 11px; border: 1px solid var(--border); background: var(--bg); color: var(--text); border-radius: 8px; cursor: pointer; font-size: 12.5px; font-weight: 500; font-family: inherit; }
+.card .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.card .btn.ghost { border-color: transparent; color: var(--muted); }
+.card .list { max-height: 380px; overflow-y: auto; }
+.card .row { display: grid; grid-template-columns: 44px 1fr 110px 90px; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.card .row:last-child { border-bottom: none; }
+.card .chip { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 18px; padding: 0 5px; border-radius: 4px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; background: var(--surface); color: var(--muted); border: 1px solid var(--border); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.card .chip.dir { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.card .chip.pdf { color: #b91c1c; }
+.card .chip.doc { color: #1d4ed8; }
+.card .chip.xls { color: #047857; }
+.card .row .name { color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card .row .meta { color: var(--muted); font-size: 11.5px; text-align: right; white-space: nowrap; }
+.card .empty { padding: 28px 16px; text-align: center; color: var(--muted); font-size: 13px; }
+.card .preview-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.card .preview-name { font-size: 14px; font-weight: 600; max-width: 480px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card .preview-body { padding: 12px 14px; max-height: 320px; overflow-y: auto; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; color: var(--text); }
+.card .error { padding: 14px; background: var(--error-bg); color: var(--error-text); font-size: 13px; border-radius: 8px; margin: 10px 12px; }
+.card .footer { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; font-size: 11.5px; color: var(--muted); border-top: 1px solid var(--border); background: var(--surface); }
+.card .footer .pill { background: transparent; border: none; color: var(--muted); font-size: 11.5px; font-family: inherit; }
+
+@media print {
+    body { background: #fff; color: #000; }
+    main { padding: 24pt; max-width: 100%; }
+    .theme-switch { display: none; }
+    h2 { page-break-after: avoid; }
+    .screen, pre, .diagram, .meta-grid, .note { page-break-inside: avoid; break-inside: avoid; }
+    .screen-stage { background: #fff; }
+    a { color: #000; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<header class="page">
+    <div>
+        <h1>nxtmemo-sharepoint</h1>
+        <p class="lead">An MCP App that exposes the NxtPhase SharePoint as an interactive file browser inside Claude Desktop. Default folder: <code>/General/Operations/Projects/ANP/Zittingslijsten</code>.</p>
+    </div>
+    <div class="theme-switch" role="group" aria-label="Theme">
+        <button data-mode="light">Light</button>
+        <button data-mode="dark">Dark</button>
+        <button data-mode="system">System</button>
+    </div>
+</header>
+
+<dl class="meta-grid">
+    <dt>Project path</dt><dd><code>/Users/marcokotrotsos/NXTPHASE/nxtmemo</code></dd>
+    <dt>Server name</dt><dd><code>nxtmemo-sharepoint</code></dd>
+    <dt>Runtime</dt><dd>Node + TypeScript via <code>tsx</code> (no build step)</dd>
+    <dt>Auth</dt><dd>Delegated OAuth, device-code flow via <code>@azure/msal-node</code></dd>
+    <dt>Token cache</dt><dd><code>~/.config/nxtmemo-sharepoint/token-cache.json</code> (0600)</dd>
+    <dt>Tenant</dt><dd><code>nxtphase10.onmicrosoft.com</code> (single-tenant)</dd>
+    <dt>Scopes</dt><dd><code>Files.Read.All</code>, <code>Sites.Read.All</code>, <code>User.Read</code>, <code>offline_access</code></dd>
+</dl>
+
+<h2>Architecture</h2>
+<div class="diagram">
+    <div class="node user">You</div>
+    <span class="arrow">&rarr;</span>
+    <div class="node">Claude Desktop</div>
+    <span class="arrow">&rarr;</span>
+    <div class="node">stdio MCP</div>
+    <span class="arrow">&rarr;</span>
+    <div class="node">nxtmemo-sharepoint</div>
+    <span class="arrow">&rarr;</span>
+    <div class="node ext">Microsoft Graph</div>
+    <span class="arrow">&rarr;</span>
+    <div class="node ext">SharePoint Online</div>
+</div>
+<p>One stdio MCP server, one UI tool (<code>browse_sharepoint</code>). Claude Desktop iframes the card HTML; clicks inside the card re-call the tool with new params (<code>path</code> / <code>query</code> / <code>fileId</code>), which re-renders the card in place.</p>
+
+<h2>Setup</h2>
+<ol>
+    <li>Register an Entra ID app in the <code>nxtphase10</code> tenant. Single-tenant. Under <strong>Authentication</strong>, set <em>Allow public client flows</em> to <strong>Yes</strong> (needed for device-code).</li>
+    <li>Add delegated Microsoft Graph permissions: <code>Files.Read.All</code>, <code>Sites.Read.All</code>, <code>User.Read</code>, <code>offline_access</code>.</li>
+    <li><code>cp .env.example .env</code>, paste in <code>AZURE_TENANT_ID</code> and <code>AZURE_CLIENT_ID</code>.</li>
+    <li><code>npm install &amp;&amp; npm run signin</code>. Open the printed URL, paste the code, sign in once.</li>
+    <li>Add the server entry to <code>~/Library/Application Support/Claude/claude_desktop_config.json</code> and fully quit Claude Desktop before reopening.</li>
+</ol>
+
+<h2>Tool surface</h2>
+<table>
+    <thead><tr><th>Parameter</th><th>Type</th><th>Behaviour</th></tr></thead>
+    <tbody>
+        <tr><td><code>path</code></td><td>string?</td><td>Folder path relative to the site drive root. Default: Zittingslijsten.</td></tr>
+        <tr><td><code>query</code></td><td>string?</td><td>Full-text search; <code>path</code> scopes the search to that subtree.</td></tr>
+        <tr><td><code>fileId</code></td><td>string?</td><td>Drive item ID. Returns extracted text in the preview pane.</td></tr>
+    </tbody>
+</table>
+<p>In normal use you only ever ask Claude to "open the SharePoint browser" once. The card itself drives all further navigation.</p>
+
+<h2>Example screens</h2>
+<p>The cards below are the actual rendered HTML the iframe produces, populated with realistic sample data. Toggle the theme to see how they look in dark mode.</p>
+
+<div class="screen-grid">
+
+    <!-- ============ Screen 1: Folder listing (default) ============ -->
+    <div class="screen">
+        <div class="screen-label">
+            <span class="name">1. Default view — Zittingslijsten folder</span>
+            <span class="desc">browse_sharepoint() with no args</span>
+        </div>
+        <div class="screen-stage">
+            <div class="card">
+                <div class="toolbar">
+                    <div class="crumbs">
+                        <span class="crumb">Site root</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">General</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">Operations</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">Projects</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">ANP</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb current">Zittingslijsten</span>
+                    </div>
+                </div>
+                <div class="search-box">
+                    <input class="search-input" placeholder="Search files in this folder and below..." />
+                    <button class="btn primary">Search</button>
+                </div>
+                <div class="list">
+                    <div class="row"><span class="chip dir">DIR</span><div class="name">2026</div><div class="meta"></div><div class="meta">May 16, 2026</div></div>
+                    <div class="row"><span class="chip dir">DIR</span><div class="name">2025</div><div class="meta"></div><div class="meta">Dec 30, 2025</div></div>
+                    <div class="row"><span class="chip dir">DIR</span><div class="name">Archief</div><div class="meta"></div><div class="meta">Jan 4, 2025</div></div>
+                    <div class="row"><span class="chip xls">xlsx</span><div class="name">Overzicht_zittingen_2026.xlsx</div><div class="meta">142.3 KB</div><div class="meta">May 14, 2026</div></div>
+                    <div class="row"><span class="chip doc">docx</span><div class="name">Werkinstructie_Zittingslijsten.docx</div><div class="meta">86.1 KB</div><div class="meta">Mar 02, 2026</div></div>
+                    <div class="row"><span class="chip pdf">pdf</span><div class="name">Zittingslijst_week_20_2026.pdf</div><div class="meta">312.4 KB</div><div class="meta">May 16, 2026</div></div>
+                    <div class="row"><span class="chip pdf">pdf</span><div class="name">Zittingslijst_week_19_2026.pdf</div><div class="meta">298.7 KB</div><div class="meta">May 09, 2026</div></div>
+                    <div class="row"><span class="chip pdf">pdf</span><div class="name">Zittingslijst_week_18_2026.pdf</div><div class="meta">305.8 KB</div><div class="meta">May 02, 2026</div></div>
+                </div>
+                <div class="footer">
+                    <span>8 items</span>
+                    <span class="pill">Theme: light &rarr; system</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Screen 2: Search results ============ -->
+    <div class="screen">
+        <div class="screen-label">
+            <span class="name">2. Search results</span>
+            <span class="desc">browse_sharepoint({ query: "Amsterdam meervoudig" })</span>
+        </div>
+        <div class="screen-stage">
+            <div class="card">
+                <div class="toolbar">
+                    <div class="crumbs">
+                        <span class="crumb">Site root</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">General</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">Operations</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">Projects</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">ANP</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb current">Zittingslijsten</span>
+                    </div>
+                    <button class="btn ghost">Clear</button>
+                </div>
+                <div class="search-box">
+                    <input class="search-input" value="Amsterdam meervoudig" />
+                    <button class="btn primary">Search</button>
+                </div>
+                <div class="list">
+                    <div class="row"><span class="chip pdf">pdf</span><div class="name">Zittingslijst_week_20_2026.pdf</div><div class="meta">312.4 KB</div><div class="meta">May 16, 2026</div></div>
+                    <div class="row"><span class="chip pdf">pdf</span><div class="name">Zittingslijst_week_19_2026.pdf</div><div class="meta">298.7 KB</div><div class="meta">May 09, 2026</div></div>
+                    <div class="row"><span class="chip pdf">pdf</span><div class="name">Zittingslijst_week_15_2026.pdf</div><div class="meta">281.0 KB</div><div class="meta">Apr 11, 2026</div></div>
+                    <div class="row"><span class="chip pdf">pdf</span><div class="name">Zittingslijst_week_52_2025.pdf</div><div class="meta">274.6 KB</div><div class="meta">Dec 27, 2025</div></div>
+                    <div class="row"><span class="chip xls">xlsx</span><div class="name">Overzicht_zittingen_2026.xlsx</div><div class="meta">142.3 KB</div><div class="meta">May 14, 2026</div></div>
+                </div>
+                <div class="footer">
+                    <span>Search across SharePoint</span>
+                    <span class="pill">Theme: light &rarr; system</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Screen 3: File preview ============ -->
+    <div class="screen">
+        <div class="screen-label">
+            <span class="name">3. File preview — extracted PDF text</span>
+            <span class="desc">browse_sharepoint({ fileId: "01ABC..." })</span>
+        </div>
+        <div class="screen-stage">
+            <div class="card">
+                <div class="toolbar">
+                    <div class="crumbs">
+                        <span class="crumb">Site root</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">General</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">Operations</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">Projects</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb">ANP</span>
+                        <span class="crumb-sep">/</span>
+                        <span class="crumb current">Zittingslijsten</span>
+                    </div>
+                    <button class="btn ghost">Close</button>
+                </div>
+                <div class="preview-head">
+                    <div class="preview-name">Zittingslijst_week_20_2026.pdf</div>
+                    <a class="btn ghost" href="#">Open in SharePoint</a>
+                </div>
+<div class="preview-body">Zittingslijst week 20 - 2026
+Rechtbank Amsterdam, Locatie Parnassusweg
+Gegenereerd op 16-05-2026 om 08:12
+
+Maandag 18 mei 2026
+---------------------------------------------
+09:00  Zaak 26-1234     Strafkamer, meervoudig
+       Officier: mr. P. Janssen
+       Verdachte: J. de Vries
+       Zaal C-2.14
+
+10:30  Zaak 26-1318     Civiele kamer, enkelvoudig
+       Eiser: Acme BV
+       Gedaagde: NxtPhase Holding BV
+       Zaal A-1.08
+
+13:30  Zaak 26-0987     Bestuursrecht, meervoudig
+       Indiener: gemeente Amsterdam
+       Zaal B-3.02
+
+Dinsdag 19 mei 2026
+---------------------------------------------
+09:00  Zaak 26-1422     Strafkamer, enkelvoudig
+       Officier: mr. K. de Boer
+       Verdachte: M. Hassan
+       Zaal C-2.14
+
+[truncated, 4,812 more chars]</div>
+                <div class="footer">
+                    <span>pdf preview, 6,184 chars</span>
+                    <span class="pill">Theme: light &rarr; system</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ Screen 4: Error state ============ -->
+    <div class="screen">
+        <div class="screen-label">
+            <span class="name">4. Error state — token expired</span>
+            <span class="desc">Graph 401, surfaced from auth.ts</span>
+        </div>
+        <div class="screen-stage">
+            <div class="card">
+                <div class="toolbar">
+                    <div class="crumbs">
+                        <span class="crumb current">Site root</span>
+                    </div>
+                </div>
+                <div class="search-box">
+                    <input class="search-input" placeholder="Search files in this folder and below..." />
+                    <button class="btn primary">Search</button>
+                </div>
+                <div class="error">Not signed in. Run <code style="background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 3px;">npm run signin</code> in the nxtmemo project once, then restart Claude Desktop.</div>
+                <div class="footer">
+                    <span>NxtPhase SharePoint</span>
+                    <span class="pill">Theme: light &rarr; system</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<h2>How interaction works</h2>
+<p>Every click inside the card posts a <code>tool</code> message to the host with <code>toolName: "browse_sharepoint"</code> and new params. The host invokes the tool, which returns fresh <code>structuredContent</code>; the iframe rerenders against it.</p>
+<pre><code>// click a folder
+{ path: "/General/Operations/Projects/ANP/Zittingslijsten/2026" }
+
+// type in search box, press Enter
+{ query: "Amsterdam meervoudig", path: "/General/.../Zittingslijsten" }
+
+// click a file row
+{ fileId: "01ABCDEF234567890", path: "/General/.../Zittingslijsten" }
+
+// click "Close" on preview / "Clear" on search
+{ path: "/General/.../Zittingslijsten" }</code></pre>
+
+<h2>File-type chips</h2>
+<table>
+    <thead><tr><th>Chip</th><th>Meaning</th><th>Extractor</th></tr></thead>
+    <tbody>
+        <tr><td><span class="chip dir" style="display: inline-flex;">DIR</span></td><td>Folder</td><td>n/a, click to navigate</td></tr>
+        <tr><td><span class="chip pdf" style="display: inline-flex;">pdf</span></td><td>PDF document</td><td><code>pdf-parse</code> (lazy-imported)</td></tr>
+        <tr><td><span class="chip doc" style="display: inline-flex;">docx</span></td><td>Word document</td><td><code>mammoth.extractRawText</code></td></tr>
+        <tr><td><span class="chip xls" style="display: inline-flex;">xlsx</span></td><td>Excel workbook</td><td><code>xlsx.utils.sheet_to_csv</code>, per sheet</td></tr>
+        <tr><td><span class="chip" style="display: inline-flex;">txt</span></td><td>Text-shaped (txt, md, csv, json, log)</td><td>UTF-8 buffer passthrough</td></tr>
+        <tr><td><span class="chip" style="display: inline-flex;">file</span></td><td>Anything else</td><td>Returns "preview not supported" with byte count</td></tr>
+    </tbody>
+</table>
+<p>All extracts are truncated to 80,000 chars with a trailing marker noting how much was cut.</p>
+
+<h2>Claude Desktop config snippet</h2>
+<pre><code>{
+  "mcpServers": {
+    "nxtmemo-sharepoint": {
+      "command": "/Users/marcokotrotsos/NXTPHASE/nxtmemo/node_modules/.bin/tsx",
+      "args": ["/Users/marcokotrotsos/NXTPHASE/nxtmemo/src/server.ts"]
+    }
+  }
+}</code></pre>
+<p>The absolute path to local <code>tsx</code> matters; Claude Desktop spawns without your shell's PATH.</p>
+
+<div class="note">
+    <strong>Trigger phrase.</strong> Once the server is wired up, just ask Claude something like <em>"Open the SharePoint browser"</em> or <em>"Show me this week's Zittingslijst"</em>. The first call renders the card; everything after that is clicks inside the card.
+</div>
+
+</main>
+
+<script>
+(function() {
+    var html = document.documentElement;
+    var buttons = document.querySelectorAll('.theme-switch button');
+    var STORAGE_KEY = 'nxtmemo-doc-theme';
+
+    function effective(mode) {
+        if (mode === 'system') {
+            var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            return dark ? 'dark' : 'light';
+        }
+        return mode;
+    }
+
+    function apply(mode) {
+        html.setAttribute('data-theme', effective(mode));
+        html.setAttribute('data-theme-mode', mode);
+        try { localStorage.setItem(STORAGE_KEY, mode); } catch (e) { /* sandboxed */ }
+        buttons.forEach(function(b) {
+            b.classList.toggle('active', b.getAttribute('data-mode') === mode);
+        });
+    }
+
+    buttons.forEach(function(b) {
+        b.addEventListener('click', function() { apply(b.getAttribute('data-mode')); });
+    });
+
+    var stored;
+    try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) { stored = null; }
+    apply(stored || 'light');
+
+    if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+            if (html.getAttribute('data-theme-mode') === 'system') apply('system');
+        });
+    }
+})();
+</script>
+
+</body>
+</html>
