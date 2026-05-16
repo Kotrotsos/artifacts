@@ -49,3 +49,4 @@
 | 2026-05-16 | reports | [substack-version.md](reports/substack-version.md) | The Great Flip: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-great-flip-anthropic-openai/substack-version.md |
 | 2026-05-16 | images | [hero.png](images/hero.png) | The Great Flip: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-great-flip-anthropic-openai/hero.png |
 | 2026-05-16 | images | [diagram-1-crossover.png](images/diagram-1-crossover.png) | The Great Flip: diagram-1-crossover.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-great-flip-anthropic-openai/diagram-1-crossover.png |
+| 2026-05-16 | images | [diagram-2-revenue.png](images/diagram-2-revenue.png) | The Great Flip: diagram-2-revenue.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-great-flip-anthropic-openai/diagram-2-revenue.png |
