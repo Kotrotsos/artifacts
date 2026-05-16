@@ -22,9 +22,10 @@
     --edge-admin:#9333ea;
     --edge-feedback:#16a34a;
     --edge-tool:#ea580c;
+    --edge-telemetry:#0891b2;
     --edge-dim:#e2e8f0;
 
-    --panel-bg:rgba(255,255,255,0.96);
+    --panel-bg:rgba(255,255,255,0.97);
   }
   :root[data-theme="dark"] {
     --bg:#0b0d10; --surface:#14181d; --surface-2:#1c2127; --text:#f1f5f9; --muted:#94a3b8;
@@ -43,9 +44,10 @@
     --edge-admin:#c084fc;
     --edge-feedback:#4ade80;
     --edge-tool:#fb923c;
+    --edge-telemetry:#22d3ee;
     --edge-dim:#1e2530;
 
-    --panel-bg:rgba(20,24,29,0.96);
+    --panel-bg:rgba(20,24,29,0.97);
   }
   *{box-sizing:border-box;}
   html,body{margin:0;}
@@ -68,36 +70,38 @@
   .pill[data-flow="admin"].active{background:var(--edge-admin);}
   .pill[data-flow="feedback"].active{background:var(--edge-feedback);}
   .pill[data-flow="tool"].active{background:var(--edge-tool);}
+  .pill[data-flow="telemetry"].active{background:var(--edge-telemetry);}
   .right{display:flex;gap:0.4rem;align-items:center;}
   .theme-toggle{padding:0.35rem 0.7rem;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font:inherit;font-size:0.82rem;cursor:pointer;}
   .theme-toggle:hover{border-color:var(--accent);}
 
   .canvas-wrap{position:relative;overflow:auto;padding:1.25rem;min-height:calc(100vh - 60px);}
-  .canvas{position:relative;width:1280px;height:880px;margin:0 auto;}
-  .canvas svg.edges{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
-  .canvas svg.edges path{stroke:var(--edge-default);stroke-width:1.5;fill:none;opacity:0.7;transition:stroke 0.2s ease,opacity 0.2s ease,stroke-width 0.2s ease;pointer-events:stroke;}
-  .canvas svg.edges path.flow-chat{stroke:var(--edge-chat);}
-  .canvas svg.edges path.flow-admin{stroke:var(--edge-admin);}
-  .canvas svg.edges path.flow-feedback{stroke:var(--edge-feedback);}
-  .canvas svg.edges path.flow-tool{stroke:var(--edge-tool);}
-  .canvas svg.edges path.dim{opacity:0.15;}
-  .canvas svg.edges path.highlight{stroke-width:2.5;opacity:1;}
-  .canvas svg.edges marker path{fill:var(--edge-default);}
-  .canvas svg.edges path.flow-chat ~ marker path{fill:var(--edge-chat);}
+  .canvas{position:relative;width:1500px;height:980px;margin:0 auto;}
+  .canvas svg.edges{position:absolute;inset:0;width:100%;height:100%;}
+  .canvas svg.edges path.edge{stroke:var(--edge-default);stroke-width:1.5;fill:none;opacity:0.7;
+    transition:stroke 0.2s ease,opacity 0.2s ease,stroke-width 0.2s ease;
+    pointer-events:stroke;cursor:default;}
+  .canvas svg.edges path.flow-chat     {stroke:var(--edge-chat);}
+  .canvas svg.edges path.flow-admin    {stroke:var(--edge-admin);}
+  .canvas svg.edges path.flow-feedback {stroke:var(--edge-feedback);}
+  .canvas svg.edges path.flow-tool     {stroke:var(--edge-tool);}
+  .canvas svg.edges path.flow-telemetry{stroke:var(--edge-telemetry);}
+  .canvas svg.edges path.dim{opacity:0.08;}
+  .canvas svg.edges path.highlight{stroke-width:2.6;opacity:1;}
 
-  .cluster{position:absolute;border:1px dashed var(--border);border-radius:14px;}
-  .cluster-label{position:absolute;top:-10px;left:14px;background:var(--bg);padding:0 6px;color:var(--muted);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;}
+  /* Cluster background labels (faint, behind nodes) */
+  .col-label{position:absolute;color:var(--muted);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;}
 
   .node{position:absolute;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;
-        padding:0.55rem 0.7rem;width:200px;cursor:pointer;box-shadow:var(--shadow);
+        padding:0.55rem 0.7rem;width:220px;cursor:pointer;box-shadow:var(--shadow);
         transition:transform 0.12s ease, box-shadow 0.12s ease, opacity 0.2s ease, border-color 0.12s ease;
         z-index:2;}
   .node:hover{transform:translateY(-1px);border-color:var(--accent);}
-  .node.dim{opacity:0.35;}
-  .node.selected{outline:2px solid var(--accent);outline-offset:2px;}
+  .node.dim{opacity:0.25;}
+  .node.selected{outline:2px solid var(--accent);outline-offset:2px;z-index:3;}
   .node .ntitle{font-weight:600;font-size:0.88rem;line-height:1.25;}
-  .node .ndesc{color:var(--muted);font-size:0.74rem;margin-top:0.18rem;line-height:1.35;}
-  .node .nbadge{display:inline-block;font-size:0.65rem;padding:0 0.4rem;border-radius:4px;background:var(--surface-2);color:var(--muted);margin-right:0.3rem;}
+  .node .ndesc{color:var(--muted);font-size:0.74rem;margin-top:0.2rem;line-height:1.35;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 
   .node[data-type=client]   {background:var(--node-client-bg);border-color:var(--node-client-border);}
   .node[data-type=client]   .ntitle{color:var(--node-client-fg);}
@@ -110,11 +114,12 @@
   .node[data-type=external] {background:var(--node-external-bg);border-color:var(--node-external-border);}
   .node[data-type=external] .ntitle{color:var(--node-external-fg);}
 
-  /* Wider Flask gateway node */
-  .node.gateway-big{width:240px;}
+  /* Flask card is larger to fit the route summary */
+  .node.gateway-big{width:260px;padding:0.7rem 0.9rem;}
+  .node.gateway-big .ndesc{-webkit-line-clamp:6;}
 
   /* Detail panel */
-  .panel{position:fixed;top:60px;right:0;width:380px;max-width:90vw;height:calc(100vh - 60px);
+  .panel{position:fixed;top:60px;right:0;width:400px;max-width:92vw;height:calc(100vh - 60px);
          background:var(--panel-bg);border-left:1px solid var(--border);padding:1.25rem;
          transform:translateX(100%);transition:transform 0.2s ease;overflow-y:auto;
          backdrop-filter:blur(10px);z-index:6;}
@@ -125,22 +130,33 @@
   .panel h3{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin:1rem 0 0.4rem;}
   .panel ul{margin:0;padding-left:1.1rem;line-height:1.6;}
   .panel ul li code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.84em;}
-  .panel .close{position:absolute;top:0.6rem;right:0.6rem;background:transparent;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:0.3rem 0.5rem;}
+  .panel .close{position:absolute;top:0.6rem;right:0.6rem;background:transparent;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;padding:0.2rem 0.55rem;line-height:1;}
   .panel .close:hover{color:var(--text);}
   .panel a.linkbtn{display:inline-block;background:var(--surface);border:1px solid var(--border-strong);padding:2px 0.55rem;border-radius:6px;font-size:0.8rem;color:var(--text);text-decoration:none;margin:2px 4px 2px 0;cursor:pointer;}
   .panel a.linkbtn:hover{border-color:var(--accent);color:var(--accent);}
+  .panel .flow-badges{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.3rem;}
+  .panel .flow-badge{display:inline-block;padding:1px 0.55rem;border-radius:999px;font-size:0.72rem;font-weight:500;color:#fff;}
+  .flow-badge.flow-chat{background:var(--edge-chat);}
+  .flow-badge.flow-admin{background:var(--edge-admin);}
+  .flow-badge.flow-feedback{background:var(--edge-feedback);}
+  .flow-badge.flow-tool{background:var(--edge-tool);}
+  .flow-badge.flow-telemetry{background:var(--edge-telemetry);}
+  .flow-badge.flow-default{background:var(--muted);}
 
-  /* Hover tooltip for edges */
   .tooltip{position:fixed;background:var(--surface);border:1px solid var(--border-strong);border-radius:6px;
            padding:4px 0.55rem;font-size:0.78rem;color:var(--text);box-shadow:var(--shadow);pointer-events:none;
            display:none;z-index:7;}
 
-  .legend{position:fixed;left:1.25rem;bottom:1rem;display:flex;gap:0.5rem;align-items:center;background:var(--surface);
-          border:1px solid var(--border);border-radius:999px;padding:0.35rem 0.85rem;font-size:0.78rem;color:var(--muted);
-          box-shadow:var(--shadow);}
+  .legend{position:fixed;left:1rem;bottom:1rem;display:flex;flex-direction:column;gap:0.35rem;background:var(--surface);
+          border:1px solid var(--border);border-radius:10px;padding:0.5rem 0.85rem;font-size:0.74rem;color:var(--muted);
+          box-shadow:var(--shadow);max-width:240px;}
+  .legend .group-title{font-size:0.66rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-top:0.2rem;}
+  .legend .item{display:inline-flex;align-items:center;margin-right:0.6rem;}
   .legend .swatch{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:0.3rem;vertical-align:middle;}
-  .legend .item{display:inline-flex;align-items:center;}
-  @media (max-width: 1320px) { .canvas{margin-left:0;} }
+  .legend .line{display:inline-block;width:16px;height:0;border-top:2px solid;margin-right:0.3rem;vertical-align:middle;}
+
+  .hint{position:fixed;right:1rem;bottom:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.7rem;font-size:0.78rem;color:var(--muted);box-shadow:var(--shadow);}
+  .hint kbd{background:var(--code-bg);border:1px solid var(--border-strong);border-radius:4px;padding:1px 4px;font-size:0.72rem;font-family:ui-monospace,Menlo,monospace;}
 </style>
 </head>
 <body>
@@ -148,15 +164,16 @@
 <header class="bar">
   <div>
     <h1>agentassist - architecture map</h1>
-    <span class="sub">click any node for details, filter by flow</span>
+    <span class="sub">click a node to highlight its flows. filter pills narrow further.</span>
   </div>
   <div class="filters" role="tablist" aria-label="Flow filters">
     <span class="label">Flow:</span>
     <button class="pill active" data-flow="all" type="button">All</button>
     <button class="pill" data-flow="chat" type="button">Chat</button>
-    <button class="pill" data-flow="admin" type="button">Admin</button>
-    <button class="pill" data-flow="feedback" type="button">Feedback</button>
     <button class="pill" data-flow="tool" type="button">Tool call</button>
+    <button class="pill" data-flow="feedback" type="button">Feedback</button>
+    <button class="pill" data-flow="admin" type="button">Admin</button>
+    <button class="pill" data-flow="telemetry" type="button">Telemetry</button>
   </div>
   <div class="right">
     <button class="theme-toggle" id="themeBtn" type="button">Dark</button>
@@ -165,7 +182,15 @@
 
 <div class="canvas-wrap">
   <div class="canvas" id="canvas">
-    <svg class="edges" id="edges" viewBox="0 0 1280 880" preserveAspectRatio="none">
+    <!-- Column labels (decorative) -->
+    <div class="col-label" style="left:90px;top:20px;">Clients</div>
+    <div class="col-label" style="left:320px;top:20px;">Pipeline middleware</div>
+    <div class="col-label" style="left:620px;top:20px;">Gateway</div>
+    <div class="col-label" style="left:900px;top:20px;">Agent stack</div>
+    <div class="col-label" style="left:900px;top:540px;">Data stores</div>
+    <div class="col-label" style="left:1170px;top:20px;">External</div>
+
+    <svg class="edges" id="edges" viewBox="0 0 1500 980" preserveAspectRatio="none">
       <defs>
         <marker id="ah-default" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
           <path d="M0,0 L0,6 L7,3 z" fill="var(--edge-default)"/>
@@ -182,9 +207,12 @@
         <marker id="ah-tool" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
           <path d="M0,0 L0,6 L7,3 z" fill="var(--edge-tool)"/>
         </marker>
+        <marker id="ah-telemetry" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+          <path d="M0,0 L0,6 L7,3 z" fill="var(--edge-telemetry)"/>
+        </marker>
       </defs>
     </svg>
-    <!-- Nodes and clusters rendered by JS -->
+    <!-- Nodes rendered by JS -->
   </div>
 </div>
 
@@ -193,6 +221,7 @@
   <span class="ptype" id="ptype"></span>
   <h2 id="ptitle"></h2>
   <p class="pdesc" id="pdesc"></p>
+  <div class="flow-badges" id="pflows"></div>
   <h3>Files</h3>
   <ul id="pfiles"></ul>
   <h3>Key API</h3>
@@ -204,12 +233,24 @@
 <div class="tooltip" id="tip"></div>
 
 <div class="legend">
-  <span class="item"><span class="swatch" style="background:var(--node-client-bg);border:1px solid var(--node-client-border);"></span> client</span>
-  <span class="item"><span class="swatch" style="background:var(--node-gateway-bg);border:1px solid var(--node-gateway-border);"></span> gateway</span>
-  <span class="item"><span class="swatch" style="background:var(--node-domain-bg);border:1px solid var(--node-domain-border);"></span> domain</span>
-  <span class="item"><span class="swatch" style="background:var(--node-data-bg);border:1px solid var(--node-data-border);"></span> data</span>
-  <span class="item"><span class="swatch" style="background:var(--node-external-bg);border:1px solid var(--node-external-border);"></span> external</span>
+  <div>
+    <span class="item"><span class="swatch" style="background:var(--node-client-bg);border:1px solid var(--node-client-border);"></span>client</span>
+    <span class="item"><span class="swatch" style="background:var(--node-gateway-bg);border:1px solid var(--node-gateway-border);"></span>gateway</span>
+    <span class="item"><span class="swatch" style="background:var(--node-domain-bg);border:1px solid var(--node-domain-border);"></span>domain</span>
+    <span class="item"><span class="swatch" style="background:var(--node-data-bg);border:1px solid var(--node-data-border);"></span>data</span>
+    <span class="item"><span class="swatch" style="background:var(--node-external-bg);border:1px solid var(--node-external-border);"></span>external</span>
+  </div>
+  <div class="group-title">Flows</div>
+  <div>
+    <span class="item"><span class="line" style="border-color:var(--edge-chat);"></span>chat</span>
+    <span class="item"><span class="line" style="border-color:var(--edge-tool);"></span>tool</span>
+    <span class="item"><span class="line" style="border-color:var(--edge-feedback);"></span>feedback</span>
+    <span class="item"><span class="line" style="border-color:var(--edge-admin);"></span>admin</span>
+    <span class="item"><span class="line" style="border-color:var(--edge-telemetry);"></span>telemetry</span>
+  </div>
 </div>
+
+<div class="hint">click a node to focus, <kbd>Esc</kbd> to clear</div>
 
 <script>
 "use strict";
@@ -228,150 +269,186 @@ themeBtn.addEventListener("click", () => {
 
 /* ============== DATA ============== */
 const NODES = [
-  // Clients
-  { id:"browser-chat",  type:"client",   x: 30,  y: 60,  title:"Browser - chat UI",
-    desc:"Full-screen + bubble chat, markdown rendering, SSE consumer.",
+  // Clients column (x=40)
+  { id:"browser-chat",  type:"client",   x:40,  y:80,   title:"Browser - chat UI",
+    desc:"Full-screen + bubble chat. Markdown rendering, SSE consumer, thumbs feedback.",
     files:["static/index.html"],
-    api:["MD.renderInto(el, text)","sendMessage()","appendActivity(text)"] },
-  { id:"browser-admin", type:"client",   x: 30,  y: 180, title:"Browser - admin UI",
-    desc:"Tenant editor with draft/publish, prompt preview, feedback viewer.",
+    api:["MD.renderInto(el, text)","sendMessage()","appendActivity(text)","sendFeedback(rating)"] },
+  { id:"browser-admin", type:"client",   x:40,  y:240,  title:"Browser - admin UI",
+    desc:"Tenant editor: tabs, draft/publish, prompt preview, feedback viewer, role-aware.",
     files:["static/admin.html"],
-    api:["selectTenant(id)","saveDraft()","publishDraft()","openPromptPreview()"] },
+    api:["selectTenant(id)","saveDraft()","publishDraft()","openPromptPreview()","savePassword(pw)"] },
 
-  // Gateway
-  { id:"flask",         type:"gateway",  x: 320, y: 340, title:"Flask app", gatewayBig:true,
-    desc:"Routes, security middleware, SSE wrapping. Anonymous chat protected by 4-tier rate limit + token budget + concurrent cap + origin pin.",
-    files:["app.py"],
-    api:[
-      "POST /api/{tenant}/chat (SSE)",
-      "POST /api/{tenant}/feedback",
-      "GET  /api/{tenant}/config",
-      "POST /api/admin/login (super or tenant)",
-      "POST /api/admin/{t}/config (save draft)",
-      "POST /api/admin/{t}/publish",
-      "GET  /api/admin/{t}/prompt-preview",
-      "GET  /api/admin/{t}/feedback",
-      "POST /api/admin/{t}/password (super)",
-    ] },
-
-  // Middleware (technically inside Flask but shown separately to make the
-  // pipeline legible).
-  { id:"ratelimit", type:"domain", x: 320, y: 60,  title:"RateLimiter",
-    desc:"Sliding-window per key. Four tiers: per IP/min, per IP/hour, per session/min, per tenant/min.",
+  // Pipeline middleware column (x=320)
+  { id:"ratelimit", type:"domain", x:320, y:80,   title:"RateLimiter",
+    desc:"4-tier sliding window per key: IP/min, IP/hour, session/min, tenant/min.",
     files:["ratelimit.py"],
     api:["RateLimiter(capacity, window)","check(key) -> {allowed, retry_after}"] },
-  { id:"concurrency", type:"domain", x: 320, y: 160, title:"ConcurrencyCap",
-    desc:"Per-IP and per-tenant concurrent stream cap. Slot acquired before SSE, released in finally.",
+  { id:"concurrency", type:"domain", x:320, y:210,  title:"ConcurrencyCap",
+    desc:"Per-IP and per-tenant concurrent stream cap. Acquired before SSE, released in finally.",
     files:["concurrency.py"],
     api:["try_acquire(key, limit)","release(key)","current(key)"] },
-  { id:"pii", type:"domain", x: 320, y: 240, title:"PII redaction",
-    desc:"Dutch patterns: IBAN, email, phone, postcode, paspoort, rijbewijs, BSN (elfproef). Idempotent.",
+  { id:"pii", type:"domain", x:320, y:340,  title:"PII redaction",
+    desc:"Dutch patterns: IBAN, email, phone, postcode, paspoort, rijbewijs, BSN with elfproef.",
     files:["pii.py"],
     api:["redact(text)","redact_with_details(text) -> RedactionResult"] },
-  { id:"auth", type:"domain", x: 320, y: 540, title:"Auth tokens",
-    desc:"HMAC-SHA256 signed tokens for both admin and visitor sessions. Tenant-bound. compare_digest used for verify.",
+  { id:"auth", type:"domain", x:320, y:470,  title:"Auth tokens",
+    desc:"HMAC-SHA256 signed admin + visitor session tokens. Tenant-bound, compare_digest verify.",
     files:["auth.py"],
     api:["make_token(claims, secret)","verify_token(tok, secret)","make_session_token(tenant, secret)","verify_session_token(tok, tenant, secret)"] },
-  { id:"passwords", type:"domain", x: 320, y: 640, title:"argon2 passwords",
-    desc:"Per-tenant admin password hashing. argon2id via argon2-cffi.",
+  { id:"passwords", type:"domain", x:320, y:600,  title:"argon2 passwords",
+    desc:"Per-tenant admin password hashing (argon2id via argon2-cffi). Used for tenant login only.",
     files:["passwords.py"],
     api:["hash_password(pw)","verify_password(hash, pw)","needs_rehash(hash)"] },
-  { id:"budget-check", type:"domain", x: 320, y: 740, title:"TokenBudget (check)",
-    desc:"24h per-tenant token budget. Checked before turn; 503 + Retry-After if exceeded.",
+  { id:"budget-check", type:"domain", x:320, y:730,  title:"TokenBudget (check)",
+    desc:"Reads 24h per-tenant token total before each turn. Returns 503 + Retry-After if exceeded.",
     files:["budget.py"],
     api:["tokens_last_24h(tenant)","retry_after_seconds(tenant)"] },
 
-  // Agent stack
-  { id:"agent", type:"domain", x: 620, y: 60, title:"agent.iter_turn",
-    desc:"Per-tenant streaming agent. Per-session lock, retry on transient errors, source extraction, optional retrieval.",
+  // Gateway column (x=620)
+  { id:"flask", type:"gateway", x:620, y:380, title:"Flask app", gatewayBig:true,
+    desc:"All HTTP routes + SSE wrapping. CSP / X-Frame / Permissions-Policy on every response. X-Request-ID for correlation. Anonymous chat protected by rate limit + token budget + concurrent cap + origin pin.",
+    files:["app.py"],
+    api:[
+      "GET  /  (landing)",
+      "GET  /{tenant}  /{tenant}/bubble",
+      "GET  /admin",
+      "GET  /healthz",
+      "GET  /api/{tenant}/config",
+      "GET  /api/{tenant}/status",
+      "POST /api/{tenant}/chat (SSE)",
+      "POST /api/{tenant}/reset",
+      "POST /api/{tenant}/feedback",
+      "POST /api/admin/login",
+      "GET/POST /api/admin/{t}/config",
+      "POST /api/admin/{t}/publish",
+      "POST /api/admin/{t}/discard-draft",
+      "GET/POST /api/admin/{t}/context",
+      "GET  /api/admin/{t}/usage",
+      "GET  /api/admin/{t}/prompt-preview",
+      "GET  /api/admin/{t}/feedback",
+      "POST /api/admin/{t}/password",
+    ] },
+
+  // Agent stack column (x=900)
+  { id:"agent", type:"domain", x:900, y:80,   title:"agent.iter_turn",
+    desc:"Tenant-aware streaming agent. Per-session lock, retry on transient errors, source extraction, optional retrieval, on_usage callback.",
     files:["agent.py"],
-    api:["iter_turn(client, tenant, sid, msg, on_usage, retriever)","build_system_prompt(tenant, retrieved)"] },
-  { id:"providers", type:"domain", x: 620, y: 160, title:"LLM provider",
-    desc:"AnthropicProvider is the default. Subclass Provider with messages_stream() to add OpenAI/Azure/local.",
+    api:["iter_turn(client, tenant, sid, msg, on_usage, retriever)","build_system_prompt(tenant, retrieved)","reset_session(tenant, sid)"] },
+  { id:"providers", type:"domain", x:900, y:210,  title:"LLM provider",
+    desc:"AnthropicProvider is the default. Subclass Provider with messages_stream() to plug OpenAI, Azure, or a local model.",
     files:["providers.py"],
     api:["Provider.messages_stream(**kwargs)","AnthropicProvider","default_provider()"] },
-  { id:"retriever", type:"domain", x: 620, y: 260, title:"Retriever",
-    desc:"NullRetriever default. InMemoryRetriever (BM25-ish) example. Subclass to plug a vector store.",
+  { id:"retriever", type:"domain", x:900, y:340,  title:"Retriever",
+    desc:"NullRetriever (default). InMemoryRetriever is a BM25-like example. Subclass to plug a vector store.",
     files:["retrieval.py"],
-    api:["Retriever.retrieve(tenant, query, k)","NullRetriever","InMemoryRetriever"] },
-  { id:"otel", type:"domain", x: 620, y: 360, title:"OpenTelemetry adapter",
-    desc:"Optional. Active when OTEL_EXPORTER_OTLP_ENDPOINT set. One span per turn with tenant, session, model, tokens.",
+    api:["Retriever.retrieve(tenant, query, k)","NullRetriever","InMemoryRetriever","default_retriever()"] },
+  { id:"otel", type:"domain", x:900, y:470,  title:"OpenTelemetry adapter",
+    desc:"Optional. Active only when OTEL_EXPORTER_OTLP_ENDPOINT is set. One span per chat turn with tenant, session, model, token usage, retries.",
     files:["otel.py"],
     api:["init() -> bool","chat_span(tenant, sid, model)","is_enabled()"] },
 
-  // Data stores
-  { id:"tenants", type:"data", x: 620, y: 480, title:"TenantStore",
-    desc:"Filesystem-backed tenant config + context + draft overlay. Atomic writes.",
-    files:["tenants.py", "tenants/{id}/config.json", "tenants/{id}/context.md"],
+  // Data stores column (x=900, lower)
+  { id:"tenants", type:"data", x:900, y:600,  title:"TenantStore",
+    desc:"Filesystem-backed tenant config + context + draft overlay. Atomic writes via temp-rename.",
+    files:["tenants.py","tenants/{id}/config.json","tenants/{id}/context.md"],
     api:["load(id)","save_config(tenant)","save_context(id, text)","Tenant.with_overlay(draft)"] },
-  { id:"budget", type:"data", x: 620, y: 580, title:"TokenBudget (ledger)",
-    desc:"Append-only JSONL ledger. One row per completed turn. 24h rolling sum.",
-    files:["budget.py", "tenants/{id}/usage.jsonl"],
-    api:["record(tenant, sid, in_t, out_t)","tokens_last_24h(tenant)"] },
-  { id:"feedback", type:"data", x: 620, y: 680, title:"FeedbackStore",
-    desc:"Thumbs up/down with optional comment + excerpt. JSONL per tenant.",
-    files:["feedback.py", "tenants/{id}/feedback.jsonl"],
+  { id:"budget", type:"data", x:900, y:730,  title:"TokenBudget (ledger)",
+    desc:"Append-only JSONL ledger. One row per completed turn with input + output tokens. 24h rolling sum.",
+    files:["budget.py","tenants/{id}/usage.jsonl"],
+    api:["record(tenant, sid, in_t, out_t)","tokens_last_24h(tenant)","retry_after_seconds(tenant)"] },
+  { id:"feedback", type:"data", x:900, y:860,  title:"FeedbackStore",
+    desc:"Thumbs up/down with optional comment + excerpt. JSONL per tenant. Recent + summary helpers.",
+    files:["feedback.py","tenants/{id}/feedback.jsonl"],
     api:["record(tenant, sid, rating, comment, excerpt)","recent(tenant, limit)","summary(tenant, window)"] },
 
-  // External
-  { id:"anthropic", type:"external", x: 940, y: 60, title:"Anthropic API",
+  // External column (x=1180)
+  { id:"anthropic", type:"external", x:1180, y:80,   title:"Anthropic API",
     desc:"messages.stream() endpoint. Server-side web_fetch tool enforced against per-tenant allowed_domains.",
     files:[],
     api:["client.messages.stream(model, system, tools, messages)","web_fetch_20260209 tool"] },
-  { id:"webhosts", type:"external", x: 940, y: 200, title:"Allowlisted hosts",
-    desc:"Per-tenant web_fetch targets (e.g. montferland.info). Allowlist enforced by Anthropic, not the local server.",
+  { id:"webhosts", type:"external", x:1180, y:240,   title:"Allowlisted hosts",
+    desc:"Per-tenant web_fetch targets, e.g. montferland.info. Allowlist enforced by Anthropic, not the local server.",
     files:["tenants/{id}/config.json -> allowedDomains"], api:[] },
-  { id:"otel-collector", type:"external", x: 940, y: 340, title:"OTel collector",
-    desc:"Optional OTLP/HTTP destination. Set OTEL_EXPORTER_OTLP_ENDPOINT to enable.",
+  { id:"otel-collector", type:"external", x:1180, y:470,  title:"OTel collector",
+    desc:"Optional OTLP/HTTP destination. Set OTEL_EXPORTER_OTLP_ENDPOINT to enable export.",
     files:[], api:[] },
-  { id:"filesystem", type:"external", x: 940, y: 540, title:"Filesystem",
-    desc:"tenants/{id}/{config.json, context.md, usage.jsonl, feedback.jsonl}. Single source of truth, no DB.",
+  { id:"filesystem", type:"external", x:1180, y:730,  title:"Filesystem",
+    desc:"tenants/{id}/{config.json, context.md, usage.jsonl, feedback.jsonl}. Single source of truth, no database.",
     files:["tenants/<id>/config.json","tenants/<id>/context.md","tenants/<id>/usage.jsonl","tenants/<id>/feedback.jsonl"],
     api:[] },
 ];
 
+/* ---------- Edges (full coverage of every flow in the solution) ---------- */
 const EDGES = [
-  // Chat flow (visitor message in, streaming text out)
-  { from:"browser-chat", to:"flask", flow:"chat", label:"POST /api/{tenant}/chat" },
-  { from:"flask", to:"ratelimit", flow:"chat", label:"4-tier check" },
-  { from:"flask", to:"concurrency", flow:"chat", label:"acquire slot" },
-  { from:"flask", to:"budget-check", flow:"chat", label:"check 24h budget" },
-  { from:"flask", to:"pii", flow:"chat", label:"redact body" },
-  { from:"flask", to:"auth", flow:"chat", label:"verify/issue session" },
-  { from:"flask", to:"agent", flow:"chat", label:"iter_turn(...)" },
-  { from:"agent", to:"tenants", flow:"chat", label:"build system prompt" },
-  { from:"agent", to:"retriever", flow:"chat", label:"optional retrieve" },
-  { from:"agent", to:"providers", flow:"chat", label:"messages_stream" },
-  { from:"agent", to:"otel", flow:"chat", label:"chat_span" },
-  { from:"providers", to:"anthropic", flow:"chat", label:"messages.stream" },
-  { from:"agent", to:"budget", flow:"chat", label:"record usage" },
-  { from:"otel", to:"otel-collector", flow:"chat", label:"OTLP/http" },
-  { from:"flask", to:"browser-chat", flow:"chat", label:"SSE response" },
+  /* CHAT flow: visitor sends a message, gets a streamed answer. */
+  { from:"browser-chat", to:"flask",  flow:"chat", label:"POST /api/{tenant}/chat" },
+  { from:"flask", to:"ratelimit",     flow:"chat", label:"4-tier rate-limit check" },
+  { from:"flask", to:"concurrency",   flow:"chat", label:"acquire stream slot" },
+  { from:"flask", to:"budget-check",  flow:"chat", label:"check 24h budget" },
+  { from:"flask", to:"pii",           flow:"chat", label:"redact incoming text" },
+  { from:"flask", to:"auth",          flow:"chat", label:"verify/issue session token" },
+  { from:"flask", to:"agent",         flow:"chat", label:"iter_turn(tenant, sid, msg)" },
+  { from:"agent", to:"tenants",       flow:"chat", label:"build system prompt" },
+  { from:"agent", to:"retriever",     flow:"chat", label:"optional retrieve(query)" },
+  { from:"agent", to:"providers",     flow:"chat", label:"messages_stream(...)" },
+  { from:"providers", to:"anthropic", flow:"chat", label:"HTTP/SSE" },
+  { from:"agent", to:"budget",        flow:"chat", label:"record usage(in_t, out_t)" },
+  { from:"flask", to:"browser-chat",  flow:"chat", label:"SSE: data: {type:text|sources|...}" },
 
-  // Tool sub-flow (server-side web_fetch on Anthropic side)
-  { from:"anthropic", to:"webhosts", flow:"tool", label:"GET (allowlisted)" },
+  /* Visitor config + reset (still chat-flow lane) */
+  { from:"browser-chat", to:"flask",  flow:"chat", label:"GET /api/{tenant}/config (sets cookie)" },
+  { from:"browser-chat", to:"flask",  flow:"chat", label:"POST /api/{tenant}/reset" },
+  { from:"browser-chat", to:"flask",  flow:"chat", label:"GET /api/{tenant}/status" },
+  { from:"flask", to:"tenants",       flow:"chat", label:"load public config" },
 
-  // Admin flow
-  { from:"browser-admin", to:"flask", flow:"admin", label:"POST /api/admin/login" },
-  { from:"flask", to:"passwords", flow:"admin", label:"verify (tenant scope)" },
-  { from:"flask", to:"auth", flow:"admin", label:"sign super/tenant token" },
-  { from:"flask", to:"tenants", flow:"admin", label:"load/save config + draft" },
-  { from:"flask", to:"feedback", flow:"admin", label:"summary + recent" },
-  { from:"flask", to:"browser-admin", flow:"admin", label:"JSON" },
+  /* TOOL CALL sub-flow: Anthropic side-fetches allowlisted hosts. */
+  { from:"anthropic", to:"webhosts",  flow:"tool", label:"GET (host allowlisted)" },
+  { from:"webhosts", to:"anthropic",  flow:"tool", label:"HTML/text" },
 
-  // Feedback flow (visitor thumbs)
-  { from:"browser-chat", to:"flask", flow:"feedback", label:"POST /api/{tenant}/feedback" },
-  { from:"flask", to:"feedback", flow:"feedback", label:"record" },
+  /* FEEDBACK flow: visitor thumbs up/down. */
+  { from:"browser-chat", to:"flask",  flow:"feedback", label:"POST /api/{tenant}/feedback" },
+  { from:"flask", to:"feedback",      flow:"feedback", label:"record(rating, comment, excerpt)" },
 
-  // Storage links (rendered as default-color, always visible)
-  { from:"tenants", to:"filesystem", flow:"default", label:"config.json + context.md" },
-  { from:"budget", to:"filesystem", flow:"default", label:"usage.jsonl" },
+  /* ADMIN flow: login + config + draft/publish + context + feedback + usage + password + prompt preview. */
+  { from:"browser-admin", to:"flask", flow:"admin", label:"POST /api/admin/login (super or tenant)" },
+  { from:"flask", to:"passwords",     flow:"admin", label:"verify_password (tenant scope)" },
+  { from:"flask", to:"auth",          flow:"admin", label:"sign super/tenant token" },
+
+  { from:"browser-admin", to:"flask", flow:"admin", label:"GET /api/admin/tenants (list)" },
+  { from:"browser-admin", to:"flask", flow:"admin", label:"GET/POST /api/admin/{t}/config" },
+  { from:"flask", to:"tenants",       flow:"admin", label:"load + save draft" },
+
+  { from:"browser-admin", to:"flask", flow:"admin", label:"POST /api/admin/{t}/publish" },
+  { from:"browser-admin", to:"flask", flow:"admin", label:"POST /api/admin/{t}/discard-draft" },
+
+  { from:"browser-admin", to:"flask", flow:"admin", label:"GET/POST /api/admin/{t}/context" },
+
+  { from:"browser-admin", to:"flask", flow:"admin", label:"GET /api/admin/{t}/prompt-preview" },
+  { from:"flask", to:"agent",         flow:"admin", label:"build_system_prompt(tenant)" },
+
+  { from:"browser-admin", to:"flask", flow:"admin", label:"GET /api/admin/{t}/feedback" },
+  { from:"flask", to:"feedback",      flow:"admin", label:"summary + recent" },
+
+  { from:"browser-admin", to:"flask", flow:"admin", label:"GET /api/admin/{t}/usage" },
+  { from:"flask", to:"budget",        flow:"admin", label:"read 24h total" },
+
+  { from:"browser-admin", to:"flask", flow:"admin", label:"POST /api/admin/{t}/password (super)" },
+
+  { from:"flask", to:"browser-admin", flow:"admin", label:"JSON response" },
+
+  /* TELEMETRY flow: optional OTel export. */
+  { from:"agent", to:"otel",          flow:"telemetry", label:"chat_span(tenant, sid, model)" },
+  { from:"otel", to:"otel-collector", flow:"telemetry", label:"OTLP/HTTP batch export" },
+
+  /* Storage links (always visible, neutral color) */
+  { from:"tenants",  to:"filesystem", flow:"default", label:"config.json + context.md" },
+  { from:"budget",   to:"filesystem", flow:"default", label:"usage.jsonl" },
   { from:"feedback", to:"filesystem", flow:"default", label:"feedback.jsonl" },
 ];
 
-const NODE_W = 200;
-const NODE_W_BIG = 240;
-const NODE_H = 60;
+const NODE_W = 220;
+const NODE_W_BIG = 260;
 
 /* ============== RENDER NODES ============== */
 const canvas = document.getElementById("canvas");
@@ -389,98 +466,159 @@ for (const n of NODES) {
   const t = document.createElement("div"); t.className = "ntitle"; t.textContent = n.title;
   const d = document.createElement("div"); d.className = "ndesc"; d.textContent = n.desc;
   div.appendChild(t); div.appendChild(d);
-  div.addEventListener("click", () => openPanel(n.id));
+  div.addEventListener("click", (ev) => { ev.stopPropagation(); selectNode(n.id); });
   canvas.appendChild(div);
   nodeIndex.set(n.id, { node: n, el: div });
 }
 
-/* ============== RENDER EDGES ============== */
-function nodeCenter(id) {
+/* ============== MEASURE + RENDER EDGES ============== */
+function measureNode(id) {
   const e = nodeIndex.get(id);
   if (!e) return null;
-  const w = e.node.gatewayBig ? NODE_W_BIG : NODE_W;
-  return { x: e.node.x + w / 2, y: e.node.y + NODE_H / 2, w, h: NODE_H };
+  const r = e.el.getBoundingClientRect();
+  const c = canvas.getBoundingClientRect();
+  return {
+    x: r.left - c.left,
+    y: r.top - c.top,
+    w: r.width,
+    h: r.height,
+    cx: r.left - c.left + r.width / 2,
+    cy: r.top - c.top + r.height / 2,
+  };
 }
 
-function edgeAnchor(from, to, side) {
+function edgeAnchor(from, to) {
   // Pick the side of the source rectangle that points toward target.
   const w = from.w, h = from.h;
-  const dx = to.x - from.x, dy = to.y - from.y;
-  let x = from.x, y = from.y;
-  if (Math.abs(dx) > Math.abs(dy)) {
-    x = from.x + (dx > 0 ? w / 2 : -w / 2);
-    y = from.y;
+  const dx = to.cx - from.cx, dy = to.cy - from.cy;
+  let x, y;
+  if (Math.abs(dx) * h > Math.abs(dy) * w) {
+    x = from.cx + (dx > 0 ? w / 2 : -w / 2);
+    y = from.cy + dy * (w / 2) / Math.max(1, Math.abs(dx));
   } else {
-    x = from.x;
-    y = from.y + (dy > 0 ? h / 2 : -h / 2);
+    x = from.cx + dx * (h / 2) / Math.max(1, Math.abs(dy));
+    y = from.cy + (dy > 0 ? h / 2 : -h / 2);
   }
   return { x, y };
 }
 
 function curvePath(a, b) {
-  // Cubic bezier with horizontal-ish control points
   const dx = b.x - a.x;
-  const c1x = a.x + dx * 0.5;
+  const c1x = a.x + dx * 0.55;
   const c1y = a.y;
-  const c2x = b.x - dx * 0.5;
+  const c2x = b.x - dx * 0.55;
   const c2y = b.y;
-  return `M ${a.x} ${a.y} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${b.x} ${b.y}`;
+  return `M ${a.x.toFixed(1)} ${a.y.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
 }
 
 const edgeIndex = [];
-for (const e of EDGES) {
-  const from = nodeCenter(e.from);
-  const to = nodeCenter(e.to);
-  if (!from || !to) continue;
-  const a = edgeAnchor(from, to);
-  const b = edgeAnchor(to, from);
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute("d", curvePath(a, b));
-  path.setAttribute("class", "flow-" + e.flow);
-  const markerByFlow = { chat:"ah-chat", admin:"ah-admin", feedback:"ah-feedback", tool:"ah-tool", default:"ah-default" };
-  path.setAttribute("marker-end", `url(#${markerByFlow[e.flow] || "ah-default"})`);
-  path.dataset.flow = e.flow;
-  path.dataset.from = e.from;
-  path.dataset.to = e.to;
-  path.dataset.label = e.label;
-  path.addEventListener("mouseenter", (ev) => showTip(ev, e.label));
-  path.addEventListener("mousemove", (ev) => showTip(ev, e.label));
-  path.addEventListener("mouseleave", hideTip);
-  svg.appendChild(path);
-  edgeIndex.push({ data: e, el: path });
+function drawEdges() {
+  // Remove old paths
+  for (const e of edgeIndex) e.el.remove();
+  edgeIndex.length = 0;
+
+  for (const e of EDGES) {
+    const from = measureNode(e.from);
+    const to = measureNode(e.to);
+    if (!from || !to) continue;
+    const a = edgeAnchor(from, to);
+    const b = edgeAnchor(to, from);
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", curvePath(a, b));
+    path.setAttribute("class", "edge flow-" + e.flow);
+    const markerByFlow = { chat:"ah-chat", admin:"ah-admin", feedback:"ah-feedback", tool:"ah-tool", telemetry:"ah-telemetry", default:"ah-default" };
+    path.setAttribute("marker-end", `url(#${markerByFlow[e.flow] || "ah-default"})`);
+    path.dataset.flow = e.flow;
+    path.dataset.from = e.from;
+    path.dataset.to = e.to;
+    path.dataset.label = e.label;
+    path.addEventListener("mouseenter", (ev) => showTip(ev, e.label));
+    path.addEventListener("mousemove", (ev) => showTip(ev, e.label));
+    path.addEventListener("mouseleave", hideTip);
+    svg.appendChild(path);
+    edgeIndex.push({ data: e, el: path });
+  }
+  applyFilter();
 }
 
-/* ============== FLOW FILTER ============== */
+// Need to wait for layout so getBoundingClientRect returns final positions
+requestAnimationFrame(drawEdges);
+window.addEventListener("resize", drawEdges);
+
+/* ============== STATE + FILTER ============== */
 let activeFlow = "all";
+let selectedNodeId = null;
+
+function setActiveFlow(f) {
+  activeFlow = f;
+  document.querySelectorAll(".pill").forEach((p) => p.classList.toggle("active", p.dataset.flow === f));
+  applyFilter();
+}
 document.querySelectorAll(".pill").forEach((p) => {
-  p.addEventListener("click", () => {
-    document.querySelectorAll(".pill").forEach((q) => q.classList.toggle("active", q === p));
-    activeFlow = p.dataset.flow;
-    applyFilter();
-  });
+  p.addEventListener("click", () => setActiveFlow(p.dataset.flow));
 });
 
+function selectNode(id) {
+  if (selectedNodeId === id) {
+    // toggle off
+    selectedNodeId = null;
+    document.querySelectorAll(".node").forEach((el) => el.classList.remove("selected"));
+    closePanel();
+    applyFilter();
+    return;
+  }
+  selectedNodeId = id;
+  document.querySelectorAll(".node").forEach((el) => el.classList.toggle("selected", el.dataset.id === id));
+  openPanel(id);
+  applyFilter();
+}
+
+function clearSelection() {
+  selectedNodeId = null;
+  document.querySelectorAll(".node").forEach((el) => el.classList.remove("selected"));
+  closePanel();
+  applyFilter();
+}
+
+canvas.addEventListener("click", () => {
+  // Click on empty canvas clears selection
+  if (selectedNodeId) clearSelection();
+});
+
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") clearSelection(); });
+
+function edgeMatchesFlow(e) {
+  if (activeFlow === "all") return true;
+  return e.data.flow === activeFlow;
+}
+
+function edgeTouchesSelectedNode(e) {
+  if (!selectedNodeId) return true;
+  return e.data.from === selectedNodeId || e.data.to === selectedNodeId;
+}
+
 function applyFilter() {
-  // Compute the set of nodes touched by the active flow
-  let activeNodeIds = null;
-  if (activeFlow !== "all") {
-    activeNodeIds = new Set();
-    for (const e of EDGES) {
-      if (e.flow === activeFlow) {
-        activeNodeIds.add(e.from);
-        activeNodeIds.add(e.to);
-      }
+  // Determine which edges are "in view"
+  for (const e of edgeIndex) {
+    const inFlow = edgeMatchesFlow(e);
+    const inSel = edgeTouchesSelectedNode(e);
+    const visible = inFlow && inSel;
+    e.el.classList.toggle("dim", !visible);
+    e.el.classList.toggle("highlight", Boolean(visible && (selectedNodeId || activeFlow !== "all")));
+  }
+  // Determine node visibility
+  const reachable = new Set();
+  for (const e of edgeIndex) {
+    if (!e.el.classList.contains("dim")) {
+      reachable.add(e.data.from);
+      reachable.add(e.data.to);
     }
   }
-  // Edges
-  for (const e of edgeIndex) {
-    const match = activeFlow === "all" || e.data.flow === activeFlow;
-    e.el.classList.toggle("dim", !match);
-  }
-  // Nodes
+  // If a node is selected, always include it
+  if (selectedNodeId) reachable.add(selectedNodeId);
   for (const [id, entry] of nodeIndex) {
-    const match = activeNodeIds === null || activeNodeIds.has(id);
-    entry.el.classList.toggle("dim", !match);
+    const dim = (activeFlow !== "all" || selectedNodeId) ? !reachable.has(id) : false;
+    entry.el.classList.toggle("dim", dim);
   }
 }
 
@@ -492,6 +630,16 @@ const pdesc = document.getElementById("pdesc");
 const pfiles = document.getElementById("pfiles");
 const papi = document.getElementById("papi");
 const pconn = document.getElementById("pconn");
+const pflows = document.getElementById("pflows");
+
+const FLOW_LABELS = {
+  chat: "chat",
+  admin: "admin",
+  feedback: "feedback",
+  tool: "tool call",
+  telemetry: "telemetry",
+  default: "storage",
+};
 
 function openPanel(nodeId) {
   const entry = nodeIndex.get(nodeId);
@@ -500,6 +648,20 @@ function openPanel(nodeId) {
   ptitle.textContent = n.title;
   ptype.textContent = n.type;
   pdesc.textContent = n.desc;
+
+  // Flow badges for the flows that touch this node
+  const flows = new Set();
+  for (const e of EDGES) {
+    if (e.from === nodeId || e.to === nodeId) flows.add(e.flow);
+  }
+  while (pflows.firstChild) pflows.removeChild(pflows.firstChild);
+  Array.from(flows).sort().forEach((f) => {
+    const span = document.createElement("span");
+    span.className = "flow-badge flow-" + f;
+    span.textContent = FLOW_LABELS[f] || f;
+    pflows.appendChild(span);
+  });
+
   while (pfiles.firstChild) pfiles.removeChild(pfiles.firstChild);
   for (const f of n.files || []) {
     const li = document.createElement("li"); const c = document.createElement("code"); c.textContent = f;
@@ -515,26 +677,26 @@ function openPanel(nodeId) {
     li.appendChild(c); papi.appendChild(li);
   }
   if (!(n.api || []).length) {
-    const li = document.createElement("li"); li.style.color = "var(--muted)"; li.textContent = "(public)";
+    const li = document.createElement("li"); li.style.color = "var(--muted)"; li.textContent = "(public surface)";
     papi.appendChild(li);
   }
   while (pconn.firstChild) pconn.removeChild(pconn.firstChild);
-  const seen = new Set();
+  const out = new Set(), inc = new Set();
   for (const e of EDGES) {
-    if (e.from === nodeId && !seen.has(e.to)) {
-      seen.add(e.to);
-      const a = document.createElement("a"); a.className = "linkbtn"; a.textContent = "to " + entry2title(e.to);
-      a.addEventListener("click", () => openPanel(e.to));
-      pconn.appendChild(a);
-    }
-    if (e.to === nodeId && !seen.has("from-" + e.from)) {
-      seen.add("from-" + e.from);
-      const a = document.createElement("a"); a.className = "linkbtn"; a.textContent = "from " + entry2title(e.from);
-      a.addEventListener("click", () => openPanel(e.from));
-      pconn.appendChild(a);
-    }
+    if (e.from === nodeId) out.add(e.to);
+    if (e.to === nodeId) inc.add(e.from);
   }
-  document.querySelectorAll(".node").forEach((el) => el.classList.toggle("selected", el.dataset.id === nodeId));
+  for (const id of out) {
+    const a = document.createElement("a"); a.className = "linkbtn"; a.textContent = "to " + entry2title(id);
+    a.addEventListener("click", () => selectNode(id));
+    pconn.appendChild(a);
+  }
+  for (const id of inc) {
+    if (out.has(id)) continue; // avoid duplicate
+    const a = document.createElement("a"); a.className = "linkbtn"; a.textContent = "from " + entry2title(id);
+    a.addEventListener("click", () => selectNode(id));
+    pconn.appendChild(a);
+  }
   panel.classList.add("open");
   panel.setAttribute("aria-hidden", "false");
 }
@@ -542,18 +704,11 @@ function entry2title(id) {
   const e = nodeIndex.get(id);
   return e ? e.node.title : id;
 }
-document.getElementById("panelClose").addEventListener("click", () => {
+function closePanel() {
   panel.classList.remove("open");
   panel.setAttribute("aria-hidden", "true");
-  document.querySelectorAll(".node").forEach((el) => el.classList.remove("selected"));
-});
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    panel.classList.remove("open");
-    panel.setAttribute("aria-hidden", "true");
-    document.querySelectorAll(".node").forEach((el) => el.classList.remove("selected"));
-  }
-});
+}
+document.getElementById("panelClose").addEventListener("click", () => { clearSelection(); });
 
 /* ============== EDGE TOOLTIPS ============== */
 const tip = document.getElementById("tip");
@@ -564,7 +719,6 @@ function showTip(ev, text) {
   tip.style.top = (ev.clientY + 12) + "px";
 }
 function hideTip() { tip.style.display = "none"; }
-
 </script>
 </body>
 </html>

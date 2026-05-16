@@ -127,3 +127,4 @@
 | 2026-05-16 | content | images | [diagram-1-stack.png](projects/content/images/diagram-1-stack.png) | Mac mini production inference tutorial: diagram-1-stack.png |
 | 2026-05-16 | content | images | [diagram-2-costs.png](projects/content/images/diagram-2-costs.png) | Mac mini production inference tutorial: diagram-2-costs.png |
 | 2026-05-16 | content | images | [diagram-3-ram.png](projects/content/images/diagram-3-ram.png) | Mac mini production inference tutorial: diagram-3-ram.png |
+| 2026-05-16 | agentassist | reports | [architecture-map.html](projects/agentassist/reports/architecture-map.html) | Architecture map v2: wider canvas, no node overlap, click-to-highlight-flow, complete flow coverage (chat, tool call, feedback, admin, telemetry) |
