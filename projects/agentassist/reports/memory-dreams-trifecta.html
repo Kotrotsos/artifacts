@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Memory, dreams, and the next primitive</title>
+<style>
+  :root[data-theme="light"] {
+    --bg:#fafafa; --surface:#fff; --text:#0f172a; --muted:#475569;
+    --border:#e5e7eb; --accent:#2563eb; --code-bg:#f1f5f9;
+    --pull:#1e3a8a; --pull-bg:#eff6ff; --pull-border:#bfdbfe;
+    --shadow:0 1px 3px rgba(0,0,0,0.05);
+  }
+  :root[data-theme="dark"] {
+    --bg:#0b0d10; --surface:#14181d; --text:#f1f5f9; --muted:#94a3b8;
+    --border:#262d35; --accent:#60a5fa; --code-bg:#1e242b;
+    --pull:#bfdbfe; --pull-bg:#0c1f3a; --pull-border:#1e40af;
+    --shadow:0 1px 3px rgba(0,0,0,0.3);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);
+    line-height:1.7;-webkit-font-smoothing:antialiased;font-size:17px;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:3rem 1.5rem 6rem;}
+  header.bar{display:flex;align-items:center;justify-content:space-between;gap:1rem;
+             padding:0.7rem 1.25rem;border-bottom:1px solid var(--border);background:var(--surface);
+             position:sticky;top:0;z-index:5;}
+  header.bar .brand{font-size:0.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
+  .theme-toggle{background:transparent;color:var(--muted);border:1px solid var(--border);
+                padding:0.35rem 0.75rem;border-radius:999px;font:inherit;font-size:0.8rem;cursor:pointer;}
+  .theme-toggle:hover{border-color:var(--accent);color:var(--text);}
+
+  .eyebrow{color:var(--muted);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.1em;margin:0 0 0.5rem;}
+  h1{font-size:clamp(1.7rem, 4vw, 2.5rem);margin:0 0 0.6rem;line-height:1.2;letter-spacing:-0.015em;font-weight:700;}
+  .deck{font-size:1.05rem;color:var(--muted);margin:0 0 1.5rem;line-height:1.55;max-width:60ch;}
+  .byline{font-size:0.85rem;color:var(--muted);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:0.6rem 0;margin-bottom:2.5rem;}
+
+  h2.act{margin:2.5rem 0 0.5rem;font-size:1.4rem;letter-spacing:-0.01em;font-weight:700;}
+  h2.act .num{display:inline-block;color:var(--muted);font-weight:500;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.12em;margin-right:0.8rem;vertical-align:middle;}
+  h2.act .num::after{content:"";display:inline-block;width:24px;border-top:1px solid var(--border);vertical-align:middle;margin-left:0.6rem;}
+
+  h3{margin:1.8rem 0 0.4rem;font-size:1.1rem;font-weight:600;}
+  p{margin:0 0 1rem;}
+  blockquote.pull{
+    margin:1.5rem -0.5rem;padding:1rem 1.25rem;
+    background:var(--pull-bg);border:1px solid var(--pull-border);
+    color:var(--pull);border-radius:10px;font-size:1.05rem;
+    line-height:1.45;font-weight:500;
+  }
+  blockquote.pull p{margin:0;}
+  ul{padding-left:1.3rem;margin:0 0 1rem;}
+  ul li{margin-bottom:0.35rem;}
+  code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.86em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
+  hr.divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0;}
+  .takeaway{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);
+            border-radius:10px;padding:1rem 1.25rem;margin:1.5rem 0;box-shadow:var(--shadow);}
+  .takeaway strong{color:var(--accent);}
+
+  footer.meta{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:0.85rem;}
+  footer.meta a{color:var(--accent);text-decoration:none;}
+
+  @media print {
+    body{background:#fff;color:#000;font-size:11pt;}
+    .theme-toggle, header.bar{display:none;}
+    .wrap{padding:1rem;}
+    blockquote.pull,.takeaway{border-color:#aaa;background:#f5f5f5;color:#000;}
+    h2.act, h3, p, ul{break-inside:avoid;}
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span class="brand">Long read</span>
+  <button class="theme-toggle" id="themeBtn" type="button">Dark</button>
+</header>
+
+<article class="wrap">
+
+  <p class="eyebrow">A trifecta on Anthropic's memory primitive</p>
+  <h1>Memory, dreams, and the next primitive</h1>
+  <p class="deck">
+    Anthropic's product team has been incrementally adding capabilities that let agents do more on their own. The newest one is memory, and there is a second piece behind it called dreaming. A read on what shipped, why it matters, and what it changes, in three acts.
+  </p>
+  <p class="byline">
+    Based on a talk by Mahes, product manager on Anthropic's platform team.
+  </p>
+
+  <!-- ============== ACT I ============== -->
+  <h2 class="act"><span class="num">Act I</span>The trajectory</h2>
+
+  <p>
+    Look at the way Anthropic has shipped over the past two years and you can read it as one long argument. Each release lets the model do more without being told. The Model Context Protocol gave agents a standard way to reach external tools and data. Harnesses like Claude Code and the Agent SDK gave them long-running environments to live inside. Skills, launched in October, gave them a way to pick up new capabilities packaged by other agents or by humans. Each one is a layer that gets out of the model's way and hands it more of its environment to manage.
+  </p>
+  <p>
+    The thing that the trajectory has not solved, at least until now, is continuous self-learning. Once a session ends, what an agent figured out goes away. The next agent in the same environment has to relearn the same lessons. The same mistakes get made twice. The same investigation runs twice. The strategies that worked last week sit nowhere a future agent can find them.
+  </p>
+
+  <blockquote class="pull"><p>
+    Memory is the next primitive. It is the thing that will get us to self-learning agents that evolve and improve based on the tasks they work on and their own experience.
+  </p></blockquote>
+
+  <p>
+    The framing matters because memory is not new in casual usage. <code>CLAUDE.md</code> shipped with Claude Code well over a year ago, and the memory tool surfaced in the SDK shortly after, both early versions where an agent could leave itself a note inside a file or call a strictly-typed tool. The new framing is broader. Anthropic now wants memory to cover three things at once:
+  </p>
+  <ul>
+    <li><strong>Learning about the task.</strong> What does success look like for this work, what are the common mistakes, what strategies have been tried.</li>
+    <li><strong>Learning about the environment.</strong> The code base, the files, the assets, the things that move and need to stay current.</li>
+    <li><strong>Learning from other agents.</strong> Sharing observations across a fleet. Picking up what is going wrong elsewhere in the system and folding it into the agent's own model of the world.</li>
+  </ul>
+  <p>
+    That last one is the bet that matters. The interesting near future is not a single Claude session per developer. It is hundreds or thousands of agents in the same environment, doing related work, building up a shared understanding nobody planned in advance. For that to be possible, memory has to be a real subsystem with its own design, not a notes file.
+  </p>
+  <p>
+    Early customer signal backs the bet. One team building internal knowledge agents on top of the new system reported a 90 percent reduction in first-pass mistakes after agents started catching errors and writing them into memory for the next iteration to read. The token cost dropped, the latency dropped, the answers improved. Three wins from the same change, which is the shape of a useful primitive.
+  </p>
+
+  <hr class="divider" />
+
+  <!-- ============== ACT II ============== -->
+  <h2 class="act"><span class="num">Act II</span>The architecture</h2>
+
+  <p>
+    Anthropic's design of memory in Cloud Managed Agents is shaped by four requirements, all of them learned from customers who tried earlier versions. Each one is the kind of constraint that sounds obvious once stated and then quietly drives the entire system.
+  </p>
+
+  <h3>One: maximize intelligence by default</h3>
+  <p>
+    The temptation with memory is to over-specify the interface. Define exact tool calls, exact parameters, exact output shapes. Anthropic went the other direction. Memory is modeled as a file system. Claude reads and writes files, organizes them into a hierarchy, picks formats it likes. The tools are the same <code>bash</code> and edit primitives that already make the model good at agentic coding. The latest models, particularly Claude Opus 4.7, were specifically tuned for filesystem-based memory, which means they are better at picking what is worth remembering, how many files to split it into, and how to keep the structure organized over time.
+  </p>
+  <p>
+    The product principle is consistent with what shipped earlier in Skills. If the model is already capable of managing a virtual file system, hand it the memory store and step back.
+  </p>
+
+  <h3>Two: scale with multi-agent systems</h3>
+  <p>
+    Single-agent memory is easy. Concurrent agents touching the same store is where the design gets serious. Two properties fall out of taking this seriously:
+  </p>
+  <ul>
+    <li>
+      <strong>Permission scopes.</strong> An agent might have read-only access to one store (an organisation-wide runbook, a set of best practices) and read-write access to another (its own working memory). The scoping is per agent per store, which is the only way to keep shared knowledge from getting clobbered while still letting agents write where they should.
+    </li>
+    <li>
+      <strong>Optimistic concurrency.</strong> When hundreds of agents share memory state, one agent's write should not blindly overwrite another's. Memory updates use a content hash as a precondition, the same pattern any compare-and-swap system uses, so an agent verifies the state it thought it was editing before its write lands.
+    </li>
+  </ul>
+
+  <h3>Three: developer and enterprise control</h3>
+  <p>
+    Production deployments need explainability. The system gives every memory store full version history, attribution metadata for every change (which agent, at what time, from which session), and a portable API that can be reached from outside the managed-agents harness. That last one matters for the customers who already run their own PII scanners, their own cleanup pipelines, their own external mirrors. Memory is not a black box you can only operate through Anthropic's console.
+  </p>
+
+  <h3>Four: three layers, not one</h3>
+  <p>
+    Anthropic frames the system as three layers, and the framing is useful because it separates concerns that get conflated in casual conversation:
+  </p>
+  <ul>
+    <li><strong>Storage.</strong> Where the data actually lives, what metadata travels with it, how attribution and audit work.</li>
+    <li><strong>Content and structure.</strong> The decision to model memory as files, how those files are laid out, how skills relate to memory as a form of procedural knowledge.</li>
+    <li><strong>Process.</strong> How memory gets updated, what triggers updates, which sources feed into the decision about what to write down.</li>
+  </ul>
+
+  <blockquote class="pull"><p>
+    Storage and content are the easy parts. The process layer, who updates memory and when, is where most existing memory systems fall short.
+  </p></blockquote>
+
+  <p>
+    Single agents update memory from their own perspective: their own context, their own task. That is fine for small deployments and falls over at scale. Sessions miss patterns that other sessions have already figured out. Common mistakes show up in five separate sessions without anyone consolidating. The store gets messy. Old entries hang around past their usefulness. None of this is a flaw in any individual agent. It is a structural gap, and it is what the third act is about.
+  </p>
+
+  <hr class="divider" />
+
+  <!-- ============== ACT III ============== -->
+  <h2 class="act"><span class="num">Act III</span>Dreaming</h2>
+
+  <p>
+    The product launching alongside memory is called Dreaming. It is a batch, asynchronous process that runs separately from any individual session. You either fire it on a schedule from the console or kick it off via the API at the end of an agent's work. Dreaming reads recent transcripts in bulk, finds patterns across them, and produces an updated memory state, which you can then apply to the store immediately or review first.
+  </p>
+  <p>
+    The name is doing some lifting. The conceit is a system that consolidates the day's experiences while no one is looking, the same way sleep is hypothesized to consolidate memory in animals. The mechanism is more prosaic: a separate agent loop with its own clearly-defined objective, fed the recent transcripts of all the other agents.
+  </p>
+
+  <h3>Why this works where single-agent memory does not</h3>
+  <p>
+    Three design properties make Dreaming interesting from a research and harness perspective.
+  </p>
+  <p>
+    <strong>It runs out of band.</strong> An agent working on a task has the agent's own context, the agent's own perspective, the agent's own incentives. Looking back at a transcript from outside the session is a different and complementary view. A single agent will not notice that five sessions over the last three days were all triggered by the same upstream condition. A process that reads all five transcripts will.
+  </p>
+  <p>
+    <strong>It has a clear, separate objective.</strong> Anthropic's harness design experience is that agents do better when their goal is discrete. Asking an agent to solve a customer's problem and also keep the memory store tidy is asking for one of those two to get neglected. Dreaming separates "memory quality" as a goal in its own right, with its own agent loop, its own evaluation criteria, its own compute budget. The chat agents stay focused on task completion. The dreaming agent stays focused on memory quality.
+  </p>
+  <p>
+    <strong>It does not add latency.</strong> Because the work happens in the background, the hot path of any individual chat is unaffected. Memory gets better between sessions, not during them.
+  </p>
+
+  <h3>Two analogies that earn their keep</h3>
+  <p>
+    Anthropic's team frames Dreaming through two analogies, both of which are more than rhetorical.
+  </p>
+  <p>
+    The first is test-time compute. When thinking models were new, the insight was that giving a model more tokens to reason at inference time meant materially better final answers. Dreaming is the same shape applied to memory: spend more tokens off the hot path to keep the store organized, and the agents reading from it later get better outcomes for free. The scaling law that worked for reasoning works for memory curation.
+  </p>
+  <p>
+    The second analogy is a search index. Search systems pay an up-front cost to keep an index fresh, and that cost is amortized across every query that hits the index thereafter. Dreaming is the index build for memory. One agent does the work of consolidating, deduplicating, verifying, and back-filling, and every downstream agent reading the store benefits.
+  </p>
+
+  <h3>The result that travels</h3>
+  <p>
+    Harvey, the legal-AI company, deployed Dreaming against one of their legal benchmarks, a realistic legal scenario, and reported a six-fold increase in task completion rate. That is a striking number, the kind that does not happen from a UI polish or a faster cache. It is what a structural fix to the memory loop looks like.
+  </p>
+
+  <blockquote class="pull"><p>
+    Dreaming is the bridge between intermediate memory stores and the larger-scale knowledge bases that will be common in the next few months.
+  </p></blockquote>
+
+  <h3>What it looks like in practice</h3>
+  <p>
+    A site-reliability agent gets paged on a P1 alert. It investigates CPU utilization, traffic patterns, recent pull requests. It writes its findings into its team's read-write memory store as it goes. A few minutes later, a second alert fires the same investigation. A different SRE agent spins up, with access to the same store, and sees a note from its sibling: we already investigated this, here is what we found, here is how to short-circuit your own investigation. The second run is dramatically cheaper in tokens and dramatically faster in latency, not because the model changed but because the second agent had access to what the first had learned.
+  </p>
+  <p>
+    Run Dreaming over the last week of those SRE sessions and a higher-order insight surfaces: a bunch of the agents were triggered exactly sixty seconds after an upstream CPU spike. None of the individual agents would have noticed, because each only saw its own session. Dreaming notices, writes a single consolidated note pointing at the suspect retry logic, deduplicates five copies of a related observation into one, removes an entry that has gone stale, and adds a verification note saying the rest of the file is still accurate as of this scan. The next day's agents inherit a cleaner, denser, more reliable working memory.
+  </p>
+
+  <hr class="divider" />
+
+  <div class="takeaway">
+    <strong>The thesis.</strong> Memory becomes load-bearing infrastructure rather than a developer convenience. The shift from "tool an agent occasionally calls" to "shared knowledge base that hundreds of agents read and write" is the change to plan for. Dreaming is what makes that shift tractable, because no individual agent has the context, the incentive, or the compute to do the consolidation work properly. Run that work as a separate process with its own objective and the rest of the system stays focused.
+  </div>
+
+  <p>
+    Both memory and Dreaming are available now in the Cloud Managed Agents API. Memory is in public beta. Dreaming is in research preview. The reasonable expectation is that agents start running for days at a stretch, not hours, and that what an agent knows on day three depends on what its peers learned on day one. That is a different operating model from a chatbot. It is the one this primitive was built for.
+  </p>
+
+  <footer class="meta">
+    <p>Based on a talk by Mahes, platform team at Anthropic. Quotes are reconstructed from the live transcript and lightly edited for length.</p>
+  </footer>
+
+</article>
+
+<script>
+(function () {
+  const btn = document.getElementById("themeBtn");
+  const root = document.documentElement;
+  const stored = (() => { try { return localStorage.getItem("article.theme"); } catch (_) { return null; } })();
+  if (stored) root.setAttribute("data-theme", stored);
+  function sync(){ btn.textContent = root.getAttribute("data-theme") === "dark" ? "Light" : "Dark"; }
+  sync();
+  btn.addEventListener("click", () => {
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("article.theme", next); } catch (_) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
