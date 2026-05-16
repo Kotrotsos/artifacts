@@ -42,3 +42,4 @@
 | 2026-05-16 | reports | [draft.md](reports/draft.md) | Mac mini production inference tutorial: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/mac-mini-production-inference/draft.md |
 | 2026-05-16 | images | [hero.png](images/hero.png) | Mac mini production inference tutorial: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/mac-mini-production-inference/hero.png |
 | 2026-05-16 | images | [diagram-1-stack.png](images/diagram-1-stack.png) | Mac mini production inference tutorial: diagram-1-stack.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/mac-mini-production-inference/diagram-1-stack.png |
+| 2026-05-16 | images | [diagram-2-costs.png](images/diagram-2-costs.png) | Mac mini production inference tutorial: diagram-2-costs.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/mac-mini-production-inference/diagram-2-costs.png |
