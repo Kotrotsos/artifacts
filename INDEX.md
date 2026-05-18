@@ -164,3 +164,4 @@
 | 2026-05-18 | symphony | reports | [cookbook.html](projects/symphony/reports/cookbook.html) | Ten-recipe cookbook for installing, configuring, and running Symphony |
 | 2026-05-18 | content | reports | [draft.md](projects/content/reports/draft.md) | Prompt engineering split in 2026: draft.md |
 | 2026-05-18 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Prompt engineering split in 2026: substack-version.md |
+| 2026-05-18 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Prompt engineering split in 2026: linkedin-post.md |

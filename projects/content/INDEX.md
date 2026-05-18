@@ -75,3 +75,4 @@
 | 2026-05-18 | reports | [dashboard.html](reports/dashboard.html) | Claude Code usage dashboard, Jan to May 2026, tokens cost projects models | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-dashboard-2026/dashboard.html |
 | 2026-05-18 | reports | [draft.md](reports/draft.md) | Prompt engineering split in 2026: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/draft.md |
 | 2026-05-18 | reports | [substack-version.md](reports/substack-version.md) | Prompt engineering split in 2026: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/substack-version.md |
+| 2026-05-18 | reports | [linkedin-post.md](reports/linkedin-post.md) | Prompt engineering split in 2026: linkedin-post.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/linkedin-post.md |

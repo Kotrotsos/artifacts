@@ -1,35 +1,47 @@
-# LinkedIn Post: The PFF Case Study
+# LinkedIn Post: Prompt Engineering Split in Two
 
-A real case study from PFF, a 200-person sports data company. Two engineers. Two months. 25x more deploys. 10x output. Customer satisfaction up from a 7-7.5 baseline to 8.6 out of 10.
+OpenAI quietly told you to throw away your prompt stack. The deeper shift is that there are now two prompt-engineering jobs, not one.
 
-The reframe that drove it:
+Most teams are using the wrong playbook for both.
 
-Stop asking how to make engineers faster. Start asking how to make agents faster.
+PROMPTING AN ASSISTANT (single answer, you supervise):
+- Role (brief, not a costume)
+- Context
+- The exact task
+- Format
+- Examples (one or two)
+- Constraints
 
-The agile manifesto, the foosball tables, the sleeping pods, every perk that other industries do not have, all of it exists because engineers were the bottleneck. They are not the bottleneck anymore. Optimizing for the new bottleneck (agent throughput) is the work most engineering orgs in 2026 have not done yet.
+Precise. Step-by-step. Tight.
 
-What PFF cut:
+PROMPTING AN AGENT (multi-step, autonomous, you supervise the outcome):
+- Goal (specific and observable)
+- Success criteria
+- Available tools
+- Guardrails
 
-- Sprint planning
-- Daily standups
-- Sprint refinement
-- Project manager role
+Notable absence: a process. For agents, specify the destination, not the road.
 
-What survived:
+The mistakes I see most often:
 
-- Half-hour huddles every other day
-- Customer satisfaction surveys
-- Deployment metrics
-- Retrospectives
+Assistant prompts on agent tasks (over-specified, narrows the search space, the agent rigidly follows steps that were never the best path).
 
-The pipeline replaced the ceremony.
+Agent prompts on assistant tasks ("summarize this for me, you decide" against a single-turn ChatGPT call, then surprised when the output is vague).
 
-The workflow is four autonomous stages plus two verification stages: spec, lightweight design document, auto-generated tickets, auto-generated PRs, auto-deploy to staging, QA agent that checks acceptance criteria. Self-healing loop coming next.
+While you are at it, strip these out of your CLAUDE.md and system prompts:
 
-The single highest-return move was the LDD Skill. A Skill calibrated against PFF's existing design documents that keeps every new feature in the same architectural shape as everything else in the codebase. Without it, every PR is generic.
+- "Take a deep breath"
+- "Let's think step by step"  
+- "You are an expert in X"
+- Over-specified process for agentic tasks
+- "Important: do not ignore these instructions"
 
-Full case study with the numbers, the diagrams, the operational specifics:
+Modern reasoning models have been trained against most of these. They were worth 5-7% accuracy in 2023. They are worth nothing or worse in 2026.
+
+What still works: clear outcome, concrete examples (one or two), explicit constraints, specific output format, real context the model could not infer.
+
+Full breakdown with the OpenAI and Anthropic source guidance:
 
 [link to Medium article]
 
-Three things to know up front in the comments. What is the engineering ceremony you would have the hardest time cutting?
+What is the oldest prompt ritual still in your active stack? The line you wrote in 2023 and have never updated?
