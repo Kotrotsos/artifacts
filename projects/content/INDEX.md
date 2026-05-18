@@ -68,3 +68,4 @@
 | 2026-05-18 | reports | [substack-version.md](reports/substack-version.md) | Post-engineering org PFF trifecta: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/substack-version.md |
 | 2026-05-18 | reports | [linkedin-post.md](reports/linkedin-post.md) | Post-engineering org PFF trifecta: linkedin-post.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/linkedin-post.md |
 | 2026-05-18 | images | [hero.png](images/hero.png) | Post-engineering org PFF trifecta: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/hero.png |
+| 2026-05-18 | images | [diagram-1-workflow.png](images/diagram-1-workflow.png) | Post-engineering org PFF trifecta: diagram-1-workflow.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/diagram-1-workflow.png |
