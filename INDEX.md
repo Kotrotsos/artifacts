@@ -154,3 +154,4 @@
 | 2026-05-18 | agentassist | reports | [slides.html](projects/agentassist/reports/slides.html) | Slide deck: what we built, what we have, why this shape is superior, why it's best for OSS |
 | 2026-05-18 | content | reports | [draft.md](projects/content/reports/draft.md) | Post-engineering org PFF trifecta: draft.md |
 | 2026-05-18 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Post-engineering org PFF trifecta: substack-version.md |
+| 2026-05-18 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Post-engineering org PFF trifecta: linkedin-post.md |
