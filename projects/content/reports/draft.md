@@ -1,160 +1,152 @@
-# Skills, MCP, and Tool Calling: The Three Layers of Agent Extension
+# The Post-Engineering Org: How PFF Got 25x More Deploys by Optimizing for Agents, Not Engineers
 
-*Skills are loud right now. Building agents on Skills alone gives you half an agent. Here is what each of the three layers actually does, when to use which, and why "just write a Skill" is the most common architectural mistake I see in 2026.*
+*A real case study from PFF, a 200-person sports data company. Two engineers, two months, 25x deployment frequency, 10x output, and a customer satisfaction score that climbed from 7.5 to 8.6. The lessons are operational, not aspirational.*
 
-![Three stacked layers, the bottom labeled tools, the middle labeled MCP, the top labeled Skills, rendered as a clean isometric stack of teal slabs with coral side icons](hero.png)
+![Two side-by-side isometric scenes showing a single bottleneck engineer in the before scene and a parallel grid of agent-powered modules in the after scene](hero.png)
 
 **Key takeaways:**
 
-- Three different extension mechanisms get conflated in 2026 because they all touch the same problem: making an agent do something useful. They are not interchangeable. Tool calling is the agent's hands. MCP is its outlets to external systems. Skills are its playbooks. Each one solves a problem the other two cannot.
-- The Skills hype is loud because Skills shipped most recently (October 2025) and they are easy to write. The hype is also misleading. Skills cannot authenticate to your database. They cannot maintain state. They cannot expose one capability to every agent in your fleet at once. The teams treating Skills as the universal answer are quietly hitting walls.
-- The 2026 architecture that actually works is hybrid. Skills provide the procedure. MCP provides the connectors with auth, state, and isolation. Tools provide the deterministic local operations. The decision is not "Skill or MCP" but "Skill for the how, MCP for the where, Tool for the what."
+- The reframe that drove the case study was simple but consequential: stop asking how to make engineers faster, start asking how to make agents faster. The agile manifesto, the foosball tables, the sleeping pods, the whole optimized-for-engineer-productivity culture exists because engineers were the bottleneck. They are not the bottleneck anymore. Optimizing for the new bottleneck (agent throughput) produced a 25x deployment increase and a 10x output increase at PFF within two months.
+- The cuts were as important as the additions. Scrum did not survive contact with this approach. Sprint planning, daily standups, sprint refinement, and the project manager role all got cut at PFF. What remained: half-hour huddles every other day, customer satisfaction surveys as the primary success metric, and deployment metrics. The pipeline replaced the ceremony.
+- The actual workflow at PFF is four steps: spec, lightweight design document, auto-generated tickets, auto-generated PRs. Followed by auto-deploy to staging and an autonomous QA agent that checks acceptance criteria. The next step on the roadmap is closing the loop so a second agent fixes the QA failures and re-opens PRs, making the whole system self-healing.
 
 ---
 
-If you have spent any time inside the Claude or AI-engineering communities in the last six months, you have watched a quiet civil war play out. One camp is shipping Skills for everything. Another camp is wiring up MCP servers. A third camp is hand-rolling tools through the agent's tool-use API and ignoring both of the new shiny things. Most of the writing about this conflict is either tribal (one camp arguing the other is wrong) or vague (one paragraph each on three things, with no decision framework).
+I watched a conference talk this week that I want more practitioners to see. The speaker leads the post-engineering org at PFF, a 200-person sports data company that serves NFL and NCAA teams plus a consumer arm doing fantasy football and sports betting. PFF has 100 million page views a year and runs 9 million drafts annually. It is not a hobbyist setup. The case study they ran from January to March 2026 is one of the most specific, numbers-backed reorganization stories I have seen in this entire AI-tooling wave.
 
-The actual answer is mundane. The three mechanisms are complementary, not competing. They solve different problems, and teams that have shipped real agents in production are using all three, often in the same agent.
+The headline result is 25x more deploys per day in a two-engineer tiger team compared to their normal 10-engineer team. The honest caveat the speaker offered is also worth keeping in mind: small teams are always faster than large ones, so part of the multiplier is just from team size. But the tiger team still had to coordinate every deploy with the larger team, and the output gap measured by tickets weighted by complexity was still 10x.
 
-This article gives you the clean version of the mental model, the decision tree, and the answer to the question I get most: "Why can't I just write a Skill for everything?"
+The shift that produced these numbers is the one I want to walk through. Not the headline, the operational specifics.
 
-The short answer is that Skills are instructions. They are not capability. If your agent needs to authenticate to a real database, talk to a SaaS API, run a sandboxed script, or expose one piece of logic to ten different agent flows, a Skill on its own will not get you there.
+## The reframe
 
-Let me walk through what each layer is, and then how to decide which one to reach for.
+The speaker opened with the question that drove the whole experiment. The instinct in engineering for decades has been "how do we help engineers output more." That instinct shaped agile, software craftsmanship, the elaborate physical perks (foosball tables, sleeping pods, premium snacks), and the entire culture of engineer-centric optimization. The premise underneath all of it was that engineers are the bottleneck.
 
-## What each layer actually is
+The reframed question at PFF was: how do we make the agents quicker?
 
-The conflation happens because all three of these get pitched the same way in the docs. "Extend your agent." "Give Claude new capabilities." "Plug in to your stack." The pitch is the same. The mechanics are entirely different.
+That sentence sounds small until you sit with it. It changes what you optimize for, what processes you keep, what tooling you build, and which engineers thrive on the team. It changes the org chart. Once you accept that engineers are no longer the only bottleneck, every ceremony, perk, and tool that was built around "engineer is the constraint" becomes worth re-examining.
 
-![Three columns showing the anatomy of tool calling (a JSON-like rectangle), MCP server (a box with outlet and data arrows), and Agent Skill (a manila folder with SKILL.md), each with a one-line description of what it is](diagram-1-anatomy.png)
+This is what PFF re-examined. Most of it did not survive.
 
-### Tool calling: the agent's hands
+## The numbers
 
-A tool, in the modern agent sense, is a function the model can decide to invoke. It has a name, a description, an input schema (usually JSON Schema), and a returned result. The agent reads the description, decides the situation matches, calls the tool with arguments, gets a response back, and continues reasoning.
+The two-engineer tiger team versus the 10-engineer team produced the following:
 
-Tools are the foundation. Every other mechanism on this list is built on top of tool calling, or wraps it. When Claude Code reads a file, it is calling the built-in `Read` tool. When it runs a shell command, that is the `Bash` tool. Tool calling has been the agent extensibility primitive since GPT-4 introduced function-calling in mid-2023, and it remains the lowest-level interface to "the agent can do this specific thing."
+- 25x more deploys per day (the tiger team deployed five times a day on average; the larger team deployed roughly once every five days)
+- 10x output, measured as tickets shipped weighted by code complexity
+- Customer satisfaction score climbed from a 7 to 7.5 baseline up to 8.6 out of 10 in a statistically significant survey
+- Features that pre-AI would have been scoped at four months shipped in under two
+- One of the two engineers became unblocked under a month in and started shipping additional features in parallel, while the other engineer continued on the main work, producing a compounding effect
 
-Tools are bounded. They run a defined function with defined inputs and return a defined output. They are local in the sense that they run in the agent's runtime, not on a remote server. When you write a tool, you are writing code the agent can call, not a server the agent can connect to.
+![A 2 by 2 grid of stat cards showing 25x deploys, 10x output, 8.6 customer satisfaction, and 2 months versus 4 months ship time](diagram-3-results.png)
 
-### MCP: the agent's outlets
+The compounding bit is the part that gets understated. The benefit was not just speed on the main feature. The benefit was that one engineer unblocked early could go pick up additional work, and that work also moved fast, and the throughput stacked. The pre-AI baseline had both engineers blocked on the same critical path for the whole estimated four months. The new baseline freed one of them after thirty days. The output graph after that is geometric, not linear.
 
-Model Context Protocol is the protocol Anthropic published in November 2024 and open-sourced under Apache 2.0. The mental model is plumbing. MCP defines how a server (a program that exposes some capability) talks to a client (the AI application that wants to use that capability). The protocol is JSON-RPC 2.0 over either stdio (for local servers) or HTTP and SSE (for remote ones).
+## What got cut
 
-An MCP server exposes three kinds of things: tools (functions the client can call), resources (data the client can read), and prompts (templates the client can use). The agent on the other end gets a standardized way to discover what is available and how to call it.
+Scrum did not survive.
 
-The point of MCP is that the integration is built once and works for any client that speaks the protocol. Build a GitHub MCP server, and every agent that speaks MCP can use GitHub. Build a Notion MCP server, and you can wire it up to Claude Desktop, Claude Code, Cursor, Continue, and any future agent that adopts MCP. The protocol turns "we integrated GitHub into our agent" into "we exposed GitHub through a standard outlet."
+![Two columns showing what got cut from the process (sprint planning, daily standups, sprint refinement, project manager) versus what was kept (huddles, customer surveys, deployment metrics, retrospectives)](diagram-2-survived.png)
 
-MCP also handles three things that pure tool calling does not. Authentication and credentials live inside the server boundary, which means the agent never sees your API keys. State can be maintained across calls, because the server is its own process. Multi-tenant isolation is built in, because each tenant can have its own server instance with its own credentials.
+The PFF team removed sprint planning entirely. The reasoning is that estimation games make no difference when the agent is doing the work. The hour spent debating ticket points was not informing real decisions.
 
-### Agent Skills: the agent's playbooks
+They removed daily standups. Tickets auto-update based on PR status. If a PR is open, the ticket moves to in-progress automatically. If it goes to review, the ticket updates. If it merges, the ticket closes. The standup as a status broadcast became redundant because the system already broadcasts.
 
-Anthropic shipped Agent Skills in October 2025. A Skill is a folder. Inside the folder is a markdown file called SKILL.md with YAML frontmatter (name and description) and a markdown body with instructions. Optionally, the folder includes reference files, scripts, and example outputs.
+They removed sprint refinement. Refinement now happens earlier in the workflow, inside the spec and the lightweight design document phase, before tickets even exist.
 
-The Skill is loaded lazily. At session start, the agent reads only the metadata (the description). The full content loads only when the agent decides the situation matches. This progressive disclosure is the design trick that lets you have hundreds of Skills installed without bloating context.
+They removed the project manager role. Without sprint planning, standups, refinement, or estimation games, the coordination work that role used to absorb is mostly gone or has been redistributed.
 
-Skills are not capability. They are configured procedural knowledge. A Skill named `pr-review` does not give the agent the ability to read code or post comments on GitHub. It gives the agent a calibrated procedure for reviewing pull requests: what to look for, what to flag, how to format the feedback, what voice to use. The agent already had to be able to read files and post comments (via Tools or MCP). The Skill tells it how to use those capabilities well for this specific task.
+What survived: huddles every other day, half an hour or so, with engineers plus someone from product plus someone from the design science team. Customer satisfaction surveys as the primary success measurement. Deployment metrics. Retrospectives. That is roughly it.
 
-The mental model that lands cleanly: a Skill teaches Claude what to do. A Tool gives Claude something to do it with. An MCP server gives Claude somewhere to do it.
+The throughline is that the process layer optimized for human coordination got compressed dramatically. The process layer optimized for fast feedback (huddles, customer surveys, deployment frequency) was kept.
 
-## When to use which
+## The new workflow
 
-Here is the actual decision tree. Three questions, in order.
+The actual flow at PFF runs in four autonomous stages plus two verification stages.
 
-![A decision tree showing three questions: does the agent already have this capability, does it need to reach an external system, does it need a new local capability, with arrows pointing to USE A SKILL, USE MCP, or USE A TOOL respectively](diagram-2-decision.png)
+![A horizontal flow showing the autonomous workflow: spec, lightweight design document, tickets, pull request, staging deploy, QA agent, with a self-healing feedback loop from QA back to tickets](diagram-1-workflow.png)
 
-**Question 1: Does the agent already have this capability built in?**
+**Stage 1: Spec.** The engineer describes the feature. The agent interviews them, surfacing the questions that traditional product-discovery would have surfaced. The output is a spec that contains the actual requirements rather than the simplified version that usually survives the telephone game from stakeholder to PM to engineer.
 
-If yes, you do not need a new capability layer. You need a procedural layer. Write a Skill. Example: Claude Code already has `Read`, `Write`, `Edit`, `Bash`, and `WebFetch` tools built in. If the task is "review my pull requests against the style guide," the agent has everything it needs already. The job is to encode the procedure (what to check, what to flag, what format to output). That is a Skill.
+**Stage 2: Lightweight design document.** This is the part I want to highlight, because it is the architecturally important step. PFF has a Skill that generates the LDD. The Skill is calibrated against the LDDs the team has written before, so every new design document is in the same shape and architectural style as everything else in the codebase. This is how they prevent the agent from drifting toward generic patterns. The LDD is a discipline encoded as a Skill, not a Claude Code idiosyncrasy.
 
-**Question 2: Does the agent need to reach an external system?**
+**Stage 3: Tickets.** Once the LDD passes review, tickets are auto-generated, structured so none of them block each other. Where blocking dependencies exist, they are flagged explicitly in the ticket metadata.
 
-If yes, reach for MCP. Example: the agent needs to read Jira tickets, query your production database, post to Slack, or look up customer records in your CRM. Each of those is an external system with its own authentication, its own schema, its own rate limits. The right answer is an MCP server that wraps that system and exposes it to the agent through the protocol. The agent gets a standardized way to call it. The credentials stay on the server side. If the API changes, you update the server and every agent that uses it benefits.
+**Stage 4: Pull requests.** The agent picks up each ticket and writes the PR.
 
-**Question 3: Does the agent need a new bounded local capability?**
+**Stage 5: Auto-deploy to staging.** Every merged PR triggers a deployment to staging without human intervention.
 
-If yes, write a tool. Example: the agent needs to parse a specific file format you have, run a calculation, or perform a deterministic transformation that does not warrant a full external server. A custom tool, defined in the agent's tool list at runtime, is the right shape.
+**Stage 6: QA agent.** After the staging deploy completes, a QA agent looks at the tickets that went into the deploy, reads the acceptance criteria for each, and runs verification. If everything passes, the build is greenlit. If criteria fail, the failures are flagged with specific pointers to what is missing.
 
-The hidden fourth question, which most teams skip: **does this workflow need multiple of the above?** It almost always does. A real workflow rarely fits cleanly into one layer.
+The piece PFF has not yet built but is on the roadmap is the self-healing loop. The next agent in line would look at the failed acceptance criteria, generate the fix, and open a new PR automatically. Once that is wired up, the system runs end-to-end without human intervention for the routine cases, leaving humans to focus on the cases that actually need judgment.
 
-## The hybrid pattern most real workflows use
+## Where humans still matter
 
-Take a concrete example: "Fix a bug reported in Linear, in our production repo, with a tested PR."
+The speaker was specific about where the people stay in the loop, and worth listening to because the answer is not "everywhere by default."
 
-![A diagram showing an agent in the center connected to three clusters: a bug-fixer Skill at the top, GitHub and Linear MCP servers to the right, and Read/Write/Bash tools at the bottom, with annotations showing how each layer contributes to the workflow](diagram-3-architecture.png)
+**Security.** Agents take shortcuts. Anything with a security implication gets human review. This is the most important guardrail.
 
-You need three things. You need the procedure (read the issue, reproduce the bug, write the fix, verify with tests, open a PR with a proper description). You need access (the Linear issue, the repo, the PR system). You need execution (read files, run tests, write the fix).
+**Product feel.** Every product can now be built in an hour by anyone. The brand and product feel of the output is what separates "looks like every other AI-generated app" from "looks like our product." Engineers stay engaged on whether the output feels right, on whether it matches the rest of the company's product surface.
 
-If you build this with Skills alone, you cannot read the Linear ticket, because Skills cannot authenticate to Linear. You also cannot post a PR, because Skills cannot post to GitHub.
+**Scale and engineering complexity.** Agents will produce a thousand lines of code where two hundred would do. They will over-engineer when not constrained. The LDD is where you intervene. A tight, prescriptive design document at the start prevents the agent from sprawling later. Most of the engineering judgment now lives in writing a precise LDD, not in writing the code afterward.
 
-If you build this with MCP alone, the agent has access but no procedure. It can hit the GitHub API and the Linear API all day, but without a calibrated workflow it will write inconsistent PRs, miss test runs, and produce different bug fixes for the same root cause depending on which prompt triggers it.
+## The cultural transition
 
-If you build this with tools alone, you have to hand-roll an integration for every external system, and your tool list grows linearly with every new system the agent touches.
+This is the section most posts about AI-engineering avoid because it is uncomfortable.
 
-The right architecture for this workflow uses all three:
+The speaker said it directly: not everyone can drive a sports car. The engineering org and the new era is going to be hard for some engineers, and pretending otherwise is dishonest.
 
-- A `bug-fixer` Skill that defines the procedure: read, reproduce, fix, verify, open PR. It also encodes your conventions: how branch names are formatted, what the PR description must include, when to wait for review versus self-merge.
-- A GitHub MCP server and a Linear MCP server that provide authenticated access to the relevant systems.
-- The built-in Read, Write, Edit, and Bash tools that give the agent the local execution hands.
+The engineers who thrive in this model are curious. When they hit something they do not understand, they spend a little time figuring out how it was built. They are comfortable with the agent doing the typing and themselves doing the orienting. They are comfortable with abstraction at a higher level than the lines of code.
 
-Skill for the how. MCP for the where. Tools for the what.
+The engineers who struggle are the ones who need prescriptive specs. They were great at executing on detailed tickets. The detailed tickets are no longer how the work flows. The work now flows through specs and LDDs and judgment calls about whether the agent's output matches the codebase style. That is a different skill, and not everyone has it or wants it.
 
-## Why "just Skills" is the most common architectural mistake
+For an engineering leader reading this, the difficult truth is that the team you start with is not the team you end with. Some engineers will lean into this and accelerate. Some will resist or struggle. Pretending the transition will be uniform across the team is the kind of optimism that costs you twelve months of misaligned hiring and disappointed performance reviews.
 
-Skills are loud right now for understandable reasons. They are the newest of the three mechanisms, they look easy because they are just markdown, and the file format makes great LinkedIn content. The teams that have only just discovered Skills tend to overcorrect and try to push everything through them.
+## How they actually started
 
-Five specific things that Skills cannot do, which I see teams discover the hard way.
+The implementation pattern PFF used is worth copying because it is not a moonshot. It is incremental.
 
-**Skills cannot authenticate.** A Skill is an instruction pack. It does not hold credentials, it cannot refresh tokens, it cannot make authenticated API calls on its own. The moment your workflow involves a real external system with real auth, you are out of Skills territory.
+**Pick the engineers with the best system knowledge.** Every engineering team has one or two people whom others say "you should talk to them" when something is genuinely hard. Those are the engineers to put on this. They know the codebase well enough to spot when the agent is drifting, and they have the curiosity to figure out what the agent did that they did not understand.
 
-**Skills cannot maintain state.** A Skill is loaded into the agent's context each time it activates. There is no persistent process. If you need to remember session state across calls, you need either a Tool that manages it locally or an MCP server that holds it.
+**Go slowly and phase in.** The temptation to roll out coding assistants to the whole team on day one is strong and almost always wrong. PFF did proof-of-concept work in non-critical systems for two months before the tiger team ever touched the 100-million-page-view product.
 
-**Skills cannot enforce isolation.** If you have multiple tenants, multiple environments, or multiple credentials, you cannot use a Skill as your security boundary. Skill instructions can be ignored by a sufficiently distracted agent. MCP servers run in their own process and can enforce hard isolation.
+**Experiment in non-critical systems first.** The speaker spent November and December building small features that did not get much traffic. When a bug or mistake happened, it did not matter. By the time they moved to high-traffic systems in January, the operational patterns were proven.
 
-**Skills do not centralize.** Every Skill file has to be installed on every machine that runs an agent. If your team has fifty engineers and a Skill needs updating, you have fifty manual updates. An MCP server is one deployment, and every agent reading from it gets the new behavior immediately.
+**Encode your patterns as Skills.** Every reusable engineering pattern in your codebase (your API style, your branch naming, your feature flag conventions, your trunk-based development discipline) gets encoded as a Skill. The agent then has access to your team's calibrated practices, not the average practices it picked up in training.
 
-**Skills are static prompts.** They cannot dynamically discover what is available, query a database for the current schema, or adapt to runtime state. They tell the agent what to do, not what is reachable.
+**Get the guardrails working before going autonomous.** The speaker was explicit: do not turn on the autonomous loop until the deterministic verification (tests, feature flags, deployment checks) is reliable. Otherwise the self-healing loop will heal its way into a worse state.
 
-The teams I have advised who tried to push everything through Skills had the same three symptoms. Their Skill files grew long and hard to maintain. Their agent started doing things it should not (because the Skill said "do X" but had no mechanism to enforce it). And every external integration was a custom bespoke job that nobody else on the team could reuse.
+The speaker had a strong opinion about consuming other people's Skills, worth quoting: be skeptical of Skills with strong software design opinions that contradict your team's. They will pull your codebase toward someone else's defaults and create friction you do not want.
 
-The fix is to use Skills for the thing Skills are good at (procedural knowledge, voice, conventions, calibrated judgment), use MCP for the thing MCP is good at (capability extension with auth and isolation), and use Tools for the thing Tools are good at (bounded deterministic local ops). Skills do not get abandoned. They get scoped.
+## What you should not do
 
-## The hidden cost: tokens
+A few specific anti-patterns the speaker called out.
 
-There is a real tradeoff most write-ups gloss over. The three layers have different context costs.
+**Do not roll this out to everyone at the same time.** The most common reason these initiatives fail in larger orgs is that they get treated as a deployment, not a transition. A demo hackathon plus a license rollout to the whole team is an event, not a strategy.
 
-**Tool calling**, at the schema layer, is cheap. A well-defined tool with a tight schema and a short description costs maybe 100 to 300 tokens. Ten of these is fine.
+**Do not assume your culture transfers.** Every engineering org is different. The speaker's playbook worked at PFF because PFF has 20 engineers, a clear codebase, and the leadership backing to dismantle ceremonies that were not working. A 1,000-person org cannot run the same playbook unchanged. The principles transfer; the specific operational changes need re-derivation.
 
-**MCP**, historically, has been expensive. One MCP server can expose 90 or more tools (the GitHub server is a famous case), and connecting three popular MCP servers on a 200K-token model could consume over 70% of the available context before the agent did anything. This was the legitimate basis for the "MCP is heavy" criticism that circulated through 2025.
+**Do not be too conservative.** This is the harder advice. The case study speaker said they felt a few months behind their peers in the broader industry even with what they had built. The compounding-impact logic is real. A few months behind today is six months behind in three months and twelve months behind by Q3. The competition is not slowing down.
 
-Anthropic addressed this in January 2026 with MCP Tool Search, which dynamically loads tools on demand when they would consume more than 10% of context. The penalty has dropped substantially. The criticism is now mostly historical. But you should still audit how many tools a given MCP server exposes before connecting it.
+## What this means if you are running an engineering org in 2026
 
-**Skills** are the most context-efficient by design. The progressive disclosure pattern means only the descriptions are loaded at session start, and only the relevant Skill body loads when the agent decides it matches. You can have hundreds of Skills installed without a noticeable context hit. This is the design move that makes Skills genuinely useful for procedural knowledge at scale.
+A few practical takeaways.
 
-The token math has moved fast enough in the last year that any benchmarks older than three months are probably stale. Treat token efficiency as a tiebreaker, not a primary criterion.
+The Scrum review is the first concrete move. Audit your current ceremonies. For each one (planning, standup, refinement, retro, sprint cadence), ask what specific value it provides and whether that value still applies when the bottleneck is agent throughput, not engineer coordination. Most teams will find that two or three ceremonies are still earning their place and the rest are inertia.
 
-## The architecture I would build in 2026
+The Skills layer is the architectural investment. The single highest-return move at PFF is the LDD Skill that calibrates new designs against the existing codebase. It is a Skill specific to PFF's patterns, voice, and conventions, not a generic template. Building your equivalent is the highest-return engineering work most teams should be doing right now. Without it, every PR from the agent is generic.
 
-If I were starting a serious agent build today, here is what the stack looks like.
+The two-engineer tiger team is the right experimental unit. Not the whole team. Not one engineer alone. Two engineers with strong system knowledge, paired against a non-critical system, with explicit license to question every ceremony, for six to eight weeks. The patterns they discover are what scales.
 
-**The runtime.** Claude Code or Claude API with the Agent SDK. Both speak MCP natively, both load Skills natively, both expose the built-in tools that cover 80% of local operations.
-
-**The MCP layer.** One server per external system. GitHub, Linear or Jira, Notion or your wiki, Slack, your primary database, the SaaS tools you actually use. Most of these have official or community-maintained servers already. Run them locally or in your infrastructure depending on your security posture.
-
-**The Skill layer.** One Skill per repeatable workflow. The PR review skill, the bug fixer, the customer feedback theme extractor, the consultant-translator, the contract redline against your playbook. The Skills directory grows with use. By month six, you should have ten to twenty Skills covering the most common procedural work in your team.
-
-**The Tool layer.** Built-in tools cover most of what you need. Custom tools are rare and tightly bounded: a parser for a specific file format, a calculator for a domain-specific number, a transformer for a specific input. If you find yourself writing a custom tool every week, your work probably belongs in an MCP server instead.
-
-The split that works in practice: 70% of your extensibility energy goes into Skills (procedural know-how is the highest-return thing you can encode), 25% goes into MCP servers (one solid server per external system), 5% goes into custom Tools (only when nothing else fits).
-
-If your distribution looks very different from that, it is worth asking why. Teams that go 100% on Skills are usually missing the external-systems layer. Teams that go 100% on MCP are usually missing the procedural-knowledge layer. Teams that go 100% on custom Tools are usually reinventing what MCP gives you for free.
+The customer satisfaction survey is the right success metric. Not deployment frequency by itself. Not lines of code. Not PR count. The number that tells you the work was worth doing is whether the customers noticed. PFF moved from a 7 to 7.5 baseline up to 8.6 in two months. That is the number worth chasing.
 
 ## Closing
 
-The three layers are not in competition. They cover different surface area. The teams that get this right are pragmatic: Skills for the playbooks, MCP for the connectors, Tools for the deterministic native ops. The teams that get it wrong are usually the ones being loud on one of these and quiet on the others.
+PFF is not a moonshot company. It is a 200-person sports data shop with 20 engineers and a serious customer base. The case study they ran is reproducible. The specifics matter: the LDD Skill, the auto-generated tickets, the QA agent, the cut of sprint planning, the huddle cadence. None of these are speculative. They are operational decisions that produced a 25x deployment increase and a customer satisfaction lift in two months.
 
-The most common mistake in 2026 is not "they picked the wrong layer." It is "they only picked one." The right architecture spans all three deliberately, and the question to ask of any new agent capability is the same one in three forms: is this a procedure, an outlet, or a hand?
+The reframe that produced all of this fits in one sentence. Stop optimizing for engineer speed. Start optimizing for agent throughput. The rest is the work of redesigning your process to actually live by that sentence.
 
-Get the question right and the layer falls out almost automatically.
+The engineering orgs that internalize this in 2026 will compound away from the ones that do not. The case study is the proof. The playbook is here. The next question is which part of yours gets re-examined first.
 
 ---
 
@@ -163,3 +155,5 @@ Get the question right and the layer falls out almost automatically.
 *This article is published in [Autocomplete](https://medium.com/autocomplete-real-world-ai), a Medium publication about real-world AI for practitioners and decision-makers. We're always looking for writers. If you're building with AI and have something worth sharing, reach out.*
 
 *My free Substack newsletter, also called Autocomplete, can be found here: https://acdigest.substack.com.*
+
+*Source: conference talk from the PFF post-engineering org lead, recorded May 2026.*
