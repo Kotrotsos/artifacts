@@ -159,3 +159,4 @@
 | 2026-05-18 | content | images | [diagram-1-workflow.png](projects/content/images/diagram-1-workflow.png) | Post-engineering org PFF trifecta: diagram-1-workflow.png |
 | 2026-05-18 | content | images | [diagram-2-survived.png](projects/content/images/diagram-2-survived.png) | Post-engineering org PFF trifecta: diagram-2-survived.png |
 | 2026-05-18 | content | images | [diagram-3-results.png](projects/content/images/diagram-3-results.png) | Post-engineering org PFF trifecta: diagram-3-results.png |
+| 2026-05-18 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Post-engineering org PFF Substack version, expanded to match Medium length |
