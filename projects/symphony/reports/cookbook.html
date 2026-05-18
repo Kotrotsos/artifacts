@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Symphony Cookbook</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f7f8fb;
+      --text: #14202e;
+      --muted: #5e6a7a;
+      --rule: #e3e7ee;
+      --accent: #1d4ed8;
+      --accent-soft: #e8efff;
+      --code-bg: #f3f5f9;
+      --code-text: #1f2937;
+      --shell-bg: #0d1426;
+      --shell-text: #d6e0f1;
+      --shell-comment: #8aa0bd;
+      --warn-bg: #fff7e6;
+      --warn-border: #f3c969;
+      --warn-text: #6a4a00;
+      --good-bg: #ecfdf4;
+      --good-border: #67c693;
+      --good-text: #064429;
+      --max-w: 880px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    }
+    html[data-theme="dark"] {
+      --bg: #0d1426;
+      --surface: #131c30;
+      --text: #e7ecf5;
+      --muted: #9eabbf;
+      --rule: #1f2a44;
+      --accent: #7aa2ff;
+      --accent-soft: #1a2540;
+      --code-bg: #131c30;
+      --code-text: #e7ecf5;
+      --shell-bg: #060b18;
+      --shell-text: #cbd6ea;
+      --shell-comment: #7488a8;
+      --warn-bg: #2a2106;
+      --warn-border: #7a5a14;
+      --warn-text: #f4d97a;
+      --good-bg: #0d2a1d;
+      --good-border: #1e6a45;
+      --good-text: #b3eaca;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    header.page {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 64px 32px 24px;
+      border-bottom: 1px solid var(--rule);
+    }
+    header.page h1 {
+      font-size: 2.2rem;
+      margin: 0 0 12px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    header.page p.lede {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin: 0 0 24px;
+      max-width: 60ch;
+    }
+    .theme-switch {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+    }
+    .theme-switch button {
+      appearance: none;
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .theme-switch button[aria-pressed="true"] {
+      background: var(--bg);
+      color: var(--text);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    nav.toc {
+      max-width: var(--max-w);
+      margin: 32px auto 0;
+      padding: 0 32px;
+    }
+    nav.toc h2 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin: 0 0 12px;
+      font-weight: 600;
+    }
+    nav.toc ol {
+      list-style: none;
+      counter-reset: recipe;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 8px 24px;
+    }
+    nav.toc li {
+      counter-increment: recipe;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    nav.toc li::before {
+      content: counter(recipe, decimal-leading-zero);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      margin-right: 12px;
+    }
+
+    main {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 32px 32px 96px;
+    }
+
+    section.recipe {
+      margin-top: 72px;
+      scroll-margin-top: 32px;
+    }
+    section.recipe h2 {
+      font-size: 1.55rem;
+      margin: 0 0 8px;
+      letter-spacing: -0.01em;
+    }
+    section.recipe .recipe-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+    }
+    section.recipe .recipe-meta span::before {
+      content: "·";
+      margin-right: 16px;
+      color: var(--rule);
+    }
+    section.recipe .recipe-meta span:first-child::before { content: ""; margin: 0; }
+    section.recipe h3 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin: 32px 0 10px;
+      font-weight: 600;
+    }
+    section.recipe p { margin: 0 0 14px; }
+
+    pre {
+      background: var(--shell-bg);
+      color: var(--shell-text);
+      padding: 16px 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      line-height: 1.55;
+      margin: 0 0 16px;
+    }
+    pre.yaml { background: var(--code-bg); color: var(--code-text); }
+    pre.json { background: var(--code-bg); color: var(--code-text); }
+    pre.python { background: var(--code-bg); color: var(--code-text); }
+    pre.liquid { background: var(--code-bg); color: var(--code-text); }
+    pre code { font-family: inherit; }
+    .shell-comment { color: var(--shell-comment); }
+    .yaml-key { color: #b86b00; }
+    html[data-theme="dark"] .yaml-key { color: #f0b060; }
+    .yaml-value { color: var(--code-text); }
+    .yaml-comment { color: var(--muted); }
+
+    code.inline {
+      font-family: var(--font-mono);
+      font-size: 0.9em;
+      background: var(--surface);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--rule);
+    }
+
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 12px 18px;
+      border-radius: 0 6px 6px 0;
+      margin: 0 0 20px;
+      font-size: 0.95rem;
+    }
+    .callout.warn { border-left-color: var(--warn-border); background: var(--warn-bg); color: var(--warn-text); }
+    .callout.good { border-left-color: var(--good-border); background: var(--good-bg); color: var(--good-text); }
+    .callout strong { font-weight: 600; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      margin: 0 0 16px;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--rule);
+    }
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    footer.page {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 40px 32px;
+      border-top: 1px solid var(--rule);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      header.page { padding: 40px 20px 20px; }
+      main { padding: 24px 20px 80px; }
+      nav.toc { padding: 0 20px; }
+      footer.page { padding: 32px 20px; }
+    }
+
+    @media print {
+      :root {
+        --bg: #ffffff;
+        --surface: #ffffff;
+        --text: #000000;
+        --muted: #333333;
+        --rule: #cccccc;
+        --accent: #003399;
+        --accent-soft: #f4f6fb;
+        --code-bg: #f4f4f4;
+        --code-text: #000000;
+        --shell-bg: #f4f4f4;
+        --shell-text: #000000;
+        --shell-comment: #555555;
+      }
+      body { font-size: 11pt; }
+      .theme-switch, nav.toc { display: none; }
+      section.recipe { page-break-inside: avoid; margin-top: 36px; }
+      pre { white-space: pre-wrap; word-break: break-word; }
+      a { color: #000; text-decoration: underline; }
+      header.page { padding: 0; border: 0; }
+      main { padding: 12pt 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="page">
+  <h1>Symphony Cookbook</h1>
+  <p class="lede">Ten practical recipes for installing Symphony, pointing it at a real issue tracker, and tuning it for production. Every snippet is copy-paste ready.</p>
+  <div class="theme-switch" role="group" aria-label="Theme">
+    <button data-theme-set="light" aria-pressed="true">Light</button>
+    <button data-theme-set="dark" aria-pressed="false">Dark</button>
+    <button data-theme-set="system" aria-pressed="false">System</button>
+  </div>
+</header>
+
+<nav class="toc" aria-label="Recipes">
+  <h2>Recipes</h2>
+  <ol>
+    <li><a href="#install">Install and run idle</a></li>
+    <li><a href="#linear">Connect to Linear</a></li>
+    <li><a href="#prompt">Author the per-issue prompt</a></li>
+    <li><a href="#bootstrap">Bootstrap workspaces (after_create)</a></li>
+    <li><a href="#preflight">Pre-flight each run (before_run)</a></li>
+    <li><a href="#monitor">Monitor live runs over HTTP</a></li>
+    <li><a href="#concurrency">Tune concurrency caps</a></li>
+    <li><a href="#reload">Hot-reload WORKFLOW.md</a></li>
+    <li><a href="#stall">Recover from stalled agents</a></li>
+    <li><a href="#tools">Expose a custom tool to the agent</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<div class="callout warn" style="margin-top: 32px;">
+  <strong>Heads-up.</strong> The current agent runner launches <code class="inline">codex app-server</code>. The Codex-to-Claude swap is tracked as <strong>INC-5</strong> in the backlog. Until that ships, set <code class="inline">codex.command</code> to whichever local subprocess speaks the line-delimited JSON protocol described in spec §10. Recipes below use the field name Symphony reads today.
+</div>
+
+<section class="recipe" id="install">
+  <h2>1. Install and run idle</h2>
+  <div class="recipe-meta">
+    <span>Goal: get Symphony built and running with no tracker yet</span>
+    <span>Time: 2 min</span>
+  </div>
+
+  <h3>Set up the environment</h3>
+<pre><code><span class="shell-comment"># From the repo root</span>
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -e ".[dev]"</code></pre>
+
+  <h3>Confirm the CLI is on PATH</h3>
+<pre><code>symphony --help
+<span class="shell-comment"># prints the run subcommand, --workflow, --port, --bind, --log-level</span></code></pre>
+
+  <h3>Run the test suite as a smoke check</h3>
+<pre><code>.venv/bin/python -m pytest -q
+<span class="shell-comment"># 54 passed in 0.2s</span></code></pre>
+
+  <div class="callout good">
+    <strong>Why it matters.</strong> The tests lock down the spec invariants: workspace sanitization, candidate sort order, backoff curve, Linear payload normalization, strict Liquid rendering. If they pass, the orchestrator itself is healthy.
+  </div>
+</section>
+
+<section class="recipe" id="linear">
+  <h2>2. Connect to Linear</h2>
+  <div class="recipe-meta">
+    <span>Goal: see a real poll tick succeed against the Linear API</span>
+    <span>Time: 5 min</span>
+  </div>
+
+  <h3>Issue a Linear personal API key</h3>
+  <p>Go to <a href="https://linear.app/settings/api">linear.app/settings/api</a> and create a personal API key. Save it to a file outside the repo, or to <code class="inline">s-key.key</code> (already in <code class="inline">.gitignore</code>).</p>
+
+  <h3>Find your project slug</h3>
+<pre><code>curl -s -X POST https://api.linear.app/graphql \
+  -H "Authorization: $(tr -d '\n\r ' < s-key.key)" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"query{ projects(first:10){ nodes{ name slugId } } }"}' \
+  | python3 -m json.tool</code></pre>
+
+  <h3>Wire it into WORKFLOW.md</h3>
+<pre class="yaml"><code><span class="yaml-key">tracker</span>:
+  <span class="yaml-key">kind</span>: linear
+  <span class="yaml-key">api_key</span>: $LINEAR_API_KEY
+  <span class="yaml-key">project_slug</span>: 9919061cee92   <span class="yaml-comment"># your slugId</span>
+  <span class="yaml-key">active_states</span>:
+    - Todo
+    - In Progress
+  <span class="yaml-key">terminal_states</span>:
+    - Done
+    - Canceled
+    - Duplicate</code></pre>
+
+  <h3>Start Symphony</h3>
+<pre><code>export LINEAR_API_KEY="$(tr -d '\n\r ' &lt; s-key.key)"
+symphony --workflow ./WORKFLOW.md --port 8765</code></pre>
+
+  <p>Two <code class="inline">POST /graphql 200 OK</code> log lines on the first tick means you are connected.</p>
+</section>
+
+<section class="recipe" id="prompt">
+  <h2>3. Author the per-issue prompt</h2>
+  <div class="recipe-meta">
+    <span>Goal: write a Liquid template that the agent receives on turn one</span>
+    <span>Time: 5 min</span>
+  </div>
+
+  <p>Everything after the YAML front matter is the prompt template. Strict Liquid rules: unknown variables and unknown filters fail rendering, which is what you want, mistyped <code class="inline">{{ issue.titel }}</code> should error loudly rather than silently produce an empty string.</p>
+
+<pre class="liquid"><code># Issue {{ issue.identifier }}: {{ issue.title }}
+
+State: {{ issue.state }}
+Priority: {{ issue.priority }}
+URL: {{ issue.url }}
+
+## Description
+
+{{ issue.description }}
+
+{% if issue.labels.size > 0 %}
+Labels: {% for label in issue.labels %}`{{ label }}`{% unless forloop.last %}, {% endunless %}{% endfor %}
+{% endif %}
+
+{% if attempt %}
+This is continuation attempt {{ attempt }}. Resume from the most recent
+partial progress rather than starting over.
+{% endif %}</code></pre>
+
+  <h3>Preview the rendered prompt without dispatching</h3>
+<pre class="python"><code>.venv/bin/python -c "
+from symphony.workflow import load_workflow
+from symphony.prompt import StrictPromptRenderer
+from symphony.domain import Issue
+wf = load_workflow('WORKFLOW.md')
+issue = Issue(id='i', identifier='INC-5', title='Demo',
+              state='Todo', labels=['feature'])
+print(StrictPromptRenderer().render(wf.prompt_template, issue=issue))
+"</code></pre>
+
+  <div class="callout">
+    <strong>First turn vs continuation.</strong> Symphony sends the full template only on turn one. Subsequent turns inside the same worker run reuse the live agent thread and receive a short continuation message. Use <code class="inline">{% if attempt %}</code> to add retry-specific guidance to the full prompt.
+  </div>
+</section>
+
+<section class="recipe" id="bootstrap">
+  <h2>4. Bootstrap workspaces with after_create</h2>
+  <div class="recipe-meta">
+    <span>Goal: clone your repo into each new per-issue workspace</span>
+    <span>Time: 3 min</span>
+  </div>
+
+  <p>The <code class="inline">after_create</code> hook runs <em>only</em> on first creation of a workspace. Symphony reuses the directory across runs, so this is the right place for one-shot setup. Failure here aborts workspace creation and removes the partial directory.</p>
+
+<pre class="yaml"><code><span class="yaml-key">hooks</span>:
+  <span class="yaml-key">after_create</span>: |
+    set -euo pipefail
+    git clone --depth 1 git@github.com:your-org/your-repo.git .
+    cp .env.template .env
+    pip install -r requirements.txt
+  <span class="yaml-key">timeout_ms</span>: 120000   <span class="yaml-comment"># bump for slow installs</span></code></pre>
+
+  <h3>Test the hook by hand</h3>
+<pre><code><span class="shell-comment"># cwd will be the workspace path, SYMPHONY_WORKSPACE points at it</span>
+SYMPHONY_WORKSPACE=/tmp/test-ws \
+  bash -lc 'cd "$SYMPHONY_WORKSPACE" &amp;&amp; <span class="shell-comment"># your script here</span>'</code></pre>
+</section>
+
+<section class="recipe" id="preflight">
+  <h2>5. Pre-flight each run with before_run</h2>
+  <div class="recipe-meta">
+    <span>Goal: refresh dependencies and pull latest main before every agent turn</span>
+    <span>Time: 3 min</span>
+  </div>
+
+  <p>This hook runs before every agent dispatch, not just the first. Failure aborts the current attempt and triggers exponential backoff retry.</p>
+
+<pre class="yaml"><code><span class="yaml-key">hooks</span>:
+  <span class="yaml-key">before_run</span>: |
+    set -euo pipefail
+    git fetch --all --prune
+    git checkout main
+    git reset --hard origin/main
+    git clean -fd</code></pre>
+
+  <div class="callout warn">
+    <strong>Destructive resets.</strong> The spec lets you reuse workspaces across runs. A hard reset throws away any in-progress agent work. Prefer a soft strategy (<code class="inline">git pull --ff-only</code> on a branch) unless your workflow explicitly starts each turn from a clean state.
+  </div>
+</section>
+
+<section class="recipe" id="monitor">
+  <h2>6. Monitor live runs over HTTP</h2>
+  <div class="recipe-meta">
+    <span>Goal: dashboard the orchestrator without parsing logs</span>
+    <span>Time: 2 min</span>
+  </div>
+
+  <p>Set <code class="inline">server.port</code> in <code class="inline">WORKFLOW.md</code> or pass <code class="inline">--port</code>. Three endpoints:</p>
+
+  <table>
+    <thead><tr><th>Endpoint</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code class="inline">GET /healthz</code></td><td>Liveness probe for load balancers.</td></tr>
+      <tr><td><code class="inline">GET /snapshot</code></td><td>Running rows, retrying rows, token totals, rate-limit snapshot, live config.</td></tr>
+      <tr><td><code class="inline">POST /reload</code></td><td>Force a defensive workflow reload now (no need to wait for the watcher).</td></tr>
+    </tbody>
+  </table>
+
+<pre><code>curl -s http://127.0.0.1:8765/snapshot | python3 -m json.tool
+curl -X POST http://127.0.0.1:8765/reload</code></pre>
+
+  <h3>Sample snapshot row for a running worker</h3>
+<pre class="json"><code>{
+  "issue_identifier": "INC-5",
+  "issue_state": "In Progress",
+  "elapsed_s": 42.1,
+  "turn_count": 2,
+  "session_id": "thread_abc-turn_def",
+  "tokens": {"input": 1234, "output": 567, "total": 1801},
+  "last_event": "turn/completed",
+  "host": null
+}</code></pre>
+</section>
+
+<section class="recipe" id="concurrency">
+  <h2>7. Tune concurrency caps</h2>
+  <div class="recipe-meta">
+    <span>Goal: cap parallel agents globally, per state, and per worker host</span>
+    <span>Time: 3 min</span>
+  </div>
+
+  <p>Three caps apply in sequence (global, then per-state, then per-host). A candidate must clear all three. Per-state keys are case-insensitive, invalid entries are silently dropped.</p>
+
+<pre class="yaml"><code><span class="yaml-key">agent</span>:
+  <span class="yaml-key">max_concurrent_agents</span>: 10           <span class="yaml-comment"># global</span>
+  <span class="yaml-key">max_concurrent_agents_by_state</span>:
+    "Todo": 6                            <span class="yaml-comment"># cap fresh work</span>
+    "In Progress": 4                     <span class="yaml-comment"># cap continuations</span>
+
+<span class="yaml-key">worker</span>:
+  <span class="yaml-key">ssh_hosts</span>:
+    - build-01.internal
+    - build-02.internal
+  <span class="yaml-key">max_concurrent_agents_per_host</span>: 2     <span class="yaml-comment"># 4 hosts × 2 = 8 max</span></code></pre>
+
+  <div class="callout">
+    <strong>Live tunable.</strong> Edit <code class="inline">WORKFLOW.md</code> while Symphony is running. The watcher re-applies caps on the next tick, no restart needed.
+  </div>
+</section>
+
+<section class="recipe" id="reload">
+  <h2>8. Hot-reload WORKFLOW.md</h2>
+  <div class="recipe-meta">
+    <span>Goal: change config without restarting the service</span>
+    <span>Time: 2 min</span>
+  </div>
+
+  <p>Symphony watches the workflow file via <code class="inline">watchfiles.awatch</code>. Edits trigger <code class="inline">_reload_workflow_defensive</code>, which re-validates and swaps the runtime config in place. A malformed reload keeps the last known good config and emits one log line.</p>
+
+<pre><code><span class="shell-comment"># Edit poll interval down to 5s</span>
+sed -i.bak 's/interval_ms: 30000/interval_ms: 5000/' WORKFLOW.md
+
+<span class="shell-comment"># Force a reload immediately rather than waiting for the watcher</span>
+curl -X POST http://127.0.0.1:8765/reload
+
+<span class="shell-comment"># Confirm</span>
+curl -s http://127.0.0.1:8765/snapshot | python3 -c \
+  'import sys,json; print(json.load(sys.stdin)["config"]["poll_interval_ms"])'
+<span class="shell-comment"># 5000</span></code></pre>
+
+  <div class="callout warn">
+    <strong>Live sessions keep the old config.</strong> A workspace that is mid-turn finishes on the old <code class="inline">codex.*</code> settings. Restart the service if you need a hard cutover.
+  </div>
+</section>
+
+<section class="recipe" id="stall">
+  <h2>9. Recover from stalled agents</h2>
+  <div class="recipe-meta">
+    <span>Goal: kill workers that go quiet and queue a retry</span>
+    <span>Time: 2 min</span>
+  </div>
+
+  <p>Every tick, Symphony measures the time since each running worker's last agent event. If it exceeds <code class="inline">codex.stall_timeout_ms</code>, the worker is terminated and an exponential-backoff retry is queued.</p>
+
+<pre class="yaml"><code><span class="yaml-key">codex</span>:
+  <span class="yaml-key">stall_timeout_ms</span>: 300000   <span class="yaml-comment"># 5 minutes (default)</span>
+  <span class="yaml-key">turn_timeout_ms</span>: 3600000   <span class="yaml-comment"># 1 hour per turn</span>
+  <span class="yaml-key">read_timeout_ms</span>: 5000      <span class="yaml-comment"># sync request/response</span></code></pre>
+
+  <h3>What you see in logs</h3>
+<pre><code>level=warning event=stall_detected issue_identifier=INC-7 outcome=terminating
+level=info event=retry_scheduled issue_identifier=INC-7 attempt=2 delay_ms=20000</code></pre>
+
+  <p>Set <code class="inline">stall_timeout_ms</code> to <code class="inline">0</code> or a negative number to disable stall detection entirely. Useful when the agent is allowed to think silently for arbitrarily long.</p>
+</section>
+
+<section class="recipe" id="tools">
+  <h2>10. Expose a custom tool to the agent</h2>
+  <div class="recipe-meta">
+    <span>Goal: let the agent call your code via a JSON-RPC tool</span>
+    <span>Time: 10 min</span>
+  </div>
+
+  <p>The agent client dispatches <code class="inline">item/tool/call</code> notifications through a name-to-handler map. Each handler is <code class="inline">async def(tool_name, payload) -> dict</code> and returns a structured response, by convention <code class="inline">{"success": bool, ...}</code>.</p>
+
+  <h3>Define your handler</h3>
+<pre class="python"><code># symphony/my_tool.py
+async def deploy_preview(tool_name: str, payload: dict) -> dict:
+    branch = payload.get("branch")
+    if not isinstance(branch, str) or not branch:
+        return {"success": False, "error": "branch required"}
+    # call out to your deploy service, return the resulting URL
+    return {"success": True, "preview_url": f"https://preview/{branch}"}</code></pre>
+
+  <h3>Register it in the orchestrator</h3>
+<pre class="python"><code># symphony/orchestrator.py, inside _run_worker where CodexClient is built
+from .my_tool import deploy_preview
+
+client = CodexClient(
+    ...,
+    tool_handlers={
+        "linear_graphql": LinearGraphqlTool(self._cfg.tracker),
+        "deploy_preview": deploy_preview,
+    },
+)</code></pre>
+
+  <p>Unknown tool names return a structured <code class="inline">unsupported_tool_call</code> failure automatically, so you only ever add the names you actually implement.</p>
+
+  <div class="callout">
+    <strong>Built-in tool.</strong> <code class="inline">linear_graphql</code> ships in the box. It executes a single GraphQL operation against Linear using the same auth Symphony uses for polling. Use it from the prompt to move tickets between states without giving the agent raw API tokens.
+  </div>
+</section>
+
+</main>
+
+<footer class="page">
+  <p>
+    Symphony · normative contract in <code class="inline">spec.md</code> · 54 pytest invariants ·
+    Backlog of follow-up work lives in Linear as <code class="inline">INC-5</code> through <code class="inline">INC-15</code>.
+  </p>
+</footer>
+
+<script>
+  (function () {
+    const STORAGE_KEY = "symphony-cookbook-theme";
+    const buttons = Array.from(document.querySelectorAll(".theme-switch [data-theme-set]"));
+    const root = document.documentElement;
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+    function applyTheme(choice) {
+      let resolved = choice;
+      if (choice === "system") {
+        resolved = media.matches ? "dark" : "light";
+      }
+      root.setAttribute("data-theme", resolved);
+      buttons.forEach(function (btn) {
+        btn.setAttribute("aria-pressed", btn.dataset.themeSet === choice ? "true" : "false");
+      });
+    }
+
+    function getStored() {
+      try { return localStorage.getItem(STORAGE_KEY) || "light"; }
+      catch (e) { return "light"; }
+    }
+
+    function setStored(choice) {
+      try { localStorage.setItem(STORAGE_KEY, choice); } catch (e) {}
+    }
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const choice = btn.dataset.themeSet;
+        setStored(choice);
+        applyTheme(choice);
+      });
+    });
+
+    media.addEventListener("change", function () {
+      if (getStored() === "system") applyTheme("system");
+    });
+
+    applyTheme(getStored());
+  })();
+</script>
+
+</body>
+</html>
