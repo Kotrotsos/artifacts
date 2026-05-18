@@ -76,3 +76,4 @@
 | 2026-05-18 | reports | [draft.md](reports/draft.md) | Prompt engineering split in 2026: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/draft.md |
 | 2026-05-18 | reports | [substack-version.md](reports/substack-version.md) | Prompt engineering split in 2026: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/substack-version.md |
 | 2026-05-18 | reports | [linkedin-post.md](reports/linkedin-post.md) | Prompt engineering split in 2026: linkedin-post.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/linkedin-post.md |
+| 2026-05-18 | images | [hero.png](images/hero.png) | Prompt engineering split in 2026: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/hero.png |
