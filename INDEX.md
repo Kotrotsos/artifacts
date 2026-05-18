@@ -158,3 +158,4 @@
 | 2026-05-18 | content | images | [hero.png](projects/content/images/hero.png) | Post-engineering org PFF trifecta: hero.png |
 | 2026-05-18 | content | images | [diagram-1-workflow.png](projects/content/images/diagram-1-workflow.png) | Post-engineering org PFF trifecta: diagram-1-workflow.png |
 | 2026-05-18 | content | images | [diagram-2-survived.png](projects/content/images/diagram-2-survived.png) | Post-engineering org PFF trifecta: diagram-2-survived.png |
+| 2026-05-18 | content | images | [diagram-3-results.png](projects/content/images/diagram-3-results.png) | Post-engineering org PFF trifecta: diagram-3-results.png |

@@ -70,3 +70,4 @@
 | 2026-05-18 | images | [hero.png](images/hero.png) | Post-engineering org PFF trifecta: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/hero.png |
 | 2026-05-18 | images | [diagram-1-workflow.png](images/diagram-1-workflow.png) | Post-engineering org PFF trifecta: diagram-1-workflow.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/diagram-1-workflow.png |
 | 2026-05-18 | images | [diagram-2-survived.png](images/diagram-2-survived.png) | Post-engineering org PFF trifecta: diagram-2-survived.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/diagram-2-survived.png |
+| 2026-05-18 | images | [diagram-3-results.png](images/diagram-3-results.png) | Post-engineering org PFF trifecta: diagram-3-results.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/diagram-3-results.png |
