@@ -155,3 +155,4 @@
 | 2026-05-18 | content | reports | [draft.md](projects/content/reports/draft.md) | Post-engineering org PFF trifecta: draft.md |
 | 2026-05-18 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Post-engineering org PFF trifecta: substack-version.md |
 | 2026-05-18 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Post-engineering org PFF trifecta: linkedin-post.md |
+| 2026-05-18 | content | images | [hero.png](projects/content/images/hero.png) | Post-engineering org PFF trifecta: hero.png |
