@@ -72,3 +72,4 @@
 | 2026-05-18 | images | [diagram-2-survived.png](images/diagram-2-survived.png) | Post-engineering org PFF trifecta: diagram-2-survived.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/diagram-2-survived.png |
 | 2026-05-18 | images | [diagram-3-results.png](images/diagram-3-results.png) | Post-engineering org PFF trifecta: diagram-3-results.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/diagram-3-results.png |
 | 2026-05-18 | reports | [substack-version.md](reports/substack-version.md) | Post-engineering org PFF Substack version, expanded to match Medium length | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/substack-version.md |
+| 2026-05-18 | reports | [dashboard.html](reports/dashboard.html) | Claude Code usage dashboard, Jan to May 2026, tokens cost projects models | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-dashboard-2026/dashboard.html |

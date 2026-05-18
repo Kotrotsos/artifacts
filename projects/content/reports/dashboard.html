@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Claude Code Dashboard, 2026 to date</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #15171a;
+  --muted: #5a6068;
+  --rule: #e6e8eb;
+  --card: #f7f8fa;
+  --card-strong: #eef0f3;
+  --accent: #0a7f7a;
+  --accent-soft: #d9efee;
+  --accent-2: #e2725b;
+  --accent-2-soft: #fde7e0;
+  --shadow: 0 1px 2px rgba(15, 18, 22, 0.04);
+  --shadow-lg: 0 4px 16px rgba(15, 18, 22, 0.06);
+}
+[data-theme="dark"] {
+  --bg: #0f1216;
+  --fg: #e9ecef;
+  --muted: #9099a3;
+  --rule: #1e2329;
+  --card: #161a1f;
+  --card-strong: #1c2127;
+  --accent: #6dd4cf;
+  --accent-soft: #1d2a2a;
+  --accent-2: #f3a48c;
+  --accent-2-soft: #2a1d18;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.4);
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 40px 32px 80px; }
+header.top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 36px; }
+h1 { font-size: 30px; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.01em; }
+.subtitle { color: var(--muted); font-size: 14px; margin: 0; }
+.theme-toggle { display: inline-flex; gap: 2px; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--card); }
+.theme-toggle button { all: unset; cursor: pointer; padding: 4px 11px; border-radius: 999px; font-size: 12px; color: var(--muted); }
+.theme-toggle button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: var(--shadow); }
+section.kpis {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+  margin-bottom: 36px;
+}
+@media (max-width: 980px) { section.kpis { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px) { section.kpis { grid-template-columns: repeat(2, 1fr); } }
+.kpi {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.kpi .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin-bottom: 6px; }
+.kpi .value { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+.kpi .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+h2.section { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-2); margin: 36px 0 14px; font-weight: 600; }
+.trend-card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+.trend-card h3 { margin: 0 0 14px; font-size: 16px; font-weight: 600; }
+.bar-chart { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; align-items: end; height: 220px; padding: 8px 0; }
+.bar-chart .bar-col { display: flex; flex-direction: column; align-items: center; height: 100%; gap: 6px; }
+.bar-chart .bar-stack { display: flex; flex-direction: column; justify-content: flex-end; width: 100%; max-width: 64px; height: 100%; gap: 1px; }
+.bar-chart .bar-seg { background: var(--accent); border-radius: 2px 2px 0 0; transition: opacity 0.15s; }
+.bar-chart .bar-seg.cache-create { background: var(--accent-2); }
+.bar-chart .bar-seg.cache-read { background: var(--accent); opacity: 0.85; }
+.bar-chart .bar-seg.input { background: var(--accent-2); opacity: 0.7; }
+.bar-chart .bar-seg.output { background: var(--accent-2); }
+.bar-chart .month-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+.bar-chart .month-value { font-size: 13px; font-weight: 600; color: var(--fg); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.legend .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+.cost-chart-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 800px) { .cost-chart-wrap { grid-template-columns: 1fr; } }
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 16px;
+}
+.month-card {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+.month-card .month-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+.month-card .month-name { font-size: 15px; font-weight: 600; }
+.month-card .month-cost { font-size: 18px; font-weight: 600; color: var(--accent-2); }
+.month-card .cost-sub { font-size: 11px; color: var(--muted); }
+.token-breakdown {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.token-stat .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.token-stat .value { font-size: 14px; font-weight: 600; margin-top: 2px; }
+.token-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 14px; background: var(--card-strong); }
+.token-bar .seg { height: 100%; }
+.token-bar .seg.input { background: var(--accent); opacity: 0.6; }
+.token-bar .seg.output { background: var(--accent-2); }
+.token-bar .seg.cache-create { background: var(--accent-2); opacity: 0.55; }
+.token-bar .seg.cache-read { background: var(--accent); }
+.stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 10px 0; border-top: 1px solid var(--rule); }
+.stat-row .cell .label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.stat-row .cell .value { font-size: 14px; font-weight: 600; margin-top: 2px; }
+.sub-section { margin-top: 12px; }
+.sub-section h4 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+.project-list { display: flex; flex-direction: column; gap: 4px; }
+.project-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.project-row .name { flex: 0 0 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px; }
+.project-row .bar { flex: 1 1 auto; background: var(--card-strong); height: 5px; border-radius: 2px; overflow: hidden; }
+.project-row .bar > div { height: 100%; background: var(--accent); border-radius: 2px; }
+.project-row .count { flex: 0 0 auto; color: var(--muted); font-variant-numeric: tabular-nums; }
+.model-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.model-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--card-strong); font-size: 11px; }
+.model-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.model-pill.opus .dot { background: var(--accent-2); }
+.model-pill.sonnet .dot { background: var(--accent); }
+.model-pill.haiku .dot { background: var(--muted); }
+.note {
+  margin-top: 32px;
+  padding: 16px 20px;
+  background: var(--accent-soft);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--fg);
+}
+.note strong { color: var(--accent); }
+.footer { font-size: 12px; color: var(--muted); margin-top: 36px; border-top: 1px solid var(--rule); padding-top: 14px; }
+.footer code { background: var(--card-strong); padding: 2px 6px; border-radius: 3px; font-size: 11px; }
+
+@media print {
+  .theme-toggle { display: none; }
+  body { background: white; color: black; }
+  .month-card, .trend-card, .kpi { box-shadow: none; break-inside: avoid; }
+  .wrap { max-width: 100%; padding: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Claude Code Dashboard</h1>
+      <p class="subtitle">Personal usage across all projects, January through May 2026. Parsed from local session logs at <code>~/.claude/projects/</code>.</p>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-theme-set="light" aria-pressed="true">Light</button>
+      <button data-theme-set="dark" aria-pressed="false">Dark</button>
+      <button data-theme-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <h2 class="section">Monthly trend</h2>
+  <div class="cost-chart-wrap">
+    <div class="trend-card">
+      <h3>Tokens per month</h3>
+      <div class="bar-chart" id="token-chart"></div>
+      <div class="legend">
+        <span><span class="swatch" style="background: var(--accent)"></span>Cache read</span>
+        <span><span class="swatch" style="background: var(--accent-2)"></span>Cache create</span>
+        <span><span class="swatch" style="background: var(--accent-2); opacity:0.7"></span>Output</span>
+        <span><span class="swatch" style="background: var(--accent); opacity:0.6"></span>Input</span>
+      </div>
+    </div>
+    <div class="trend-card">
+      <h3>Estimated cost per month</h3>
+      <div class="bar-chart" id="cost-chart"></div>
+      <div class="legend">
+        <span style="color: var(--muted)">Retail-equivalent pricing. Actual bill differs if on a Pro or Max plan.</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section">Per-month detail</h2>
+  <div class="month-grid" id="month-grid"></div>
+
+  <div class="note">
+    <strong>About the cost estimate.</strong> The dollar figure is the retail-API-equivalent cost given the tokens consumed, calculated from published per-token pricing for the Opus, Sonnet, and Haiku 4.x families. If you are on a Claude Code Pro or Max plan, your actual subscription bill is different. The estimate is meant to convey relative usage shape across months, not to predict an invoice.
+  </div>
+
+  <p class="footer">
+    Generated <span id="gen-at"></span> from <span id="files-parsed"></span> session log files. Source data lives at <code>/Users/marcokotrotsos/.claude/projects/</code>. Parser at <code>/Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-dashboard-2026/parse_usage.py</code>.
+    To delete this dashboard, remove the folder at <code>/Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-dashboard-2026/</code>. The archived copy lives at <code>/Users/marcokotrotsos/PERSONAL/Content/artifacts/projects/content/reports/dashboard.html</code>.
+  </p>
+</div>
+
+<script id="usage-data" type="application/json">{"generated_at":"2026-05-18T09:10:22.651787Z","totals":{"messages_total":38618,"projects_total":152,"sessions_total":270,"files_parsed":1111,"first_date":"2026-01-11T19:35:11.091Z","last_date":"2026-05-18T09:10:18.496Z","tokens_total":6490953935,"cost_total":17206.58},"monthly":[{"month":"2026-01","input_tokens":382579,"output_tokens":34682,"cache_creation_tokens":6956493,"cache_read_tokens":42901611,"total_tokens":50275365,"estimated_cost_usd":139.65,"messages":1069,"sessions":15,"active_days":8,"top_projects":[{"name":"PERSONAL","messages":404},{"name":"specbridge","messages":145},{"name":"klafs-pdf-processor","messages":136},{"name":"Content","messages":93},{"name":"word","messages":91},{"name":"workers","messages":70},{"name":"keesing-dot2dot","messages":45},{"name":"specbridge_marketing","messages":32},{"name":"Translator_App","messages":31},{"name":"archer-home","messages":10}],"models":[{"name":"claude-opus-4-5-20251101","messages":667},{"name":"claude-haiku-4-5-20251001","messages":365},{"name":"<synthetic>","messages":37}],"edit_count":0,"write_count":11,"bash_count":212,"git_commit_count":0,"web_search_count":0,"web_fetch_count":0},{"month":"2026-02","input_tokens":578944,"output_tokens":133357,"cache_creation_tokens":52849925,"cache_read_tokens":445798900,"total_tokens":499361126,"estimated_cost_usd":910.67,"messages":8743,"sessions":84,"active_days":28,"top_projects":[{"name":"Tandem","messages":1167},{"name":"Content","messages":1059},{"name":"rigel","messages":896},{"name":"ditter","messages":719},{"name":"gemcut","messages":680},{"name":"claude-reverse","messages":538},{"name":"remembered","messages":527},{"name":"codex-reveng","messages":410},{"name":"specbridge","messages":379},{"name":"keesing-dot2dot","messages":348}],"models":[{"name":"claude-opus-4-6","messages":4447},{"name":"claude-haiku-4-5-20251001","messages":3787},{"name":"claude-opus-4-5-20251101","messages":327},{"name":"claude-sonnet-4-5-20250929","messages":108},{"name":"claude-sonnet-4-6","messages":52},{"name":"<synthetic>","messages":22}],"edit_count":211,"write_count":106,"bash_count":2149,"git_commit_count":5,"web_search_count":0,"web_fetch_count":0},{"month":"2026-03","input_tokens":286096,"output_tokens":1647553,"cache_creation_tokens":50338420,"cache_read_tokens":480469968,"total_tokens":532742037,"estimated_cost_usd":798.66,"messages":6692,"sessions":67,"active_days":18,"top_projects":[{"name":"stitchboy","messages":1441},{"name":"maica","messages":956},{"name":"lethe","messages":506},{"name":"intel","messages":490},{"name":"phasetracker","messages":472},{"name":"minecraft","messages":456},{"name":"Content","messages":383},{"name":"bunch","messages":356},{"name":"claude-reverse2","messages":310},{"name":"bub68705","messages":247}],"models":[{"name":"claude-opus-4-6","messages":3806},{"name":"claude-haiku-4-5-20251001","messages":2350},{"name":"claude-sonnet-4-6","messages":535},{"name":"<synthetic>","messages":1}],"edit_count":239,"write_count":101,"bash_count":1369,"git_commit_count":31,"web_search_count":0,"web_fetch_count":0},{"month":"2026-04","input_tokens":255060,"output_tokens":9356791,"cache_creation_tokens":112189564,"cache_read_tokens":1943074985,"total_tokens":2064876400,"estimated_cost_usd":5315.31,"messages":9740,"sessions":19,"active_days":18,"top_projects":[{"name":"virtuele-assistent","messages":1416},{"name":"go","messages":1214},{"name":"opus-4-7-vision","messages":793},{"name":"Content","messages":786},{"name":"Rechtzaak","messages":691},{"name":"photobooth","messages":637},{"name":"aside","messages":534},{"name":"design.pro","messages":531},{"name":"reverse-engineer","messages":409},{"name":"redteam","messages":314}],"models":[{"name":"claude-opus-4-7","messages":4755},{"name":"claude-opus-4-6","messages":2893},{"name":"claude-sonnet-4-6","messages":1297},{"name":"claude-haiku-4-5-20251001","messages":778},{"name":"<synthetic>","messages":17}],"edit_count":806,"write_count":612,"bash_count":2621,"git_commit_count":146,"web_search_count":0,"web_fetch_count":0},{"month":"2026-05","input_tokens":432386,"output_tokens":17575836,"cache_creation_tokens":216178267,"cache_read_tokens":3109512518,"total_tokens":3343699007,"estimated_cost_usd":10042.28,"messages":12374,"sessions":102,"active_days":18,"top_projects":[{"name":"print","messages":1874},{"name":"ecoscrape","messages":1613},{"name":"Content","messages":1476},{"name":"aside","messages":872},{"name":"go","messages":748},{"name":"gstackexplore","messages":732},{"name":"virtuele-assistent","messages":604},{"name":"agentassist","messages":547},{"name":"Rechtzaak","messages":362},{"name":"claude-app-analysis-v1.5354.0","messages":273}],"models":[{"name":"claude-opus-4-7","messages":12000},{"name":"claude-opus-4-6","messages":343},{"name":"<synthetic>","messages":31}],"edit_count":962,"write_count":827,"bash_count":2574,"git_commit_count":109,"web_search_count":0,"web_fetch_count":0}]}</script>
+<script>
+(function(){
+  const data = JSON.parse(document.getElementById('usage-data').textContent);
+
+  // Safety: escape any string that came from filesystem (project/model names)
+  function esc(s) {
+    if (s == null) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // Helper: build an element from a tag + attrs + children (children are text or already-DOM nodes)
+  function el(tag, attrs, children) {
+    const e = document.createElement(tag);
+    if (attrs) {
+      for (const k in attrs) {
+        if (k === 'class') e.className = attrs[k];
+        else if (k === 'style' && typeof attrs[k] === 'string') e.setAttribute('style', attrs[k]);
+        else if (k.startsWith('data-')) e.setAttribute(k, attrs[k]);
+        else if (k === 'title') e.setAttribute('title', String(attrs[k]));
+        else e[k] = attrs[k];
+      }
+    }
+    if (children != null) {
+      const arr = Array.isArray(children) ? children : [children];
+      for (const c of arr) {
+        if (c == null) continue;
+        if (typeof c === 'string' || typeof c === 'number') {
+          e.appendChild(document.createTextNode(String(c)));
+        } else {
+          e.appendChild(c);
+        }
+      }
+    }
+    return e;
+  }
+
+  // Theme toggle
+  const buttons = document.querySelectorAll('.theme-toggle button');
+  const root = document.documentElement;
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode){
+    let theme = mode;
+    if (mode === 'system') theme = mql.matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', theme);
+    buttons.forEach(b => b.setAttribute('aria-pressed', b.dataset.themeSet === mode ? 'true' : 'false'));
+  }
+  function getStored(){ try { return localStorage.getItem('cc-dash-theme') || 'light'; } catch(e){ return 'light'; } }
+  function setStored(v){ try { localStorage.setItem('cc-dash-theme', v); } catch(e){} }
+  buttons.forEach(b => b.addEventListener('click', () => { const m = b.dataset.themeSet; setStored(m); apply(m); }));
+  if (mql.addEventListener) mql.addEventListener('change', () => { if (getStored() === 'system') apply('system'); });
+  apply(getStored());
+
+  // Formatters
+  const fmtNum = n => n.toLocaleString('en-US');
+  const fmtTok = n => {
+    if (n >= 1e9) return (n/1e9).toFixed(2) + 'B';
+    if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+    if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+    return n.toString();
+  };
+  const fmtUsd = n => '$' + n.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fmtMonth = m => {
+    const [y, mm] = m.split('-');
+    return monthNames[parseInt(mm,10)-1] + ' ' + y;
+  };
+  const fmtMonthShort = m => monthNames[parseInt(m.split('-')[1],10)-1];
+  const modelFamily = name => {
+    const n = (name||'').toLowerCase();
+    if (n.includes('opus')) return 'opus';
+    if (n.includes('sonnet')) return 'sonnet';
+    if (n.includes('haiku')) return 'haiku';
+    return '';
+  };
+  const modelShort = name => (name||'').replace(/^claude-/, '').replace(/-\d{8}$/, '');
+
+  // KPIs (only data values are user-derived, escape them via textContent in el())
+  const t = data.totals;
+  const firstD = new Date(t.first_date);
+  const lastD = new Date(t.last_date);
+  const dateRange = firstD.toLocaleDateString('en-US', {month:'short', day:'numeric'}) + ' to ' + lastD.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  const kpiSpecs = [
+    {label: 'Total tokens', value: fmtTok(t.tokens_total), sub: fmtNum(t.tokens_total) + ' exact'},
+    {label: 'Estimated retail cost', value: fmtUsd(t.cost_total), sub: 'across all models'},
+    {label: 'Assistant messages', value: fmtNum(t.messages_total), sub: 'agent turns'},
+    {label: 'Active projects', value: fmtNum(t.projects_total), sub: 'unique repos / cwd'},
+    {label: 'Sessions', value: fmtNum(t.sessions_total), sub: 'distinct session ids'},
+    {label: 'Date range', value: '~' + Math.ceil((lastD - firstD) / (1000*60*60*24)) + ' days', sub: dateRange},
+  ];
+  const kpiContainer = document.getElementById('kpis');
+  for (const k of kpiSpecs) {
+    kpiContainer.appendChild(el('div', {class: 'kpi'}, [
+      el('div', {class: 'label'}, k.label),
+      el('div', {class: 'value'}, k.value),
+      el('div', {class: 'sub'}, k.sub),
+    ]));
+  }
+
+  // Helper for safe inline width-style spans (numeric width only, no user data)
+  function widthStyle(pct) {
+    const v = Math.max(0, Math.min(100, Number(pct) || 0));
+    return 'width:' + v + '%';
+  }
+  function heightStyle(pct) {
+    const v = Math.max(0, Math.min(100, Number(pct) || 0));
+    return 'height:' + v + '%';
+  }
+
+  // Token bar chart (stacked per month)
+  const months = data.monthly;
+  const maxTotal = Math.max(...months.map(m => m.total_tokens));
+  const tokenChartEl = document.getElementById('token-chart');
+  for (const m of months) {
+    const total = m.total_tokens || 1;
+    const h = (m.total_tokens / maxTotal) * 100;
+    const seg = (val) => (val / total) * h;
+    const stack = el('div', {class: 'bar-stack'}, [
+      el('div', {class: 'bar-seg input', style: heightStyle(seg(m.input_tokens))}),
+      el('div', {class: 'bar-seg output', style: heightStyle(seg(m.output_tokens))}),
+      el('div', {class: 'bar-seg cache-create', style: heightStyle(seg(m.cache_creation_tokens))}),
+      el('div', {class: 'bar-seg cache-read', style: heightStyle(seg(m.cache_read_tokens))}),
+    ]);
+    tokenChartEl.appendChild(el('div', {class: 'bar-col'}, [
+      el('div', {class: 'month-value'}, fmtTok(m.total_tokens)),
+      stack,
+      el('div', {class: 'month-label'}, fmtMonthShort(m.month)),
+    ]));
+  }
+
+  // Cost bar chart
+  const maxCost = Math.max(...months.map(m => m.estimated_cost_usd));
+  const costChartEl = document.getElementById('cost-chart');
+  for (const m of months) {
+    const h = (m.estimated_cost_usd / maxCost) * 100;
+    const stack = el('div', {class: 'bar-stack'}, [
+      el('div', {class: 'bar-seg', style: heightStyle(h) + '; background: var(--accent-2)'}),
+    ]);
+    costChartEl.appendChild(el('div', {class: 'bar-col'}, [
+      el('div', {class: 'month-value'}, fmtUsd(m.estimated_cost_usd)),
+      stack,
+      el('div', {class: 'month-label'}, fmtMonthShort(m.month)),
+    ]));
+  }
+
+  // Per-month detail cards
+  const monthGridEl = document.getElementById('month-grid');
+  for (const m of months) {
+    const total = m.total_tokens || 1;
+    const segPct = v => ((v / total) * 100);
+    const topProj = m.top_projects.slice(0, 6);
+    const maxProjMsgs = topProj.length ? topProj[0].messages : 1;
+    const tools = m.edit_count + m.write_count;
+
+    const head = el('div', {class: 'month-head'}, [
+      el('div', null, [
+        el('div', {class: 'month-name'}, fmtMonth(m.month)),
+        el('div', {class: 'cost-sub'}, fmtTok(total) + ' tokens, ' + fmtNum(m.messages) + ' messages'),
+      ]),
+      el('div', {style: 'text-align:right'}, [
+        el('div', {class: 'month-cost'}, fmtUsd(m.estimated_cost_usd)),
+        el('div', {class: 'cost-sub'}, 'est. retail'),
+      ]),
+    ]);
+
+    const tokenBar = el('div', {class: 'token-bar', title: 'Token mix'}, [
+      el('div', {class: 'seg input', style: widthStyle(segPct(m.input_tokens))}),
+      el('div', {class: 'seg output', style: widthStyle(segPct(m.output_tokens))}),
+      el('div', {class: 'seg cache-create', style: widthStyle(segPct(m.cache_creation_tokens))}),
+      el('div', {class: 'seg cache-read', style: widthStyle(segPct(m.cache_read_tokens))}),
+    ]);
+
+    const breakdown = el('div', {class: 'token-breakdown'}, [
+      el('div', {class: 'token-stat'}, [el('div', {class: 'label'}, 'Input'), el('div', {class: 'value'}, fmtTok(m.input_tokens))]),
+      el('div', {class: 'token-stat'}, [el('div', {class: 'label'}, 'Output'), el('div', {class: 'value'}, fmtTok(m.output_tokens))]),
+      el('div', {class: 'token-stat'}, [el('div', {class: 'label'}, 'Cache write'), el('div', {class: 'value'}, fmtTok(m.cache_creation_tokens))]),
+      el('div', {class: 'token-stat'}, [el('div', {class: 'label'}, 'Cache read'), el('div', {class: 'value'}, fmtTok(m.cache_read_tokens))]),
+    ]);
+
+    const statRow = el('div', {class: 'stat-row'}, [
+      el('div', {class: 'cell'}, [el('div', {class: 'label'}, 'Sessions'), el('div', {class: 'value'}, fmtNum(m.sessions))]),
+      el('div', {class: 'cell'}, [el('div', {class: 'label'}, 'Active days'), el('div', {class: 'value'}, fmtNum(m.active_days))]),
+      el('div', {class: 'cell'}, [el('div', {class: 'label'}, 'File ops'), el('div', {class: 'value'}, fmtNum(tools))]),
+      el('div', {class: 'cell'}, [el('div', {class: 'label'}, 'Commits'), el('div', {class: 'value'}, fmtNum(m.git_commit_count))]),
+    ]);
+
+    const projList = el('div', {class: 'project-list'});
+    for (const p of topProj) {
+      const innerBar = el('div', {style: widthStyle((p.messages / maxProjMsgs) * 100)});
+      const bar = el('span', {class: 'bar'}, [innerBar]);
+      projList.appendChild(el('div', {class: 'project-row'}, [
+        el('span', {class: 'name', title: p.name}, p.name),  // text node, safely escaped
+        bar,
+        el('span', {class: 'count'}, fmtNum(p.messages)),
+      ]));
+    }
+    const projSection = el('div', {class: 'sub-section'}, [
+      el('h4', null, 'Top projects'),
+      projList,
+    ]);
+
+    const modelList = el('div', {class: 'model-list'});
+    for (const mm of m.models) {
+      if ((mm.name || '').includes('synthetic')) continue;
+      const pillCls = 'model-pill ' + modelFamily(mm.name);
+      modelList.appendChild(el('span', {class: pillCls}, [
+        el('span', {class: 'dot'}),
+        el('span', null, modelShort(mm.name)),
+        el('span', {style: 'color: var(--muted)'}, fmtNum(mm.messages)),
+      ]));
+    }
+    const modelSection = el('div', {class: 'sub-section'}, [
+      el('h4', null, 'Models used'),
+      modelList,
+    ]);
+
+    const card = el('div', {class: 'month-card'}, [
+      head, tokenBar, breakdown, statRow, projSection, modelSection,
+    ]);
+    monthGridEl.appendChild(card);
+  }
+
+  // Footer
+  const gen = new Date(data.generated_at);
+  document.getElementById('gen-at').textContent = gen.toLocaleDateString('en-US', {year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+  document.getElementById('files-parsed').textContent = fmtNum(data.totals.files_parsed);
+})();
+</script>
+</body>
+</html>

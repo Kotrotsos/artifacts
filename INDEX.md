@@ -160,3 +160,4 @@
 | 2026-05-18 | content | images | [diagram-2-survived.png](projects/content/images/diagram-2-survived.png) | Post-engineering org PFF trifecta: diagram-2-survived.png |
 | 2026-05-18 | content | images | [diagram-3-results.png](projects/content/images/diagram-3-results.png) | Post-engineering org PFF trifecta: diagram-3-results.png |
 | 2026-05-18 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Post-engineering org PFF Substack version, expanded to match Medium length |
+| 2026-05-18 | content | reports | [dashboard.html](projects/content/reports/dashboard.html) | Claude Code usage dashboard, Jan to May 2026, tokens cost projects models |
