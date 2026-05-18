@@ -65,3 +65,4 @@
 | 2026-05-16 | images | [diagram-2-decision.png](images/diagram-2-decision.png) | Skills MCP Tools three layers, pure white background: diagram-2-decision.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/skills-mcp-tools-three-layers/diagram-2-decision.png |
 | 2026-05-16 | images | [diagram-3-architecture.png](images/diagram-3-architecture.png) | Skills MCP Tools three layers, pure white background: diagram-3-architecture.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/skills-mcp-tools-three-layers/diagram-3-architecture.png |
 | 2026-05-18 | reports | [draft.md](reports/draft.md) | Post-engineering org PFF trifecta: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/draft.md |
+| 2026-05-18 | reports | [substack-version.md](reports/substack-version.md) | Post-engineering org PFF trifecta: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/post-engineering-org-pff/substack-version.md |
