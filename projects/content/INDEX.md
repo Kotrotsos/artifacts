@@ -79,3 +79,4 @@
 | 2026-05-18 | images | [hero.png](images/hero.png) | Prompt engineering split in 2026: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/hero.png |
 | 2026-05-18 | images | [diagram-1-anatomy.png](images/diagram-1-anatomy.png) | Prompt engineering split in 2026: diagram-1-anatomy.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/diagram-1-anatomy.png |
 | 2026-05-18 | images | [diagram-2-stop-keep-start.png](images/diagram-2-stop-keep-start.png) | Prompt engineering split in 2026: diagram-2-stop-keep-start.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/diagram-2-stop-keep-start.png |
+| 2026-05-18 | images | [diagram-3-stack.png](images/diagram-3-stack.png) | Prompt engineering split in 2026: diagram-3-stack.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/diagram-3-stack.png |
