@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>agentassist - deck</title>
+<style>
+  :root[data-theme="light"] {
+    --bg:#fafafa; --surface:#fff; --surface-2:#f1f5f9; --text:#0b1220; --muted:#475569;
+    --border:#e5e7eb; --border-strong:#cbd5e1;
+    --accent:#2563eb; --accent-soft:#dbeafe; --accent-fg:#1e3a8a;
+    --good:#15803d; --warn:#b45309; --bad:#b91c1c;
+    --good-bg:#dcfce7; --warn-bg:#fef3c7; --bad-bg:#fee2e2;
+    --code-bg:#f1f5f9;
+    --shadow:0 1px 3px rgba(0,0,0,0.06);
+  }
+  :root[data-theme="dark"] {
+    --bg:#0b0d10; --surface:#14181d; --surface-2:#1c2127; --text:#f1f5f9; --muted:#94a3b8;
+    --border:#262d35; --border-strong:#374151;
+    --accent:#60a5fa; --accent-soft:#1e3a8a; --accent-fg:#bfdbfe;
+    --good:#4ade80; --warn:#fbbf24; --bad:#f87171;
+    --good-bg:#052e1a; --warn-bg:#3a2a08; --bad-bg:#3a0c0c;
+    --code-bg:#1e242b;
+    --shadow:0 1px 3px rgba(0,0,0,0.3);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;overflow:hidden;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);
+    line-height:1.4;-webkit-font-smoothing:antialiased;
+  }
+
+  /* Chrome */
+  .chrome-top{position:fixed;top:0;left:0;right:0;height:3px;background:var(--surface-2);z-index:30;}
+  .chrome-top .bar{height:100%;background:var(--accent);width:0;transition:width 0.18s ease;}
+  .chrome-bottom{position:fixed;bottom:1rem;left:1.25rem;right:1.25rem;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:0.78rem;z-index:30;pointer-events:none;}
+  .chrome-bottom > *{pointer-events:auto;}
+  .nav{display:flex;gap:0.4rem;}
+  .nav button{background:var(--surface);border:1px solid var(--border-strong);color:var(--text);
+              padding:0.3rem 0.7rem;border-radius:8px;font:inherit;font-size:0.78rem;cursor:pointer;}
+  .nav button:hover{border-color:var(--accent);color:var(--accent);}
+  .counter{font-variant-numeric:tabular-nums;}
+  .theme-toggle{background:var(--surface);border:1px solid var(--border-strong);color:var(--text);
+                padding:0.3rem 0.7rem;border-radius:999px;font:inherit;font-size:0.78rem;cursor:pointer;}
+
+  /* Stage */
+  .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:5rem 4rem;}
+  .slide{display:none;width:100%;max-width:1100px;}
+  .slide.active{display:block;animation:fadeIn 0.25s ease-out;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .eyebrow{color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.12em;margin:0 0 0.75rem;}
+  h1.t{font-size:clamp(2.5rem, 6vw, 4.5rem);margin:0 0 1rem;letter-spacing:-0.02em;line-height:1.05;font-weight:700;}
+  h1.t .accent{color:var(--accent);}
+  h2.h{font-size:clamp(1.7rem, 3.5vw, 2.6rem);margin:0 0 1.25rem;letter-spacing:-0.015em;line-height:1.1;font-weight:700;}
+  h3.sh{font-size:1.1rem;margin:0 0 0.5rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;}
+  .lead{font-size:1.25rem;color:var(--muted);margin:0 0 1rem;line-height:1.55;max-width:60ch;}
+  .deck-sub{font-size:1.1rem;color:var(--muted);margin:0;line-height:1.55;}
+
+  ul.bullets{padding-left:0;margin:0;list-style:none;}
+  ul.bullets li{padding:0.55rem 0;border-bottom:1px solid var(--border);font-size:1.1rem;}
+  ul.bullets li:last-child{border-bottom:none;}
+  ul.bullets li b{font-weight:600;}
+  ul.bullets li .muted{color:var(--muted);font-size:0.92rem;display:block;margin-top:0.15rem;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem 1.25rem;text-align:left;}
+  .stat .num{font-size:clamp(2.2rem, 4.5vw, 3.5rem);font-weight:700;letter-spacing:-0.025em;line-height:1;color:var(--accent);}
+  .stat .lbl{margin-top:0.5rem;color:var(--muted);font-size:0.92rem;}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;}
+  .card h4{margin:0 0 0.4rem;font-size:1rem;font-weight:600;}
+  .card.left{border-left:4px solid var(--accent);}
+  .card.good{border-left:4px solid var(--good);}
+  .card.warn{border-left:4px solid var(--warn);}
+  .card .muted{color:var(--muted);font-size:0.92rem;}
+  .card ul{margin:0.4rem 0 0;padding-left:1.1rem;line-height:1.55;}
+  .card ul li{margin-bottom:0.25rem;}
+
+  .pipeline{display:flex;flex-wrap:wrap;gap:0.5rem;align-items:center;font-size:0.92rem;}
+  .pipeline .step{background:var(--surface);border:1px solid var(--border-strong);border-radius:8px;padding:0.5rem 0.8rem;}
+  .pipeline .arrow{color:var(--muted);}
+
+  code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:0.88em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;}
+  .kbd{background:var(--code-bg);border:1px solid var(--border-strong);border-radius:4px;padding:1px 5px;font-size:0.78rem;font-family:ui-monospace,Menlo,monospace;}
+
+  table.cmp{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;font-size:1rem;}
+  table.cmp th,table.cmp td{padding:0.55rem 0.8rem;text-align:left;border-bottom:1px solid var(--border);}
+  table.cmp thead th{background:var(--surface-2);font-weight:600;font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;}
+  table.cmp tr:last-child td{border-bottom:none;}
+  table.cmp .check{color:var(--good);font-weight:600;}
+  table.cmp .miss{color:var(--bad);font-weight:600;}
+
+  .pull{background:var(--accent-soft);color:var(--accent-fg);border-radius:14px;padding:2rem 2.25rem;font-size:1.6rem;line-height:1.35;font-weight:600;}
+  .pull span.attr{display:block;margin-top:0.75rem;font-size:0.95rem;font-weight:500;opacity:0.85;}
+
+  .title-slide{text-align:left;}
+  .title-slide .signature{margin-top:2.5rem;color:var(--muted);font-size:0.92rem;}
+
+  @media (max-width: 760px) {
+    .stage{padding:4rem 1.5rem;}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}
+  }
+
+  @media print {
+    html,body{overflow:visible;height:auto;}
+    body{background:#fff;color:#000;}
+    .chrome-top,.chrome-bottom{display:none;}
+    .stage{position:relative;inset:auto;padding:1.5rem;page-break-after:always;align-items:flex-start;}
+    .slide{display:block;page-break-inside:avoid;}
+    .pull{background:#f5f5f5;color:#000;}
+  }
+</style>
+</head>
+<body>
+
+<div class="chrome-top"><div class="bar" id="progBar"></div></div>
+
+<main class="stage" id="stage">
+
+  <!-- Slide 1: Title -->
+  <section class="slide title-slide active">
+    <p class="eyebrow">A multi-tenant chatbot, one container</p>
+    <h1 class="t"><span class="accent">agentassist</span></h1>
+    <p class="deck-sub">From a single chat bubble to a production-ready, multi-tenant, OSS-ready assistant. Story of how we got here, what we have now, and why this shape wins.</p>
+    <p class="signature">Press <span class="kbd">&rarr;</span> to advance, <span class="kbd">P</span> for print view, <span class="kbd">F</span> for fullscreen.</p>
+  </section>
+
+  <!-- Slide 2: The brief -->
+  <section class="slide">
+    <p class="eyebrow">01 / the brief</p>
+    <h2 class="h">A municipal chatbot you can drop into any public website</h2>
+    <div class="grid-2">
+      <div class="card left">
+        <h4>Product surface</h4>
+        <ul>
+          <li>Multi-tenant routing under <code>/{tenant}</code></li>
+          <li>Welcome screen, PII warning, suggestions</li>
+          <li>Streaming responses with citations</li>
+          <li>Admin UI for editors</li>
+          <li>WCAG 2.1 AA accessibility</li>
+        </ul>
+      </div>
+      <div class="card left">
+        <h4>Non-negotiables</h4>
+        <ul>
+          <li>Server-side Dutch PII redaction</li>
+          <li>No cost runaway from public traffic</li>
+          <li>One operator, one machine, one minute to run</li>
+          <li>Source-available, OSS-ready posture</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 3: What we built -->
+  <section class="slide">
+    <p class="eyebrow">02 / what we built</p>
+    <h2 class="h">From bubble to platform, six iterations</h2>
+    <ul class="bullets">
+      <li><b>Day 1.</b> Single-tenant Flask + Anthropic chat bubble. <span class="muted">One file, one tenant, no admin.</span></li>
+      <li><b>Iteration.</b> Switched to managed agents, then back to Messages API for real token-level streaming.</li>
+      <li><b>Multi-tenant refactor.</b> Six tenants, filesystem store, admin UI, PII redaction, rate limit, web_fetch allowlist.</li>
+      <li><b>Security pass.</b> Codex review, abuse controls, server-issued HMAC sessions, CSP, per-tenant token budget.</li>
+      <li><b>Polish.</b> OpenTelemetry hook, draft/publish flow, prompt preview, per-message feedback, retrieval extension.</li>
+      <li><b>OSS prep.</b> LICENSE, README, SECURITY, CONTRIBUTING, CHANGELOG, GitHub Actions, docker-compose.</li>
+    </ul>
+  </section>
+
+  <!-- Slide 4: Architecture in one container -->
+  <section class="slide">
+    <p class="eyebrow">03 / architecture</p>
+    <h2 class="h">One Flask process, no external services</h2>
+    <div class="pipeline" aria-label="chat path pipeline">
+      <span class="step">Browser</span><span class="arrow">&rarr;</span>
+      <span class="step">Flask app</span><span class="arrow">&rarr;</span>
+      <span class="step">4-tier rate limit</span><span class="arrow">&rarr;</span>
+      <span class="step">Token budget</span><span class="arrow">&rarr;</span>
+      <span class="step">Concurrent cap</span><span class="arrow">&rarr;</span>
+      <span class="step">PII redact</span><span class="arrow">&rarr;</span>
+      <span class="step">Session token</span><span class="arrow">&rarr;</span>
+      <span class="step">agent.iter_turn</span><span class="arrow">&rarr;</span>
+      <span class="step">Anthropic</span>
+    </div>
+    <div class="grid-3" style="margin-top:2rem;">
+      <div class="stat"><div class="num">13</div><div class="lbl">Python modules</div></div>
+      <div class="stat"><div class="num">2,338</div><div class="lbl">backend LOC</div></div>
+      <div class="stat"><div class="num">1,779</div><div class="lbl">frontend LOC (vanilla)</div></div>
+    </div>
+  </section>
+
+  <!-- Slide 5: By the numbers -->
+  <section class="slide">
+    <p class="eyebrow">04 / by the numbers</p>
+    <h2 class="h">What "lightweight" actually means</h2>
+    <div class="grid-4">
+      <div class="stat"><div class="num">1</div><div class="lbl">container</div></div>
+      <div class="stat"><div class="num">0</div><div class="lbl">external services required</div></div>
+      <div class="stat"><div class="num">123</div><div class="lbl">tests, ~3 seconds</div></div>
+      <div class="stat"><div class="num">~60s</div><div class="lbl">clone to running</div></div>
+      <div class="stat"><div class="num">6</div><div class="lbl">org types out of the box</div></div>
+      <div class="stat"><div class="num">4</div><div class="lbl">abuse-control tiers</div></div>
+      <div class="stat"><div class="num">1</div><div class="lbl">required env var</div></div>
+      <div class="stat"><div class="num">MIT</div><div class="lbl">license</div></div>
+    </div>
+  </section>
+
+  <!-- Slide 6: The chat path -->
+  <section class="slide">
+    <p class="eyebrow">05 / the chat path</p>
+    <h2 class="h">Public endpoint, anonymous by design, bounded by layers</h2>
+    <ul class="bullets">
+      <li><b>Four rate-limit tiers.</b> Per IP per minute, per IP per hour, per session per minute, per tenant per minute.</li>
+      <li><b>Per-tenant 24h token budget.</b> JSONL ledger. 503 with Retry-After once the daily ceiling is hit.</li>
+      <li><b>Concurrent stream cap.</b> 2 per IP, 20 per tenant by default.</li>
+      <li><b>Origin pinning per tenant.</b> Allowlist enforced server-side.</li>
+      <li><b>Server-issued HMAC sessions.</b> Tenant-bound, Secure HttpOnly SameSite cookie, ignored if client supplies its own.</li>
+      <li><b>Server-side PII redaction.</b> Dutch patterns (BSN with elfproef, IBAN, email, phone, postcode, paspoort, rijbewijs). Runs before model and logs.</li>
+      <li><b>web_fetch host allowlist.</b> Enforced by Anthropic on tool execution. Prompt injection cannot redirect the fetch.</li>
+    </ul>
+  </section>
+
+  <!-- Slide 7: The admin -->
+  <section class="slide">
+    <p class="eyebrow">06 / the admin</p>
+    <h2 class="h">Real editor product, not a single form</h2>
+    <div class="grid-2">
+      <div class="card good">
+        <h4>Built in</h4>
+        <ul>
+          <li>Super-admin and per-tenant editor roles (argon2-hashed passwords)</li>
+          <li>Sidebar tenant list with DRAFT badges</li>
+          <li>Six tabs: Overzicht, Inhoud, Variabelen, Kennis, Beveiliging, Feedback</li>
+          <li>Draft / publish / discard flow</li>
+          <li>Prompt-preview dialog</li>
+          <li>Live thumbs-up/down feed</li>
+          <li>Stats cards (24h tokens, 7d feedback, draft state)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>What editors get</h4>
+        <ul>
+          <li>Save a change, preview the assembled system prompt, then publish.</li>
+          <li>Token-budget remaining at a glance.</li>
+          <li>Visitor feedback (rating + comment + excerpt) for the last 100 messages.</li>
+          <li>Dark mode. Toast confirmations. Mobile-responsive.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 8: Why it's superior -->
+  <section class="slide">
+    <p class="eyebrow">07 / why this shape wins</p>
+    <h2 class="h">The shape of the system is the win</h2>
+    <ul class="bullets">
+      <li><b>Fails closed on missing configuration.</b> No env var, no boot. No silent default secret.</li>
+      <li><b>One language stack.</b> Python on the server, vanilla HTML/JS in the browser. New contributor reads it all in an afternoon.</li>
+      <li><b>No database to migrate.</b> Tenant config + context + ledgers are files. <code>git diff</code> is your change log.</li>
+      <li><b>Tests run with zero external services.</b> 123 cases, ~3 seconds, no mocks of Postgres, no test containers.</li>
+      <li><b>Cost ceiling per tenant, enforced server-side.</b> One bad day from one tenant cannot blow up your Anthropic bill.</li>
+      <li><b>Provider abstraction.</b> Anthropic by default. Subclass <code>Provider.messages_stream()</code> for OpenAI, Azure, local model.</li>
+    </ul>
+  </section>
+
+  <!-- Slide 9: OSS readiness checklist -->
+  <section class="slide">
+    <p class="eyebrow">08 / OSS readiness</p>
+    <h2 class="h">The checklist that makes a repo distributable</h2>
+    <table class="cmp">
+      <thead><tr><th>Signal</th><th>agentassist</th></tr></thead>
+      <tbody>
+        <tr><td>LICENSE</td><td class="check">MIT</td></tr>
+        <tr><td>README (substantive)</td><td class="check">152 lines, env table, architecture, extension points</td></tr>
+        <tr><td>SECURITY.md</td><td class="check">Threat model, trade-offs, reporting</td></tr>
+        <tr><td>CONTRIBUTING.md</td><td class="check">Setup, philosophy, how to extend</td></tr>
+        <tr><td>CHANGELOG.md</td><td class="check">Yes</td></tr>
+        <tr><td>CI on push and PR</td><td class="check">GitHub Actions</td></tr>
+        <tr><td>Clone-to-running</td><td class="check">Under a minute</td></tr>
+        <tr><td>Required external services</td><td class="check">None (Anthropic key only)</td></tr>
+        <tr><td>Customer artifacts in repo</td><td class="check">None</td></tr>
+        <tr><td>Hostable on free tiers</td><td class="check">Yes (Railway, Fly.io, App Runner)</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Slide 10: Why it's best for OSS -->
+  <section class="slide">
+    <p class="eyebrow">09 / why this works for OSS</p>
+    <h2 class="h">Different criteria than enterprise</h2>
+    <div class="grid-2">
+      <div class="card left">
+        <h4>What OSS evaluators check</h4>
+        <ul>
+          <li>Can I clone and run in 5 minutes?</li>
+          <li>How many secrets do I need?</li>
+          <li>Can I read all the code in one sitting?</li>
+          <li>Are there customer artifacts I have to clean up?</li>
+          <li>Does it host on free tiers?</li>
+          <li>Can I swap the vendor?</li>
+        </ul>
+      </div>
+      <div class="card good">
+        <h4>What agentassist answers</h4>
+        <ul>
+          <li>Yes, under a minute.</li>
+          <li>One: <code>ANTHROPIC_API_KEY</code>.</li>
+          <li>~2,300 LOC of hand-written code.</li>
+          <li>None.</li>
+          <li>Yes.</li>
+          <li>Yes, <code>Provider</code> interface ships with the default.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:1.25rem;">A heavyweight stack can be technically excellent and still fail the OSS test, because the worst-case operator drops the project on a host without reading the docs. Small surface, fail-closed defaults, no external services, one language. That is the shape that travels.</p>
+  </section>
+
+  <!-- Slide 11: Decision rule -->
+  <section class="slide">
+    <p class="eyebrow">10 / the decision rule</p>
+    <h2 class="h">Two questions, one answer</h2>
+    <div class="card" style="margin-bottom:1rem;">
+      <h4>Question one</h4>
+      <p class="lead" style="margin:0;">Does your tenant's knowledge fit in a single Markdown file plus maybe one public website?</p>
+      <p style="margin:0.6rem 0 0;color:var(--good);font-weight:600;">Yes &rarr; agentassist.</p>
+    </div>
+    <div class="card">
+      <h4>Question two</h4>
+      <p class="lead" style="margin:0;">Do you genuinely need real RAG with scheduled scraping plus editor-facing BSAT analytics?</p>
+      <p style="margin:0.6rem 0 0;color:var(--warn);font-weight:600;">Yes &rarr; heavyweight specialist. No &rarr; agentassist with the optional retrieval extension when you grow.</p>
+    </div>
+  </section>
+
+  <!-- Slide 12: Quote / takeaway -->
+  <section class="slide">
+    <p class="eyebrow">11 / takeaway</p>
+    <div class="pull">
+      "Small surface area, fail-closed defaults, no external services, one language. The shape of the project is the win, not the line count."
+      <span class="attr">The agentassist thesis, in one sentence.</span>
+    </div>
+    <p class="lead" style="margin-top:1.5rem;">123 tests in 3 seconds. One container. One Anthropic API key. Drop it anywhere a Dockerfile runs.</p>
+  </section>
+
+  <!-- Slide 13: Roadmap -->
+  <section class="slide">
+    <p class="eyebrow">12 / what's next</p>
+    <h2 class="h">Where v0.2 goes</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h4>Capability</h4>
+        <ul>
+          <li>Edit-own-message + branch navigation</li>
+          <li>Embeddable widget bundle for third-party sites</li>
+          <li>Example vector-store adapters (Qdrant, SQLite-VSS)</li>
+          <li>Multi-instance Redis adapter for budget + rate limit + sessions</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>Operational</h4>
+        <ul>
+          <li>Per-tenant rate-limit overrides via admin UI</li>
+          <li>Bot challenge (Turnstile) behind env flag</li>
+          <li>Markdown editor in the admin context tab</li>
+          <li>OTel adapter for prompt-eval scoring</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 14: Close -->
+  <section class="slide">
+    <p class="eyebrow">13 / call to action</p>
+    <h2 class="h">Try it, fork it, ship something with it</h2>
+    <ul class="bullets" style="font-size:1.15rem;">
+      <li><b>Run locally.</b> <code>pip install -r requirements.txt &amp;&amp; python3 app.py</code>. Open <code>http://localhost:5050</code>.</li>
+      <li><b>Run on Railway.</b> <code>railway up</code> with one env var. Live in 5 minutes.</li>
+      <li><b>Add a tenant.</b> Drop a directory under <code>tenants/</code>, refresh.</li>
+      <li><b>Swap the provider.</b> Implement <code>Provider.messages_stream()</code> and wire it in.</li>
+      <li><b>Plug a vector store.</b> Subclass <code>Retriever.retrieve()</code>.</li>
+      <li><b>Read the threat model.</b> <code>SECURITY.md</code> before going public.</li>
+    </ul>
+  </section>
+
+</main>
+
+<div class="chrome-bottom">
+  <div class="nav">
+    <button id="prevBtn" type="button" aria-label="Previous slide">Prev</button>
+    <button id="nextBtn" type="button" aria-label="Next slide">Next</button>
+    <button id="themeBtn" class="theme-toggle" type="button">Dark</button>
+  </div>
+  <div class="counter"><span id="cur">1</span> / <span id="tot">14</span></div>
+</div>
+
+<script>
+"use strict";
+const slides = Array.from(document.querySelectorAll(".slide"));
+const total = slides.length;
+const cur = document.getElementById("cur");
+const tot = document.getElementById("tot");
+const bar = document.getElementById("progBar");
+const themeBtn = document.getElementById("themeBtn");
+tot.textContent = total;
+
+let idx = 0;
+
+function show(n) {
+  idx = Math.max(0, Math.min(total - 1, n));
+  slides.forEach((s, i) => s.classList.toggle("active", i === idx));
+  cur.textContent = idx + 1;
+  bar.style.width = ((idx + 1) / total * 100) + "%";
+  try { sessionStorage.setItem("slide.idx", String(idx)); } catch (_) {}
+}
+
+document.getElementById("prevBtn").addEventListener("click", () => show(idx - 1));
+document.getElementById("nextBtn").addEventListener("click", () => show(idx + 1));
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight" || e.key === " " || e.key === "PageDown") { e.preventDefault(); show(idx + 1); }
+  else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); show(idx - 1); }
+  else if (e.key === "Home") { e.preventDefault(); show(0); }
+  else if (e.key === "End") { e.preventDefault(); show(total - 1); }
+  else if (e.key === "f" || e.key === "F") {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen().catch(() => {});
+  }
+  else if (e.key === "p" || e.key === "P") {
+    window.print();
+  }
+  else if (/^\d$/.test(e.key)) {
+    const n = parseInt(e.key, 10);
+    if (n >= 1 && n <= total) show(n - 1);
+  }
+});
+
+// Theme toggle
+function setTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  themeBtn.textContent = t === "dark" ? "Light" : "Dark";
+  try { localStorage.setItem("slide.theme", t); } catch (_) {}
+}
+setTheme((() => { try { return localStorage.getItem("slide.theme") || "light"; } catch (_) { return "light"; } })());
+themeBtn.addEventListener("click", () => {
+  setTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+});
+
+// Restore last slide on reload
+try {
+  const last = parseInt(sessionStorage.getItem("slide.idx") || "0", 10);
+  if (!isNaN(last)) show(last);
+  else show(0);
+} catch (_) { show(0); }
+
+// Touch swipe (mobile)
+let touchStartX = null;
+document.addEventListener("touchstart", (e) => { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
+document.addEventListener("touchend", (e) => {
+  if (touchStartX === null) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) show(idx + (dx < 0 ? 1 : -1));
+  touchStartX = null;
+}, { passive: true });
+</script>
+</body>
+</html>

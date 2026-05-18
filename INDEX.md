@@ -151,3 +151,4 @@
 | 2026-05-16 | content | images | [diagram-1-anatomy.png](projects/content/images/diagram-1-anatomy.png) | Skills MCP Tools three layers, pure white background: diagram-1-anatomy.png |
 | 2026-05-16 | content | images | [diagram-2-decision.png](projects/content/images/diagram-2-decision.png) | Skills MCP Tools three layers, pure white background: diagram-2-decision.png |
 | 2026-05-16 | content | images | [diagram-3-architecture.png](projects/content/images/diagram-3-architecture.png) | Skills MCP Tools three layers, pure white background: diagram-3-architecture.png |
+| 2026-05-18 | agentassist | reports | [slides.html](projects/agentassist/reports/slides.html) | Slide deck: what we built, what we have, why this shape is superior, why it's best for OSS |
