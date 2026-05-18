@@ -162,3 +162,4 @@
 | 2026-05-18 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Post-engineering org PFF Substack version, expanded to match Medium length |
 | 2026-05-18 | content | reports | [dashboard.html](projects/content/reports/dashboard.html) | Claude Code usage dashboard, Jan to May 2026, tokens cost projects models |
 | 2026-05-18 | symphony | reports | [cookbook.html](projects/symphony/reports/cookbook.html) | Ten-recipe cookbook for installing, configuring, and running Symphony |
+| 2026-05-18 | content | reports | [draft.md](projects/content/reports/draft.md) | Prompt engineering split in 2026: draft.md |

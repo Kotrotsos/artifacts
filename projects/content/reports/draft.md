@@ -1,152 +1,164 @@
-# The Post-Engineering Org: How PFF Got 25x More Deploys by Optimizing for Agents, Not Engineers
+# Prompt Engineering Split in Two in 2026
 
-*A real case study from PFF, a 200-person sports data company. Two engineers, two months, 25x deployment frequency, 10x output, and a customer satisfaction score that climbed from 7.5 to 8.6. The lessons are operational, not aspirational.*
+*OpenAI quietly told you to throw away your prompt stack. The deeper shift is that there are now two prompt-engineering jobs, not one. Most teams are still using the 2024 playbook for both.*
 
-![Two side-by-side isometric scenes showing a single bottleneck engineer in the before scene and a parallel grid of agent-powered modules in the after scene](hero.png)
+![Two distinct prompt shapes on an isometric stage: a compact structured card labeled assistant on the left and a single bold goal-shaped slab labeled agent on the right](hero.png)
 
 **Key takeaways:**
 
-- The reframe that drove the case study was simple but consequential: stop asking how to make engineers faster, start asking how to make agents faster. The agile manifesto, the foosball tables, the sleeping pods, the whole optimized-for-engineer-productivity culture exists because engineers were the bottleneck. They are not the bottleneck anymore. Optimizing for the new bottleneck (agent throughput) produced a 25x deployment increase and a 10x output increase at PFF within two months.
-- The cuts were as important as the additions. Scrum did not survive contact with this approach. Sprint planning, daily standups, sprint refinement, and the project manager role all got cut at PFF. What remained: half-hour huddles every other day, customer satisfaction surveys as the primary success metric, and deployment metrics. The pipeline replaced the ceremony.
-- The actual workflow at PFF is four steps: spec, lightweight design document, auto-generated tickets, auto-generated PRs. Followed by auto-deploy to staging and an autonomous QA agent that checks acceptance criteria. The next step on the roadmap is closing the loop so a second agent fixes the QA failures and re-opens PRs, making the whole system self-healing.
+- OpenAI's GPT-5.5 prompting guide tells you, in plain language, to start with a fresh baseline instead of carrying over every instruction from your old prompt stack. The guidance under that sentence is more consequential than the sentence itself: the things that used to give you a 5-7% accuracy bump (chain-of-thought primers, "take a deep breath," role-play openers) now hurt the newest models because they were trained against exactly those tics. The stack you wrote in 2024 is actively slowing down the model you are paying for in 2026.
+- There are now two prompt engineering jobs, and they are different jobs. Prompting an assistant (single turn, predictable steps, you supervise the output) rewards precision. Prompting an agent (multi-turn, open-ended, autonomous for minutes to hours) rewards clear outcomes plus trust. The mistake most teams make is using assistant-style prompts on agents (over-specifying every step) or agent-style prompts on assistants (vague goal, no constraints, no format).
+- Prompt engineering did not die. It got narrower. It is now one layer in a five-layer stack alongside model choice, system prompt design, tools and MCP wiring, context engineering, and eval harnesses. Treat it as one move in the playbook, not the whole playbook, and the rest of 2026 gets easier.
 
 ---
 
-I watched a conference talk this week that I want more practitioners to see. The speaker leads the post-engineering org at PFF, a 200-person sports data company that serves NFL and NCAA teams plus a consumer arm doing fantasy football and sports betting. PFF has 100 million page views a year and runs 9 million drafts annually. It is not a hobbyist setup. The case study they ran from January to March 2026 is one of the most specific, numbers-backed reorganization stories I have seen in this entire AI-tooling wave.
+The Medium piece making the rounds this week is titled "OpenAI quietly told you to throw away your prompt stack." The headline is dramatic. The underlying observation is correct.
 
-The headline result is 25x more deploys per day in a two-engineer tiger team compared to their normal 10-engineer team. The honest caveat the speaker offered is also worth keeping in mind: small teams are always faster than large ones, so part of the multiplier is just from team size. But the tiger team still had to coordinate every deploy with the larger team, and the output gap measured by tickets weighted by complexity was still 10x.
+If you read OpenAI's own GPT-5.5 prompting guide carefully, the framing is plain: "Begin migration with a fresh baseline instead of carrying over every instruction from an older prompt stack. Legacy prompts often over-specify the process because earlier models needed more help staying on track. With GPT-5.5, that can add noise, narrow the model's search space, or lead to overly mechanical answers." That sentence is doing a lot of work.
 
-The shift that produced these numbers is the one I want to walk through. Not the headline, the operational specifics.
+The first time I read it, I assumed it was the usual model-release positioning: this one is better, please update your code. After a few weeks of using GPT-5.5 and Claude Opus 4.7 against the prompt scaffolding I had been carrying since GPT-4 days, I realized the recommendation is more specific than that. The newer models are worse at following the old prompt patterns. They were trained against them.
 
-## The reframe
+The interesting question is what to do instead, and the answer is two questions. What are you prompting? An assistant or an agent? Those are different jobs in 2026, and they need different prompts.
 
-The speaker opened with the question that drove the whole experiment. The instinct in engineering for decades has been "how do we help engineers output more." That instinct shaped agile, software craftsmanship, the elaborate physical perks (foosball tables, sleeping pods, premium snacks), and the entire culture of engineer-centric optimization. The premise underneath all of it was that engineers are the bottleneck.
+This is the article version of the answer I keep giving in client calls. Strip-mine your 2024 prompt stack. Then decide which of the two new jobs you are doing, and write the prompt that matches.
 
-The reframed question at PFF was: how do we make the agents quicker?
+## What the older tricks are doing to your newer models
 
-That sentence sounds small until you sit with it. It changes what you optimize for, what processes you keep, what tooling you build, and which engineers thrive on the team. It changes the org chart. Once you accept that engineers are no longer the only bottleneck, every ceremony, perk, and tool that was built around "engineer is the constraint" becomes worth re-examining.
+For three years, prompt engineering culture accumulated a set of standard moves that gave measurable accuracy bumps on the models of the day. A few of the famous ones:
 
-This is what PFF re-examined. Most of it did not survive.
+- "Let's think step by step" before a hard reasoning problem
+- "Take a deep breath and work through this carefully"
+- "You are an expert in X" or "Act as a senior engineer in Y" role-play openers
+- Worked examples (few-shot prompting) for almost every task
+- "Output JSON, do not include any other text" rituals
+- Splitting complex tasks into "first, then, finally" sequential micro-steps
 
-## The numbers
+These patterns worked. The original chain-of-thought paper from 2022 showed that "let's think step by step" alone improved grade-school math accuracy by roughly 7 percentage points. The performance gain was real and reproducible. So the patterns spread, into engineering documents, into Cursor and Claude Code defaults, into the README of every internal AI tool at every company shipping anything in 2023 and 2024.
 
-The two-engineer tiger team versus the 10-engineer team produced the following:
+What changed is that the model providers noticed too. RLHF (reinforcement learning from human feedback) and the newer constitutional methods explicitly trained the next generation of models to internalize what those patterns were trying to elicit. Modern reasoning models think step-by-step by default. Telling Opus 4.7 or GPT-5.5 to "think step by step" no longer gives you an accuracy bump. In some evaluations it gives a small accuracy loss, because you are spending tokens to instruct the model to do something it would already do better on its own, and you may be narrowing the reasoning path it would otherwise explore.
 
-- 25x more deploys per day (the tiger team deployed five times a day on average; the larger team deployed roughly once every five days)
-- 10x output, measured as tickets shipped weighted by code complexity
-- Customer satisfaction score climbed from a 7 to 7.5 baseline up to 8.6 out of 10 in a statistically significant survey
-- Features that pre-AI would have been scoped at four months shipped in under two
-- One of the two engineers became unblocked under a month in and started shipping additional features in parallel, while the other engineer continued on the main work, producing a compounding effect
+Role-play openers ("You are a senior security engineer") are in a similar bucket. They sometimes help on weaker or older models. On Opus 4.7 they tend to add a layer of performative persona that the model has to deconflict with the actual task, which is wasted effort. The cleaner pattern is just describing the task and the success criteria. The model figures out the right register.
 
-![A 2 by 2 grid of stat cards showing 25x deploys, 10x output, 8.6 customer satisfaction, and 2 months versus 4 months ship time](diagram-3-results.png)
+Few-shot examples remain useful, but more selectively. For structured extraction where the format is non-obvious, examples still help. For reasoning tasks, one or two thoughtful examples are usually better than five. Five examples often anchor the model to imitate the surface shape of the examples rather than apply the underlying reasoning.
 
-The compounding bit is the part that gets understated. The benefit was not just speed on the main feature. The benefit was that one engineer unblocked early could go pick up additional work, and that work also moved fast, and the throughput stacked. The pre-AI baseline had both engineers blocked on the same critical path for the whole estimated four months. The new baseline freed one of them after thirty days. The output graph after that is geometric, not linear.
+The summary, said plainly: the prompts you wrote two years ago are not neutral on the models you are running now. They are net negative for a non-trivial fraction of tasks. OpenAI's own documentation says so. Anthropic's GPT-5.5 prompting guide and Claude Opus 4.7 prompting best practices both say so. The point is not subtle. The implementation is what most teams have not done.
 
-## What got cut
+## The split nobody is being precise about
 
-Scrum did not survive.
+Here is the part of the conversation that has been muddy.
 
-![Two columns showing what got cut from the process (sprint planning, daily standups, sprint refinement, project manager) versus what was kept (huddles, customer surveys, deployment metrics, retrospectives)](diagram-2-survived.png)
+The phrase "prompt engineering" in 2026 covers two genuinely different jobs. The skill set overlaps, but the right moves differ enough that conflating them is the source of most of the bad prompts I see.
 
-The PFF team removed sprint planning entirely. The reasoning is that estimation games make no difference when the agent is doing the work. The hour spent debating ticket points was not informing real decisions.
+![Side-by-side comparison of an assistant prompt anatomy (role, context, exact task, format, examples, constraints) and an agent prompt anatomy (goal, success criteria, available tools, guardrails)](diagram-1-anatomy.png)
 
-They removed daily standups. Tickets auto-update based on PR status. If a PR is open, the ticket moves to in-progress automatically. If it goes to review, the ticket updates. If it merges, the ticket closes. The standup as a status broadcast became redundant because the system already broadcasts.
+### Job one: prompting an assistant
 
-They removed sprint refinement. Refinement now happens earlier in the workflow, inside the spec and the lightweight design document phase, before tickets even exist.
+You are asking the model for a single answer or a short bounded conversation. You see the output and decide what to do with it. The model is collaborating, you are supervising.
 
-They removed the project manager role. Without sprint planning, standups, refinement, or estimation games, the coordination work that role used to absorb is mostly gone or has been redistributed.
+Examples: ChatGPT for a draft email, Claude for a literature review, Cursor for an inline code suggestion, an internal RAG bot for a question against your wiki.
 
-What survived: huddles every other day, half an hour or so, with engineers plus someone from product plus someone from the design science team. Customer satisfaction surveys as the primary success measurement. Deployment metrics. Retrospectives. That is roughly it.
+The right prompt shape here is precise. The classic frame is still useful:
 
-The throughline is that the process layer optimized for human coordination got compressed dramatically. The process layer optimized for fast feedback (huddles, customer surveys, deployment frequency) was kept.
+- **Role.** Who is the model for this turn. Brief. (Not a performance.)
+- **Context.** What background it needs that is not obvious.
+- **The exact task.** What you want produced, written as a clear instruction.
+- **Format.** What the output should look like (JSON shape, headings, length).
+- **Examples.** One or two if the format or judgment is non-obvious.
+- **Constraints.** What it should not do.
 
-## The new workflow
+This is the prompt-engineering most write-ups still teach, and it remains correct for the assistant case. The 2026 update is mostly: drop the magic-phrase additives ("think step by step", "take a deep breath"). Keep the structure. Tighten the role to a description rather than a costume.
 
-The actual flow at PFF runs in four autonomous stages plus two verification stages.
+### Job two: prompting an agent
 
-![A horizontal flow showing the autonomous workflow: spec, lightweight design document, tickets, pull request, staging deploy, QA agent, with a self-healing feedback loop from QA back to tickets](diagram-1-workflow.png)
+You are delegating a multi-step task. The model will work for minutes, hours, or longer. It will call tools, read files, write files, make decisions you do not see in real time. You will supervise the outcome, not every step. The model is executing, you are setting it up to succeed.
 
-**Stage 1: Spec.** The engineer describes the feature. The agent interviews them, surfacing the questions that traditional product-discovery would have surfaced. The output is a spec that contains the actual requirements rather than the simplified version that usually survives the telephone game from stakeholder to PM to engineer.
+Examples: Claude Code building a feature end to end, a research agent producing a report, an agent fixing a bug in your repo, an autonomous deploy validation flow.
 
-**Stage 2: Lightweight design document.** This is the part I want to highlight, because it is the architecturally important step. PFF has a Skill that generates the LDD. The Skill is calibrated against the LDDs the team has written before, so every new design document is in the same shape and architectural style as everything else in the codebase. This is how they prevent the agent from drifting toward generic patterns. The LDD is a discipline encoded as a Skill, not a Claude Code idiosyncrasy.
+The right prompt shape here is different. Anthropic's effective-agents guidance and OpenAI's GPT-5.5 prompting guide land on the same architecture for this case:
 
-**Stage 3: Tickets.** Once the LDD passes review, tickets are auto-generated, structured so none of them block each other. Where blocking dependencies exist, they are flagged explicitly in the ticket metadata.
+- **Goal.** What success looks like. Specific and observable.
+- **Success criteria.** How the agent (and you) will know it is done.
+- **Available tools.** What the agent can use, with rough sense of when.
+- **Guardrails.** What it must not do, and when to stop and ask.
 
-**Stage 4: Pull requests.** The agent picks up each ticket and writes the PR.
+The notable absence: a step-by-step process. For agentic tasks, telling the model exactly how to proceed adds noise and narrows the search space. Anthropic's own guidance: "Agents can be used for open-ended problems where it's difficult or impossible to predict the required number of steps." OpenAI's: "GPT-5.5 is strongest when the prompt defines the target outcome, success criteria, constraints, and available context, then lets the model choose the path."
 
-**Stage 5: Auto-deploy to staging.** Every merged PR triggers a deployment to staging without human intervention.
+For agents, you specify the destination. You do not specify the road.
 
-**Stage 6: QA agent.** After the staging deploy completes, a QA agent looks at the tickets that went into the deploy, reads the acceptance criteria for each, and runs verification. If everything passes, the build is greenlit. If criteria fail, the failures are flagged with specific pointers to what is missing.
+The teams I have advised who try to write agent prompts the assistant way end up with two failure modes. Either the agent rigidly follows the steps you specified and misses obvious better paths, or it ignores half your steps and you cannot tell which half because the rest is hidden inside a long autonomous loop. Both failure modes are caused by the same mistake: assistant-style prompting on an agent-shaped task.
 
-The piece PFF has not yet built but is on the roadmap is the self-healing loop. The next agent in line would look at the failed acceptance criteria, generate the fix, and open a new PR automatically. Once that is wired up, the system runs end-to-end without human intervention for the routine cases, leaving humans to focus on the cases that actually need judgment.
+## The mirror failure on the other side
 
-## Where humans still matter
+Equally common, and slightly less talked about: agent-style prompting on an assistant-shaped task.
 
-The speaker was specific about where the people stay in the loop, and worth listening to because the answer is not "everywhere by default."
+This is what happens when a team reads the same "describe the destination, not the road" advice and starts writing prompts like "summarize this document for me, you decide how" against a single-turn ChatGPT conversation. The model produces something. Sometimes useful, often vague, never quite what you wanted.
 
-**Security.** Agents take shortcuts. Anything with a security implication gets human review. This is the most important guardrail.
+Assistants benefit from precision. If you are doing a single-turn task with a known output format, telling the model "you decide" is leaving accuracy on the table. The model is happy to make decisions about format and structure that you would have made tighter if you had specified them. For assistants, the underspecified prompt is just a hidden form of "I will tolerate variance in the output."
 
-**Product feel.** Every product can now be built in an hour by anyone. The brand and product feel of the output is what separates "looks like every other AI-generated app" from "looks like our product." Engineers stay engaged on whether the output feels right, on whether it matches the rest of the company's product surface.
+## What to drop, what to keep, what to add
 
-**Scale and engineering complexity.** Agents will produce a thousand lines of code where two hundred would do. They will over-engineer when not constrained. The LDD is where you intervene. A tight, prescriptive design document at the start prevents the agent from sprawling later. Most of the engineering judgment now lives in writing a precise LDD, not in writing the code afterward.
+Two years of prompt-engineering blog posts have left most stacks with a lot of accumulated rituals. A pragmatic cleanup, based on what the model providers themselves now recommend.
 
-## The cultural transition
+![Three columns showing what to stop, what to keep, and what to start: stop list includes take a deep breath and lets think step by step, keep list includes clear outcome and explicit constraints, start list includes context budget and eval harness](diagram-2-stop-keep-start.png)
 
-This is the section most posts about AI-engineering avoid because it is uncomfortable.
+**Stop.**
 
-The speaker said it directly: not everyone can drive a sports car. The engineering org and the new era is going to be hard for some engineers, and pretending otherwise is dishonest.
+- "Take a deep breath." The phrase was funny for a quarter. It has been trained against. Drop it.
+- "Let's think step by step." Modern reasoning models do this by default. The phrase is now ~7% accuracy on grade-school math worth nothing, and sometimes worth slightly less than nothing because it spends tokens.
+- "You are an expert in X." Role-play openers add a persona the model has to deconflict with the actual task. State the task. Skip the costume.
+- Over-specified processes. If you find yourself writing "first do A, then do B, then do C" against an agent, you are using assistant prompting on an agent task. Specify the goal instead.
+- "Important: do not ignore these instructions." Modern models follow instructions. Adding emphatic reminders mostly tells the model that the underlying instructions are weak. Make the instructions clear once. Trust them.
 
-The engineers who thrive in this model are curious. When they hit something they do not understand, they spend a little time figuring out how it was built. They are comfortable with the agent doing the typing and themselves doing the orienting. They are comfortable with abstraction at a higher level than the lines of code.
+**Keep.**
 
-The engineers who struggle are the ones who need prescriptive specs. They were great at executing on detailed tickets. The detailed tickets are no longer how the work flows. The work now flows through specs and LDDs and judgment calls about whether the agent's output matches the codebase style. That is a different skill, and not everyone has it or wants it.
+- A clear, specific outcome. What does success look like, observably.
+- Concrete examples when the format is non-obvious. One or two is plenty.
+- Explicit constraints. What must not happen. Boundaries.
+- Output format. JSON schema, structure, length, voice. Specific.
+- Context the model genuinely needs that it cannot infer.
 
-For an engineering leader reading this, the difficult truth is that the team you start with is not the team you end with. Some engineers will lean into this and accelerate. Some will resist or struggle. Pretending the transition will be uniform across the team is the kind of optimism that costs you twelve months of misaligned hiring and disappointed performance reviews.
+**Start.**
 
-## How they actually started
+- A context budget for each task. How much of your context window is being burned on instructions vs the actual work. If your prompt is 2,000 tokens and the work is 5,000 tokens, that ratio is probably wrong.
+- Explicit tool selection for agentic tasks. Don't just install every MCP server. Curate which tools the agent has access to for this task. Fewer, more relevant tools work better than more tools available.
+- An eval harness for prompts that matter. Three to ten test cases that you re-run every time you change the prompt. Not "vibe-checking" the output. Comparing structured outputs against expectations.
+- Agent-level delegation. If the task is multi-step, learn to write a goal-shaped prompt instead of a process-shaped prompt. The instinct from 2023 to micromanage the model has to be unlearned.
 
-The implementation pattern PFF used is worth copying because it is not a moonshot. It is incremental.
+## The bigger picture: prompt engineering as one of five layers
 
-**Pick the engineers with the best system knowledge.** Every engineering team has one or two people whom others say "you should talk to them" when something is genuinely hard. Those are the engineers to put on this. They know the codebase well enough to spot when the agent is drifting, and they have the curiosity to figure out what the agent did that they did not understand.
+The "prompt engineering is dead" headlines miss what is actually happening. Prompt engineering is one layer in a five-layer stack that real production AI systems run on in 2026. The layer is still important. It is just no longer the whole job.
 
-**Go slowly and phase in.** The temptation to roll out coding assistants to the whole team on day one is strong and almost always wrong. PFF did proof-of-concept work in non-critical systems for two months before the tiger team ever touched the 100-million-page-view product.
+![A vertical stack of five layered slabs showing the 2026 AI engineering stack: evals on top, then context, then system prompt, then tools and MCP, then model choice at the bottom](diagram-3-stack.png)
 
-**Experiment in non-critical systems first.** The speaker spent November and December building small features that did not get much traffic. When a bug or mistake happened, it did not matter. By the time they moved to high-traffic systems in January, the operational patterns were proven.
+**Model choice.** The foundation. Picking GPT-5.5 vs Opus 4.7 vs Sonnet 4.6 vs Haiku for a given task is a real engineering decision now. Different models have different prompt sensitivities. The same prompt that works on Opus might underperform on Sonnet, and the right answer is often not "tune the prompt harder" but "pick the right model for the job."
 
-**Encode your patterns as Skills.** Every reusable engineering pattern in your codebase (your API style, your branch naming, your feature flag conventions, your trunk-based development discipline) gets encoded as a Skill. The agent then has access to your team's calibrated practices, not the average practices it picked up in training.
+**Tools and MCP.** What capabilities the model has access to. For agentic work this is often more important than the prompt itself. An agent with the right MCP servers wired up can do work that no amount of prompt engineering would unlock without them. (I wrote a separate piece on the Skills/MCP/Tools split if you want the deeper version of this layer.)
 
-**Get the guardrails working before going autonomous.** The speaker was explicit: do not turn on the autonomous loop until the deterministic verification (tests, feature flags, deployment checks) is reliable. Otherwise the self-healing loop will heal its way into a worse state.
+**System prompt.** The constitution. The standing instructions that apply to every interaction in a given app or agent. This is where most production-grade prompt engineering actually lives in 2026. The user prompt is often short. The system prompt is doing the heavy lifting.
 
-The speaker had a strong opinion about consuming other people's Skills, worth quoting: be skeptical of Skills with strong software design opinions that contradict your team's. They will pull your codebase toward someone else's defaults and create friction you do not want.
+**Context engineering.** What you put into the context window beyond the prompt itself. Documents, history, relevant code, retrieved snippets, prior outputs. A 2026 survey found 95% of data teams planning to invest in context-engineering capability this year. The phrase is new. The work is real: deciding what fills the window and what does not is now a primary engineering activity.
 
-## What you should not do
+**Evals.** The feedback layer. The thing nobody had in 2023 and everyone needs in 2026. A small set of test cases that tell you whether a prompt change actually improved anything. Without evals, every prompt update is vibes. With evals, you compound.
 
-A few specific anti-patterns the speaker called out.
+Prompt engineering sits in this stack. It is the writing-the-actual-words part. It is necessary. It is not, on its own, sufficient. The teams that win in 2026 will have all five layers working, not heroic prompts compensating for missing layers below and above them.
 
-**Do not roll this out to everyone at the same time.** The most common reason these initiatives fail in larger orgs is that they get treated as a deployment, not a transition. A demo hackathon plus a license rollout to the whole team is an event, not a strategy.
+## What this means if you are managing an AI build today
 
-**Do not assume your culture transfers.** Every engineering org is different. The speaker's playbook worked at PFF because PFF has 20 engineers, a clear codebase, and the leadership backing to dismantle ceremonies that were not working. A 1,000-person org cannot run the same playbook unchanged. The principles transfer; the specific operational changes need re-derivation.
+Three concrete moves for the next thirty days.
 
-**Do not be too conservative.** This is the harder advice. The case study speaker said they felt a few months behind their peers in the broader industry even with what they had built. The compounding-impact logic is real. A few months behind today is six months behind in three months and twelve months behind by Q3. The competition is not slowing down.
+**Audit your existing prompts against the assistant-or-agent split.** For each non-trivial prompt in your codebase or your CLAUDE.md or your skills directory, classify it: is the model doing assistant work (single answer, you supervise the output) or agent work (multi-step, autonomous)? Then check the prompt shape. Are the assistant prompts precise? Are the agent prompts goal-shaped? Most teams have at least a few miscast prompts. Fixing them is fast.
 
-## What this means if you are running an engineering org in 2026
+**Strip the rituals.** Take a deep breath. Let's think step by step. You are an expert in. Find them in your prompts. Remove them. Re-run your evals (if you have them) or your standard tasks (if you don't) and observe. In my experience, most prompts get slightly better or stay neutral. None of mine got measurably worse from the removal. The free win is sitting on the table.
 
-A few practical takeaways.
+**Build the smallest possible eval harness.** Three test cases. JSON-shaped expected outputs. A script that runs them on demand. This is the highest-return investment most teams have not made. Without it, every prompt change is opinion. With it, every prompt change has a number.
 
-The Scrum review is the first concrete move. Audit your current ceremonies. For each one (planning, standup, refinement, retro, sprint cadence), ask what specific value it provides and whether that value still applies when the bottleneck is agent throughput, not engineer coordination. Most teams will find that two or three ceremonies are still earning their place and the rest are inertia.
-
-The Skills layer is the architectural investment. The single highest-return move at PFF is the LDD Skill that calibrates new designs against the existing codebase. It is a Skill specific to PFF's patterns, voice, and conventions, not a generic template. Building your equivalent is the highest-return engineering work most teams should be doing right now. Without it, every PR from the agent is generic.
-
-The two-engineer tiger team is the right experimental unit. Not the whole team. Not one engineer alone. Two engineers with strong system knowledge, paired against a non-critical system, with explicit license to question every ceremony, for six to eight weeks. The patterns they discover are what scales.
-
-The customer satisfaction survey is the right success metric. Not deployment frequency by itself. Not lines of code. Not PR count. The number that tells you the work was worth doing is whether the customers noticed. PFF moved from a 7 to 7.5 baseline up to 8.6 in two months. That is the number worth chasing.
+After that, the bigger architectural moves (system prompt design, context engineering, MCP server selection) are still worth doing. But the audit, the strip, and the eval harness are the quickest path from "we are doing prompt engineering" to "we know our prompts are working."
 
 ## Closing
 
-PFF is not a moonshot company. It is a 200-person sports data shop with 20 engineers and a serious customer base. The case study they ran is reproducible. The specifics matter: the LDD Skill, the auto-generated tickets, the QA agent, the cut of sprint planning, the huddle cadence. None of these are speculative. They are operational decisions that produced a 25x deployment increase and a customer satisfaction lift in two months.
+The framing that has been most useful to me in 2026 is the simple one: stop writing one kind of prompt, start writing two kinds. The OpenAI guidance and the Anthropic guidance both quietly say the same thing once you read them carefully. The split is real, the implications are operational, and the teams that internalize this in the next quarter will compound away from the ones still running 2024 prompt patterns against 2026 models.
 
-The reframe that produced all of this fits in one sentence. Stop optimizing for engineer speed. Start optimizing for agent throughput. The rest is the work of redesigning your process to actually live by that sentence.
-
-The engineering orgs that internalize this in 2026 will compound away from the ones that do not. The case study is the proof. The playbook is here. The next question is which part of yours gets re-examined first.
+There is still a craft. It just split into two crafts. You probably need both. Write the prompt that matches the job.
 
 ---
 
@@ -156,4 +168,4 @@ The engineering orgs that internalize this in 2026 will compound away from the o
 
 *My free Substack newsletter, also called Autocomplete, can be found here: https://acdigest.substack.com.*
 
-*Source: conference talk from the PFF post-engineering org lead, recorded May 2026.*
+*Sources: OpenAI GPT-5.5 prompting guide (developers.openai.com), Claude Opus 4.7 prompting best practices, Anthropic effective-agents guidance, "OpenAI quietly told you to throw away your prompt stack" (AI Advances / Medium, 2026), 2026 State of Context Engineering survey.*
