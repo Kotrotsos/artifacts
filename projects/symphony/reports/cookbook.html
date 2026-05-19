@@ -250,6 +250,78 @@
       font-size: 0.85rem;
     }
 
+    svg.diagram {
+      width: 100%;
+      max-width: 760px;
+      height: auto;
+      display: block;
+      margin: 8px 0 24px;
+    }
+    svg.diagram .node-bg {
+      fill: var(--surface);
+      stroke: var(--rule);
+      stroke-width: 1.5;
+    }
+    svg.diagram .node-accent {
+      fill: var(--accent-soft);
+      stroke: var(--accent);
+      stroke-width: 1.5;
+    }
+    svg.diagram .node-warn {
+      fill: var(--warn-bg);
+      stroke: var(--warn-border);
+      stroke-width: 1.5;
+    }
+    svg.diagram .node-good {
+      fill: var(--good-bg);
+      stroke: var(--good-border);
+      stroke-width: 1.5;
+    }
+    svg.diagram text.label {
+      fill: var(--text);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 500;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    svg.diagram text.label-sub {
+      fill: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    svg.diagram text.label-row {
+      fill: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-anchor: end;
+      dominant-baseline: middle;
+    }
+    svg.diagram path.arrow,
+    svg.diagram line.arrow {
+      stroke: var(--muted);
+      stroke-width: 1.5;
+      fill: none;
+    }
+    svg.diagram path.arrow-accent {
+      stroke: var(--accent);
+      stroke-width: 2;
+      fill: none;
+    }
+    svg.diagram line.divider {
+      stroke: var(--rule);
+      stroke-width: 1;
+      stroke-dasharray: 4,4;
+    }
+    svg.diagram .tick-mark {
+      fill: var(--muted);
+    }
+    svg.diagram .tick-accent {
+      fill: var(--accent);
+    }
+
     @media (max-width: 600px) {
       header.page { padding: 40px 20px 20px; }
       main { padding: 24px 20px 80px; }
@@ -307,6 +379,7 @@
     <li><a href="#reload">Hot-reload WORKFLOW.md</a></li>
     <li><a href="#stall">Recover from stalled agents</a></li>
     <li><a href="#tools">Expose a custom tool to the agent</a></li>
+    <li><a href="#linear-edits">Track Linear edits back to Symphony</a></li>
   </ol>
 </nav>
 
@@ -608,6 +681,183 @@ client = CodexClient(
 
   <div class="callout">
     <strong>Built-in tool.</strong> <code class="inline">linear_graphql</code> ships in the box. It executes a single GraphQL operation against Linear using the same auth Symphony uses for polling. Use it from the prompt to move tickets between states without giving the agent raw API tokens.
+  </div>
+</section>
+
+<section class="recipe" id="linear-edits">
+  <h2>11. Track Linear edits back to Symphony</h2>
+  <div class="recipe-meta">
+    <span>Goal: understand exactly when an edit in Linear becomes visible to Symphony</span>
+    <span>Time: 5 min</span>
+  </div>
+
+  <p>Symphony has <strong>no webhooks</strong>. Everything is poll-driven. Edit a ticket in Linear and the change becomes visible on the next tick, at most <code class="inline">polling.interval_ms</code> later. What happens after that depends on what you changed and whether a worker is already running on that issue.</p>
+
+  <h3>Diagram 1: The poll-tick loop</h3>
+  <p>One tick is the full cycle below. Reconciliation runs first so terminated workers free their slots before dispatch evaluates eligibility.</p>
+
+  <svg class="diagram" viewBox="0 0 760 230" role="img" aria-labelledby="diag1-title">
+    <title id="diag1-title">Poll-tick loop: reconcile, validate, fetch, sort, dispatch, sleep, repeat</title>
+    <defs>
+      <marker id="arrow-mute" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+      </marker>
+      <marker id="arrow-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+      </marker>
+    </defs>
+
+    <!-- Top row: 5 boxes -->
+    <g>
+      <rect class="node-bg" x="20" y="40" width="120" height="56" rx="6"/>
+      <text class="label" x="80" y="62">Reconcile</text>
+      <text class="label-sub" x="80" y="80">stall + state</text>
+
+      <rect class="node-bg" x="170" y="40" width="120" height="56" rx="6"/>
+      <text class="label" x="230" y="62">Preflight</text>
+      <text class="label-sub" x="230" y="80">validate config</text>
+
+      <rect class="node-bg" x="320" y="40" width="120" height="56" rx="6"/>
+      <text class="label" x="380" y="62">Fetch</text>
+      <text class="label-sub" x="380" y="80">candidate issues</text>
+
+      <rect class="node-bg" x="470" y="40" width="120" height="56" rx="6"/>
+      <text class="label" x="530" y="62">Sort</text>
+      <text class="label-sub" x="530" y="80">priority · created · id</text>
+
+      <rect class="node-accent" x="620" y="40" width="120" height="56" rx="6"/>
+      <text class="label" x="680" y="62">Dispatch</text>
+      <text class="label-sub" x="680" y="80">while slots &gt; 0</text>
+    </g>
+
+    <!-- Top-row arrows -->
+    <line class="arrow" x1="140" y1="68" x2="165" y2="68" marker-end="url(#arrow-mute)"/>
+    <line class="arrow" x1="290" y1="68" x2="315" y2="68" marker-end="url(#arrow-mute)"/>
+    <line class="arrow" x1="440" y1="68" x2="465" y2="68" marker-end="url(#arrow-mute)"/>
+    <line class="arrow" x1="590" y1="68" x2="615" y2="68" marker-end="url(#arrow-mute)"/>
+
+    <!-- Return loop via Sleep -->
+    <path class="arrow-accent"
+      d="M 680 96
+         L 680 150
+         L 380 150
+         L 80 150
+         L 80 96"
+      marker-end="url(#arrow-acc)"/>
+    <rect class="node-accent" x="300" y="135" width="160" height="40" rx="6"/>
+    <text class="label" x="380" y="155">Sleep</text>
+    <text class="label-sub" x="380" y="170">polling.interval_ms</text>
+  </svg>
+
+  <h3>Diagram 2: What happens when a state changes mid-run</h3>
+  <p>Every tick, Symphony refreshes the state of currently-running issues. The action depends on which bucket the new state falls into.</p>
+
+  <svg class="diagram" viewBox="0 0 760 320" role="img" aria-labelledby="diag2-title">
+    <title id="diag2-title">Decision tree for a running worker when the tracker state refreshes</title>
+    <defs>
+      <marker id="arrow-mute2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+      </marker>
+    </defs>
+
+    <!-- Root -->
+    <rect class="node-accent" x="280" y="20" width="200" height="56" rx="6"/>
+    <text class="label" x="380" y="42">State refresh returns</text>
+    <text class="label-sub" x="380" y="60">fetch_issue_states_by_ids</text>
+
+    <!-- Three branches -->
+    <line class="arrow" x1="350" y1="76" x2="120" y2="130" marker-end="url(#arrow-mute2)"/>
+    <line class="arrow" x1="380" y1="76" x2="380" y2="130" marker-end="url(#arrow-mute2)"/>
+    <line class="arrow" x1="410" y1="76" x2="640" y2="130" marker-end="url(#arrow-mute2)"/>
+
+    <!-- Branch labels -->
+    <text class="label-sub" x="220" y="106">still active</text>
+    <text class="label-sub" x="380" y="106">terminal</text>
+    <text class="label-sub" x="540" y="106">neither</text>
+
+    <!-- Three outcome boxes -->
+    <rect class="node-good" x="20" y="130" width="200" height="56" rx="6"/>
+    <text class="label" x="120" y="152">Keep running</text>
+    <text class="label-sub" x="120" y="170">update issue.state</text>
+
+    <rect class="node-warn" x="280" y="130" width="200" height="56" rx="6"/>
+    <text class="label" x="380" y="152">Terminate + cleanup</text>
+    <text class="label-sub" x="380" y="170">remove workspace</text>
+
+    <rect class="node-warn" x="540" y="130" width="200" height="56" rx="6"/>
+    <text class="label" x="640" y="152">Terminate</text>
+    <text class="label-sub" x="640" y="170">keep workspace</text>
+
+    <!-- Examples row -->
+    <text class="label-sub" x="120" y="220">Todo · In Progress</text>
+    <text class="label-sub" x="380" y="220">Done · Canceled · Duplicate</text>
+    <text class="label-sub" x="640" y="220">In Review · Backlog</text>
+
+    <line class="divider" x1="40" y1="245" x2="720" y2="245"/>
+
+    <!-- Footer notes -->
+    <text class="label" x="380" y="275">Refresh failure: keep all workers running, retry next tick</text>
+    <text class="label-sub" x="380" y="295">Blocker changes only re-evaluated for Todo dispatch eligibility, not for running work</text>
+  </svg>
+
+  <h3>Diagram 3: Edit-propagation timeline</h3>
+  <p>A state edit takes effect within one tick. A content edit (title, description, labels) is read at the moment Symphony fetches candidates, but a worker that is mid-turn keeps the prompt it was originally rendered with. The content edit only reaches the agent on the next fresh dispatch.</p>
+
+  <svg class="diagram" viewBox="0 0 760 290" role="img" aria-labelledby="diag3-title">
+    <title id="diag3-title">Two parallel timelines comparing how a state edit and a content edit propagate</title>
+    <defs>
+      <marker id="arrow-mute3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/>
+      </marker>
+    </defs>
+
+    <!-- Header: tick boundaries -->
+    <text class="label-sub" x="140" y="32">Tick N</text>
+    <text class="label-sub" x="380" y="32">Tick N+1</text>
+    <text class="label-sub" x="620" y="32">Tick N+2</text>
+
+    <!-- Vertical dividers -->
+    <line class="divider" x1="140" y1="42" x2="140" y2="260"/>
+    <line class="divider" x1="380" y1="42" x2="380" y2="260"/>
+    <line class="divider" x1="620" y1="42" x2="620" y2="260"/>
+
+    <!-- Row 1: state edit timeline -->
+    <text class="label-row" x="120" y="100">state edit</text>
+    <line class="arrow" x1="140" y1="100" x2="720" y2="100" marker-end="url(#arrow-mute3)"/>
+
+    <!-- Edit marker on row 1 -->
+    <circle class="tick-accent" cx="240" cy="100" r="6"/>
+    <text class="label-sub" x="240" y="80">user edits state</text>
+
+    <!-- Take-effect marker on row 1 -->
+    <circle class="tick-accent" cx="430" cy="100" r="6"/>
+    <text class="label-sub" x="430" y="80">terminate / dispatch</text>
+    <text class="label-sub" x="430" y="120">≤ 1 tick</text>
+
+    <!-- Row 2: content edit timeline -->
+    <text class="label-row" x="120" y="180">content edit</text>
+    <line class="arrow" x1="140" y1="180" x2="720" y2="180" marker-end="url(#arrow-mute3)"/>
+
+    <!-- Edit marker on row 2 -->
+    <circle class="tick-mark" cx="240" cy="180" r="6"/>
+    <text class="label-sub" x="240" y="160">user edits title/desc</text>
+
+    <!-- Worker mid-turn marker -->
+    <rect class="node-warn" x="340" y="170" width="120" height="20" rx="4"/>
+    <text class="label-sub" x="400" y="180">worker keeps old prompt</text>
+
+    <!-- New dispatch marker -->
+    <circle class="tick-accent" cx="640" cy="180" r="6"/>
+    <text class="label-sub" x="640" y="160">new dispatch sees edit</text>
+    <text class="label-sub" x="640" y="200">next fresh tick after run ends</text>
+
+    <!-- Footer recipe -->
+    <line class="divider" x1="40" y1="235" x2="720" y2="235"/>
+    <text class="label" x="380" y="260">To force a running worker to re-read content: flip the issue state out of and back into an active state</text>
+  </svg>
+
+  <div class="callout good">
+    <strong>Verify in one place.</strong> Open <code class="inline">curl -s http://127.0.0.1:8765/snapshot | jq '.running[] | {issue_identifier, issue_state}'</code> while you edit. The state field updates within one <code class="inline">polling.interval_ms</code> window.
   </div>
 </section>
 

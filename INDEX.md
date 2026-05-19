@@ -169,3 +169,4 @@
 | 2026-05-18 | content | images | [diagram-1-anatomy.png](projects/content/images/diagram-1-anatomy.png) | Prompt engineering split in 2026: diagram-1-anatomy.png |
 | 2026-05-18 | content | images | [diagram-2-stop-keep-start.png](projects/content/images/diagram-2-stop-keep-start.png) | Prompt engineering split in 2026: diagram-2-stop-keep-start.png |
 | 2026-05-18 | content | images | [diagram-3-stack.png](projects/content/images/diagram-3-stack.png) | Prompt engineering split in 2026: diagram-3-stack.png |
+| 2026-05-19 | symphony | reports | [cookbook.html](projects/symphony/reports/cookbook.html) | Cookbook updated with three SVG diagrams: poll tick, state refresh outcomes, edit propagation timeline |
