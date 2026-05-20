@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Google I/O 2026 Practical AI Scan, May 20 2026</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #15171a;
+  --muted: #5a6068;
+  --rule: #e6e8eb;
+  --card: #f7f8fa;
+  --accent: #0a7f7a;
+  --accent-2: #e2725b;
+  --accent-soft: #d9efee;
+}
+[data-theme="dark"] {
+  --bg: #0f1216;
+  --fg: #e9ecef;
+  --muted: #9099a3;
+  --rule: #1e2329;
+  --card: #161a1f;
+  --accent: #6dd4cf;
+  --accent-2: #f3a48c;
+  --accent-soft: #1d2a2a;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 920px; margin: 0 auto; padding: 48px 28px 96px; }
+header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 8px; letter-spacing: -0.01em; }
+.subtitle { color: var(--muted); font-size: 16px; margin: 0; }
+.theme-toggle { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--rule); border-radius: 999px; background: var(--card); }
+.theme-toggle button { all: unset; cursor: pointer; padding: 4px 10px; border-radius: 999px; font-size: 12px; color: var(--muted); }
+.theme-toggle button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+h2 { font-size: 21px; letter-spacing: -0.005em; margin: 0 0 6px; }
+h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-2); margin: 36px 0 14px; font-weight: 600; }
+p { margin: 0 0 12px; }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+a:hover { border-bottom-color: var(--accent); }
+.lede {
+  background: var(--card);
+  border-left: 3px solid var(--accent);
+  padding: 14px 18px;
+  border-radius: 6px;
+  margin-bottom: 32px;
+  font-size: 15px;
+}
+.angle {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin: 0 0 22px;
+  background: var(--bg);
+}
+.angle .num {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--accent-2);
+  margin-bottom: 6px;
+}
+.angle .platforms {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+.angle .meta-grid {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 6px 16px;
+  font-size: 14px;
+  margin: 14px 0;
+  padding: 12px 14px;
+  background: var(--card);
+  border-radius: 6px;
+}
+.angle .meta-grid dt { color: var(--muted); font-weight: 500; }
+.angle .meta-grid dd { margin: 0; }
+.hook {
+  font-style: italic;
+  border-left: 2px solid var(--accent-2);
+  padding: 6px 12px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.hook strong { color: var(--fg); font-style: normal; font-weight: 600; }
+.sources { font-size: 13px; }
+.sources li { margin-bottom: 4px; }
+ul, ol { padding-left: 22px; margin: 0 0 12px; }
+li { margin-bottom: 4px; }
+.footer { font-size: 13px; color: var(--muted); margin-top: 48px; border-top: 1px solid var(--rule); padding-top: 16px; }
+@media print {
+  .theme-toggle { display: none; }
+  body { background: white; color: black; }
+  .angle { break-inside: avoid; border: 1px solid #ccc; }
+  .wrap { max-width: 100%; padding: 24px; }
+  a { color: black; border-bottom: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Google I/O 2026: Practical AI Scan</h1>
+      <p class="subtitle">Five article angles from the May 19-20 keynote, filtered for operational substance. Sourced 2026-05-20.</p>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-theme-set="light" aria-pressed="true">Light</button>
+      <button data-theme-set="dark" aria-pressed="false">Dark</button>
+      <button data-theme-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <div class="lede">
+    <strong>The week in one sentence.</strong> Google's I/O 2026 was the "agentic Gemini era" pitch: Gemini 3.5 Flash beating 3.1 Pro at 4x the speed, agents embedded in Search and Workspace, an Enterprise Agent Platform replacing Vertex AI, a Cursor competitor called Antigravity, and TPU 8t/8i underneath it all. The five angles below are the ones with actual operational implications for builders and decision-makers, not the feature laundry.
+  </div>
+
+  <h3>Angles</h3>
+
+  <article class="angle">
+    <div class="num">Angle 01</div>
+    <h2>The Routing Rule Just Changed: Gemini 3.5 Flash Beats 3.1 Pro at 4x the Speed</h2>
+    <div class="platforms">Substack cornerstone, Medium adaptation, LinkedIn. Builders picking inference layers.</div>
+    <p>Gemini 3.5 Flash combines frontier intelligence with agentic capability, surpasses Gemini 3.1 Pro on coding, agentic, and multimodal benchmarks, and runs at four times the output speed of competing frontier models. That breaks the routing rule everyone has been carrying since 2025 (Opus or Sonnet for long-horizon, Flash for cheap one-shots). Practical question: when does Flash become the primary inference layer for your agents, and what do you stop using to get there?</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>AI engineers, platform teams, anyone running an inference routing layer in 2026.</dd>
+      <dt>Practical angle</dt><dd>The new model routing rule, with concrete benchmarks. When to test, when to migrate, what to keep on the larger Opus or Sonnet models. Pairs with the Skills/MCP/Tools and prompt engineering split pieces.</dd>
+      <dt>Sources</dt><dd>9to5Google I/O recap, BusinessToday on Gemini 3.5, Geeky Gadgets, eWeek, blog.google Sundar Pichai keynote.</dd>
+      <dt>Length</dt><dd>2,500-3,000 words. Cornerstone scale.</dd>
+      <dt>Connection</dt><dd>Direct followup to the Anthropic-overtakes-OpenAI piece. The Ramp data was about adoption. This is about why the routing math behind the adoption might be in flux again.</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "The routing rule I have been giving clients for the last six months was simple. Opus for the long agentic loops, Sonnet for production traffic, Flash for cheap one-shots. Google just made Flash a frontier model. The rule needs an update by Monday."</p>
+  </article>
+
+  <article class="angle">
+    <div class="num">Angle 02</div>
+    <h2>The Three-Vendor Agent Platform Race: Gemini Enterprise vs OpenAI Deployment vs Anthropic Managed Agents</h2>
+    <div class="platforms">Substack cornerstone, Medium adaptation, possibly LinkedIn note. Procurement and platform leads.</div>
+    <p>Google just launched Gemini Enterprise Agent Platform as the evolution of Vertex AI. It brings model selection, model building, and agent building under one roof with agent integration, DevOps, orchestration, and security. This is Google's bid for the same enterprise procurement seat OpenAI's Deployment Company ($4B raise, May 11) and Anthropic's Managed Agents are competing for. Three large platforms, three different shapes. The procurement question is no longer "do we adopt agents?" It is "which platform are we standardizing on, and what do we lose by picking?"</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>VPs of Engineering, Heads of Platform, CIO offices reviewing enterprise AI strategy.</dd>
+      <dt>Practical angle</dt><dd>Side-by-side comparison of the three platforms on five dimensions: model access, agent orchestration, governance, cloud-native integration, lock-in risk. Recommended pattern: do not pick one yet.</dd>
+      <dt>Sources</dt><dd>Google Cloud Blog (Gemini Enterprise Agent Platform), Pasquale Pillitteri Next 2026 coverage, eWeek I/O recap, OpenAI Deployment Company announcement, Anthropic Managed Agents docs.</dd>
+      <dt>Length</dt><dd>3,000-3,500 words. Definitive-guide scale.</dd>
+      <dt>Connection</dt><dd>Direct followup to the Anthropic-OpenAI piece. Adds Google as the third leg. This is the procurement-side companion.</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "In the last six weeks, Anthropic raised $1.5 billion for Managed Agents, OpenAI raised $4 billion for the Deployment Company, and Google announced Gemini Enterprise Agent Platform at I/O. Three large vendors, three different agent-platform shapes, all chasing the same enterprise budget line. Here is what to actually pick."</p>
+  </article>
+
+  <article class="angle">
+    <div class="num">Angle 03</div>
+    <h2>Workspace Intelligence and Daily Brief: The Copilot You Did Not Ask For Just Arrived in Your Inbox</h2>
+    <div class="platforms">Substack first. Medium adapt. Decision-makers and knowledge-worker leads.</div>
+    <p>Google announced Workspace Intelligence and Daily Brief. The first interprets semantic relationships across your inbox, calendar, tasks, and documents in real time. The second is an out-of-the-box agent that gives you a personalized morning digest, synthesizes from inbox and calendar, prioritizes, and suggests next steps. This is the Microsoft Copilot move, executed two years later, on the platform half of your employees already use. The practical question for any organization is whether to adopt, opt out, or wait until the integration risk is clear.</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>Chiefs of Staff, knowledge-worker team leads, anyone running an office-tools layer decision.</dd>
+      <dt>Practical angle</dt><dd>What this replaces (manual morning triage, some PMs, a chunk of executive-assistant work). What it does badly (early stage, integration risk, your data on Google's model). The opt-in vs wait calculus for the next quarter.</dd>
+      <dt>Sources</dt><dd>Workspace blog (Workspace Intelligence announcement), Neuron explainer on Gemini Spark, T3 live coverage, Google Cloud Blog, eWeek I/O recap.</dd>
+      <dt>Length</dt><dd>2,200-2,800 words. Adapted to Substack first, Medium second.</dd>
+      <dt>Connection</dt><dd>Builds on the Polymarket OpenAI-hardware-leak instinct: when the major vendors converge on the same product surface (assistants in your work tools), the procurement choice gets harder, not easier.</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "Two years ago, Microsoft Copilot was the only assistant that lived in your inbox. Last week, Google's version arrived. The thing nobody is saying out loud: most people will accept whichever one their employer turned on first, and that decision is being made right now, by IT, with no chance for the team to weigh in."</p>
+  </article>
+
+  <article class="angle">
+    <div class="num">Angle 04</div>
+    <h2>Antigravity vs Claude Code vs Cursor: Google Enters the Agent Dev Tools Race</h2>
+    <div class="platforms">Substack cornerstone, Medium adaptation. Developer-leaning audience.</div>
+    <p>Google upgraded Antigravity, their agent-first development platform, with new orchestration and build capabilities at I/O. Combined with a stable Android CLI that gives AI agents direct access to Android Studio, native Kotlin support in AI Studio with one-click Cloud Run deploy, and Android Bench as an LLM leaderboard for Android tasks, Google has built a full agent-dev stack pointed at Cursor and Claude Code. For developers picking tooling now, the choice just got harder. For Anthropic and Cursor, the moat in Android-shaped work specifically just shrank.</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>Developers picking AI coding tools, engineering managers evaluating the agent-dev stack, anyone shipping mobile apps with AI assistance.</dd>
+      <dt>Practical angle</dt><dd>Where Antigravity competes (Android-heavy work, Google ecosystem, agents that need cloud-native deploy). Where Claude Code and Cursor still win (general agentic coding, multi-platform, terminal-first workflows). The pattern most teams should adopt: one primary tool, light experimentation on the others.</dd>
+      <dt>Sources</dt><dd>developers.googleblog.com I/O dev keynote recap, Geeky Gadgets I/O coverage, BusinessToday on Gemini 3.5 and Spark.</dd>
+      <dt>Length</dt><dd>2,500-3,000 words. Comparison-heavy.</dd>
+      <dt>Connection</dt><dd>Pairs with the Claude Code dashboard piece. Same audience, different question. Builds on the Skills/MCP/Tools three-layer model: Antigravity is a different bet on the tool layer.</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "Three weeks ago there were two serious agent-dev tools worth picking in production: Claude Code and Cursor. Then Google upgraded Antigravity at I/O, hooked it into Android Studio with the new stable Android CLI, and shipped native Kotlin to AI Studio with one-click Cloud Run deploy. The decision tree for picking a primary tool just got more interesting."</p>
+  </article>
+
+  <article class="angle">
+    <div class="num">Angle 05</div>
+    <h2>AI Mode in Search Plus Content Credentials: The Content Distribution Map Just Got Redrawn</h2>
+    <div class="platforms">Substack first. Medium adapt. Marketers, content creators, anyone with a publishing strategy.</div>
+    <p>Google expanded AI Mode in Search to embed agents directly in results pages, reducing the need for repeated queries. Simultaneously, Content Credentials and SynthID provenance verification rolled into Search and Chrome, letting users see whether content originated from AI or a camera and whether it was edited with generative AI. For anyone running a content strategy in 2026 (Marco's exact audience), this is two structural changes at once: search results that complete tasks instead of linking out, and a trust layer that distinguishes AI from human content. The strategy implication is operational: how to write so the AI agent surfaces you, and how to credential your own content so it does not get filtered as low-trust.</p>
+    <dl class="meta-grid">
+      <dt>Audience</dt><dd>Content creators, marketers, content-strategy leads, anyone whose business depends on Google Search distribution.</dd>
+      <dt>Practical angle</dt><dd>What changes about SEO when Search becomes agentic. What Content Credentials means for the credibility ranking of AI-assisted writing (which is most writing now). The publish-side strategy for both shifts.</dd>
+      <dt>Sources</dt><dd>blog.google Pichai keynote, TechTimes I/O recap, Engadget live blog, Workspace blog.</dd>
+      <dt>Length</dt><dd>2,000-2,500 words. Adapted for the Autocomplete content-strategy audience.</dd>
+      <dt>Connection</dt><dd>Direct fit for Marco's reader base. Many of them publish. Practical, operational, immediate.</dd>
+    </dl>
+    <p class="hook"><strong>Opening hook:</strong> "Google Search has been the load-bearing distribution channel for written content for two decades. Last week at I/O, Google announced two changes that together shift the foundation: AI Mode in Search now completes tasks instead of linking out, and Content Credentials labels every result with whether it was written by a human, a camera, or AI. Both happen this quarter. If your business relies on Search traffic, this is the article to read first."</p>
+  </article>
+
+  <h3>Recommended sequence</h3>
+  <ol>
+    <li><strong>Start with Angle 01</strong> (Gemini 3.5 Flash routing rule). Highest-clarity practical move, ships fast, ties to the recent prompt-engineering and Skills/MCP pieces.</li>
+    <li><strong>Then Angle 02</strong> (three-vendor agent platform race). Builds the Autocomplete thread on enterprise AI procurement that started with the Anthropic-OpenAI piece. Highest leverage for the senior decision-maker reader.</li>
+    <li><strong>Then Angle 03</strong> (Workspace Intelligence) for crossover appeal to LinkedIn.</li>
+    <li>Angles 04 and 05 hold a week, they are evergreen.</li>
+  </ol>
+
+  <h3>What I deliberately skipped</h3>
+  <ul>
+    <li>Project Astra and Android XR audio glasses. Hardware reveal, less immediately operational for the practitioner audience. Worth revisiting when the glasses ship in fall.</li>
+    <li>Gemini Omni video generation. Mostly a Sora and Veo competitor story. Practical use cases are still mostly creative-tooling, not operational AI.</li>
+    <li>TPU 8t and 8i. Infrastructure depth, narrow audience, hard to make practical without inside data.</li>
+    <li>Gemini for Science with 30+ life science databases. Very strong, but the audience is too narrow for Autocomplete. Worth a dedicated piece for the right outlet (Gloss, or a specific science publication).</li>
+    <li>Neural Expressive (the Gemini app redesign). Design news, low operational substance.</li>
+  </ul>
+
+  <p class="footer">Scan date: 2026-05-20. Sources sampled: blog.google, 9to5Google, eWeek, TechTimes, T3, Geeky Gadgets, Engadget, Google Cloud Blog, Google Workspace Blog, BusinessToday, Neuron, Pasquale Pillitteri (Next 2026 coverage), developers.googleblog.com. Brief saved to <code>/Users/marcokotrotsos/PERSONAL/Content/drafts/google-io-2026-scan/google-io-2026-scan.html</code>.</p>
+  <p class="footer">To delete this scan: <code>rm -rf /Users/marcokotrotsos/PERSONAL/Content/drafts/google-io-2026-scan/</code>. Archive copy at <code>/Users/marcokotrotsos/PERSONAL/Content/artifacts/projects/content/reports/google-io-2026-scan.html</code>.</p>
+</div>
+
+<script>
+(function(){
+  const buttons = document.querySelectorAll('.theme-toggle button');
+  const root = document.documentElement;
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode){
+    let theme = mode;
+    if (mode === 'system') theme = mql.matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', theme);
+    buttons.forEach(b => b.setAttribute('aria-pressed', b.dataset.themeSet === mode ? 'true' : 'false'));
+  }
+  function getStored(){ try { return localStorage.getItem('io-scan-theme') || 'light'; } catch(e){ return 'light'; } }
+  function setStored(v){ try { localStorage.setItem('io-scan-theme', v); } catch(e){} }
+  buttons.forEach(b => b.addEventListener('click', () => { const m = b.dataset.themeSet; setStored(m); apply(m); }));
+  if (mql.addEventListener) mql.addEventListener('change', () => { if (getStored() === 'system') apply('system'); });
+  apply(getStored());
+})();
+</script>
+</body>
+</html>
