@@ -172,3 +172,4 @@
 | 2026-05-19 | symphony | reports | [cookbook.html](projects/symphony/reports/cookbook.html) | Cookbook updated with three SVG diagrams: poll tick, state refresh outcomes, edit propagation timeline |
 | 2026-05-20 | content | reports | [draft.md](projects/content/reports/draft.md) | Spec-driven belongs on the board: draft.md |
 | 2026-05-20 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Spec-driven belongs on the board: substack-version.md |
+| 2026-05-20 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Spec-driven belongs on the board: linkedin-post.md |
