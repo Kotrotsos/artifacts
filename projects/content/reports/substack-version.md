@@ -64,6 +64,14 @@ I have watched this play out in three engineering orgs in the last two months. T
 
 A flat markdown file does none of these well. You can fake any one of them with prefixes and tables and YAML frontmatter. You cannot fake all five without rebuilding Linear, badly, on top of a file system.
 
+## A small story about why this matters
+
+One of the teams I worked with had a beautiful spec.md system in February. By April, the file in the repo said the feature was "in design review." The Linear ticket said it was "ready for development." Three different engineers were operating off three different states. The feature shipped two weeks later than it should have, not because of the work, but because of the time spent arguing about what state the spec was actually in.
+
+That story is unremarkable. It is happening at engineering orgs everywhere right now. The pattern is reliable enough that I have started asking new clients about it as a diagnostic. If you have a spec.md anywhere in your repo that is over three weeks old, there is a 60% chance your team is silently in some version of this drift.
+
+The fix is the round-trip pattern, which I will get to in a minute. First, a defense of the platforms most of you already pay for.
+
 ## Why the platforms exist
 
 The ticketing tools we have been using for fifteen years are good at exactly the things spec.md is bad at.

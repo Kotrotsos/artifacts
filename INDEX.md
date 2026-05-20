@@ -177,3 +177,4 @@
 | 2026-05-20 | content | images | [diagram-1-needs.png](projects/content/images/diagram-1-needs.png) | Spec-driven belongs on the board: diagram-1-needs.png |
 | 2026-05-20 | content | images | [diagram-2-round-trip.png](projects/content/images/diagram-2-round-trip.png) | Spec-driven belongs on the board: diagram-2-round-trip.png |
 | 2026-05-20 | content | images | [diagram-3-stop-keep-start.png](projects/content/images/diagram-3-stop-keep-start.png) | Spec-driven belongs on the board: diagram-3-stop-keep-start.png |
+| 2026-05-20 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Spec-driven belongs on the board, Substack expanded with drift story |
