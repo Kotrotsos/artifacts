@@ -81,3 +81,4 @@
 | 2026-05-18 | images | [diagram-2-stop-keep-start.png](images/diagram-2-stop-keep-start.png) | Prompt engineering split in 2026: diagram-2-stop-keep-start.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/diagram-2-stop-keep-start.png |
 | 2026-05-18 | images | [diagram-3-stack.png](images/diagram-3-stack.png) | Prompt engineering split in 2026: diagram-3-stack.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompt-engineering-split-2026/diagram-3-stack.png |
 | 2026-05-20 | reports | [draft.md](reports/draft.md) | Spec-driven belongs on the board: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-driven-belongs-on-the-board/draft.md |
+| 2026-05-20 | reports | [substack-version.md](reports/substack-version.md) | Spec-driven belongs on the board: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-driven-belongs-on-the-board/substack-version.md |

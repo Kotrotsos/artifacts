@@ -171,3 +171,4 @@
 | 2026-05-18 | content | images | [diagram-3-stack.png](projects/content/images/diagram-3-stack.png) | Prompt engineering split in 2026: diagram-3-stack.png |
 | 2026-05-19 | symphony | reports | [cookbook.html](projects/symphony/reports/cookbook.html) | Cookbook updated with three SVG diagrams: poll tick, state refresh outcomes, edit propagation timeline |
 | 2026-05-20 | content | reports | [draft.md](projects/content/reports/draft.md) | Spec-driven belongs on the board: draft.md |
+| 2026-05-20 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Spec-driven belongs on the board: substack-version.md |
