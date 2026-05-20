@@ -175,3 +175,4 @@
 | 2026-05-20 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Spec-driven belongs on the board: linkedin-post.md |
 | 2026-05-20 | content | images | [hero.png](projects/content/images/hero.png) | Spec-driven belongs on the board: hero.png |
 | 2026-05-20 | content | images | [diagram-1-needs.png](projects/content/images/diagram-1-needs.png) | Spec-driven belongs on the board: diagram-1-needs.png |
+| 2026-05-20 | content | images | [diagram-2-round-trip.png](projects/content/images/diagram-2-round-trip.png) | Spec-driven belongs on the board: diagram-2-round-trip.png |
