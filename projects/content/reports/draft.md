@@ -1,164 +1,156 @@
-# Prompt Engineering Split in Two in 2026
+# Spec-Driven Development Is Right. Spec.md Is the Wrong Container.
 
-*OpenAI quietly told you to throw away your prompt stack. The deeper shift is that there are now two prompt-engineering jobs, not one. Most teams are still using the 2024 playbook for both.*
+*Markdown is great as a portable exchange format between agents. It is a poor system of record for things that have lifecycle, ownership, status, and history. Stop reinventing Linear in flat files.*
 
-![Two distinct prompt shapes on an isometric stage: a compact structured card labeled assistant on the left and a single bold goal-shaped slab labeled agent on the right](hero.png)
+![A small translucent spec.md card on the left and a larger translucent board with ticket cards arranged in three kanban columns on the right, connected by a bidirectional coral arrow, with a caption reading one for travel, one for living](hero.png)
 
 **Key takeaways:**
 
-- OpenAI's GPT-5.5 prompting guide tells you, in plain language, to start with a fresh baseline instead of carrying over every instruction from your old prompt stack. The guidance under that sentence is more consequential than the sentence itself: the things that used to give you a 5-7% accuracy bump (chain-of-thought primers, "take a deep breath," role-play openers) now hurt the newest models because they were trained against exactly those tics. The stack you wrote in 2024 is actively slowing down the model you are paying for in 2026.
-- There are now two prompt engineering jobs, and they are different jobs. Prompting an assistant (single turn, predictable steps, you supervise the output) rewards precision. Prompting an agent (multi-turn, open-ended, autonomous for minutes to hours) rewards clear outcomes plus trust. The mistake most teams make is using assistant-style prompts on agents (over-specifying every step) or agent-style prompts on assistants (vague goal, no constraints, no format).
-- Prompt engineering did not die. It got narrower. It is now one layer in a five-layer stack alongside model choice, system prompt design, tools and MCP wiring, context engineering, and eval harnesses. Treat it as one move in the playbook, not the whole playbook, and the rest of 2026 gets easier.
+- Spec-driven development is the right move. Writing a clear spec before writing code is one of the operational shifts that actually compounds in 2026. The debate is not whether to write specs. The debate is where the spec lives.
+- The default answer that has emerged in the last year (put it in a spec.md file, commit it to the repo, point the agent at it) gets the practice right and the architecture wrong. A spec has lifecycle, ownership, status, dependencies, and history. A flat markdown file has none of those, and reinventing them with prefixes and inline tables is a downgrade from the tools your team already pays for.
+- The clean architecture is the round-trip. Linear (or Jira, or Notion, or Asana) holds the spec as the source of truth. Agents export to spec.md when they need to read or hand off. Updates flow back. The file is for travel. The board is for living. You stop fighting your project management tool and your AI tooling stops accumulating shadow project management it was never built for.
 
 ---
 
-The Medium piece making the rounds this week is titled "OpenAI quietly told you to throw away your prompt stack." The headline is dramatic. The underlying observation is correct.
+There is a quiet trend in the AI-engineering community I want to push back on, while keeping the part of it that is correct.
 
-If you read OpenAI's own GPT-5.5 prompting guide carefully, the framing is plain: "Begin migration with a fresh baseline instead of carrying over every instruction from an older prompt stack. Legacy prompts often over-specify the process because earlier models needed more help staying on track. With GPT-5.5, that can add noise, narrow the model's search space, or lead to overly mechanical answers." That sentence is doing a lot of work.
+The trend is spec-driven development. Write a clear specification, get the agent to interview you about it, refine the spec, then let the agent build against it. PFF's post-engineering org built their 25x deployment story on this practice. Anthropic's own internal teams do something similar. So do most of the engineering shops I have advised in the last six months. The practice is real, the gains are real, and skipping the spec is the single most expensive mistake I see teams making with autonomous agents.
 
-The first time I read it, I assumed it was the usual model-release positioning: this one is better, please update your code. After a few weeks of using GPT-5.5 and Claude Opus 4.7 against the prompt scaffolding I had been carrying since GPT-4 days, I realized the recommendation is more specific than that. The newer models are worse at following the old prompt patterns. They were trained against them.
+So the practice is right. The architecture most teams have landed on is wrong.
 
-The interesting question is what to do instead, and the answer is two questions. What are you prompting? An assistant or an agent? Those are different jobs in 2026, and they need different prompts.
+The architecture most teams have landed on is putting the spec in a file called spec.md, committing it to the repo, and pointing the agent at it. Then a sibling LDD.md. Then a tickets.md. Then the inevitable manual sync from these files to whatever ticketing system the team actually uses for everything else. Then the slow accumulation of "is the file the truth or is the ticket the truth?" confusion. Then the realization six months later that nobody can tell what state any given spec is actually in.
 
-This is the article version of the answer I keep giving in client calls. Strip-mine your 2024 prompt stack. Then decide which of the two new jobs you are doing, and write the prompt that matches.
+Markdown is a great format. It is a poor system of record. The two roles are not the same role, and conflating them is the trap.
 
-## What the older tricks are doing to your newer models
+This article is the argument for the cleaner architecture. Keep the spec-driven practice. Move the spec to the platform that was built for it. Use markdown as the portable exchange format, the snapshot, the thing your agent reads and writes. Stop pretending markdown is your ticketing system.
 
-For three years, prompt engineering culture accumulated a set of standard moves that gave measurable accuracy bumps on the models of the day. A few of the famous ones:
+## What spec-driven development gets right
 
-- "Let's think step by step" before a hard reasoning problem
-- "Take a deep breath and work through this carefully"
-- "You are an expert in X" or "Act as a senior engineer in Y" role-play openers
-- Worked examples (few-shot prompting) for almost every task
-- "Output JSON, do not include any other text" rituals
-- Splitting complex tasks into "first, then, finally" sequential micro-steps
+Let me start by defending the practice, because the rest of the article only makes sense if we agree the practice is worth keeping.
 
-These patterns worked. The original chain-of-thought paper from 2022 showed that "let's think step by step" alone improved grade-school math accuracy by roughly 7 percentage points. The performance gain was real and reproducible. So the patterns spread, into engineering documents, into Cursor and Claude Code defaults, into the README of every internal AI tool at every company shipping anything in 2023 and 2024.
+Spec-driven development works because agents are bad at intent and great at execution. An agent without a clear spec will produce something. It will probably be plausible. It will probably be wrong in subtle ways you cannot diagnose without reading the entire codebase. The act of writing the spec, ideally in a back-and-forth with the agent, is the part where the misunderstandings get surfaced before they get compiled into 800 lines of code.
 
-What changed is that the model providers noticed too. RLHF (reinforcement learning from human feedback) and the newer constitutional methods explicitly trained the next generation of models to internalize what those patterns were trying to elicit. Modern reasoning models think step-by-step by default. Telling Opus 4.7 or GPT-5.5 to "think step by step" no longer gives you an accuracy bump. In some evaluations it gives a small accuracy loss, because you are spending tokens to instruct the model to do something it would already do better on its own, and you may be narrowing the reasoning path it would otherwise explore.
+The empirical case has been made repeatedly in 2026. PFF's case study from January to March (25x more deploys, 10x output) had the lightweight design document at the center. Anthropic's effective-agents guidance is built around clear goal specification before delegation. Every team I have watched produce real autonomous-agent wins has started by getting better at writing specs.
 
-Role-play openers ("You are a senior security engineer") are in a similar bucket. They sometimes help on weaker or older models. On Opus 4.7 they tend to add a layer of performative persona that the model has to deconflict with the actual task, which is wasted effort. The cleaner pattern is just describing the task and the success criteria. The model figures out the right register.
+So the practice is settled. You write the spec first. You let the agent interview you to surface gaps. You distribute the spec for review. You let the agent generate tickets and PRs from it. This is how 2026 engineering teams work, and it is genuinely better than the pre-agent process.
 
-Few-shot examples remain useful, but more selectively. For structured extraction where the format is non-obvious, examples still help. For reasoning tasks, one or two thoughtful examples are usually better than five. Five examples often anchor the model to imitate the surface shape of the examples rather than apply the underlying reasoning.
+The argument I am making is purely about where the spec lives once it exists.
 
-The summary, said plainly: the prompts you wrote two years ago are not neutral on the models you are running now. They are net negative for a non-trivial fraction of tasks. OpenAI's own documentation says so. Anthropic's GPT-5.5 prompting guide and Claude Opus 4.7 prompting best practices both say so. The point is not subtle. The implementation is what most teams have not done.
+## The unspoken assumption that is hurting you
 
-## The split nobody is being precise about
+The default move in the spec-driven community is: put it in a file. spec.md in the repo. CLAUDE.md alongside it. LDD.md for the lightweight design doc. tickets.md for the ticket list. Commit them all. Let the agent read them. Update them as the work progresses.
 
-Here is the part of the conversation that has been muddy.
+This works for the first three weeks. Then it starts decaying in predictable ways.
 
-The phrase "prompt engineering" in 2026 covers two genuinely different jobs. The skill set overlaps, but the right moves differ enough that conflating them is the source of most of the bad prompts I see.
+The spec.md file does not have a status. Is the spec approved? In review? Stale? Two engineers are reading it; one thinks it is signed off, the other thinks it is still a draft. The file does not tell them.
 
-![Side-by-side comparison of an assistant prompt anatomy (role, context, exact task, format, examples, constraints) and an agent prompt anatomy (goal, success criteria, available tools, guardrails)](diagram-1-anatomy.png)
+The spec.md file does not have an owner. Who decides when it changes? Who has authority to accept a change? Who is notified when the spec is updated? Without a system that holds ownership, every update becomes a Slack message: "hey, I changed the spec, can you look at it?"
 
-### Job one: prompting an assistant
+The spec.md file does not track dependencies. The tickets.md has six things in it. Three of them block the other three. The order matters. The file lists them as bullet points. The dependency graph is in someone's head, or worse, scattered across three Slack threads and a Notion page.
 
-You are asking the model for a single answer or a short bounded conversation. You see the output and decide what to do with it. The model is collaborating, you are supervising.
+The spec.md file does not have a history. Yes, you have git history. Git is great for source code. Git history of a spec.md, by month four, is a 47-commit list of "update spec," "more updates," "fix spec," "address feedback." Try to figure out who approved the change from a one-sentence acceptance criterion to a two-paragraph one. Git does not know. The blame line tells you who typed the change, not who authorized it.
 
-Examples: ChatGPT for a draft email, Claude for a literature review, Cursor for an inline code suggestion, an internal RAG bot for a question against your wiki.
+The spec.md file does not interact with the rest of your work surface. Customer issues live in Linear. Bugs live in Linear. Feature requests live in Linear. The roadmap lives in Linear. The spec for the feature also lives in Linear, except for the part of it that lives in spec.md, which is the part the agent reads. Your team now does double bookkeeping for the lifecycle of every piece of work.
 
-The right prompt shape here is precise. The classic frame is still useful:
+These problems are not theoretical. I have watched them play out in three engineering orgs in the last two months. The pattern is the same in all three. The spec.md was beautiful in week one. By month three the file and the Linear board had drifted, nobody was sure which was authoritative, and the team was running an unspoken third system in Slack to reconcile them.
 
-- **Role.** Who is the model for this turn. Brief. (Not a performance.)
-- **Context.** What background it needs that is not obvious.
-- **The exact task.** What you want produced, written as a clear instruction.
-- **Format.** What the output should look like (JSON shape, headings, length).
-- **Examples.** One or two if the format or judgment is non-obvious.
-- **Constraints.** What it should not do.
+## What a spec actually needs
 
-This is the prompt-engineering most write-ups still teach, and it remains correct for the assistant case. The 2026 update is mostly: drop the magic-phrase additives ("think step by step", "take a deep breath"). Keep the structure. Tighten the role to a description rather than a costume.
+If you list the things a spec needs in order to function as a real artifact in a real engineering org, the list looks like this.
 
-### Job two: prompting an agent
+![Five translucent ticket-shaped cards on an isometric platform showing lifecycle, ownership, status, dependencies, and history, with a caption that a flat markdown file does none of these well](diagram-1-needs.png)
 
-You are delegating a multi-step task. The model will work for minutes, hours, or longer. It will call tools, read files, write files, make decisions you do not see in real time. You will supervise the outcome, not every step. The model is executing, you are setting it up to succeed.
+**Lifecycle.** A spec moves through states. Draft, in review, approved, in progress, blocked, done, deprecated. The state matters. If you cannot tell what state a spec is in by looking at it, you cannot act on it confidently.
 
-Examples: Claude Code building a feature end to end, a research agent producing a report, an agent fixing a bug in your repo, an autonomous deploy validation flow.
+**Ownership.** Every spec has a person responsible for it. They are notified when it changes, they approve changes, they are the named human someone can ask "is this still the plan." Diffuse ownership is no ownership.
 
-The right prompt shape here is different. Anthropic's effective-agents guidance and OpenAI's GPT-5.5 prompting guide land on the same architecture for this case:
+**Status.** Even within a state, the spec has live operational status. Is this currently being worked on? Is it blocked on something? Is it waiting for review? The status is the thing the team looks at every morning to know what to pick up.
 
-- **Goal.** What success looks like. Specific and observable.
-- **Success criteria.** How the agent (and you) will know it is done.
-- **Available tools.** What the agent can use, with rough sense of when.
-- **Guardrails.** What it must not do, and when to stop and ask.
+**Dependencies.** Specs do not exist in isolation. This spec depends on that one shipping first. This other spec is blocked on a design decision being made. The dependency graph is part of the spec's metadata, and it has to be visible to be useful.
 
-The notable absence: a step-by-step process. For agentic tasks, telling the model exactly how to proceed adds noise and narrows the search space. Anthropic's own guidance: "Agents can be used for open-ended problems where it's difficult or impossible to predict the required number of steps." OpenAI's: "GPT-5.5 is strongest when the prompt defines the target outcome, success criteria, constraints, and available context, then lets the model choose the path."
+**History.** Not git history of who typed what. Audit history of who decided what. The spec changed on March 12, the change was proposed by Maya, approved by Tomas, the change was scoped down from the original because of a customer concern raised in this ticket. This history is what you use to figure out why a feature looks the way it does six months later when someone new joins.
 
-For agents, you specify the destination. You do not specify the road.
+A flat markdown file in a repo does none of these well. You can fake any one of them with prefixes and tables and YAML frontmatter. You cannot fake all five without rebuilding Linear, badly, on top of a file system.
 
-The teams I have advised who try to write agent prompts the assistant way end up with two failure modes. Either the agent rigidly follows the steps you specified and misses obvious better paths, or it ignores half your steps and you cannot tell which half because the rest is hidden inside a long autonomous loop. Both failure modes are caused by the same mistake: assistant-style prompting on an agent-shaped task.
+## What Linear (and Jira, and Notion, and Asana) are good at
 
-## The mirror failure on the other side
+This is the part the spec-in-markdown community has under-credited. The ticketing tools we have been using for fifteen years are good at exactly the things spec.md is bad at.
 
-Equally common, and slightly less talked about: agent-style prompting on an assistant-shaped task.
+Linear has lifecycle as a first-class concept. The ticket has a status. Changing the status updates the team automatically. Moving a ticket from In Progress to Blocked tells the assigned engineer's manager that the work is stuck and they should ask why.
 
-This is what happens when a team reads the same "describe the destination, not the road" advice and starts writing prompts like "summarize this document for me, you decide how" against a single-turn ChatGPT conversation. The model produces something. Sometimes useful, often vague, never quite what you wanted.
+Linear has ownership as a first-class concept. Every ticket has an assignee. Subscribing to a project means you get notified when specs you care about change. There is no "I missed the slack message" because the platform is the message.
 
-Assistants benefit from precision. If you are doing a single-turn task with a known output format, telling the model "you decide" is leaving accuracy on the table. The model is happy to make decisions about format and structure that you would have made tighter if you had specified them. For assistants, the underspecified prompt is just a hidden form of "I will tolerate variance in the output."
+Linear has dependencies as a first-class concept. You can block one ticket on another. The blocked ticket cannot be marked done until the blocker is. The chain is visible, queryable, and updatable by the whole team in real time.
 
-## What to drop, what to keep, what to add
+Linear has audit history as a first-class concept. Every change is recorded, attributed, timestamped. You can reconstruct the decision path on any spec by reading its activity log.
 
-Two years of prompt-engineering blog posts have left most stacks with a lot of accumulated rituals. A pragmatic cleanup, based on what the model providers themselves now recommend.
+Linear, Jira, Notion, Asana, and the rest of the platforms have spent ten to fifteen years optimizing for the exact problems that a spec.md file in a repo struggles with. The decision to ignore them and reinvent project management as a folder of markdown files in your repo is, to be polite, an unforced error.
 
-![Three columns showing what to stop, what to keep, and what to start: stop list includes take a deep breath and lets think step by step, keep list includes clear outcome and explicit constraints, start list includes context budget and eval harness](diagram-2-stop-keep-start.png)
+The reason the AI-engineering community made that choice is understandable. Agents read markdown natively. Agents do not have a Linear API connection by default. The path of least resistance was to put the spec where the agent could read it, which meant a file. That move was a fast workaround for an integration problem, not a principled architectural decision.
 
-**Stop.**
+Now that the integration problem is largely solved (Linear has an MCP server, Jira has one, every major project tool either has one or will within the quarter), the workaround does not need to be the architecture anymore.
 
-- "Take a deep breath." The phrase was funny for a quarter. It has been trained against. Drop it.
-- "Let's think step by step." Modern reasoning models do this by default. The phrase is now ~7% accuracy on grade-school math worth nothing, and sometimes worth slightly less than nothing because it spends tokens.
-- "You are an expert in X." Role-play openers add a persona the model has to deconflict with the actual task. State the task. Skip the costume.
-- Over-specified processes. If you find yourself writing "first do A, then do B, then do C" against an agent, you are using assistant prompting on an agent task. Specify the goal instead.
-- "Important: do not ignore these instructions." Modern models follow instructions. Adding emphatic reminders mostly tells the model that the underlying instructions are weak. Make the instructions clear once. Trust them.
+## The right architecture: the round-trip
 
-**Keep.**
+The clean version is the round-trip.
 
-- A clear, specific outcome. What does success look like, observably.
-- Concrete examples when the format is non-obvious. One or two is plenty.
-- Explicit constraints. What must not happen. Boundaries.
-- Output format. JSON schema, structure, length, voice. Specific.
-- Context the model genuinely needs that it cannot infer.
+![Three nodes connected by coral arrows: a Linear-style board labeled source of truth, a spec.md card labeled portable export, and an agent cube labeled executes work, with a caption reading file is for travel, board is for living](diagram-2-round-trip.png)
 
-**Start.**
+**Linear holds the spec.** The spec is a Linear project, or a parent ticket with sub-tickets, or whatever structure your team uses for substantial work. It has all the metadata Linear gives you for free: status, owner, dependencies, audit log, integration with the rest of your workflow.
 
-- A context budget for each task. How much of your context window is being burned on instructions vs the actual work. If your prompt is 2,000 tokens and the work is 5,000 tokens, that ratio is probably wrong.
-- Explicit tool selection for agentic tasks. Don't just install every MCP server. Curate which tools the agent has access to for this task. Fewer, more relevant tools work better than more tools available.
-- An eval harness for prompts that matter. Three to ten test cases that you re-run every time you change the prompt. Not "vibe-checking" the output. Comparing structured outputs against expectations.
-- Agent-level delegation. If the task is multi-step, learn to write a goal-shaped prompt instead of a process-shaped prompt. The instinct from 2023 to micromanage the model has to be unlearned.
+**spec.md is generated from Linear.** When an agent needs to work on the spec, it pulls a markdown export from Linear. This is the snapshot. It is the portable, agent-readable, version-pinned representation of the spec at that moment. The file exists for the duration of the agent's work and gets discarded or refreshed when needed.
 
-## The bigger picture: prompt engineering as one of five layers
+**The agent reads and writes spec.md.** The agent does its work against the file. It interviews you, refines, generates tickets, builds, tests. All of that happens with markdown as the working medium. The agent never directly modifies Linear in the middle of a long autonomous loop, because Linear is the source of truth and you do not want an agent partial-writing into it.
 
-The "prompt engineering is dead" headlines miss what is actually happening. Prompt engineering is one layer in a five-layer stack that real production AI systems run on in 2026. The layer is still important. It is just no longer the whole job.
+**Updates flow back to Linear.** When the work completes, the agent's output (new tickets, status changes, additional acceptance criteria) flows back to Linear via the MCP server or a small sync step. The board state is updated. Humans see the changes in their normal workflow. The next agent run pulls the fresh markdown from the updated board.
 
-![A vertical stack of five layered slabs showing the 2026 AI engineering stack: evals on top, then context, then system prompt, then tools and MCP, then model choice at the bottom](diagram-3-stack.png)
+This is the model. The file is for travel. The board is for living. The agent gets the speed and ergonomics of markdown. The team gets the lifecycle, ownership, and history of a real project management tool. Nobody is doing double bookkeeping.
 
-**Model choice.** The foundation. Picking GPT-5.5 vs Opus 4.7 vs Sonnet 4.6 vs Haiku for a given task is a real engineering decision now. Different models have different prompt sensitivities. The same prompt that works on Opus might underperform on Sonnet, and the right answer is often not "tune the prompt harder" but "pick the right model for the job."
+The piece that makes this work is the bidirectional MCP layer. Linear's MCP server is the obvious one for Linear shops. Jira has equivalent. Notion has equivalent. The pattern is: the agent never owns the source of truth. The agent operates on exports. The exports are first-class artifacts produced and consumed on demand.
 
-**Tools and MCP.** What capabilities the model has access to. For agentic work this is often more important than the prompt itself. An agent with the right MCP servers wired up can do work that no amount of prompt engineering would unlock without them. (I wrote a separate piece on the Skills/MCP/Tools split if you want the deeper version of this layer.)
+## What this changes about your current setup
 
-**System prompt.** The constitution. The standing instructions that apply to every interaction in a given app or agent. This is where most production-grade prompt engineering actually lives in 2026. The user prompt is often short. The system prompt is doing the heavy lifting.
+If you are running spec-driven development today and your spec lives in a markdown file in the repo, three things to do this month.
 
-**Context engineering.** What you put into the context window beyond the prompt itself. Documents, history, relevant code, retrieved snippets, prior outputs. A 2026 survey found 95% of data teams planning to invest in context-engineering capability this year. The phrase is new. The work is real: deciding what fills the window and what does not is now a primary engineering activity.
+![Three columns showing what to stop (spec.md as source of truth, hand-syncing files to tickets), what to keep (spec-driven development, agents that read markdown), and what to start (board as system of record, round-trip export)](diagram-3-stop-keep-start.png)
 
-**Evals.** The feedback layer. The thing nobody had in 2023 and everyone needs in 2026. A small set of test cases that tell you whether a prompt change actually improved anything. Without evals, every prompt update is vibes. With evals, you compound.
+**Stop treating spec.md as the source of truth.** Audit your repo. Every spec.md, every LDD.md, every tickets.md. For each one, ask: is this also tracked in Linear, Jira, or Notion? If yes, decide which is authoritative. If the answer feels uncomfortable, that is because you have been running two systems and nobody admitted it.
 
-Prompt engineering sits in this stack. It is the writing-the-actual-words part. It is necessary. It is not, on its own, sufficient. The teams that win in 2026 will have all five layers working, not heroic prompts compensating for missing layers below and above them.
+**Stop hand-syncing files to tickets.** If your current workflow involves a human reading the markdown spec, going to Linear, and copying the structure across, you have built a manual sync layer that exists only because the agent could not talk to Linear. That constraint is gone. Stop paying the manual sync tax.
 
-## What this means if you are managing an AI build today
+**Stop reinventing project management in flat files.** YAML frontmatter for status. Inline tables for dependencies. Filename conventions for ownership. These are workarounds for not using the right tool. The right tool exists, you already pay for it, you are just not pointing your agent at it.
 
-Three concrete moves for the next thirty days.
+**Keep spec-driven development as a practice.** Writing a clear spec before writing code is correct. Letting the agent interview you to refine the spec is correct. Distributing the spec for review is correct. None of this changes. The practice is the part that compounds.
 
-**Audit your existing prompts against the assistant-or-agent split.** For each non-trivial prompt in your codebase or your CLAUDE.md or your skills directory, classify it: is the model doing assistant work (single answer, you supervise the output) or agent work (multi-step, autonomous)? Then check the prompt shape. Are the assistant prompts precise? Are the agent prompts goal-shaped? Most teams have at least a few miscast prompts. Fixing them is fast.
+**Keep agents that read markdown.** Markdown is the right input format for an agent. LLMs read it natively, it is portable, version-controllable, and human-readable. The agent should keep reading markdown. The change is that the markdown is now generated from the board, not authored as a standalone file.
 
-**Strip the rituals.** Take a deep breath. Let's think step by step. You are an expert in. Find them in your prompts. Remove them. Re-run your evals (if you have them) or your standard tasks (if you don't) and observe. In my experience, most prompts get slightly better or stay neutral. None of mine got measurably worse from the removal. The free win is sitting on the table.
+**Keep lightweight design docs as portable exports.** The LDD as a concept is correct. PFF's case study showed why. The lightweight design doc is a great working artifact. It just does not need to live in a file in your repo as the authoritative version. Generate it from the board, work against it, push updates back.
 
-**Build the smallest possible eval harness.** Three test cases. JSON-shaped expected outputs. A script that runs them on demand. This is the highest-return investment most teams have not made. Without it, every prompt change is opinion. With it, every prompt change has a number.
+**Start using the board as the system of record.** If you use Linear, the spec is a Linear project. If you use Jira, it is an epic with sub-tasks. If you use Notion, it is a database row with linked sub-pages. Pick the tool you already use and put the spec there with all the metadata it deserves.
 
-After that, the bigger architectural moves (system prompt design, context engineering, MCP server selection) are still worth doing. But the audit, the strip, and the eval harness are the quickest path from "we are doing prompt engineering" to "we know our prompts are working."
+**Start using the round-trip pattern.** Install the MCP server for your project tool. Configure your agents to export from the board to spec.md when they need to work, and to push updates back when the work changes the spec. This is one afternoon of setup that pays back every week thereafter.
+
+**Start treating spec.md as a snapshot, not a state.** When the file exists, it is a snapshot of the board at a moment in time. The agent's job is to make that snapshot useful for the next chunk of work, then discard it or refresh it. The snapshot is never the truth. The board is the truth.
+
+## What I would do this week
+
+Three concrete moves.
+
+First, take a working session with the team and inventory every markdown file in your repo that contains spec-shaped content. spec.md, LDD.md, tickets.md, requirements.md, anything with structured task or feature content. For each, decide whether it should be promoted to Linear, deprecated entirely, or kept as a working artifact. Most teams will find they have three to seven of these, and at least half can move.
+
+Second, install the Linear MCP server (or your equivalent). Configure your agents to read Linear projects when working on substantial features. The setup is short. The pattern of "agent reads Linear, agent works against an exported spec.md, agent updates Linear when done" is what makes the rest of this work.
+
+Third, pick one feature your team is about to ship that currently has a spec.md in the repo. Migrate that one feature to the Linear-as-source pattern as a pilot. Run it through to completion. Observe. The team will know within two weeks whether the new architecture is better. In every case I have done this, the answer has been yes, by a wide margin, and the team never wants to go back.
 
 ## Closing
 
-The framing that has been most useful to me in 2026 is the simple one: stop writing one kind of prompt, start writing two kinds. The OpenAI guidance and the Anthropic guidance both quietly say the same thing once you read them carefully. The split is real, the implications are operational, and the teams that internalize this in the next quarter will compound away from the ones still running 2024 prompt patterns against 2026 models.
+The spec-driven trend is correct. The instinct to write things down before building them, to let the agent interview you, to generate tickets from a clear specification, is the operational shift that actually compounds in 2026. None of that is in question.
 
-There is still a craft. It just split into two crafts. You probably need both. Write the prompt that matches the job.
+The mistake is the architectural one of confusing the spec with the file that holds it. Markdown is a great working medium and a poor system of record. Linear (and the other platforms) have been good at being a system of record for over a decade. Use both for what they are good at, with the round-trip between them as the integration pattern, and you stop running shadow project management in your repo.
+
+There is still a place for markdown in spec-driven development. The place is for travel, not for living. The file moves between systems and agents. The board is where the spec actually lives.
+
+Stop putting your specs in markdown only. Use the platform you already pay for. Your future self, the next engineer who joins your team, and the auditor who shows up six months from now will all thank you.
 
 ---
 
@@ -167,5 +159,3 @@ There is still a craft. It just split into two crafts. You probably need both. W
 *This article is published in [Autocomplete](https://medium.com/autocomplete-real-world-ai), a Medium publication about real-world AI for practitioners and decision-makers. We're always looking for writers. If you're building with AI and have something worth sharing, reach out.*
 
 *My free Substack newsletter, also called Autocomplete, can be found here: https://acdigest.substack.com.*
-
-*Sources: OpenAI GPT-5.5 prompting guide (developers.openai.com), Claude Opus 4.7 prompting best practices, Anthropic effective-agents guidance, "OpenAI quietly told you to throw away your prompt stack" (AI Advances / Medium, 2026), 2026 State of Context Engineering survey.*
