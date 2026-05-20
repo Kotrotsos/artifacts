@@ -84,3 +84,4 @@
 | 2026-05-20 | reports | [substack-version.md](reports/substack-version.md) | Spec-driven belongs on the board: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-driven-belongs-on-the-board/substack-version.md |
 | 2026-05-20 | reports | [linkedin-post.md](reports/linkedin-post.md) | Spec-driven belongs on the board: linkedin-post.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-driven-belongs-on-the-board/linkedin-post.md |
 | 2026-05-20 | images | [hero.png](images/hero.png) | Spec-driven belongs on the board: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-driven-belongs-on-the-board/hero.png |
+| 2026-05-20 | images | [diagram-1-needs.png](images/diagram-1-needs.png) | Spec-driven belongs on the board: diagram-1-needs.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-driven-belongs-on-the-board/diagram-1-needs.png |
