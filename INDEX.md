@@ -185,3 +185,4 @@
 | 2026-05-21 | content | reports | [draft.md](projects/content/reports/draft.md) | Workspace authored files generated, V2 of spec.md piece: draft.md |
 | 2026-05-21 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Workspace authored files generated, V2 of spec.md piece: substack-version.md |
 | 2026-05-21 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Workspace authored files generated, V2 of spec.md piece: linkedin-post.md |
+| 2026-05-21 | content | images | [hero.png](projects/content/images/hero.png) | Workspace authored files generated, V2 of spec.md piece: hero.png |

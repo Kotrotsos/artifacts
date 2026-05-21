@@ -94,3 +94,4 @@
 | 2026-05-21 | reports | [draft.md](reports/draft.md) | Workspace authored files generated, V2 of spec.md piece: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/workspace-authored-files-generated/draft.md |
 | 2026-05-21 | reports | [substack-version.md](reports/substack-version.md) | Workspace authored files generated, V2 of spec.md piece: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/workspace-authored-files-generated/substack-version.md |
 | 2026-05-21 | reports | [linkedin-post.md](reports/linkedin-post.md) | Workspace authored files generated, V2 of spec.md piece: linkedin-post.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/workspace-authored-files-generated/linkedin-post.md |
+| 2026-05-21 | images | [hero.png](images/hero.png) | Workspace authored files generated, V2 of spec.md piece: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/workspace-authored-files-generated/hero.png |
