@@ -107,3 +107,4 @@
 | 2026-05-21 | images | [diagram-3-three-patterns.png](images/diagram-3-three-patterns.png) | Claude Code harness annotated, practitioner read on Anthropic scale guide: diagram-3-three-patterns.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-harness-annotated/diagram-3-three-patterns.png |
 | 2026-05-21 | reports | [index.html](reports/index.html) | Practitioners course site, two tracks plus integration, sixteen lessons | /Users/marcokotrotsos/PERSONAL/Content/course/index.html |
 | 2026-05-21 | reports | [index.html](reports/index.html) | Expanded course site v2: 18 lessons across 3 tracks with Q&A, quizzes, interactive widgets | /Users/marcokotrotsos/PERSONAL/Content/course/index.html |
+| 2026-05-21 | images | [lesson-B1-diagram.png](images/lesson-B1-diagram.png) | Course v2 image: lesson-B1-diagram.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/lesson-B1-diagram.png |
