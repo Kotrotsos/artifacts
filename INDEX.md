@@ -183,3 +183,4 @@
 | 2026-05-21 | virtuele-assistent | reports | [accessibility-overview.html](projects/virtuele-assistent/reports/accessibility-overview.html) | WCAG 2.1/2.2 AA accessibility overview for feature/accessibility_ branch |
 | 2026-05-21 | content | images | [spec-workflow.png](projects/content/images/spec-workflow.png) | Spec workflow diagram, workspace authored files generated, five-stage flow |
 | 2026-05-21 | content | reports | [draft.md](projects/content/reports/draft.md) | Workspace authored files generated, V2 of spec.md piece: draft.md |
+| 2026-05-21 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Workspace authored files generated, V2 of spec.md piece: substack-version.md |

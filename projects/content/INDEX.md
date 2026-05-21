@@ -92,3 +92,4 @@
 | 2026-05-21 | reports | [research.html](reports/research.html) | Research brief on spec.md destination debate, Position A vs B vs C, Notion vs Linear | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-md-research-2026-05-21/research.html |
 | 2026-05-21 | images | [spec-workflow.png](images/spec-workflow.png) | Spec workflow diagram, workspace authored files generated, five-stage flow | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-workflow-diagram/spec-workflow.png |
 | 2026-05-21 | reports | [draft.md](reports/draft.md) | Workspace authored files generated, V2 of spec.md piece: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/workspace-authored-files-generated/draft.md |
+| 2026-05-21 | reports | [substack-version.md](reports/substack-version.md) | Workspace authored files generated, V2 of spec.md piece: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/workspace-authored-files-generated/substack-version.md |
