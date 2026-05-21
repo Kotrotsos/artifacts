@@ -1,146 +1,169 @@
-# The Spec Lesson, V2: Workspace Is Authored, Files Are Generated
+# The Claude Code Harness: A Practitioner's Read on Anthropic's Scale Guide
 
-*Three weeks ago I argued spec.md was the wrong container for your specs. Three engineering teams worth of follow-up conversations later, here is the sharper version. Spec.md is not the problem. Treating it as the source of truth is.*
+*Anthropic dropped a substantial guide on May 14 covering how Claude Code works in large codebases. It is mandatory reading. It is also dense enough that the most actionable points get lost in the prose. This is the annotated version, save it for your next harness audit.*
 
-![A workspace board at the top of the image with two file shapes below it, one with a dashed outline labeled working snapshot, one with a solid outline labeled frozen snapshot, all in translucent teal on a pure white background, with the caption workspace is authored, files are generated](hero.png)
+![A tall stacked tower of six labeled translucent teal layers on a white platform, with subagents floating beside as a separate capability, all in isometric perspective with the caption the model is one layer of seven](hero.png)
 
-The original piece argued for moving the spec to Linear. The argument landed with the teams that had already hit the drift wall. It made the teams that had not yet hit the wall defensive.
+A lot of my client conversations this year have included some version of the question: "we are on the best Claude model. Why is our team not getting the productivity gains we hoped for?" The answer, when I look at the actual setup, is almost always the same. The model is fine. The harness around the model is the problem.
 
-The defensive response was always some version of "the file works fine, the agent reads it, why are you trying to take it away?" That objection is fair. The original article underweighted it.
+Anthropic just published the playbook for what to do about that. The guide is called "How Claude Code works in large codebases" and it lays out the patterns they have observed across their largest customer deployments. I will quote the most important sentence in it directly: *the harness matters as much as the model*. If you take only one thing from either article, take that.
 
-The honest answer, which took me another three weeks of working with engineering teams to get to, is that the file is not the problem. The file is fine. What does not work is the file being the authored, evolving, source-of-truth artifact. The fix is not to delete the file. The fix is to make sure the file got generated, not typed.
+This newsletter is the practitioner annotation. I am pulling each individual point out, giving it depth from my own deployment experience, marking the common mistakes I see, and ordering by what actually matters on day one.
 
-This newsletter is the operational version of that argument. The phrase to remember is one sentence. Workspace is authored. Files are generated. The rest is what that means in practice.
+Save it. Reread it after every major Claude release. The harness work is not a one-time setup.
 
-Hit reply if your team has been hitting the drift wall too. I want to hear how you have been handling it.
+Reply if you want me to look at your specific configuration. I read everything.
 
 **Three things to know up front:**
 
-Spec-driven development is right. The mistake is not the file format. The mistake is putting the authored, evolving, source-of-truth spec into a flat markdown file in your repo. The file drifts, the board drifts, nobody knows which is authoritative, and your team is silently running a third reconciliation system in Slack.
+The most important sentence in Anthropic's guide is the one most teams will skim past: "The harness matters as much as the model." Performance at scale is determined by six layers around the model (CLAUDE.md, hooks, skills, plugins, LSP, MCP) plus one delegation capability (subagents). Teams that focus on the model alone are tuning the wrong knob.
 
-The operational rule that holds up across the teams I have advised this quarter is one sentence: workspace is authored, files are generated. The spec lives in Notion (or Linear). The repo holds two kinds of generated snapshot, never an authored file.
+Build order is not optional. The layers compose. CLAUDE.md comes first because nothing else has anywhere to live until it exists. Hooks next, because hooks are how the harness gets self-improving. Skills, plugins, LSP, MCP follow in that order. Subagents come in whenever you need them. Teams that build MCP integrations before CLAUDE.md is solid are building on sand.
 
-The two snapshots have different homes and different mutability. A gitignored working snapshot in `.spec-cache/` that the agent reads during a session, regenerated every time. A committed PR-attached snapshot in `docs/specs/` that freezes the spec at the moment work shipped. Both are generated. Neither competes with the workspace for "is it the truth."
+Three configuration patterns travel across every successful deployment: make the codebase legible to Claude (layered CLAUDE.md, scoped commands, codebase maps, LSP), keep the harness current (review every 3 to 6 months because models evolve), and assign ownership from day one (a named DRI, a plugin marketplace, eventually an agent manager role). The technical and organizational layers cannot be separated.
 
-## The thing that actually broke last time
+## Why agentic search wins, and where it loses
 
-Three engineering teams I worked with in March and April adopted spec-driven development the same way. spec.md in the repo, agent reads the file, work happens, file gets updated. All three loved it for the first three weeks. All three hit the same wall in week six.
+The first technical claim in the Anthropic piece is that Claude Code uses agentic search instead of RAG. The difference is more important than it looks.
 
-The wall was always: the file says one thing, the Linear ticket says another, three engineers are operating off three different states, the team is silently running a reconciliation system in Slack. Nobody decided this should happen. It happened anyway, because the file and the ticket were both being treated as the truth, and they drifted.
+![Two side-by-side scenes showing RAG with a stale index returning a renamed function versus agentic search with grep against the live codebase returning the current state](diagram-1-rag-vs-agentic.png)
 
-When you ask the team where this drift came from, the honest answer is: nobody knew which artifact was authoritative. The file was authoritative for the agent. The Linear ticket was authoritative for status. The Slack thread was authoritative for the why. Three sources, no precedence rule, predictable result.
+A RAG-powered AI coding tool embeds the entire codebase ahead of time and retrieves relevant chunks at query time. At small scale this is fine. At large scale it breaks, because the embedding pipeline cannot keep up with active engineering teams committing code. By the time a developer queries the index, the index reflects the codebase as it existed days or weeks ago. Retrieval returns a function the team renamed two weeks ago. The model confidently uses it. The build fails.
 
-The original article's response was: move the spec to Linear, kill the file. The defensive response to that argument was: "but the agent needs to read markdown." Both are right. The synthesis is the title of this piece.
+Agentic search avoids that failure mode by working from the live codebase. Claude traverses the file system, reads files, runs grep, follows references. No index. No staleness window. Every query operates on what is true right now.
 
-## Workspace is authored
+The tradeoff Anthropic acknowledges is the one most teams underestimate: agentic search works best when Claude has enough starting context to know where to look. If you ask it to find all instances of a vague pattern across a billion-line codebase, you hit the context window before the work begins. The quality of the navigation is shaped entirely by how well the codebase is set up.
 
-Specs are authored in a workspace. Notion, Linear, Jira, Asana, Coda, whatever your team already uses. The choice between them matters less than people pretend. The point is that the authored spec lives in a tool built for things that have lifecycle, ownership, status, dependencies, and history.
+This is why the rest of the article matters. The setup is the load-bearing investment.
 
-The case for Notion specifically got a lot stronger on May 13, 2026, when Notion launched their Developer Platform. CEO Ivan Zhao's framing was sharp: "Use your Notion database as a sheer canvas to power both your workflows and your agents." Pitch: "Any data, any tool, any agent." Notion now ships first-class integrations with Claude Code, Cursor, Codex, and Decagon, plus Workers (cloud-sandboxed code execution inside Notion) and Database Sync.
+## The harness matters as much as the model
 
-That announcement is a vendor explicitly competing for the spec-source-of-truth slot. It is the first time a workspace tool has made the agent-readability story directly part of the product positioning. Linear has had MCP for a while. Notion now has MCP plus the developer platform plus the explicit agent-targeted pitch.
+The capabilities of Claude Code are not the capabilities of the model. The capabilities of Claude Code are the capabilities of the model plus the harness wrapped around it. Six extension points and one delegation capability. The model is one of seven things.
 
-What changes when you move the authored spec to a workspace:
+Teams that fixate on model benchmarks are tuning the wrong knob. The benchmark differences between current frontier models are real but small. The differences in harness quality between teams are massive. I have seen two teams running the same model where one team finishes ten times the work because their harness is set up properly and the other is fighting against it.
 
-- The spec has a status. Draft, in review, approved, in progress, done. Updates the team automatically.
-- The spec has an owner. A named human responsible, notified on changes, with authority to approve.
-- The spec has dependencies. This one blocks that one. The graph is visible and updatable.
-- The spec has a real audit history. Not git blame. The record of who proposed what change, when, and why.
-- The spec connects to the rest of your work surface. Customer issues, bugs, design docs, in the same tool.
+The six extension points: CLAUDE.md, hooks, skills, plugins, LSP integrations, MCP servers. Plus subagents as a delegation capability. Each gets its own section below, in build order.
 
-None of these are theoretical. They are the things a flat markdown file is bad at, and they are the things that caused the drift in the original three teams.
+## The build order
 
-## Files are generated
+![A horizontal flow of six numbered nodes from CLAUDE.md through hooks, skills, plugins, LSP, and MCP servers with a note that subagents are available throughout](diagram-2-build-order.png)
 
-The agent still needs markdown. That has not changed. What changes is where the markdown comes from.
+The order is not arbitrary. It is the order in which each layer requires the previous one.
 
-![A vertical stack of three rounded cards showing the three tiers of spec artifacts: source of truth at the top in Notion or Linear, working snapshot in the middle in gitignored cache with a dashed outline, frozen snapshot at the bottom in docs slash specs committed](diagram-1-three-tiers.png)
+## Layer 1: CLAUDE.md
 
-The right pattern is three tiers, not one. The tiers have different homes and different mutability rules.
+CLAUDE.md files are the foundation. Nothing else has anywhere to live until these are right.
 
-**Tier 1: source of truth.** Authored in Notion or Linear. Continuously evolving. Read by humans (and by agents through the MCP server).
+The Anthropic guidance is concise: root file for the big picture, subdirectory files for local conventions. The mistake I see most often is the inverse pattern. Teams pile every convention, every style rule, every "do not do this" rule into a single root CLAUDE.md that grows to 2,000 lines over six weeks. Claude tries to honor all of it, runs out of context space, and the team blames the model.
 
-**Tier 2: working snapshot.** Lives in `.spec-cache/spec.md` in the repo. Gitignored. Pulled from the workspace at session start via MCP. Used by the agent during the session. Regenerated next session. Never committed.
+Three operational rules I have arrived at across client deployments:
 
-**Tier 3: frozen snapshot.** Lives in `docs/specs/<feature>-shipped.md`. Committed alongside the PR. Frozen at PR open and never updated. Evidence of what spec the work was built against when it landed.
+**Lean.** The root CLAUDE.md should fit on one screen. Pointers, critical gotchas, and the highest-leverage conventions only. If the root file is more than 80 lines, it is doing too much.
 
-The three tiers answer three different questions. The source of truth answers "what does the team currently believe this feature should be." The working snapshot answers "what is the agent looking at right now." The frozen snapshot answers "what spec was true when this code shipped, six months from now when someone is debugging."
+**Layered.** Claude walks up the directory tree and loads every CLAUDE.md file it finds along the way. Put module-specific conventions in module-specific files. Keep the root for things that apply everywhere.
 
-A single file at the root of your repo cannot be all three things at once. That is what made the original setup drift.
+**Audited.** Anthropic recommends reviewing CLAUDE.md every three to six months. I would tighten that: audit after every major model release. A rule that helped Sonnet 4.0 stay on track may actively constrain Sonnet 4.6 from doing something it handles natively.
 
-## The actual workflow
+**Common mistake:** using CLAUDE.md for reusable expertise that belongs in a skill. If the same instruction would help across multiple projects, it is a skill. If it only applies to this codebase, it is CLAUDE.md.
 
-The flow that ties the three tiers together is concrete enough to write down.
+## Layer 2: Hooks
 
-![A horizontal flow diagram with five labeled stages: workspace as source of truth, pull via MCP into a gitignored cache file, agent reads and executes, sync changes back to the workspace, freeze a snapshot into docs slash specs for PR evidence](diagram-2-workflow.png)
+Hooks are the most underrated layer. Most teams use them as guardrails. That is the boring use.
 
-**Session start.** Pull the current spec from Notion or Linear via the MCP server. Write it to `.spec-cache/spec.md` (gitignored). The cache directory exists for the session and gets discarded after.
+The valuable use, which the Anthropic guide flags clearly, is continuous improvement. A stop hook that runs at session end can reflect on what happened, propose CLAUDE.md updates while context is fresh, and surface skill candidates. A start hook can load team-specific context dynamically.
 
-**During the session.** The agent reads from the cache file. The agent may also write to the cache file as the work surfaces new requirements or refinements. This is the agent's working medium. Behaves exactly like the spec.md you are used to, with one important difference: nobody else on the team is editing this file. It is yours for this session.
+Three hook patterns worth implementing in your first week:
 
-**Session end.** Diff the cache against the workspace. Sync the meaningful changes back. New acceptance criteria, refined requirements, surfaced edge cases, new sub-tasks. The workspace updates. The team sees the changes in their normal Notion or Linear workflow. The cache gets discarded.
+**The reflection hook.** At session end, ask the agent to summarize what was learned and propose updates. Most teams will be surprised at how much actionable feedback this produces.
 
-**At PR open.** Generate a frozen snapshot of the spec as it stood when the work was finalized. Commit it to `docs/specs/<feature>-shipped.md`. This snapshot is the evidence in the PR review. It is the answer to "what spec did the agent build against."
+**The dynamic context hook.** At session start, detect which module the developer is working in and load the relevant skills. Replaces "every developer configures manually" with "the environment knows itself."
 
-That is the whole workflow. Five stages, two directions of flow, no ambiguity about which artifact is authoritative.
+**The enforcement hook.** For deterministic checks like linting and formatting, hooks beat instructions. Telling Claude to run the linter and Claude forgets 15% of the time means that 15% is your bug rate. A hook running unconditionally is 100% reliable.
 
-The reason this works where the original spec.md pattern broke: there is exactly one source of truth. The cache cannot drift because it gets regenerated. The frozen snapshot cannot drift because it is frozen. The team only edits one thing. The agent only reads one thing per session.
+**Common mistake:** putting things in CLAUDE.md that should be hooks. Instructions get forgotten under context pressure. Hooks do not.
 
-## The Marmelab response (steel-manning the dissent)
+## Layer 3: Skills
 
-The strongest published dissent against spec-driven development is Marmelab's "Waterfall strikes back" piece. The argument is that big design up front fails because software development is non-deterministic. Specs go stale. Reality outruns the document.
+Skills are the answer to "I keep needing this expertise but only sometimes." They load on demand, which means they do not compete with CLAUDE.md for the always-loaded budget.
 
-The workspace-authored, files-generated pattern is not Waterfall. The workspace evolves continuously. Every session that surfaces a new requirement updates the workspace. Every PR review that catches an edge case updates the workspace. The team is iterating on the spec the whole time the work is happening.
+The Anthropic frame is "progressive disclosure." Not everything needs to be in front of Claude at the same time. A security review skill loads when Claude is assessing code for vulnerabilities. A deployment skill loads when work is in the payments service. The path-scoping mechanism is the operationally useful detail: skills can be bound to specific directories so they only auto-load where they apply.
 
-What is Waterfall is putting a 4,000-word spec.md in your repo and then refusing to touch it for two months because "the spec is locked." That is the failure mode Marmelab is rightly objecting to. The two-snapshot pattern explicitly avoids it.
+**Common mistake:** loading everything into CLAUDE.md instead of building skills. CLAUDE.md becomes the dumping ground, performance degrades because every session reads 2,000 lines of mostly-irrelevant context, and skills never get built. This is the single biggest configuration pathology I see in client teams.
 
-Lightweight specs in a workspace, iterated continuously, snapshotted for evidence: that is not Waterfall. That is what agile actually looks like when the team includes an AI agent that needs a written reference.
+The fix is mechanical. Any time you find yourself writing a chunk of CLAUDE.md that starts with "when doing X, do Y," ask whether X is a recurring task type. If yes, it is a skill. Move it.
 
-## What stops, what stays, what starts
+## Layer 4: Plugins
 
-![Three columns showing what to stop including human-edited spec.md at root and arguing which is the truth, what to keep including markdown as agent input format and version control for evidence, and what to start including workspace as source of truth and gitignored working cache](diagram-3-stop-keep-start.png)
+Plugins are the distribution mechanism. They bundle skills, hooks, and MCP configurations into a single installable package.
 
-**Stop.**
+The point that lands hardest: good setups tend to stay tribal. One engineer figures out a great configuration, the team next to them rebuilds the same thing from scratch six months later, the second version is slightly worse, the cycle continues.
 
-- Human-edited spec.md at the root of your repo. If a human typed it directly and committed it, it is in the wrong tier.
-- Committing the working spec the agent uses during a session. That file should be ephemeral, not version-controlled.
-- Hand-syncing files to tickets. The manual sync layer was a workaround that no longer needs to exist.
-- Arguing which is the truth in Slack. If you find yourself in that conversation, you have not done the cleanup yet.
+Plugins solve this by making the setup itself a shareable artifact. New engineer day one installs the company plugin. Same context, same skills, same MCP connections as everyone who has been using Claude Code for six months.
 
-**Keep.**
+**Common mistake:** trying to centrally author every plugin from one team. The pattern that works is letting teams build their own plugins, with a centralized curation function approving what goes into the company-wide marketplace.
 
-- Markdown as the agent's input format. The agent reads markdown best.
-- Version control for evidence. The frozen PR snapshot still lives in git.
-- Spec-driven discipline. Writing things down before building them is correct.
-- Lightweight written specs. Short specs in the workspace are better than long ones nobody updates.
+## Layer 5: LSP integrations
 
-**Start.**
+This is the highest-value-per-effort layer for multi-language codebases. Anthropic flags one customer who deployed LSP integrations org-wide before their Claude Code rollout, specifically to make C and C++ navigation reliable at scale.
 
-- Workspace as source of truth. Notion or Linear.
-- Gitignored working cache. `.spec-cache/` in the repo, never committed.
-- Frozen PR snapshots in `docs/specs/`. Committed evidence at landing time.
-- Generate, never author. If a file got typed by a human into git, it is in the wrong tier.
+Without LSP, Claude pattern-matches on text. Grep for `processOrder` returns dozens of matches across languages, comments, deleted code in stale branches, and different functions with the same name. Claude opens files trying to figure out which one matters. Context burns.
 
-## What I would do this week
+With LSP, the search happens at the symbol level. The language server returns only the references that point to the same symbol. Claude reads what it needs and nothing else. For C, C++, Java, C#, Go, and Rust codebases especially, this is the single highest-leverage configuration change.
 
-Three concrete moves for any team running the older pattern.
+**Common mistake:** assuming LSP integration is automatic. It is not. The plugin layer activates it. If your team is on a typed language and not using LSP, the rollout is fighting against itself.
 
-First, run the inventory. List every markdown file in your repo that contains spec-shaped content. For each, ask: is this also tracked in Notion or Linear? If yes, decide which is authoritative. If the answer feels uncomfortable, that is the answer.
+## Layer 6: MCP servers
 
-Second, install the MCP server. Notion MCP is hosted and works with Claude Code, Cursor, VS Code, ChatGPT, and the major coding agents. Linear MCP is mature. Pick whichever workspace your team uses and wire it up.
+MCP servers are how Claude connects to internal tools, data sources, and APIs it cannot otherwise reach. The most sophisticated teams build MCP servers that expose structured search as a tool Claude can call directly.
 
-Third, pick one feature your team is about to ship and run it through the new pattern as a pilot. Workspace authored, cache generated, PR snapshot frozen. Run it end to end. The team will know within two weeks whether the architecture is better.
+That detail is worth slowing down on. Structured search as an MCP tool means your team's existing code search infrastructure (Sourcegraph, internal indexers) becomes something Claude can query alongside its native grep and file traversal. This is not a replacement for agentic search. It is an addition.
 
-Hit reply if you want me to look at your specific setup. I read everything.
+The pattern at the most mature deployments: Notion MCP for product docs and specs. Linear MCP for ticket context. An internal search MCP for code search at scale. A custom MCP for the analytics platform. Each gives Claude access to a source of truth it could not otherwise reach.
+
+**Common mistake the Anthropic guide flags:** building MCP connections before the basics are working. Teams discover MCP, get excited, spend two weeks wiring up integrations with Jira, Confluence, Datadog, Sentry, then wonder why Claude is not producing quality output. The model has access to every tool in the company and no idea what to do with any of it because CLAUDE.md, hooks, and skills were never set up.
+
+MCP is the last layer. Build the others first.
+
+## Subagents
+
+Subagents work differently from the six layers above. They are a delegation capability, available whenever you need them, configured nowhere upfront.
+
+The pattern Anthropic flags is "split exploration from editing." Spin up a read-only subagent to map a subsystem and write findings to a file. Then have the main agent edit with the full picture. The subagent burns its own context window on the mapping work without polluting the editor agent's context.
+
+Two other patterns worth knowing: parallel exploration (three subagents map three different subsystems in parallel; main agent gets three small writeups) and specialized review (a subagent with a security-review skill reviews a change before the main agent commits).
+
+## Three patterns that travel
+
+![Three columns showing the three patterns: make the codebase legible to Claude, keep the harness current as models evolve, and assign ownership from day one](diagram-3-three-patterns.png)
+
+**Make the codebase legible.** Layered CLAUDE.md files, initialization in subdirectories rather than at the repo root, test and lint commands scoped per directory, `.ignore` files for generated content, codebase maps when the directory structure does not do the work, LSP running so search happens at the symbol level. Every one of these is a small investment. The compound effect is what makes Claude Code work at scale.
+
+**Keep the harness current.** Models evolve. Instructions written for the model you have today can work against the model you will have in six months. Anthropic recommends reviewing configurations every three to six months. I would add: do an audit after every major model release, not just on the calendar.
+
+**Assign ownership.** This is the pattern most engineering organizations get wrong. Technical configuration alone does not drive adoption. The rollouts that spread fastest had a dedicated infrastructure investment before broad access. A small team, sometimes just one person, wired up the tooling so Claude already fit developer workflows when they first touched it. The Anthropic guide identifies an emerging role here: the agent manager. A hybrid PM-engineer function dedicated to managing the Claude Code ecosystem.
+
+## What to do this week
+
+If you are running Claude Code with a team and have not done the harness work yet, here is the order I would take it in.
+
+**Day 1.** Audit your CLAUDE.md files. Are they lean? Are they layered? Is the root file under 80 lines? If not, this is the highest-leverage thing you can fix today.
+
+**Day 2.** Identify one feedback hook to build. The reflection hook is the best starting point. Five to ten lines of shell. Run at session end. Output goes to a log the DRI reviews weekly.
+
+**Day 3.** Build or audit your first plugin. If the team has any tribal configuration, package it.
+
+**This month.** Wire up LSP for your primary language if you are on a typed language. Identify one MCP integration that would unblock workflow friction.
+
+**This quarter.** Assign a DRI if you have not. Establish a plugin marketplace. Run the cross-functional working group Anthropic recommends.
 
 ## What is coming next
 
 The next two newsletter issues will continue this thread:
 
-- **The .spec-cache skill.** A walkthrough of the actual session-start and session-end scripts that implement the round-trip. About 40 lines, works with Claude Code or any Coding agent that speaks MCP.
-- **Notion vs Linear for spec destination.** A practitioner-grade decision tree. Some teams will be better served by Notion (long-form, multi-stakeholder), some by Linear (lifecycle-first, lighter spec content). The deciding question is shape of work, not vendor preference.
+- **The reflection hook walkthrough.** The actual shell script that surfaces CLAUDE.md update candidates after every session. Five to ten lines, working with Claude Code, output format that turns into a Monday morning review ritual.
+- **Plugin marketplace patterns.** What the successful internal marketplaces look like, who owns curation, the approval flow, and the rollback mechanism. Pulled from three client deployments.
 
-**One open question for you, if you are willing to share in the comments:** how many markdown files in your current repo are still being treated as a source of truth for something with a real lifecycle? Be honest. Mine had four. (After last issue, mine had two. Better, not done.)
+**One open question:** how many CLAUDE.md files are in your repo right now, and is the root one under 80 lines? Be honest. (Mine had 1,200 lines a month ago. Now it has 60. The other 1,140 lines are skill files.)
 
 Until next week.
 
@@ -149,3 +172,5 @@ Marco
 ---
 
 *Autocomplete is a free weekly newsletter on practical AI implementation. If you are not subscribed yet, the button above this paragraph is the easiest way to fix that. If you are already subscribed, forwarding this to one engineering lead who would benefit is the single best thing you can do for me.*
+
+*Source article: Anthropic, "How Claude Code works in large codebases: Best practices and where to start." May 14, 2026.*
