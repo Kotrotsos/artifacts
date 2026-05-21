@@ -195,3 +195,4 @@
 | 2026-05-21 | content | images | [hero.png](projects/content/images/hero.png) | Claude Code harness annotated, practitioner read on Anthropic scale guide: hero.png |
 | 2026-05-21 | content | images | [diagram-1-rag-vs-agentic.png](projects/content/images/diagram-1-rag-vs-agentic.png) | Claude Code harness annotated, practitioner read on Anthropic scale guide: diagram-1-rag-vs-agentic.png |
 | 2026-05-21 | content | images | [diagram-2-build-order.png](projects/content/images/diagram-2-build-order.png) | Claude Code harness annotated, practitioner read on Anthropic scale guide: diagram-2-build-order.png |
+| 2026-05-21 | content | images | [diagram-3-three-patterns.png](projects/content/images/diagram-3-three-patterns.png) | Claude Code harness annotated, practitioner read on Anthropic scale guide: diagram-3-three-patterns.png |
