@@ -91,3 +91,4 @@
 | 2026-05-20 | reports | [google-io-2026-scan.html](reports/google-io-2026-scan.html) | Google I/O 2026 practical AI scan, five article angles | /Users/marcokotrotsos/PERSONAL/Content/drafts/google-io-2026-scan/google-io-2026-scan.html |
 | 2026-05-21 | reports | [research.html](reports/research.html) | Research brief on spec.md destination debate, Position A vs B vs C, Notion vs Linear | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-md-research-2026-05-21/research.html |
 | 2026-05-21 | images | [spec-workflow.png](images/spec-workflow.png) | Spec workflow diagram, workspace authored files generated, five-stage flow | /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-workflow-diagram/spec-workflow.png |
+| 2026-05-21 | reports | [draft.md](reports/draft.md) | Workspace authored files generated, V2 of spec.md piece: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/workspace-authored-files-generated/draft.md |

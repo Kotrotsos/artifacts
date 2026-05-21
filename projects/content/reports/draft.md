@@ -1,156 +1,145 @@
-# Spec-Driven Development Is Right. Spec.md Is the Wrong Container.
+# Workspace Is Authored. Files Are Generated.
 
-*Markdown is great as a portable exchange format between agents. It is a poor system of record for things that have lifecycle, ownership, status, and history. Stop reinventing Linear in flat files.*
+*Spec.md is not the problem. Treating it as the source of truth is. After three weeks of working through this with engineering teams, the operational rule that actually holds up is the one in the title. Here is what it means in practice, and the two-snapshot pattern that makes it work.*
 
-![A small translucent spec.md card on the left and a larger translucent board with ticket cards arranged in three kanban columns on the right, connected by a bidirectional coral arrow, with a caption reading one for travel, one for living](hero.png)
+![A workspace board at the top of the image with two file shapes below it, one with a dashed outline labeled working snapshot, one with a solid outline labeled frozen snapshot, all in translucent teal on a pure white background, with the caption workspace is authored, files are generated](hero.png)
 
 **Key takeaways:**
 
-- Spec-driven development is the right move. Writing a clear spec before writing code is one of the operational shifts that actually compounds in 2026. The debate is not whether to write specs. The debate is where the spec lives.
-- The default answer that has emerged in the last year (put it in a spec.md file, commit it to the repo, point the agent at it) gets the practice right and the architecture wrong. A spec has lifecycle, ownership, status, dependencies, and history. A flat markdown file has none of those, and reinventing them with prefixes and inline tables is a downgrade from the tools your team already pays for.
-- The clean architecture is the round-trip. Linear (or Jira, or Notion, or Asana) holds the spec as the source of truth. Agents export to spec.md when they need to read or hand off. Updates flow back. The file is for travel. The board is for living. You stop fighting your project management tool and your AI tooling stops accumulating shadow project management it was never built for.
+- Spec-driven development is right. The mistake is not the file format. The mistake is putting the authored, evolving, source-of-truth spec into a flat markdown file in your repo. The file drifts, the board drifts, nobody knows which is authoritative, and your team is silently running a third reconciliation system in Slack.
+- The operational rule that holds up across the teams I have advised this quarter is one sentence: workspace is authored, files are generated. The spec lives in Notion (or Linear). The repo holds two kinds of generated snapshot, never an authored file.
+- The two snapshots have different homes and different mutability. A gitignored working snapshot in `.spec-cache/` that the agent reads during a session, regenerated every time. A committed PR-attached snapshot in `docs/specs/` that freezes the spec at the moment work shipped. Both are generated. Neither competes with the workspace for "is it the truth."
 
 ---
 
-There is a quiet trend in the AI-engineering community I want to push back on, while keeping the part of it that is correct.
+I wrote a piece three weeks ago arguing that spec-driven development is right but spec.md is the wrong container. The argument landed with the people who had already drifted into the same problem. It made the people who had not yet drifted defensive. Most of the defensive responses were a version of the same objection: "but the file works fine, the agent reads it natively, why are you trying to take it away?"
 
-The trend is spec-driven development. Write a clear specification, get the agent to interview you about it, refine the spec, then let the agent build against it. PFF's post-engineering org built their 25x deployment story on this practice. Anthropic's own internal teams do something similar. So do most of the engineering shops I have advised in the last six months. The practice is real, the gains are real, and skipping the spec is the single most expensive mistake I see teams making with autonomous agents.
+That objection is fair, and the original article underweighted it.
 
-So the practice is right. The architecture most teams have landed on is wrong.
+The honest answer, which took me another three weeks of working through this with engineering teams to get to, is that the file is not the problem. The file is fine. What does not work is the file being the authored, evolving, source-of-truth artifact. The fix is not to delete the file. The fix is to make sure the file got generated, not typed.
 
-The architecture most teams have landed on is putting the spec in a file called spec.md, committing it to the repo, and pointing the agent at it. Then a sibling LDD.md. Then a tickets.md. Then the inevitable manual sync from these files to whatever ticketing system the team actually uses for everything else. Then the slow accumulation of "is the file the truth or is the ticket the truth?" confusion. Then the realization six months later that nobody can tell what state any given spec is actually in.
+This article is the operational version of that argument. The phrase to remember is the title. Workspace is authored. Files are generated. The rest of the piece is what that means in practice, why Notion's May 13 platform launch makes this easier than it was three weeks ago, and how the two-snapshot pattern resolves the drift problem cleanly.
 
-Markdown is a great format. It is a poor system of record. The two roles are not the same role, and conflating them is the trap.
+## The thing that actually broke last time
 
-This article is the argument for the cleaner architecture. Keep the spec-driven practice. Move the spec to the platform that was built for it. Use markdown as the portable exchange format, the snapshot, the thing your agent reads and writes. Stop pretending markdown is your ticketing system.
+Three engineering teams I worked with in March and April adopted spec-driven development the same way. spec.md in the repo, agent reads the file, work happens, file gets updated. All three loved it for the first three weeks. All three hit the same wall in week six.
 
-## What spec-driven development gets right
+The wall was always: the file says one thing, the Linear ticket says another, three engineers are operating off three different states, the team is silently running a reconciliation system in Slack. Nobody decided this should happen. It happened anyway, because the file and the ticket were both being treated as the truth, and they drifted.
 
-Let me start by defending the practice, because the rest of the article only makes sense if we agree the practice is worth keeping.
+When you ask the team where this drift came from, the honest answer is: nobody knew which artifact was authoritative. The file was authoritative for the agent. The Linear ticket was authoritative for status. The Slack thread was authoritative for the why. Three sources, no precedence rule, predictable result.
 
-Spec-driven development works because agents are bad at intent and great at execution. An agent without a clear spec will produce something. It will probably be plausible. It will probably be wrong in subtle ways you cannot diagnose without reading the entire codebase. The act of writing the spec, ideally in a back-and-forth with the agent, is the part where the misunderstandings get surfaced before they get compiled into 800 lines of code.
+The original article's response was: move the spec to Linear, kill the file. The defensive response to that argument was: "but the agent needs to read markdown." Both are right. The synthesis is the title of this piece.
 
-The empirical case has been made repeatedly in 2026. PFF's case study from January to March (25x more deploys, 10x output) had the lightweight design document at the center. Anthropic's effective-agents guidance is built around clear goal specification before delegation. Every team I have watched produce real autonomous-agent wins has started by getting better at writing specs.
+## Workspace is authored
 
-So the practice is settled. You write the spec first. You let the agent interview you to surface gaps. You distribute the spec for review. You let the agent generate tickets and PRs from it. This is how 2026 engineering teams work, and it is genuinely better than the pre-agent process.
+Specs are authored in a workspace. Notion, Linear, Jira, Asana, Coda, whatever your team already uses. The choice between them matters less than people pretend, and I will get to that in a section. The point is that the authored spec lives in a tool built for things that have lifecycle, ownership, status, dependencies, and history.
 
-The argument I am making is purely about where the spec lives once it exists.
+The case for Notion specifically got a lot stronger on May 13, 2026, when Notion launched their Developer Platform. CEO Ivan Zhao's framing was sharp: "Use your Notion database as a sheer canvas to power both your workflows and your agents." Pitch: "Any data, any tool, any agent." Notion now ships first-class integrations with Claude Code, Cursor, Codex, and Decagon, plus Workers (cloud-sandboxed code execution inside Notion) and Database Sync (live external data pulls from Salesforce, Zendesk, Postgres).
 
-## The unspoken assumption that is hurting you
+That announcement is a vendor explicitly competing for the spec-source-of-truth slot. It is the first time a workspace tool has made the agent-readability story directly part of the product positioning. Linear has had MCP for a while. Notion now has MCP plus the developer platform plus the explicit agent-targeted pitch. For the purposes of this article, treat both as valid destinations. Pick the one your team already uses.
 
-The default move in the spec-driven community is: put it in a file. spec.md in the repo. CLAUDE.md alongside it. LDD.md for the lightweight design doc. tickets.md for the ticket list. Commit them all. Let the agent read them. Update them as the work progresses.
+What changes when you move the authored spec to a workspace:
 
-This works for the first three weeks. Then it starts decaying in predictable ways.
+- The spec has a status. Draft, in review, approved, in progress, done. The status updates the team automatically.
+- The spec has an owner. A named human who is responsible, gets notified when it changes, has authority to approve.
+- The spec has dependencies. This one blocks that one. The graph is visible, queryable, updatable in real time.
+- The spec has a real audit history. Not git blame. The actual record of who proposed what change, when, and why.
+- The spec connects to the rest of your work surface. Customer issues, bugs, design docs, all in the same tool.
 
-The spec.md file does not have a status. Is the spec approved? In review? Stale? Two engineers are reading it; one thinks it is signed off, the other thinks it is still a draft. The file does not tell them.
+None of these are theoretical. They are the things a flat markdown file is bad at, and they are the things that caused the drift in the original three teams.
 
-The spec.md file does not have an owner. Who decides when it changes? Who has authority to accept a change? Who is notified when the spec is updated? Without a system that holds ownership, every update becomes a Slack message: "hey, I changed the spec, can you look at it?"
+## Files are generated
 
-The spec.md file does not track dependencies. The tickets.md has six things in it. Three of them block the other three. The order matters. The file lists them as bullet points. The dependency graph is in someone's head, or worse, scattered across three Slack threads and a Notion page.
+The agent still needs markdown. That has not changed. What changes is where the markdown comes from.
 
-The spec.md file does not have a history. Yes, you have git history. Git is great for source code. Git history of a spec.md, by month four, is a 47-commit list of "update spec," "more updates," "fix spec," "address feedback." Try to figure out who approved the change from a one-sentence acceptance criterion to a two-paragraph one. Git does not know. The blame line tells you who typed the change, not who authorized it.
+![A vertical stack of three rounded cards on a white platform showing the three tiers of spec artifacts: source of truth at the top with rows describing where it lives and who reads it, working snapshot in the middle with a dashed outline, frozen snapshot at the bottom with a solid outline](diagram-1-three-tiers.png)
 
-The spec.md file does not interact with the rest of your work surface. Customer issues live in Linear. Bugs live in Linear. Feature requests live in Linear. The roadmap lives in Linear. The spec for the feature also lives in Linear, except for the part of it that lives in spec.md, which is the part the agent reads. Your team now does double bookkeeping for the lifecycle of every piece of work.
+The right pattern is three tiers, not one. The tiers have different homes and different mutability rules.
 
-These problems are not theoretical. I have watched them play out in three engineering orgs in the last two months. The pattern is the same in all three. The spec.md was beautiful in week one. By month three the file and the Linear board had drifted, nobody was sure which was authoritative, and the team was running an unspoken third system in Slack to reconcile them.
+**Tier 1: source of truth.** Authored in Notion or Linear. Continuously evolving. Read by humans (and by agents through the MCP server). This is the thing the team treats as authoritative.
 
-## What a spec actually needs
+**Tier 2: working snapshot.** Lives in `.spec-cache/spec.md` in the repo. Gitignored. Pulled from the workspace at session start via MCP. Used by the agent during the session. Regenerated next session. Never committed.
 
-If you list the things a spec needs in order to function as a real artifact in a real engineering org, the list looks like this.
+**Tier 3: frozen snapshot.** Lives in `docs/specs/<feature>-shipped.md`. Committed alongside the PR that ships the feature. Frozen at PR open and never updated. Evidence of what spec the work was built against when it landed.
 
-![Five translucent ticket-shaped cards on an isometric platform showing lifecycle, ownership, status, dependencies, and history, with a caption that a flat markdown file does none of these well](diagram-1-needs.png)
+The three tiers exist because they answer three different questions. The source of truth answers "what does the team currently believe this feature should be." The working snapshot answers "what is the agent looking at right now." The frozen snapshot answers "what spec was true when this code shipped, six months from now when someone is debugging."
 
-**Lifecycle.** A spec moves through states. Draft, in review, approved, in progress, blocked, done, deprecated. The state matters. If you cannot tell what state a spec is in by looking at it, you cannot act on it confidently.
+A single file at the root of your repo cannot be all three things at once. That is what made the original setup drift.
 
-**Ownership.** Every spec has a person responsible for it. They are notified when it changes, they approve changes, they are the named human someone can ask "is this still the plan." Diffuse ownership is no ownership.
+## The actual workflow
 
-**Status.** Even within a state, the spec has live operational status. Is this currently being worked on? Is it blocked on something? Is it waiting for review? The status is the thing the team looks at every morning to know what to pick up.
+The flow that ties the three tiers together is concrete enough to write down. Here it is in full.
 
-**Dependencies.** Specs do not exist in isolation. This spec depends on that one shipping first. This other spec is blocked on a design decision being made. The dependency graph is part of the spec's metadata, and it has to be visible to be useful.
+![A horizontal flow diagram with five labeled stages: workspace as source of truth, pull via MCP into a gitignored cache file, agent reads and executes, sync changes back to the workspace, freeze a snapshot into docs slash specs for PR evidence](diagram-2-workflow.png)
 
-**History.** Not git history of who typed what. Audit history of who decided what. The spec changed on March 12, the change was proposed by Maya, approved by Tomas, the change was scoped down from the original because of a customer concern raised in this ticket. This history is what you use to figure out why a feature looks the way it does six months later when someone new joins.
+**Session start.** Pull the current spec from Notion or Linear via the MCP server. Write it to `.spec-cache/spec.md` (gitignored). The cache directory exists for the duration of the session and gets discarded after.
 
-A flat markdown file in a repo does none of these well. You can fake any one of them with prefixes and tables and YAML frontmatter. You cannot fake all five without rebuilding Linear, badly, on top of a file system.
+**During the session.** The agent reads from the cache file. The agent may also write to the cache file as the work surfaces new requirements or refinements. This is the agent's working medium. It behaves exactly like the spec.md you are used to working with, with one important difference: nobody else on the team is editing this file. It is yours for this session.
 
-## What Linear (and Jira, and Notion, and Asana) are good at
+**Session end.** Diff the cache against the workspace. Sync the meaningful changes back. New acceptance criteria, refined requirements, surfaced edge cases, new sub-tasks. The workspace updates. The team sees the changes in their normal Notion or Linear workflow. The cache gets discarded.
 
-This is the part the spec-in-markdown community has under-credited. The ticketing tools we have been using for fifteen years are good at exactly the things spec.md is bad at.
+**At PR open.** Generate a frozen snapshot of the spec as it stood when the work was finalized. Commit it to `docs/specs/<feature>-shipped.md`. This snapshot is the evidence in the PR review. It is the answer to "what spec did the agent build against." It never changes after the PR opens.
 
-Linear has lifecycle as a first-class concept. The ticket has a status. Changing the status updates the team automatically. Moving a ticket from In Progress to Blocked tells the assigned engineer's manager that the work is stuck and they should ask why.
+That is the whole workflow. Five stages, two directions of flow (workspace down to cache, cache back up to workspace, and a separate freeze path to the committed snapshot), no ambiguity about which artifact is authoritative.
 
-Linear has ownership as a first-class concept. Every ticket has an assignee. Subscribing to a project means you get notified when specs you care about change. There is no "I missed the slack message" because the platform is the message.
+The reason this works where the original spec.md pattern broke: there is exactly one source of truth, the workspace. The cache cannot drift because it gets regenerated. The frozen snapshot cannot drift because it is frozen. The team only edits one thing. The agent only reads one thing per session. The PR reviewer sees exactly the spec the work was built against.
 
-Linear has dependencies as a first-class concept. You can block one ticket on another. The blocked ticket cannot be marked done until the blocker is. The chain is visible, queryable, and updatable by the whole team in real time.
+## The Marmelab response
 
-Linear has audit history as a first-class concept. Every change is recorded, attributed, timestamped. You can reconstruct the decision path on any spec by reading its activity log.
+The strongest dissent against spec-driven development is Marmelab's "Waterfall strikes back" piece. The argument is that big design up front fails because software development is non-deterministic. Specs go stale. Reality outruns the document. The whole exercise is more Waterfall than agile.
 
-Linear, Jira, Notion, Asana, and the rest of the platforms have spent ten to fifteen years optimizing for the exact problems that a spec.md file in a repo struggles with. The decision to ignore them and reinvent project management as a folder of markdown files in your repo is, to be polite, an unforced error.
+This article is the response.
 
-The reason the AI-engineering community made that choice is understandable. Agents read markdown natively. Agents do not have a Linear API connection by default. The path of least resistance was to put the spec where the agent could read it, which meant a file. That move was a fast workaround for an integration problem, not a principled architectural decision.
+The workspace-authored, files-generated pattern is not Waterfall. The workspace evolves continuously. Every session that surfaces a new requirement updates the workspace. Every PR review that catches an edge case updates the workspace. The spec is never frozen except in the context of one shipped piece of work. The team is iterating on the spec the whole time the work is happening.
 
-Now that the integration problem is largely solved (Linear has an MCP server, Jira has one, every major project tool either has one or will within the quarter), the workaround does not need to be the architecture anymore.
+What is Waterfall is putting a 4,000-word spec.md in your repo and then refusing to touch it for two months because "the spec is locked." That is the failure mode Marmelab is rightly objecting to. The two-snapshot pattern explicitly avoids it. The workspace is the iteration surface. The frozen snapshot is just the post-hoc record of "this is what we believed when this code shipped."
 
-## The right architecture: the round-trip
+Lightweight specs in a workspace, iterated continuously, snapshotted for evidence: that is not Waterfall. That is what agile actually looks like when the team includes an AI agent that needs a written reference.
 
-The clean version is the round-trip.
+## What stops, what stays, what starts
 
-![Three nodes connected by coral arrows: a Linear-style board labeled source of truth, a spec.md card labeled portable export, and an agent cube labeled executes work, with a caption reading file is for travel, board is for living](diagram-2-round-trip.png)
+If you have been running the older spec.md pattern, here is the concrete cleanup.
 
-**Linear holds the spec.** The spec is a Linear project, or a parent ticket with sub-tickets, or whatever structure your team uses for substantial work. It has all the metadata Linear gives you for free: status, owner, dependencies, audit log, integration with the rest of your workflow.
+![Three columns showing what to stop including human-edited spec.md at root and arguing which is the truth, what to keep including markdown as agent input format and version control for evidence, and what to start including workspace as source of truth and gitignored working cache](diagram-3-stop-keep-start.png)
 
-**spec.md is generated from Linear.** When an agent needs to work on the spec, it pulls a markdown export from Linear. This is the snapshot. It is the portable, agent-readable, version-pinned representation of the spec at that moment. The file exists for the duration of the agent's work and gets discarded or refreshed when needed.
+**Stop.**
 
-**The agent reads and writes spec.md.** The agent does its work against the file. It interviews you, refines, generates tickets, builds, tests. All of that happens with markdown as the working medium. The agent never directly modifies Linear in the middle of a long autonomous loop, because Linear is the source of truth and you do not want an agent partial-writing into it.
+- Human-edited spec.md at the root of your repo. If a human typed it directly and committed it, it is in the wrong tier.
+- Committing the working spec the agent uses during a session. That file should be ephemeral, not version-controlled.
+- Hand-syncing files to tickets. The manual sync layer was a workaround for an integration problem that is now solved.
+- Arguing which is the truth in Slack. If you find yourself in that conversation, you have not done the cleanup yet.
 
-**Updates flow back to Linear.** When the work completes, the agent's output (new tickets, status changes, additional acceptance criteria) flows back to Linear via the MCP server or a small sync step. The board state is updated. Humans see the changes in their normal workflow. The next agent run pulls the fresh markdown from the updated board.
+**Keep.**
 
-This is the model. The file is for travel. The board is for living. The agent gets the speed and ergonomics of markdown. The team gets the lifecycle, ownership, and history of a real project management tool. Nobody is doing double bookkeeping.
+- Markdown as the agent's input format. The agent reads markdown best. Keep generating markdown for it.
+- Version control for evidence. The frozen PR snapshot still lives in git. Git is still the right tool for "what did we ship."
+- Spec-driven discipline. Writing things down before building them is correct. Do not stop doing this.
+- Lightweight written specs. The discipline is the spec, not the size. Short specs in the workspace are better than long ones nobody updates.
 
-The piece that makes this work is the bidirectional MCP layer. Linear's MCP server is the obvious one for Linear shops. Jira has equivalent. Notion has equivalent. The pattern is: the agent never owns the source of truth. The agent operates on exports. The exports are first-class artifacts produced and consumed on demand.
+**Start.**
 
-## What this changes about your current setup
-
-If you are running spec-driven development today and your spec lives in a markdown file in the repo, three things to do this month.
-
-![Three columns showing what to stop (spec.md as source of truth, hand-syncing files to tickets), what to keep (spec-driven development, agents that read markdown), and what to start (board as system of record, round-trip export)](diagram-3-stop-keep-start.png)
-
-**Stop treating spec.md as the source of truth.** Audit your repo. Every spec.md, every LDD.md, every tickets.md. For each one, ask: is this also tracked in Linear, Jira, or Notion? If yes, decide which is authoritative. If the answer feels uncomfortable, that is because you have been running two systems and nobody admitted it.
-
-**Stop hand-syncing files to tickets.** If your current workflow involves a human reading the markdown spec, going to Linear, and copying the structure across, you have built a manual sync layer that exists only because the agent could not talk to Linear. That constraint is gone. Stop paying the manual sync tax.
-
-**Stop reinventing project management in flat files.** YAML frontmatter for status. Inline tables for dependencies. Filename conventions for ownership. These are workarounds for not using the right tool. The right tool exists, you already pay for it, you are just not pointing your agent at it.
-
-**Keep spec-driven development as a practice.** Writing a clear spec before writing code is correct. Letting the agent interview you to refine the spec is correct. Distributing the spec for review is correct. None of this changes. The practice is the part that compounds.
-
-**Keep agents that read markdown.** Markdown is the right input format for an agent. LLMs read it natively, it is portable, version-controllable, and human-readable. The agent should keep reading markdown. The change is that the markdown is now generated from the board, not authored as a standalone file.
-
-**Keep lightweight design docs as portable exports.** The LDD as a concept is correct. PFF's case study showed why. The lightweight design doc is a great working artifact. It just does not need to live in a file in your repo as the authoritative version. Generate it from the board, work against it, push updates back.
-
-**Start using the board as the system of record.** If you use Linear, the spec is a Linear project. If you use Jira, it is an epic with sub-tasks. If you use Notion, it is a database row with linked sub-pages. Pick the tool you already use and put the spec there with all the metadata it deserves.
-
-**Start using the round-trip pattern.** Install the MCP server for your project tool. Configure your agents to export from the board to spec.md when they need to work, and to push updates back when the work changes the spec. This is one afternoon of setup that pays back every week thereafter.
-
-**Start treating spec.md as a snapshot, not a state.** When the file exists, it is a snapshot of the board at a moment in time. The agent's job is to make that snapshot useful for the next chunk of work, then discard it or refresh it. The snapshot is never the truth. The board is the truth.
+- Workspace as source of truth. Notion or Linear. Pick the one the team already uses.
+- Gitignored working cache. `.spec-cache/` in the repo, never committed.
+- Frozen PR snapshots in `docs/specs/`. Committed evidence of what spec the work was built against at landing time.
+- Generate, never author. If a file got typed by a human into git, it is in the wrong tier. If a script pulled it from the workspace, it is in the right tier.
 
 ## What I would do this week
 
-Three concrete moves.
+Three concrete moves for any team running the older pattern.
 
-First, take a working session with the team and inventory every markdown file in your repo that contains spec-shaped content. spec.md, LDD.md, tickets.md, requirements.md, anything with structured task or feature content. For each, decide whether it should be promoted to Linear, deprecated entirely, or kept as a working artifact. Most teams will find they have three to seven of these, and at least half can move.
+First, run the inventory. List every markdown file in your repo that contains spec-shaped content. spec.md, LDD.md, tickets.md, requirements.md, any of them. For each, ask: is this also tracked in Notion or Linear? If yes, decide which is authoritative. If the answer feels uncomfortable, that is the answer.
 
-Second, install the Linear MCP server (or your equivalent). Configure your agents to read Linear projects when working on substantial features. The setup is short. The pattern of "agent reads Linear, agent works against an exported spec.md, agent updates Linear when done" is what makes the rest of this work.
+Second, install the MCP server. Notion MCP is hosted now and works with Claude Code, Cursor, VS Code, ChatGPT, and the major coding agents. Linear MCP is mature. Pick whichever workspace your team uses and wire it up. The integration setup is short. The pattern of "agent pulls from the workspace, writes to a gitignored cache, syncs back at session end" is a few lines of shell or a small skill.
 
-Third, pick one feature your team is about to ship that currently has a spec.md in the repo. Migrate that one feature to the Linear-as-source pattern as a pilot. Run it through to completion. Observe. The team will know within two weeks whether the new architecture is better. In every case I have done this, the answer has been yes, by a wide margin, and the team never wants to go back.
+Third, pick one feature your team is about to ship and run it through the new pattern as a pilot. Workspace authored, cache generated, PR snapshot frozen. Run it end to end. The team will know within two weeks whether the architecture is better. In every team I have run this with, the answer has been yes, by a wide margin, and the team did not want to go back.
 
 ## Closing
 
-The spec-driven trend is correct. The instinct to write things down before building them, to let the agent interview you, to generate tickets from a clear specification, is the operational shift that actually compounds in 2026. None of that is in question.
+Spec-driven development is right. The original article was right that flat files do not make a good system of record. What the original article got partly wrong was the framing. Killing spec.md is not the answer. Killing the human-edited spec.md is the answer.
 
-The mistake is the architectural one of confusing the spec with the file that holds it. Markdown is a great working medium and a poor system of record. Linear (and the other platforms) have been good at being a system of record for over a decade. Use both for what they are good at, with the round-trip between them as the integration pattern, and you stop running shadow project management in your repo.
+The clean architecture is the three-tier one. The workspace is the truth. The cache is the agent's working snapshot. The PR snapshot is the frozen evidence. Each tier has one job, one home, one mutability rule, and no ambiguity about which is authoritative.
 
-There is still a place for markdown in spec-driven development. The place is for travel, not for living. The file moves between systems and agents. The board is where the spec actually lives.
-
-Stop putting your specs in markdown only. Use the platform you already pay for. Your future self, the next engineer who joins your team, and the auditor who shows up six months from now will all thank you.
+If you remember one sentence from this piece, make it the title. Workspace is authored. Files are generated. That is the rule. Everything else is implementation detail.
 
 ---
 
