@@ -193,3 +193,4 @@
 | 2026-05-21 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Claude Code harness annotated, practitioner read on Anthropic scale guide: substack-version.md |
 | 2026-05-21 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Claude Code harness annotated, practitioner read on Anthropic scale guide: linkedin-post.md |
 | 2026-05-21 | content | images | [hero.png](projects/content/images/hero.png) | Claude Code harness annotated, practitioner read on Anthropic scale guide: hero.png |
+| 2026-05-21 | content | images | [diagram-1-rag-vs-agentic.png](projects/content/images/diagram-1-rag-vs-agentic.png) | Claude Code harness annotated, practitioner read on Anthropic scale guide: diagram-1-rag-vs-agentic.png |
