@@ -205,3 +205,4 @@
 | 2026-05-21 | content | images | [lesson-C3-diagram.png](projects/content/images/lesson-C3-diagram.png) | Course v2 image: lesson-C3-diagram.png |
 | 2026-05-21 | content | images | [lesson-A1-diagram.png](projects/content/images/lesson-A1-diagram.png) | Course v2 image: lesson-A1-diagram.png |
 | 2026-05-21 | content | images | [track-1-harness-banner.png](projects/content/images/track-1-harness-banner.png) | Course v2 image: track-1-harness-banner.png |
+| 2026-05-21 | content | images | [track-2-integration-banner.png](projects/content/images/track-2-integration-banner.png) | Course v2 image: track-2-integration-banner.png |
