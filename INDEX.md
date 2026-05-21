@@ -188,3 +188,4 @@
 | 2026-05-21 | content | images | [hero.png](projects/content/images/hero.png) | Workspace authored files generated, V2 of spec.md piece: hero.png |
 | 2026-05-21 | content | images | [diagram-1-three-tiers.png](projects/content/images/diagram-1-three-tiers.png) | Workspace authored files generated, V2 of spec.md piece: diagram-1-three-tiers.png |
 | 2026-05-21 | content | images | [diagram-2-workflow.png](projects/content/images/diagram-2-workflow.png) | Workspace authored files generated, V2 of spec.md piece: diagram-2-workflow.png |
+| 2026-05-21 | content | images | [diagram-3-stop-keep-start.png](projects/content/images/diagram-3-stop-keep-start.png) | Workspace authored files generated, V2 of spec.md piece: diagram-3-stop-keep-start.png |
