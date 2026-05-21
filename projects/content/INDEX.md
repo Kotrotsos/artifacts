@@ -110,3 +110,4 @@
 | 2026-05-21 | images | [lesson-B1-diagram.png](images/lesson-B1-diagram.png) | Course v2 image: lesson-B1-diagram.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/lesson-B1-diagram.png |
 | 2026-05-21 | images | [lesson-B3-diagram.png](images/lesson-B3-diagram.png) | Course v2 image: lesson-B3-diagram.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/lesson-B3-diagram.png |
 | 2026-05-21 | images | [lesson-B4-diagram.png](images/lesson-B4-diagram.png) | Course v2 image: lesson-B4-diagram.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/lesson-B4-diagram.png |
+| 2026-05-21 | images | [lesson-C1-diagram.png](images/lesson-C1-diagram.png) | Course v2 image: lesson-C1-diagram.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/lesson-C1-diagram.png |

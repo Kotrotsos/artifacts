@@ -201,3 +201,4 @@
 | 2026-05-21 | content | images | [lesson-B1-diagram.png](projects/content/images/lesson-B1-diagram.png) | Course v2 image: lesson-B1-diagram.png |
 | 2026-05-21 | content | images | [lesson-B3-diagram.png](projects/content/images/lesson-B3-diagram.png) | Course v2 image: lesson-B3-diagram.png |
 | 2026-05-21 | content | images | [lesson-B4-diagram.png](projects/content/images/lesson-B4-diagram.png) | Course v2 image: lesson-B4-diagram.png |
+| 2026-05-21 | content | images | [lesson-C1-diagram.png](projects/content/images/lesson-C1-diagram.png) | Course v2 image: lesson-C1-diagram.png |
