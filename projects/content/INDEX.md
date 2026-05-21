@@ -109,3 +109,4 @@
 | 2026-05-21 | reports | [index.html](reports/index.html) | Expanded course site v2: 18 lessons across 3 tracks with Q&A, quizzes, interactive widgets | /Users/marcokotrotsos/PERSONAL/Content/course/index.html |
 | 2026-05-21 | images | [lesson-B1-diagram.png](images/lesson-B1-diagram.png) | Course v2 image: lesson-B1-diagram.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/lesson-B1-diagram.png |
 | 2026-05-21 | images | [lesson-B3-diagram.png](images/lesson-B3-diagram.png) | Course v2 image: lesson-B3-diagram.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/lesson-B3-diagram.png |
+| 2026-05-21 | images | [lesson-B4-diagram.png](images/lesson-B4-diagram.png) | Course v2 image: lesson-B4-diagram.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/lesson-B4-diagram.png |
