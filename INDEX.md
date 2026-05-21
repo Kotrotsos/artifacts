@@ -180,3 +180,4 @@
 | 2026-05-20 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Spec-driven belongs on the board, Substack expanded with drift story |
 | 2026-05-20 | content | reports | [google-io-2026-scan.html](projects/content/reports/google-io-2026-scan.html) | Google I/O 2026 practical AI scan, five article angles |
 | 2026-05-21 | content | reports | [research.html](projects/content/reports/research.html) | Research brief on spec.md destination debate, Position A vs B vs C, Notion vs Linear |
+| 2026-05-21 | virtuele-assistent | reports | [accessibility-overview.html](projects/virtuele-assistent/reports/accessibility-overview.html) | WCAG 2.1/2.2 AA accessibility overview for feature/accessibility_ branch |

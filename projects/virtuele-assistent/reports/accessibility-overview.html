@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="nl" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Accessibility Overview — feature/accessibility_</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #f7f8fa;
+    --bg-elev: #ffffff;
+    --fg: #0f172a;
+    --fg-muted: #5b6473;
+    --fg-faint: #8893a3;
+    --border: #e6e9ee;
+    --border-strong: #d4d9e1;
+    --accent: #1a5276;
+    --accent-soft: rgba(26, 82, 118, 0.08);
+    --accent-fg: #ffffff;
+    --pill-bg: #eef2f7;
+    --pill-fg: #243447;
+    --code-bg: #f1f4f8;
+    --code-fg: #1f2937;
+    --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.04);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Geist", "Segoe UI", system-ui, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Geist Mono", Menlo, Consolas, monospace;
+  }
+  html[data-theme="dark"] {
+    --bg: #0b1220;
+    --bg-soft: #0f172a;
+    --bg-elev: #111a2c;
+    --fg: #e5ecf5;
+    --fg-muted: #94a3b8;
+    --fg-faint: #64748b;
+    --border: #1e293b;
+    --border-strong: #2b3a52;
+    --accent: #4a9bd1;
+    --accent-soft: rgba(74, 155, 209, 0.12);
+    --accent-fg: #0b1220;
+    --pill-bg: #1b2638;
+    --pill-fg: #cdd9e8;
+    --code-bg: #16213a;
+    --code-fg: #cdd9e8;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  @media (prefers-color-scheme: dark) {
+    html[data-theme="system"] {
+      --bg: #0b1220; --bg-soft: #0f172a; --bg-elev: #111a2c;
+      --fg: #e5ecf5; --fg-muted: #94a3b8; --fg-faint: #64748b;
+      --border: #1e293b; --border-strong: #2b3a52;
+      --accent: #4a9bd1; --accent-soft: rgba(74,155,209,0.12); --accent-fg: #0b1220;
+      --pill-bg: #1b2638; --pill-fg: #cdd9e8;
+      --code-bg: #16213a; --code-fg: #cdd9e8;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.3);
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    color: var(--fg);
+    background: var(--bg-soft);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 48px 32px 96px;
+  }
+
+  /* Header */
+  header.hero {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 36px 36px 32px;
+    box-shadow: var(--shadow);
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+  }
+  .lede {
+    color: var(--fg-muted);
+    font-size: 17px;
+    max-width: 62ch;
+    margin: 0;
+  }
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 11px;
+    background: var(--pill-bg);
+    color: var(--pill-fg);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .pill code {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  /* Theme switch */
+  .theme-switch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: inline-flex;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 4px;
+    box-shadow: var(--shadow);
+    z-index: 10;
+  }
+  .theme-switch button {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: var(--fg-muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 120ms, color 120ms;
+  }
+  .theme-switch button[aria-pressed="true"] {
+    background: var(--accent);
+    color: var(--accent-fg);
+  }
+
+  /* Sections */
+  section {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 36px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+  }
+  h2 {
+    font-size: 22px;
+    font-weight: 650;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  h2 .num {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .section-intro {
+    color: var(--fg-muted);
+    margin: 0 0 22px;
+    font-size: 14.5px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead th {
+    text-align: left;
+    color: var(--fg-faint);
+    font-weight: 600;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 12px 14px 12px 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody td:first-child {
+    white-space: nowrap;
+    color: var(--accent);
+    font-weight: 600;
+    width: 1%;
+  }
+  tbody td:nth-child(2) {
+    width: 1%;
+    white-space: nowrap;
+  }
+  code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* Bullets */
+  ul.clean {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  ul.clean li {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 10px;
+    font-size: 14.5px;
+  }
+  ul.clean li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--accent);
+  }
+  ul.clean li strong { color: var(--fg); }
+
+  /* Outcome cards */
+  .outcomes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .outcome {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    background: var(--bg-soft);
+  }
+  .outcome h3 {
+    margin: 0 0 6px;
+    font-size: 14px;
+    font-weight: 650;
+    color: var(--accent);
+  }
+  .outcome p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--fg-muted);
+  }
+
+  /* Footer */
+  footer.foot {
+    text-align: center;
+    color: var(--fg-faint);
+    font-size: 12.5px;
+    margin-top: 40px;
+  }
+
+  /* Print */
+  @media print {
+    .theme-switch { display: none; }
+    body { background: white; color: black; }
+    .page { padding: 0; max-width: none; }
+    section, header.hero {
+      box-shadow: none;
+      border-color: #d4d9e1;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    h2 { page-break-after: avoid; }
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; }
+  }
+
+  @media (max-width: 640px) {
+    .page { padding: 24px 16px 64px; }
+    header.hero, section { padding: 24px 22px; }
+    tbody td:first-child, tbody td:nth-child(2) { white-space: normal; }
+    table { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="theme-switch" role="group" aria-label="Themakeuze">
+  <button type="button" data-theme-btn="light" aria-pressed="true">Licht</button>
+  <button type="button" data-theme-btn="dark" aria-pressed="false">Donker</button>
+  <button type="button" data-theme-btn="system" aria-pressed="false">Systeem</button>
+</div>
+
+<main class="page">
+
+  <header class="hero">
+    <div class="eyebrow">WCAG 2.1 / 2.2 AA — Overview</div>
+    <h1>Wat de accessibility branch heeft opgeleverd</h1>
+    <p class="lede">
+      Een rondgang door de a11y-features die op <code>feature/accessibility_</code> in
+      de agent-frontend zijn vastgelegd. Alleen wat aantoonbaar in code zit —
+      geen openstaande punten.
+    </p>
+    <div class="meta-row">
+      <span class="pill">Branch&nbsp;<code>feature/accessibility_</code></span>
+      <span class="pill">WCAG 2.1 / 2.2 AA</span>
+      <span class="pill">agent-frontend</span>
+      <span class="pill">Nederlands</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">00</span>Architectuurkeuze</h2>
+    <p class="section-intro">
+      Componenten met a11y-toevoegingen zijn verplaatst uit
+      <code>components/assistant-ui/thread.tsx</code> naar
+      <code>components/civai/</code>. De assistant-ui upgrade-CLI gebruikt
+      <code>aui-*</code> comment-markers als anchors en herschrijft alles
+      daarbinnen — alles in <code>civai/</code> blijft intact bij upgrades.
+    </p>
+    <ul class="clean">
+      <li><strong>civai/assistant-message.tsx</strong> — assistant message + action bar + StarIcon</li>
+      <li><strong>civai/user-message.tsx</strong> — user message + edit action bar</li>
+      <li><strong>civai/composer.tsx</strong> — composer, send/cancel, scroll-to-bottom, suggesties</li>
+      <li><strong>civai/edit-composer.tsx</strong> — edit mode</li>
+      <li><strong>civai/branch-picker.tsx</strong> — versie-navigatie</li>
+    </ul>
+    <p class="section-intro" style="margin-top:18px; margin-bottom:0;">
+      <code>thread.tsx</code> is teruggebracht van 489&nbsp;naar 102&nbsp;regels en
+      bevat alleen nog de orchestrator, ThreadWelcome en de <code>role="log"</code>
+      wrapper rond Messages.
+    </p>
+  </section>
+
+  <section>
+    <h2><span class="num">01</span>Perceivable</h2>
+    <p class="section-intro">Informatie en interface-componenten zijn presenteerbaar op manieren die gebruikers kunnen waarnemen.</p>
+    <table>
+      <thead><tr><th>WCAG</th><th>Bestand:regel</th><th>Wat</th></tr></thead>
+      <tbody>
+        <tr><td>1.1.1</td><td><code>assistant-message.tsx:91</code></td><td>sr-only "Assistent: " als tekstalternatief voor avatar</td></tr>
+        <tr><td>1.1.1</td><td><code>user-message.tsx:43</code></td><td>sr-only "U: " voor screen reader</td></tr>
+        <tr><td>1.1.1</td><td><code>assistant-message.tsx:25</code></td><td>StarIcon SVG met <code>aria-hidden="true"</code></td></tr>
+        <tr><td>1.1.1</td><td><code>source-chip.tsx:43</code></td><td>Globe-icoon <code>aria-hidden="true"</code></td></tr>
+        <tr><td>1.1.1</td><td><code>google-tool.tsx:36</code></td><td>Spinner <code>aria-hidden="true"</code></td></tr>
+        <tr><td>1.1.1</td><td><code>debug-panel.tsx:72,82,91</code></td><td>Decoratieve iconen <code>aria-hidden="true"</code></td></tr>
+        <tr><td>1.4.3</td><td><code>globals.css:46-126</code></td><td>Light + dark themes via CSS-properties, getest op contrast</td></tr>
+        <tr><td>1.4.3</td><td><code>globals.css:132-157</code></td><td>Scrollbar styling met expliciete kleurkeuze in beide modes</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>Operable</h2>
+    <p class="section-intro">UI-componenten en navigatie zijn bedienbaar zonder muis en zonder visuele oriëntatie.</p>
+    <table>
+      <thead><tr><th>WCAG</th><th>Bestand:regel</th><th>Wat</th></tr></thead>
+      <tbody>
+        <tr><td>2.1.1</td><td><code>composer.tsx:83-119</code></td><td>Alle composer-acties zijn echte <code>&lt;button&gt;</code> elementen</td></tr>
+        <tr><td>2.1.1</td><td><code>edit-composer.tsx:22-31</code></td><td>Cancel/Update als button met label</td></tr>
+        <tr><td>2.1.1</td><td><code>branch-picker.tsx:25,34</code></td><td>Vorige/Volgende als buttons</td></tr>
+        <tr><td>2.1.1</td><td><code>resolution-check.tsx:67,76</code></td><td>Ja/Nee feedback-buttons</td></tr>
+        <tr><td>2.4.1</td><td><code>layout.tsx:30-35</code></td><td>Skip-link "Ga naar hoofdinhoud" — sr-only, zichtbaar bij focus</td></tr>
+        <tr><td>2.4.1</td><td><code>layout.tsx:36</code></td><td><code>&lt;main id="main-content"&gt;</code> landmark — doel van skip-link</td></tr>
+        <tr><td>2.4.7</td><td><code>composer.tsx:163</code></td><td>Composer-root: <code>focus-within:ring-2</code> in light en dark</td></tr>
+        <tr><td>2.4.7</td><td><code>resolution-check.tsx:66-67</code></td><td><code>focus-visible:ring-2 ring-offset-2</code> op feedback-buttons</td></tr>
+        <tr><td>2.5.5</td><td>composer / edit-composer</td><td>Send/Cancel/Edit-knoppen ≥ 32 px</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>Understandable</h2>
+    <p class="section-intro">Informatie en bediening van de interface zijn begrijpelijk.</p>
+    <table>
+      <thead><tr><th>WCAG</th><th>Bestand:regel</th><th>Wat</th></tr></thead>
+      <tbody>
+        <tr><td>3.1.1</td><td><code>layout.tsx:26</code></td><td><code>&lt;html lang="nl"&gt;</code> — Nederlands gedeclareerd</td></tr>
+        <tr><td>2.4.4</td><td><code>source-chip.tsx:40</code></td><td><code>aria-label="Bron: {label} (opent in nieuw tabblad)"</code></td></tr>
+        <tr><td>3.3.2</td><td><code>composer.tsx:33,101,119,134,172</code></td><td>Placeholder + aria-labels: Bericht versturen, Stop genereren, Bestand toevoegen, Scroll to bottom</td></tr>
+        <tr><td>3.3.2</td><td><code>edit-composer.tsx:23,28</code></td><td>"Bewerken annuleren" / "Bericht bijwerken"</td></tr>
+        <tr><td>3.3.2</td><td><code>branch-picker.tsx:25,34</code></td><td>"Vorige versie" / "Volgende versie"</td></tr>
+        <tr><td>3.3.2</td><td><code>resolution-check.tsx:67,76</code></td><td>Onderscheidende labels die misclick voorkomen</td></tr>
+        <tr><td>3.3.2</td><td><code>assistant-message.tsx:56,66</code></td><td>"Kopieer bericht" / "Genereer opnieuw"</td></tr>
+        <tr><td>3.3.2</td><td><code>user-message.tsx:21</code></td><td>"Bericht bewerken"</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>Robust</h2>
+    <p class="section-intro">Content is robuust genoeg om door huidige en toekomstige user agents (waaronder assistive technology) betrouwbaar geïnterpreteerd te worden.</p>
+    <table>
+      <thead><tr><th>WCAG</th><th>Bestand:regel</th><th>Wat</th></tr></thead>
+      <tbody>
+        <tr><td>4.1.2</td><td>meerdere</td><td>Alle icon-only buttons hebben aria-label (zie 3.3.2)</td></tr>
+        <tr><td>4.1.2</td><td><code>debug-panel.tsx:69,88-89</code></td><td>Panel-toggle met <code>aria-expanded</code>, close-knop met aria-label</td></tr>
+        <tr><td>4.1.2</td><td><code>debug-panel.tsx:210-211</code></td><td>Schakelaars met <code>role="switch"</code> + <code>aria-checked</code></td></tr>
+        <tr><td>4.1.3</td><td><code>thread.tsx:29</code></td><td>Berichten: <code>role="log" aria-live="polite" aria-atomic="false"</code> — assistant-tokens worden aangekondigd zonder interruptie</td></tr>
+        <tr><td>4.1.3</td><td><code>google-tool.tsx:34</code></td><td>Zoekstatus: <code>role="status" aria-live="polite"</code></td></tr>
+        <tr><td>4.1.3</td><td><code>chatbot-unavailable.tsx:9</code></td><td>Foutpagina: <code>role="alert"</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span>Wat dit oplevert</h2>
+    <div class="outcomes">
+      <div class="outcome">
+        <h3>Toetsenbordgebruikers</h3>
+        <p>Tab door composer, send, suggesties, message-acties en branch-picker. Skip-link springt naar hoofdinhoud.</p>
+      </div>
+      <div class="outcome">
+        <h3>Screen readers</h3>
+        <p>Rol-aanduiding per bericht ("Assistent: ", "U: "), nieuwe tokens via aria-live, bronnen kondigen "opent in nieuw tabblad" aan.</p>
+      </div>
+      <div class="outcome">
+        <h3>Lage-zicht gebruikers</h3>
+        <p>Duidelijke focus-ring op composer en alle buttons; contrast getest in light en dark mode.</p>
+      </div>
+      <div class="outcome">
+        <h3>Future-proof</h3>
+        <p>A11y-attributen leven buiten de assistant-ui codegen-zone en blijven bij upgrades intact.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    Virtuele Assistent · WCAG 2.1 / 2.2 AA · feature/accessibility_
+  </footer>
+</main>
+
+<script>
+  (function () {
+    const root = document.documentElement;
+    const buttons = document.querySelectorAll('[data-theme-btn]');
+    const KEY = 'va-theme';
+    const saved = localStorage.getItem(KEY) || 'light';
+    apply(saved);
+    buttons.forEach(b => b.addEventListener('click', () => apply(b.dataset.themeBtn, true)));
+    function apply(theme, persist) {
+      root.setAttribute('data-theme', theme);
+      buttons.forEach(b => b.setAttribute('aria-pressed', b.dataset.themeBtn === theme ? 'true' : 'false'));
+      if (persist) localStorage.setItem(KEY, theme);
+    }
+  })();
+</script>
+</body>
+</html>
