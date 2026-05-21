@@ -191,3 +191,4 @@
 | 2026-05-21 | content | images | [diagram-3-stop-keep-start.png](projects/content/images/diagram-3-stop-keep-start.png) | Workspace authored files generated, V2 of spec.md piece: diagram-3-stop-keep-start.png |
 | 2026-05-21 | content | reports | [draft.md](projects/content/reports/draft.md) | Claude Code harness annotated, practitioner read on Anthropic scale guide: draft.md |
 | 2026-05-21 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Claude Code harness annotated, practitioner read on Anthropic scale guide: substack-version.md |
+| 2026-05-21 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Claude Code harness annotated, practitioner read on Anthropic scale guide: linkedin-post.md |

@@ -1,40 +1,43 @@
-# LinkedIn Post: Workspace Authored, Files Generated
+# LinkedIn Post: The Claude Code Harness
 
-Three weeks ago I argued spec.md was the wrong container for your specs.
+Anthropic dropped a substantial guide on May 14: "How Claude Code works in large codebases."
 
-Three engineering teams worth of follow-up conversations later, the sharper version is one sentence:
+The most important sentence in it is the one most teams will skim past.
 
-Workspace is authored. Files are generated.
+The harness matters as much as the model.
 
-Spec.md is not the problem. Treating it as the source of truth is.
+Performance at scale is determined by six layers around the model, plus one delegation capability:
 
-The pattern that holds up is three tiers, not one:
+1. CLAUDE.md (context every session)
+2. Hooks (event-triggered scripts)
+3. Skills (on-demand expertise)
+4. Plugins (distribute what works)
+5. LSP integrations (symbol-level navigation)
+6. MCP servers (external tools and data)
++ Subagents (delegation, available anytime)
 
-TIER 1: source of truth. Lives in Notion or Linear. Continuously evolving. Read by humans and by agents via MCP.
+The model is one of seven things.
 
-TIER 2: working snapshot. Lives in .spec-cache/ (gitignored). Pulled from the workspace at session start. Used by the agent during the session. Regenerated next session. Never committed.
+Teams that fixate on model benchmarks are tuning the wrong knob. The benchmark differences between current frontier models are real but small. The differences in harness quality between teams are massive.
 
-TIER 3: frozen snapshot. Lives in docs/specs/ (committed). Frozen at PR open. Evidence of what spec the work was built against when it landed.
+Build order matters.
 
-The three tiers answer three different questions:
-- What does the team currently believe this feature should be?
-- What is the agent looking at right now?
-- What spec was true when this code shipped?
+CLAUDE.md first, because nothing else has anywhere to live until it exists. Hooks next, because hooks make the harness self-improving. Skills, then plugins, then LSP, then MCP. Subagents whenever you need them.
 
-A single spec.md at the root of your repo cannot be all three things at once. That is what made the original setup drift.
+The biggest configuration pathology I see in client teams: loading everything into CLAUDE.md instead of building skills. CLAUDE.md becomes the dumping ground, performance degrades, skills never get built. The fix is mechanical: any time you find yourself writing a chunk of CLAUDE.md that starts with "when doing X, do Y," ask whether X is a recurring task type. If yes, it is a skill. Move it.
 
-The workflow:
-1. Session start: pull from workspace via MCP into .spec-cache/
-2. Agent reads, executes, may refine the cache
-3. Session end: sync changes back to workspace, discard cache
-4. PR open: freeze a snapshot to docs/specs/, commit alongside the code
+The second-biggest mistake: building MCP integrations before the basics are working. Teams get excited about MCP, spend two weeks wiring up Jira and Datadog, then wonder why Claude is not producing quality output. The model has access to every tool in the company and no idea what to do with any of it.
 
-Notion's May 13 Developer Platform launch made this easier. Ivan Zhao: "Use your Notion database as a sheer canvas to power both your workflows and your agents." First-class integrations with Claude Code, Cursor, Codex, Decagon.
+Three configuration patterns travel across every successful deployment:
 
-If you remember one line: workspace authored, files generated.
+- Make the codebase legible (layered CLAUDE.md, scoped commands, LSP)
+- Keep the harness current (audit every 3 to 6 months, after every major model release)
+- Assign ownership from day one (a named DRI, a plugin marketplace, eventually an agent manager role)
 
-Full breakdown with the round-trip pattern and the three-tier architecture:
+If you remember one line from this post: the model is one layer of seven.
+
+Full annotated breakdown of each layer, the build order, and what to do this week:
 
 [link to Medium article]
 
-How many markdown files in your current repo are still being treated as a source of truth for something with a real lifecycle?
+What does your CLAUDE.md root file look like? Mine had 1,200 lines a month ago. Now it has 60.
