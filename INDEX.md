@@ -179,3 +179,4 @@
 | 2026-05-20 | content | images | [diagram-3-stop-keep-start.png](projects/content/images/diagram-3-stop-keep-start.png) | Spec-driven belongs on the board: diagram-3-stop-keep-start.png |
 | 2026-05-20 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Spec-driven belongs on the board, Substack expanded with drift story |
 | 2026-05-20 | content | reports | [google-io-2026-scan.html](projects/content/reports/google-io-2026-scan.html) | Google I/O 2026 practical AI scan, five article angles |
+| 2026-05-21 | content | reports | [research.html](projects/content/reports/research.html) | Research brief on spec.md destination debate, Position A vs B vs C, Notion vs Linear |

@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>spec.md and the Spec-Destination Debate, Research Brief 2026-05-21</title>
+<style>
+:root {
+  --bg: #ffffff;
+  --fg: #15171a;
+  --muted: #5a6068;
+  --rule: #e6e8eb;
+  --card: #f7f8fa;
+  --accent: #0a7f7a;
+  --accent-2: #e2725b;
+  --accent-soft: #d9efee;
+  --warn: #fef3e8;
+}
+[data-theme="dark"] {
+  --bg: #0f1216;
+  --fg: #e9ecef;
+  --muted: #9099a3;
+  --rule: #1e2329;
+  --card: #161a1f;
+  --accent: #6dd4cf;
+  --accent-2: #f3a48c;
+  --accent-soft: #1d2a2a;
+  --warn: #2a1f10;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 920px; margin: 0 auto; padding: 48px 28px 96px; }
+header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+h1 { font-size: 28px; line-height: 1.2; margin: 0 0 8px; letter-spacing: -0.01em; }
+.subtitle { color: var(--muted); font-size: 15px; margin: 0; }
+.theme-toggle { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--rule); border-radius: 999px; background: var(--card); }
+.theme-toggle button { all: unset; cursor: pointer; padding: 4px 10px; border-radius: 999px; font-size: 12px; color: var(--muted); }
+.theme-toggle button[aria-pressed="true"] { background: var(--bg); color: var(--fg); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+h2 { font-size: 20px; letter-spacing: -0.005em; margin: 32px 0 8px; }
+h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-2); margin: 36px 0 12px; font-weight: 600; }
+h4 { font-size: 15px; margin: 18px 0 6px; font-weight: 600; }
+p { margin: 0 0 12px; }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+a:hover { border-bottom-color: var(--accent); }
+.lede {
+  background: var(--card);
+  border-left: 3px solid var(--accent);
+  padding: 14px 18px;
+  border-radius: 6px;
+  margin-bottom: 32px;
+  font-size: 15px;
+}
+.note-existing {
+  background: var(--accent-soft);
+  border-left: 3px solid var(--accent);
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 16px 0 24px;
+  font-size: 13px;
+}
+.callout {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 12px 0 18px;
+  background: var(--bg);
+}
+.callout .label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: 6px;
+}
+.callout.dissent .label { color: var(--accent-2); }
+.callout.agree .label { color: var(--accent); }
+.callout.nuance .label { color: var(--muted); }
+.quote {
+  font-style: italic;
+  border-left: 2px solid var(--accent-2);
+  padding: 6px 12px;
+  margin: 12px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.quote strong { color: var(--fg); font-style: normal; font-weight: 600; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.tag { font-size: 11px; padding: 3px 9px; border-radius: 999px; background: var(--card); color: var(--muted); border: 1px solid var(--rule); }
+.tag.agree { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.tag.dissent { background: var(--warn); color: var(--accent-2); border-color: var(--accent-2); }
+ul, ol { padding-left: 22px; margin: 0 0 12px; }
+li { margin-bottom: 4px; }
+.footer { font-size: 13px; color: var(--muted); margin-top: 48px; border-top: 1px solid var(--rule); padding-top: 16px; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { background: var(--card); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+@media print {
+  .theme-toggle { display: none; }
+  body { background: white; color: black; }
+  .callout, table { break-inside: avoid; border: 1px solid #ccc; }
+  .wrap { max-width: 100%; padding: 24px; }
+  a { color: black; border-bottom: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>spec.md and the Spec-Destination Debate</h1>
+      <p class="subtitle">Research brief, 2026-05-21. What practitioners actually say about where the spec should live, and how strong the case is for Notion (and similar).</p>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-theme-set="light" aria-pressed="true">Light</button>
+      <button data-theme-set="dark" aria-pressed="false">Dark</button>
+      <button data-theme-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <div class="note-existing">
+    <strong>Existing piece note.</strong> The May 18 article (<code>/Users/marcokotrotsos/PERSONAL/Content/drafts/spec-driven-belongs-on-the-board/draft.md</code>) made this argument with Linear as the canonical example. This research surfaces a stronger, more specific case for Notion in particular, plus a meaningful dissent worth steel-manning. Treat as material for an expanded V2 of the piece, a Notion-specific deep-dive, or a "the debate moved" follow-up.
+  </div>
+
+  <div class="lede">
+    <strong>The short version.</strong> The community has converged on three positions. Position A: keep the spec in a markdown file in the repo, version-controlled, close to code (this is the default everyone landed on first). Position B: the spec belongs in a workspace tool like Notion or Linear, with markdown as the export format. Position C: spec-driven development itself is the wrong move, more Waterfall than agile. Notion's May 13 Developer Platform launch was the loudest argument yet for Position B, with explicit positioning as "any data, any tool, any agent" and direct MCP integration with Claude Code, Cursor, Codex, and Decagon. The strongest dissent comes from Marmelab's "Waterfall strikes back" piece, which deserves to be answered honestly in any article making the Notion case.
+  </div>
+
+  <h3>How the discourse breaks down</h3>
+
+  <h2>Position A: spec.md belongs in the repo</h2>
+  <div class="tag-row">
+    <span class="tag agree">GitHub Spec Kit</span>
+    <span class="tag agree">AWS Kiro</span>
+    <span class="tag agree">Claude Code official best practices</span>
+    <span class="tag agree">Tessl</span>
+    <span class="tag agree">BMAD</span>
+    <span class="tag agree">SuperClaude</span>
+    <span class="tag agree">HumanLayer CLAUDE.md guidance</span>
+  </div>
+  <p>This is the dominant pattern in the AI-engineering community right now. The spec lives in a folder in the repo (often <code>specs/</code> or <code>.specify/</code>), version-controlled, sitting next to the code it describes. The argument is consistency, portability, and locality: the spec travels with the codebase, gets reviewed with the code, gets versioned with the code.</p>
+
+  <div class="callout agree">
+    <div class="label">The mainstream argument</div>
+    <p>"The spec is versioned alongside the code (often in a specs/ or .specify/ directory in the same repo). The spec is the source of truth. When a bug or feature request comes in, the spec is updated first; the code is regenerated or modified to match." (Augment Code, Product Builder, BCMS guides 2026)</p>
+    <p>Anthropic's own Claude Code best practices recommend: write a complete spec to SPEC.md, then start a fresh session to execute it. The new session has clean context focused entirely on implementation and a written spec to reference.</p>
+  </div>
+
+  <h4>Strongest defenders of this position</h4>
+  <ul>
+    <li><strong>GitHub Spec Kit</strong>: four-phase structured process, integrates with 30+ coding agents, treats markdown specs as first-class artifacts</li>
+    <li><strong>AWS Kiro</strong>: agentic IDE that plans and builds directly from written specifications</li>
+    <li><strong>Tessl</strong>: launched a spec-driven framework and registry</li>
+    <li><strong>Anthropic Claude Code docs</strong>: explicit guidance to use SPEC.md in the repo</li>
+    <li><strong>HumanLayer</strong>: "Writing a good CLAUDE.md" - sustained advocacy for keeping AI instruction files alongside code</li>
+  </ul>
+
+  <h2>Position B: the spec belongs in a workspace tool, files are the export</h2>
+  <div class="tag-row">
+    <span class="tag agree">Notion (May 13 launch)</span>
+    <span class="tag agree">Linear MCP advocates</span>
+    <span class="tag agree">Pavanbelagatti (DEV: MCP workflow)</span>
+    <span class="tag agree">Marco's May 18 article</span>
+  </div>
+  <p>This position argues that a spec has lifecycle, ownership, status, and dependencies that a flat file is bad at. The board (or workspace) holds the spec. The file is the snapshot the agent reads.</p>
+
+  <div class="callout agree">
+    <div class="label">The strongest single piece of evidence</div>
+    <p>Notion's <strong>May 13, 2026 Developer Platform launch</strong>. CEO Ivan Zhao stated: <em>"use your Notion database as a sheer canvas to power both your workflows and your agents."</em> The platform pitch is "Any data, any tool, any agent." Notion now supports Claude Code, Cursor, Codex, and Decagon as external agent integrations. It also launched Workers (cloud-sandboxed code execution inside Notion) and Database Sync (live external data from Salesforce, Zendesk, Postgres).</p>
+    <p>Notion's own framing from their docs: <em>"Notion has evolved into the source of truth for teams' product specs, project plans, runbooks, and institutional knowledge."</em></p>
+    <p>Notion MCP gives "AI tools secure access to your Notion workspace, designed to work seamlessly with popular AI assistants like Claude Code, Cursor, VS Code, ChatGPT, and more."</p>
+  </div>
+
+  <div class="callout agree">
+    <div class="label">The mechanism that makes this practical</div>
+    <p>Notion MCP and Linear MCP both exist and are production-ready as of May 2026. The integration problem that originally forced specs into files (agents read markdown, agents could not talk to Notion/Linear) is gone. Notion's MCP server is hosted, supports the major coding agents, and "updates are instantly reflected without re-indexing or retraining."</p>
+  </div>
+
+  <h4>Notion's specific product surface for this</h4>
+  <ul>
+    <li><strong>notion.com/use-case/engineering-tech-spec</strong>: a dedicated landing page for tech specs in Notion, with templates and integrations.</li>
+    <li><strong>Custom Agents</strong> (Notion 3.0, September 2025; Notion 3.3, February 2026): over 1 million built by customers; AI teammates handling repetitive tasks; now enhanced with external data and custom logic.</li>
+    <li><strong>Workers</strong>: deploy custom code without external infrastructure. Free through August 2026.</li>
+    <li><strong>External Agent Integration</strong>: chat with and assign work to external agents (Claude Code, Cursor, Codex, Decagon) alongside Notion's own.</li>
+  </ul>
+
+  <h2>Position B-prime: the nuanced version Notion itself practices</h2>
+  <div class="callout nuance">
+    <div class="label">Worth flagging</div>
+    <p>Ryan Nystrom (Notion engineer) wrote about Notion's internal AI engineering workflow on Lenny's Newsletter. The piece describes spec-first development as "writing and checking agent specs into the repo." Their Boxy system lets engineers @mention Codex from within Notion comments to get a full pull request with screenshots in 20 minutes.</p>
+    <p>The practical pattern at Notion itself appears to be: <strong>both</strong>. Notion is the discussion and triage layer. Spec gets refined there. The final agent-readable spec ends up committed to the repo as a markdown file. The agent reads from the file, but the conversation and lifecycle live in Notion.</p>
+    <p>This complicates the "kill spec.md" framing. The honest version is: the file is fine as the snapshot agents work against. The error is treating the file as the system of record.</p>
+  </div>
+
+  <h2>Position C: spec-driven development is wrong</h2>
+  <div class="tag-row">
+    <span class="tag dissent">Marmelab</span>
+    <span class="tag dissent">"Natural Language Development" advocates</span>
+  </div>
+  <p>The strongest dissent comes from <a href="https://marmelab.com/blog/2025/11/12/spec-driven-development-waterfall-strikes-back.html">Marmelab's "Spec-Driven Development: The Waterfall Strikes Back"</a> (November 2025). Marmelab frames SDD as a step in the wrong direction, comparing it to discredited Waterfall methodology.</p>
+
+  <div class="callout dissent">
+    <div class="label">The dissent</div>
+    <p><em>"Software development is fundamentally a non-deterministic process. Big design up front has proven to fail most of the time."</em></p>
+    <p>Seven specific problems Marmelab identifies:</p>
+    <ol>
+      <li>Context Blindness: agents miss existing functions despite text search</li>
+      <li>Markdown Overload: developers spend excessive time reading verbose design documents</li>
+      <li>Bureaucratic Excess: the three-step process generates repetition and unnecessary complexity</li>
+      <li>Terminology Misuse: generated "user stories" often misrepresent actual user needs</li>
+      <li>Double Review Burden: code requires review both in spec and final implementation phases</li>
+      <li>Unreliable Compliance: agents do not reliably follow specifications</li>
+      <li>Diminishing Returns: SDD becomes unusable as codebases grow</li>
+    </ol>
+    <p>The counter-proposal: iterative "Natural Language Development" with simple, conversational instructions logged in version control. No big spec up front.</p>
+  </div>
+
+  <p>This dissent is worth steel-manning in any article making the Notion case. The honest read of the Marmelab piece: it is not really attacking <em>where</em> the spec lives. It is attacking the whole upfront-spec premise. If you accept spec-driven development as worthwhile (which Marco's earlier piece argued strongly), Marmelab's critique still leaves you with the question Marco's piece tried to answer: where should the spec live? The Marmelab piece does not address that, because for Marmelab, the answer is "nowhere, do not write big specs."</p>
+
+  <h2>The Notion vs Linear comparison (the practical question)</h2>
+  <p>If Position B is right, the next question is whether Notion or Linear (or Jira, or Asana, or Coda) is the better destination. The 2026 comparison landscape:</p>
+
+  <table>
+    <thead>
+      <tr><th>Dimension</th><th>Notion</th><th>Linear</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Spec depth (long-form, structured docs)</td><td>Strong (designed for it)</td><td>Light (issue descriptions can be long but not built for it)</td></tr>
+      <tr><td>Lifecycle / kanban / issue management</td><td>Possible but not native</td><td>Strong (designed for it)</td></tr>
+      <tr><td>MCP integration</td><td>Hosted, multi-agent, May 2026 platform launch</td><td>Mature, in production with Claude Code and others</td></tr>
+      <tr><td>Custom Agents / Workers in the workspace</td><td>Yes (Notion 3.3 + Workers)</td><td>No (no native agent platform)</td></tr>
+      <tr><td>Native database for non-spec data</td><td>Yes</td><td>No (issues only)</td></tr>
+      <tr><td>Cost ceiling for AI features</td><td>Hidden behind tiers, AI usage often a paid add-on</td><td>Lower complexity, narrower scope</td></tr>
+    </tbody>
+  </table>
+
+  <p>The intuition that emerges from the practitioner discourse: Notion is the better destination if the spec has substance (long-form requirements, multiple stakeholders, evolving discussion). Linear is the better destination if the spec lives primarily as a work item with a lifecycle. Many real-world setups use both: spec discussion and refinement in Notion, work tracking in Linear, with the MCP layer letting the agent read from either.</p>
+
+  <h2>Recommended article angles based on this research</h2>
+
+  <div class="callout">
+    <div class="label">Angle A, the most defensible</div>
+    <p><strong>"Notion Just Made the Case Your Spec.md Should Live in a Workspace"</strong></p>
+    <p>The May 13 Developer Platform launch is a load-bearing data point. CEO quote, multi-agent integration, the Workers sandbox. The article makes the Position B case sharper than your May 18 piece because there is now a vendor explicitly positioning for this slot. The piece would be a natural V2 of your earlier article with the new data.</p>
+    <p>Honest answer to the Marmelab dissent should be included.</p>
+  </div>
+
+  <div class="callout">
+    <div class="label">Angle B, the practitioner-pragmatist</div>
+    <p><strong>"Notion or Linear? Where Your Spec Actually Belongs in 2026"</strong></p>
+    <p>The Notion-vs-Linear comparison piece. Practical, decision-maker-friendly. Less argumentative than Angle A, more "here is how to choose."</p>
+  </div>
+
+  <div class="callout">
+    <div class="label">Angle C, the honest nuance</div>
+    <p><strong>"Spec.md Is Not the Problem. Treating It as Source of Truth Is."</strong></p>
+    <p>Steel-manned version that incorporates the Notion engineering pattern (specs in repo, lifecycle in Notion). Less inflammatory than the May 18 piece, more likely to land with Position A defenders. The Marmelab dissent gets a clean response: the file is fine, what changes is which artifact is authoritative.</p>
+  </div>
+
+  <h2>The killer quotes (for whichever angle you pick)</h2>
+  <ul>
+    <li>Ivan Zhao (Notion CEO, May 13 2026): <em>"Use your Notion database as a sheer canvas to power both your workflows and your agents."</em> Pitch: <em>"Any data, any tool, any agent."</em></li>
+    <li>Notion docs: <em>"Notion has evolved into the source of truth for teams' product specs, project plans, runbooks, and institutional knowledge."</em></li>
+    <li>Marmelab (the dissent): <em>"Software development is fundamentally a non-deterministic process. Big design up front has proven to fail most of the time."</em></li>
+    <li>Anthropic Claude Code best practices (Position A): <em>"Write a complete spec to SPEC.md, then start a fresh session to execute it. The new session has clean context focused entirely on implementation."</em></li>
+    <li>Ryan Nystrom, Notion engineer: spec-first development means "writing and checking agent specs into the repo." (Confirms even Notion's engineers use the file format, just not as the authoritative system.)</li>
+  </ul>
+
+  <h2>What is missing from the discourse</h2>
+  <p>Three gaps the article could fill:</p>
+  <ul>
+    <li><strong>A clean diagram of the round-trip.</strong> Notion (or Linear) holds the spec. Agent exports markdown when needed. Updates flow back. Nobody has drawn this clearly with the May 2026 MCP integrations as the wire.</li>
+    <li><strong>A decision tree for Notion vs Linear vs both.</strong> The discourse is tribal. A practitioner-grade decision framework is missing.</li>
+    <li><strong>A response to Marmelab.</strong> The Waterfall-strikes-back critique is unanswered in the pro-spec-driven community. The honest answer is that lightweight specs in Notion (or Linear) with agent execution are not Waterfall, because the spec evolves continuously with the work. This needs to be said.</li>
+  </ul>
+
+  <h2>Source list</h2>
+  <ul class="sources">
+    <li><a href="https://www.lennysnewsletter.com/p/spec-driven-development-the-ai-engineering">Ryan Nystrom, Spec-driven development: The AI engineering workflow at Notion (Lenny's Newsletter)</a></li>
+    <li><a href="https://techcrunch.com/2026/05/13/notion-just-turned-its-workspace-into-a-hub-for-ai-agents/">Notion just turned its workspace into a hub for AI agents (TechCrunch, May 13 2026)</a></li>
+    <li><a href="https://www.notion.com/product/agents">Notion: Meet your 24/7 AI team</a></li>
+    <li><a href="https://www.notion.com/releases/2026-02-24">Notion 3.3: Custom Agents release notes (February 24 2026)</a></li>
+    <li><a href="https://www.notion.com/use-case/engineering-tech-spec">Notion: Create, track, and collaborate on Tech Specs</a></li>
+    <li><a href="https://developers.notion.com/docs/mcp">Notion MCP developer docs</a></li>
+    <li><a href="https://www.notion.com/help/notion-mcp">Notion MCP help center</a></li>
+    <li><a href="https://github.com/github/spec-kit">GitHub Spec Kit</a></li>
+    <li><a href="https://code.claude.com/docs/en/best-practices">Anthropic Claude Code best practices</a></li>
+    <li><a href="https://www.humanlayer.dev/blog/writing-a-good-claude-md">HumanLayer, Writing a good CLAUDE.md</a></li>
+    <li><a href="https://marmelab.com/blog/2025/11/12/spec-driven-development-waterfall-strikes-back.html">Marmelab, Spec-Driven Development: The Waterfall Strikes Back</a></li>
+    <li><a href="https://tessl.io/blog/a-look-at-spec-kit-githubs-spec-driven-software-development-toolkit/">Tessl on GitHub Spec Kit</a></li>
+    <li><a href="https://www.augmentcode.com/guides/what-is-spec-driven-development">Augment Code, What is Spec-Driven Development</a></li>
+    <li><a href="https://www.augmentcode.com/guides/claude-code-spec-driven-development">Augment Code, Claude Code for Spec-Driven Development</a></li>
+    <li><a href="https://thebcms.com/blog/spec-driven-development">BCMS, Spec-Driven Development 2026 Definitive Guide</a></li>
+    <li><a href="https://www.productbuilder.net/learn/spec-driven-development">Product Builder, Spec-Driven Development 2026 Guide</a></li>
+    <li><a href="https://www.morphllm.com/spec-driven-development">Morph, Spec-Driven Development with Kiro</a></li>
+    <li><a href="https://towardsdatascience.com/from-vibe-coding-to-spec-driven-development/">Towards Data Science, From Vibe Coding to Spec-Driven Development</a></li>
+    <li><a href="https://www.infoworld.com/article/4171332/four-cutting-edge-tools-for-spec-driven-development.html">InfoWorld, Four cutting-edge tools for spec-driven development</a></li>
+    <li><a href="https://medium.com/predict/spec-driven-development-with-ai-coding-agents-the-definitive-guide-453fba1baf39">Pramod Chandrayan, Spec-Driven Development with AI Coding Agents</a></li>
+    <li><a href="https://www.alexcloudstar.com/blog/spec-driven-development-2026/">Alex Cloudstar, Spec-Driven Development 2026: AI or Waterfall?</a></li>
+    <li><a href="https://jimmysong.io/blog/from-yaml-to-markdown-devops-vs-collabops/">Jimmy Song, YAML to Markdown: DevOps vs CollabOps</a></li>
+    <li><a href="https://www.optimixed.com/spec-driven-development-the-ai-engineering-workflow-at-notion-ryan-nystrom/">Optimixed, Spec-driven development: the AI engineering workflow at Notion</a></li>
+  </ul>
+
+  <p class="footer">Research saved at <code>/Users/marcokotrotsos/PERSONAL/Content/drafts/spec-md-research-2026-05-21/research.html</code>. Archive at <code>/Users/marcokotrotsos/PERSONAL/Content/artifacts/projects/content/reports/research.html</code>. To delete, <code>rm -rf /Users/marcokotrotsos/PERSONAL/Content/drafts/spec-md-research-2026-05-21/</code>.</p>
+</div>
+
+<script>
+(function(){
+  const buttons = document.querySelectorAll('.theme-toggle button');
+  const root = document.documentElement;
+  const mql = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode){
+    let theme = mode;
+    if (mode === 'system') theme = mql.matches ? 'dark' : 'light';
+    root.setAttribute('data-theme', theme);
+    buttons.forEach(b => b.setAttribute('aria-pressed', b.dataset.themeSet === mode ? 'true' : 'false'));
+  }
+  function getStored(){ try { return localStorage.getItem('spec-research-theme') || 'light'; } catch(e){ return 'light'; } }
+  function setStored(v){ try { localStorage.setItem('spec-research-theme', v); } catch(e){} }
+  buttons.forEach(b => b.addEventListener('click', () => { const m = b.dataset.themeSet; setStored(m); apply(m); }));
+  if (mql.addEventListener) mql.addEventListener('change', () => { if (getStored() === 'system') apply('system'); });
+  apply(getStored());
+})();
+</script>
+</body>
+</html>
