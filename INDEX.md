@@ -197,3 +197,4 @@
 | 2026-05-21 | content | images | [diagram-2-build-order.png](projects/content/images/diagram-2-build-order.png) | Claude Code harness annotated, practitioner read on Anthropic scale guide: diagram-2-build-order.png |
 | 2026-05-21 | content | images | [diagram-3-three-patterns.png](projects/content/images/diagram-3-three-patterns.png) | Claude Code harness annotated, practitioner read on Anthropic scale guide: diagram-3-three-patterns.png |
 | 2026-05-21 | content | reports | [index.html](projects/content/reports/index.html) | Practitioners course site, two tracks plus integration, sixteen lessons |
+| 2026-05-21 | content | reports | [index.html](projects/content/reports/index.html) | Expanded course site v2: 18 lessons across 3 tracks with Q&A, quizzes, interactive widgets |
