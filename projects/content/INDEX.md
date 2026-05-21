@@ -115,3 +115,4 @@
 | 2026-05-21 | images | [lesson-A1-diagram.png](images/lesson-A1-diagram.png) | Course v2 image: lesson-A1-diagram.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/lesson-A1-diagram.png |
 | 2026-05-21 | images | [track-1-harness-banner.png](images/track-1-harness-banner.png) | Course v2 image: track-1-harness-banner.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/track-1-harness-banner.png |
 | 2026-05-21 | images | [track-2-integration-banner.png](images/track-2-integration-banner.png) | Course v2 image: track-2-integration-banner.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/track-2-integration-banner.png |
+| 2026-05-21 | images | [track-3-specs-banner.png](images/track-3-specs-banner.png) | Course v2 image: track-3-specs-banner.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/track-3-specs-banner.png |
