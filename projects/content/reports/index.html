@@ -371,7 +371,7 @@ code { background: var(--card-strong); padding: 1px 6px; border-radius: 3px; fon
         <span class="pill track-1">Track 1</span><span class="pill">⏱ 6 min</span><span class="pill">B1</span>
       </div>
       <h1 class="lesson-title">Why the harness matters more than the model</h1>
-      <p class="lesson-subtitle">The most important sentence in Anthropic's May 14 guide is the one most teams will skim past.</p>
+      <p class="lesson-subtitle">Anthropic's May 14 guide contains one sentence that carries the whole argument.</p>
       <div class="learn-box">
         <div class="label">What you will learn</div>
         <ul>
@@ -381,7 +381,7 @@ code { background: var(--card-strong); padding: 1px 6px; border-radius: 3px; fon
         </ul>
       </div>
       <div class="section">
-        <p>Anthropic dropped a substantial guide on May 14 called "How Claude Code works in large codebases." The central claim is the one most teams need to internalize:</p>
+        <p>Anthropic dropped a substantial guide on May 14 called "How Claude Code works in large codebases." The central claim is one sentence:</p>
         <div class="callout"><strong>The harness matters as much as the model.</strong></div>
         <p>The capabilities of Claude Code are the capabilities of the model plus the harness wrapped around it. Six extension points and one delegation capability. The model is one of seven things.</p>
         <h3>The wrong knob</h3>
@@ -575,7 +575,7 @@ code { background: var(--card-strong); padding: 1px 6px; border-radius: 3px; fon
       </div>
       <div class="section">
         <p>CLAUDE.md files are the foundation. Nothing else has anywhere to live until these are right.</p>
-        <p>The mistake most teams make is the inverse pattern: they pile every convention, every style rule, every "do not do this" rule into a single root CLAUDE.md that grows to 2,000 lines over six weeks. Claude tries to honor all of it, runs out of context space, and the team blames the model.</p>
+        <p>The inverse pattern is common: every convention, every style rule, every "do not do this" rule gets piled into a single root CLAUDE.md that grows to 2,000 lines over six weeks. Claude tries to honor all of it, runs out of context space, and the team blames the model.</p>
         <h3>Three operational rules</h3>
         <p><strong>Lean.</strong> The root CLAUDE.md should fit on one screen. Pointers, critical gotchas, and the highest-leverage conventions only. If the root file is more than 80 lines, it is doing too much.</p>
         <p><strong>Layered.</strong> Claude walks up the directory tree and loads every CLAUDE.md file it finds along the way. A CLAUDE.md in <code>src/payments/</code> loads automatically when Claude is working in that directory. Put module-specific conventions in module-specific files.</p>
@@ -664,7 +664,7 @@ code { background: var(--card-strong); padding: 1px 6px; border-radius: 3px; fon
         <span class="pill track-1">Track 1</span><span class="pill">⏱ 7 min</span><span class="pill">B4</span>
       </div>
       <h1 class="lesson-title">Hooks for continuous improvement</h1>
-      <p class="lesson-subtitle">Most teams use hooks as guardrails. The valuable use is something else entirely.</p>
+      <p class="lesson-subtitle">Hooks have two uses. The obvious one is guardrails. The valuable one is continuous improvement.</p>
       <div class="learn-box">
         <div class="label">What you will learn</div>
         <ul>
@@ -674,14 +674,14 @@ code { background: var(--card-strong); padding: 1px 6px; border-radius: 3px; fon
         </ul>
       </div>
       <div class="section">
-        <p>Hooks are the most underrated layer. Most teams use them as guardrails (block destructive commands, prevent commits to main). That is the boring use.</p>
+        <p>The default use of hooks is guardrails: block destructive commands, prevent commits to main. That is the boring use.</p>
         <p>The valuable use is continuous improvement. A stop hook can reflect on what happened during a session and propose CLAUDE.md updates while context is fresh. A start hook can load team-specific context dynamically so every developer gets the right setup without manual configuration.</p>
         <div class="callout">
           <div class="label">The reframe</div>
           Hooks are not a constraint layer. They are a feedback layer. The harness becomes self-improving when you use them correctly.
         </div>
         <h3>Three patterns worth implementing</h3>
-        <p><strong>The reflection hook.</strong> At session end, ask the agent to summarize what was learned and propose updates. Most teams are surprised at how much actionable feedback this produces.</p>
+        <p><strong>The reflection hook.</strong> At session end, ask the agent to summarize what was learned and propose updates. After two weeks of running this in a client deployment, the typical backlog is five to ten proposed CLAUDE.md changes worth reviewing.</p>
         <p><strong>The dynamic context hook.</strong> At session start, detect which module the developer is working in and load the relevant skills. Replaces "every developer configures manually" with "the environment knows itself."</p>
         <p><strong>The enforcement hook.</strong> For deterministic checks like linting and formatting, hooks beat instructions. Telling Claude to run the linter and Claude forgets 15% of the time means that 15% is your bug rate. A hook running unconditionally is 100% reliable.</p>
       </div>

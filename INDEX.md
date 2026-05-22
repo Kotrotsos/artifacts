@@ -210,3 +210,4 @@
 | 2026-05-22 | content | reports | [draft.md](projects/content/reports/draft.md) | Harness annotated post humanizer v2.5 sweep: draft.md |
 | 2026-05-22 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Harness annotated post humanizer v2.5 sweep: substack-version.md |
 | 2026-05-22 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Harness annotated post humanizer v2.5 sweep: linkedin-post.md |
+| 2026-05-22 | content | reports | [index.html](projects/content/reports/index.html) | Course site post humanizer v2.5 sweep, all false-insight hooks removed |

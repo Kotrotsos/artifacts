@@ -119,3 +119,4 @@
 | 2026-05-22 | reports | [draft.md](reports/draft.md) | Harness annotated post humanizer v2.5 sweep: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-harness-annotated/draft.md |
 | 2026-05-22 | reports | [substack-version.md](reports/substack-version.md) | Harness annotated post humanizer v2.5 sweep: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-harness-annotated/substack-version.md |
 | 2026-05-22 | reports | [linkedin-post.md](reports/linkedin-post.md) | Harness annotated post humanizer v2.5 sweep: linkedin-post.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-harness-annotated/linkedin-post.md |
+| 2026-05-22 | reports | [index.html](reports/index.html) | Course site post humanizer v2.5 sweep, all false-insight hooks removed | /Users/marcokotrotsos/PERSONAL/Content/course/index.html |
