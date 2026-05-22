@@ -6,7 +6,7 @@
 
 **Key takeaways:**
 
-- The most important sentence in Anthropic's guide is the one most teams will skim past: "The harness matters as much as the model." Performance at scale is determined by six layers around the model (CLAUDE.md, hooks, skills, plugins, LSP, MCP) plus one delegation capability (subagents). Teams that focus on the model alone are tuning the wrong knob.
+- Anthropic's guide contains one sentence the rest of the article unpacks: "the harness matters as much as the model." Performance at scale is determined by six layers around the model (CLAUDE.md, hooks, skills, plugins, LSP, MCP) plus one delegation capability (subagents). Teams that focus on the model alone are tuning the wrong knob.
 - Build order is not optional. The layers compose. CLAUDE.md comes first because nothing else has anywhere to live until it exists. Hooks next, because hooks are how the harness gets self-improving. Skills, plugins, LSP, MCP follow in that order. Subagents come in whenever you need them. Teams that build MCP integrations before CLAUDE.md is solid are building on sand.
 - Three configuration patterns travel across every successful deployment: make the codebase legible to Claude (layered CLAUDE.md, scoped commands, codebase maps, LSP), keep the harness current (review every 3 to 6 months because models evolve), and assign ownership from day one (a named DRI, a plugin marketplace, eventually an agent manager role). The technical and organizational layers cannot be separated.
 
@@ -28,13 +28,13 @@ A RAG-powered AI coding tool embeds the entire codebase ahead of time and retrie
 
 Agentic search avoids that failure mode by working from the live codebase. Claude traverses the file system, reads files, runs grep, follows references. No index. No staleness window. Every query operates on what is true right now.
 
-The tradeoff Anthropic acknowledges is the one most teams underestimate: agentic search works best when Claude has enough starting context to know where to look. If you ask it to find all instances of a vague pattern across a billion-line codebase, you hit the context window before the work begins. The quality of the navigation is shaped entirely by how well the codebase is set up.
+Anthropic flags one tradeoff that the client teams I have worked with consistently underestimate: agentic search works best when Claude has enough starting context to know where to look. If you ask it to find all instances of a vague pattern across a billion-line codebase, you hit the context window before the work begins. The quality of the navigation is shaped entirely by how well the codebase is set up.
 
 This is why the rest of the article matters. The setup is the load-bearing investment.
 
 ## The harness matters as much as the model
 
-This is the central claim of the Anthropic piece, and the one most teams need to internalize before they do anything else.
+This is the central claim of the Anthropic piece. Everything else in the harness rollout flows from it.
 
 The capabilities of Claude Code are not the capabilities of the model. The capabilities of Claude Code are the capabilities of the model plus the harness wrapped around it. Six extension points and one delegation capability. The model is one of seven things.
 
@@ -75,7 +75,7 @@ Three operational rules for CLAUDE.md that I have arrived at across client deplo
 
 ## Layer 2: Hooks
 
-Hooks are the most underrated layer. Most teams use them as guardrails (block the agent from running `rm -rf`, prevent commits to main). That is the boring use.
+The default use of hooks is guardrails: block the agent from running `rm -rf`, prevent commits to main. That is the boring use.
 
 The valuable use, which the Anthropic guide flags clearly, is continuous improvement. A stop hook that runs at the end of every session can reflect on what happened, propose CLAUDE.md updates while the context is fresh, and surface skill candidates. A start hook can load team-specific context dynamically so every developer gets the right setup for their module without manual configuration.
 
@@ -83,7 +83,7 @@ The shift in framing: hooks are not a constraint layer, they are a feedback laye
 
 Three hook patterns worth implementing in your first week:
 
-**The reflection hook.** At session end, run a small script that asks the agent to summarize what was learned during the session and propose updates to CLAUDE.md or new skill candidates. Most teams will be surprised at how much actionable feedback this produces.
+**The reflection hook.** At session end, run a small script that asks the agent to summarize what was learned during the session and propose updates to CLAUDE.md or new skill candidates. After two weeks of running this in a client deployment, the typical backlog is five to ten proposed CLAUDE.md changes worth reviewing.
 
 **The dynamic context hook.** At session start, detect which module the developer is working in and load the relevant skill set or extra context. This replaces "every developer manually configures their environment" with "the environment knows itself."
 
@@ -202,7 +202,7 @@ If you are running Claude Code with a team and have not done the harness work ye
 
 ## Closing
 
-The most important thing in the Anthropic guide is the framing in the title of this section: the harness matters as much as the model. Teams that internalize this and invest in the six layers (in the right order) will run circles around teams running the same model with worse setup.
+The framing in the title of this section is the whole claim of the article: the harness matters as much as the model. Teams that act on this and invest in the six layers in the right order will run circles around teams running the same model with worse setup.
 
 Save this article. Save Anthropic's. Reread both every quarter, after every major model release, and whenever performance feels like it has plateaued. The harness is the part of your engineering organization's AI tooling that you will continuously evolve for as long as Claude Code is in production. The teams that do this work get the gains. The teams that skip it stay frustrated and blame the model.
 
