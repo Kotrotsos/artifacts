@@ -2,7 +2,7 @@
 
 Anthropic dropped a substantial guide on May 14: "How Claude Code works in large codebases."
 
-The most important sentence in it is the one most teams will skim past.
+One sentence in it carries the whole argument:
 
 The harness matters as much as the model.
 

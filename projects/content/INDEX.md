@@ -118,3 +118,4 @@
 | 2026-05-21 | images | [track-3-specs-banner.png](images/track-3-specs-banner.png) | Course v2 image: track-3-specs-banner.png | /Users/marcokotrotsos/PERSONAL/Content/course/assets/track-3-specs-banner.png |
 | 2026-05-22 | reports | [draft.md](reports/draft.md) | Harness annotated post humanizer v2.5 sweep: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-harness-annotated/draft.md |
 | 2026-05-22 | reports | [substack-version.md](reports/substack-version.md) | Harness annotated post humanizer v2.5 sweep: substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-harness-annotated/substack-version.md |
+| 2026-05-22 | reports | [linkedin-post.md](reports/linkedin-post.md) | Harness annotated post humanizer v2.5 sweep: linkedin-post.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-harness-annotated/linkedin-post.md |
