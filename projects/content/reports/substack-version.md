@@ -6,7 +6,7 @@
 
 A lot of my client conversations this year have included some version of the question: "we are on the best Claude model. Why is our team not getting the productivity gains we hoped for?" The answer, when I look at the actual setup, is almost always the same. The model is fine. The harness around the model is the problem.
 
-Anthropic just published the playbook for what to do about that. The guide is called "How Claude Code works in large codebases" and it lays out the patterns they have observed across their largest customer deployments. I will quote the most important sentence in it directly: *the harness matters as much as the model*. If you take only one thing from either article, take that.
+Anthropic just published the playbook for what to do about that. The guide is called "How Claude Code works in large codebases" and it lays out the patterns they have observed across their largest customer deployments. The load-bearing sentence in it is one line: *the harness matters as much as the model*. If you take only one thing from either article, take that.
 
 This newsletter is the practitioner annotation. I am pulling each individual point out, giving it depth from my own deployment experience, marking the common mistakes I see, and ordering by what actually matters on day one.
 
@@ -16,7 +16,7 @@ Reply if you want me to look at your specific configuration. I read everything.
 
 **Three things to know up front:**
 
-The most important sentence in Anthropic's guide is the one most teams will skim past: "The harness matters as much as the model." Performance at scale is determined by six layers around the model (CLAUDE.md, hooks, skills, plugins, LSP, MCP) plus one delegation capability (subagents). Teams that focus on the model alone are tuning the wrong knob.
+Anthropic's guide contains one sentence the rest of the article unpacks: "the harness matters as much as the model." Performance at scale is determined by six layers around the model (CLAUDE.md, hooks, skills, plugins, LSP, MCP) plus one delegation capability (subagents). Teams that focus on the model alone are tuning the wrong knob.
 
 Build order is not optional. The layers compose. CLAUDE.md comes first because nothing else has anywhere to live until it exists. Hooks next, because hooks are how the harness gets self-improving. Skills, plugins, LSP, MCP follow in that order. Subagents come in whenever you need them. Teams that build MCP integrations before CLAUDE.md is solid are building on sand.
 
@@ -32,7 +32,7 @@ A RAG-powered AI coding tool embeds the entire codebase ahead of time and retrie
 
 Agentic search avoids that failure mode by working from the live codebase. Claude traverses the file system, reads files, runs grep, follows references. No index. No staleness window. Every query operates on what is true right now.
 
-The tradeoff Anthropic acknowledges is the one most teams underestimate: agentic search works best when Claude has enough starting context to know where to look. If you ask it to find all instances of a vague pattern across a billion-line codebase, you hit the context window before the work begins. The quality of the navigation is shaped entirely by how well the codebase is set up.
+Anthropic flags one tradeoff that the client teams I have worked with consistently underestimate: agentic search works best when Claude has enough starting context to know where to look. If you ask it to find all instances of a vague pattern across a billion-line codebase, you hit the context window before the work begins. The quality of the navigation is shaped entirely by how well the codebase is set up.
 
 This is why the rest of the article matters. The setup is the load-bearing investment.
 
@@ -68,13 +68,13 @@ Three operational rules I have arrived at across client deployments:
 
 ## Layer 2: Hooks
 
-Hooks are the most underrated layer. Most teams use them as guardrails. That is the boring use.
+The default use of hooks is guardrails. That is the boring use.
 
 The valuable use, which the Anthropic guide flags clearly, is continuous improvement. A stop hook that runs at session end can reflect on what happened, propose CLAUDE.md updates while context is fresh, and surface skill candidates. A start hook can load team-specific context dynamically.
 
 Three hook patterns worth implementing in your first week:
 
-**The reflection hook.** At session end, ask the agent to summarize what was learned and propose updates. Most teams will be surprised at how much actionable feedback this produces.
+**The reflection hook.** At session end, ask the agent to summarize what was learned and propose updates. After two weeks of running this in a client deployment, the typical backlog is five to ten proposed CLAUDE.md changes worth reviewing.
 
 **The dynamic context hook.** At session start, detect which module the developer is working in and load the relevant skills. Replaces "every developer configures manually" with "the environment knows itself."
 
