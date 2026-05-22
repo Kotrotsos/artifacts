@@ -211,3 +211,4 @@
 | 2026-05-22 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | Harness annotated post humanizer v2.5 sweep: substack-version.md |
 | 2026-05-22 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Harness annotated post humanizer v2.5 sweep: linkedin-post.md |
 | 2026-05-22 | content | reports | [index.html](projects/content/reports/index.html) | Course site post humanizer v2.5 sweep, all false-insight hooks removed |
+| 2026-05-22 | gloss | reports | [how-gloss-was-built.html](projects/gloss/reports/how-gloss-was-built.html) | Recap of how the Gloss AI-driven blog was designed and built across 24 days |

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>How Gloss was built, an AI driven blog</title>
+<style>
+  :root {
+    --bg: #f2f1ef;
+    --fg: #141414;
+    --muted: #5a5a57;
+    --rule: #e2dfd9;
+    --card: #ffffff;
+    --green: #1a3a2a;
+    --coral: #c4674a;
+    --code-bg: #f6f4ee;
+  }
+  [data-theme="dark"] {
+    --bg: #121310;
+    --fg: #ebe9e3;
+    --muted: #9a988f;
+    --rule: #2a2c27;
+    --card: #1a1c18;
+    --green: #6fbf8c;
+    --coral: #e58c6f;
+    --code-bg: #1f211c;
+  }
+  @media (prefers-color-scheme: dark) {
+    [data-theme="system"] {
+      --bg: #121310;
+      --fg: #ebe9e3;
+      --muted: #9a988f;
+      --rule: #2a2c27;
+      --card: #1a1c18;
+      --green: #6fbf8c;
+      --coral: #e58c6f;
+      --code-bg: #1f211c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--fg); }
+  body {
+    font-family: "DM Sans", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    line-height: 1.55;
+    font-size: 17px;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 64px 28px 96px; }
+  header.top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 18px; margin-bottom: 36px;
+  }
+  .eyebrow {
+    font-family: "DM Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  h1 {
+    font-family: "DM Serif Display", Georgia, serif;
+    font-weight: 400;
+    font-size: 44px; line-height: 1.1; letter-spacing: -0.01em;
+    margin: 8px 0 6px;
+  }
+  h2 {
+    font-family: "DM Serif Display", Georgia, serif;
+    font-weight: 400;
+    font-size: 26px; letter-spacing: -0.01em;
+    margin: 48px 0 12px;
+  }
+  h3 {
+    font-family: "DM Sans", sans-serif;
+    font-size: 14px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--green);
+    margin: 24px 0 6px;
+  }
+  p { margin: 10px 0; }
+  ul { padding-left: 20px; margin: 8px 0 16px; }
+  li { margin: 4px 0; }
+  .lede { font-size: 19px; color: var(--muted); margin-top: 10px; }
+  .phase {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin: 18px 0;
+  }
+  .phase .when {
+    font-family: "DM Mono", ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--coral);
+  }
+  .phase h2 { margin-top: 4px; margin-bottom: 8px; font-size: 22px; }
+  code, .mono {
+    font-family: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 14px;
+    background: var(--code-bg);
+    padding: 1px 6px; border-radius: 4px;
+  }
+  .stack {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px;
+    margin: 10px 0 4px;
+    font-size: 15px;
+  }
+  .stack div { padding: 4px 0; border-bottom: 1px dashed var(--rule); }
+  .stack b { font-weight: 600; }
+  .tag {
+    display: inline-block; padding: 2px 9px; border-radius: 999px;
+    font-family: "DM Mono", monospace; font-size: 11px;
+    background: var(--green); color: var(--bg);
+    margin-right: 6px;
+  }
+  .tag.coral { background: var(--coral); }
+  .toggle {
+    font-family: "DM Mono", monospace; font-size: 11px;
+    color: var(--muted); cursor: pointer; background: none; border: 1px solid var(--rule);
+    padding: 6px 10px; border-radius: 999px;
+  }
+  footer.bot {
+    margin-top: 64px; padding-top: 18px; border-top: 1px solid var(--rule);
+    color: var(--muted); font-size: 13px;
+  }
+  @media print {
+    body { background: white; color: black; }
+    .phase { break-inside: avoid; border: 1px solid #ccc; }
+    .toggle { display: none; }
+    a { color: black; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Project recap, Gloss</div>
+      <h1>How we built an AI driven blog</h1>
+    </div>
+    <button class="toggle" id="themeBtn" type="button">theme: light</button>
+  </header>
+
+  <p class="lede">
+    Gloss is a Flask blog where the brand was extracted by AI, the articles are written and published by AI through an API, and the reader experience is layered with AI assistance. The whole thing was built in roughly 24 days, from initial scaffold on 6 March to the last polish on 30 March.
+  </p>
+
+  <h2>The stack at a glance</h2>
+  <div class="stack">
+    <div><b>Server</b> Flask 3, gunicorn, Python 3.12</div>
+    <div><b>Storage</b> PostgreSQL (started on SQLite)</div>
+    <div><b>Markdown</b> markdown-it-py + mdit plugins + Pygments</div>
+    <div><b>AI</b> OpenAI gpt-4o-mini, later gpt-5.2</div>
+    <div><b>Auth</b> Magic links via Resend, email allowlist</div>
+    <div><b>Hosting</b> Railway, Nixpacks</div>
+    <div><b>Safety</b> nh3 HTML sanitizer</div>
+    <div><b>Perf</b> flask-compress, Pillow WebP</div>
+  </div>
+
+  <h2>The brand came first, then the code</h2>
+  <p>
+    Before any feature work, the visual DNA was captured in <code>dna.md</code>. It pinned down a Cohere-leaning premium-editorial direction: warm off-white background <code>#f2f1ef</code>, deep forest green as the primary action color, coral as the accent, almost no blue. DM Serif Display for headings, DM Sans for body, DM Mono for labels. Organic blob shapes on cards, soft pills, unhurried motion. Everything that followed inherits from that file.
+  </p>
+
+  <h2>The build, phase by phase</h2>
+
+  <div class="phase">
+    <div class="when">Phase 1, 6 to 7 March, foundation</div>
+    <h2>Scaffold, dashboard, deploy</h2>
+    <ul>
+      <li>Initial Flask scaffold with markdown-it-py, SQLite, OpenAI client, slugify, Pillow.</li>
+      <li>Post management dashboard and image manager under <code>/manage</code>.</li>
+      <li>Railway deploy config, <code>Procfile</code>, Nixpacks, gunicorn.</li>
+      <li>Magic link auth via Resend so non-developers can sign in.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="when">Phase 2, 9 March, the AI publishing pipeline</div>
+    <h2>An API for agents, not just humans</h2>
+    <ul>
+      <li><b>Public API v1</b> for programmatic publishing, the core piece that lets AI agents draft and ship posts without touching the editor.</li>
+      <li>Hero image auto-extracted from the first image in markdown.</li>
+      <li>SQLite moved into the persistent volume, then migrated to <b>PostgreSQL</b> with an admin email allowlist.</li>
+      <li>Markdown linkify, then tightened to only auto-link explicit protocol URLs.</li>
+      <li>Connection pooling, helper extraction, Google Analytics.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="when">Phase 2b, 9 March, AI-native reader plumbing</div>
+    <h2>Make the blog legible to other AIs</h2>
+    <ul>
+      <li><code>/llms.txt</code> and <code>/llms-full.txt</code> endpoints, auto-generated, so other agents can index the site cleanly.</li>
+      <li>Pygments syntax highlighting and per-block copy buttons.</li>
+      <li>Image lightbox with double-tap, dark mode tuned for WCAG contrast.</li>
+      <li>Google AdSense with non-intrusive placement, <code>ads.txt</code>.</li>
+      <li>Top-5 tag filter bar, floating edit button for admins on each post.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="when">Phase 3, 9 to 10 March, AI inside the reader</div>
+    <h2>Suggested articles, multiple authors, chat-with-article</h2>
+    <ul>
+      <li><b>AI-suggested articles</b> sidebar on each post.</li>
+      <li>Multiple authors with random assignment, so the byline reads like a real publication.</li>
+      <li><b>Chat-with-article</b>, a floating bubble that lets readers ask questions of the current piece, with an animated typing indicator.</li>
+      <li>Security hardening pass across the app, nh3 fix for sanitized HTML.</li>
+      <li>Card-type system with four preview variants, zoom control in the nav.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="when">Phase 4, 11 to 16 March, content strategy</div>
+    <h2>Let the data choose what gets featured</h2>
+    <ul>
+      <li>Engagement tracking, an engagement API endpoint for content strategy.</li>
+      <li><b>Auto-featured</b> articles selected from engagement signals instead of manual curation.</li>
+      <li>Homepage redesigned in a Wired-style magazine layout.</li>
+      <li>More Stories grouped by topic, requires 2+ articles, sorted by count.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="when">Phase 5, 20 to 21 March, Gloss Insights</div>
+    <h2>Per-article AI takeaways</h2>
+    <ul>
+      <li>Model upgraded from <code>gpt-4o-mini</code> to <code>gpt-5.2</code>.</li>
+      <li><b>Gloss Insights</b>, AI-generated takeaways and a practical-actions paragraph attached to every post.</li>
+      <li>Working through the GPT-5.2 API change, <code>max_tokens</code> became <code>max_completion_tokens</code>.</li>
+      <li>Images stripped from insight input, markdown fences stripped from output.</li>
+      <li>Admin endpoint to clear cached insights when prompts change.</li>
+    </ul>
+  </div>
+
+  <div class="phase">
+    <div class="when">Phase 6, 21 to 30 March, ship polish</div>
+    <h2>SEO, speed, and the chat pill</h2>
+    <ul>
+      <li>Full SEO meta: Open Graph, Twitter Card, JSON-LD, canonical URLs.</li>
+      <li>Auto WebP conversion, gzip via flask-compress, lazy loading, font preloading, preconnect hints, long-cache headers.</li>
+      <li>Chat restyled as a pill with a label, aligned with the edit button, both anchored bottom-right.</li>
+    </ul>
+  </div>
+
+  <h2>What makes it &ldquo;AI driven&rdquo; in practice</h2>
+  <ul>
+    <li><span class="tag">authoring</span> Articles drafted by an external agent and pushed through <code>/api/posts</code>, the same way a human would publish but at agent cadence.</li>
+    <li><span class="tag">editor AI</span> Inside the editor, endpoints for title, tags, excerpt, generate, improve, all wired to <code>ai_complete()</code> in <code>app.py</code>.</li>
+    <li><span class="tag">reader AI</span> Suggested articles, Gloss Insights, and chat-with-article, all live on the post page.</li>
+    <li><span class="tag coral">agent-friendly</span> <code>/llms.txt</code> and <code>/llms-full.txt</code> so other AIs can consume Gloss as a clean source.</li>
+    <li><span class="tag coral">data-driven</span> Engagement signals choose what gets featured, not the admin.</li>
+  </ul>
+
+  <h2>The shape of the codebase</h2>
+  <ul>
+    <li><code>app.py</code>, single Flask app, all routes, AI endpoints, markdown rendering, helpers.</li>
+    <li><code>templates/</code>, base, index, post, editor, manage, images, login.</li>
+    <li><code>static/style.css</code>, the design system from <code>dna.md</code>.</li>
+    <li><code>uploads/</code>, image volume that also hosts the DB on Railway.</li>
+    <li><code>dna.md</code>, the brand brief that every visual decision traces back to.</li>
+  </ul>
+
+  <footer class="bot">
+    Source: git history (cd2c052 to 1bc1638), <code>dna.md</code>, <code>app.py</code>, and prior project notes in Memento.
+  </footer>
+</div>
+<script>
+  const btn = document.getElementById('themeBtn');
+  const root = document.documentElement;
+  const order = ['light', 'dark', 'system'];
+  const stored = localStorage.getItem('gloss-recap-theme') || 'light';
+  root.setAttribute('data-theme', stored);
+  btn.textContent = 'theme: ' + stored;
+  btn.addEventListener('click', () => {
+    const cur = root.getAttribute('data-theme') || 'light';
+    const next = order[(order.indexOf(cur) + 1) % order.length];
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('gloss-recap-theme', next);
+    btn.textContent = 'theme: ' + next;
+  });
+</script>
+</body>
+</html>
