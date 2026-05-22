@@ -212,3 +212,4 @@
 | 2026-05-22 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | Harness annotated post humanizer v2.5 sweep: linkedin-post.md |
 | 2026-05-22 | content | reports | [index.html](projects/content/reports/index.html) | Course site post humanizer v2.5 sweep, all false-insight hooks removed |
 | 2026-05-22 | gloss | reports | [how-gloss-was-built.html](projects/gloss/reports/how-gloss-was-built.html) | Recap of how the Gloss AI-driven blog was designed and built across 24 days |
+| 2026-05-22 | zl2026 | reports | [wijzigingen-22-05-2026.md](projects/zl2026/reports/wijzigingen-22-05-2026.md) | Overzicht alle wijzigingen 22 mei 2026, v0.13.0 t/m v0.14.9 |
