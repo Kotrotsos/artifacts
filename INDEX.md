@@ -213,3 +213,4 @@
 | 2026-05-22 | content | reports | [index.html](projects/content/reports/index.html) | Course site post humanizer v2.5 sweep, all false-insight hooks removed |
 | 2026-05-22 | gloss | reports | [how-gloss-was-built.html](projects/gloss/reports/how-gloss-was-built.html) | Recap of how the Gloss AI-driven blog was designed and built across 24 days |
 | 2026-05-22 | zl2026 | reports | [wijzigingen-22-05-2026.md](projects/zl2026/reports/wijzigingen-22-05-2026.md) | Overzicht alle wijzigingen 22 mei 2026, v0.13.0 t/m v0.14.9 |
+| 2026-05-23 | sandwichbench | reports | [sandwich-truck-sim-v2.html](projects/sandwichbench/reports/sandwich-truck-sim-v2.html) | Interactive canvas food-truck queueing simulation v2 with light/dark theme |

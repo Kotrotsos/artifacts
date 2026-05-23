@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sandwich Truck Simulation</title>
+<style>
+  :root{
+    --bg:#eef1f5; --panel:#ffffff; --panel-2:#f6f8fb; --border:#e3e8ef;
+    --text:#1f2933; --muted:#64748b; --accent:#ff7043; --accent-press:#e8623a;
+    --stat-bg:#f6f8fb; --shadow:0 8px 28px rgba(15,23,42,.08);
+    --canvas-border:#e3e8ef; --track:#dbe2ea; --thumb:#ff7043;
+  }
+  html[data-theme="dark"]{
+    --bg:#0b1018; --panel:#121a26; --panel-2:#0f1620; --border:#1e2a3a;
+    --text:#e6edf3; --muted:#94a3b8; --accent:#ff7e59; --accent-press:#ff9472;
+    --stat-bg:#0f1620; --shadow:0 10px 34px rgba(0,0,0,.5);
+    --canvas-border:#1e2a3a; --track:#26323f; --thumb:#ff7e59;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--text);
+    padding:20px; min-height:100vh; transition:background .25s,color .25s;
+  }
+  .topbar{
+    max-width:1260px; margin:0 auto 16px; display:flex; align-items:center;
+    justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .topbar h1{font-size:20px; font-weight:700; letter-spacing:-.01em}
+  .topbar .sub{color:var(--muted); font-size:13px; margin-top:2px}
+  .theme{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted)}
+  select#theme{
+    font:inherit; font-size:13px; color:var(--text); background:var(--panel);
+    border:1px solid var(--border); border-radius:8px; padding:6px 10px; cursor:pointer;
+  }
+  .wrap{
+    max-width:1260px; margin:0 auto; display:flex; gap:18px; align-items:stretch; flex-wrap:wrap;
+  }
+  .stage{
+    flex:1 1 560px; min-width:320px; background:var(--panel); border:1px solid var(--border);
+    border-radius:14px; padding:14px; box-shadow:var(--shadow);
+  }
+  canvas{
+    width:100%; aspect-ratio:900/560; display:block;
+    border:1px solid var(--canvas-border); border-radius:10px; background:transparent;
+  }
+  .panel{
+    flex:0 0 308px; max-width:340px; background:var(--panel); border:1px solid var(--border);
+    border-radius:14px; padding:18px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:16px;
+  }
+  .ctrl label{display:flex; justify-content:space-between; font-size:13px; font-weight:600; margin-bottom:7px}
+  .ctrl label b{font-weight:700; color:var(--accent); font-variant-numeric:tabular-nums}
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:6px; border-radius:6px;
+    background:var(--track); outline:none; cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none; width:17px; height:17px; border-radius:50%;
+    background:var(--thumb); border:2px solid var(--panel); box-shadow:0 1px 3px rgba(0,0,0,.3);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:17px; height:17px; border-radius:50%; background:var(--thumb);
+    border:2px solid var(--panel); box-shadow:0 1px 3px rgba(0,0,0,.3);
+  }
+  .btns{display:flex; gap:10px}
+  button{
+    flex:1; font:inherit; font-weight:600; font-size:14px; padding:11px 12px; border-radius:9px;
+    border:1px solid var(--border); cursor:pointer; transition:transform .05s, background .15s, opacity .15s;
+    background:var(--panel-2); color:var(--text);
+  }
+  button#toggle{background:var(--accent); color:#fff; border-color:transparent}
+  button#toggle:hover{background:var(--accent-press)}
+  button:hover{opacity:.92}
+  button:active{transform:translateY(1px)}
+  .divider{height:1px; background:var(--border); margin:2px 0}
+  .stats{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+  .stat{background:var(--stat-bg); border:1px solid var(--border); border-radius:9px; padding:10px 11px}
+  .stat .k{font-size:10.5px; letter-spacing:.04em; text-transform:uppercase; color:var(--muted)}
+  .stat .v{font-size:19px; font-weight:700; margin-top:3px; font-variant-numeric:tabular-nums;
+    font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+  .how{font-size:12px; color:var(--muted); line-height:1.55}
+  .how h3{font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--text); margin-bottom:6px}
+  .how b{color:var(--text)}
+  .legend{display:flex; flex-wrap:wrap; gap:8px 14px; font-size:12px; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:6px}
+  .dot{width:11px; height:11px; border-radius:3px; display:inline-block}
+  @media (max-width:880px){ .panel{flex:1 1 100%; max-width:none} }
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1>Sandwich Truck Simulation</h1>
+      <div class="sub">A discrete-event queue: order &rarr; cook &rarr; pick up. Tune staff, prep time and demand, watch it flow.</div>
+    </div>
+    <div class="theme">
+      <span>Theme</span>
+      <select id="theme">
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+        <option value="system">System</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stage">
+      <canvas id="cv"></canvas>
+    </div>
+
+    <div class="panel">
+      <div class="ctrl">
+        <label for="workers">Cooks <b id="v-workers">2</b></label>
+        <input type="range" id="workers" min="1" max="6" value="2">
+      </div>
+      <div class="ctrl">
+        <label for="prep">Prep time / order <b id="v-prep">8s</b></label>
+        <input type="range" id="prep" min="3" max="25" value="8">
+      </div>
+      <div class="ctrl">
+        <label for="arrival">Arrivals / min <b id="v-arrival">15</b></label>
+        <input type="range" id="arrival" min="4" max="40" value="15">
+      </div>
+      <div class="ctrl">
+        <label for="speed">Sim speed <b id="v-speed">2.0&times;</b></label>
+        <input type="range" id="speed" min="0.5" max="8" step="0.5" value="2">
+      </div>
+      <div class="ctrl">
+        <label for="crowd">Max crowd (then they balk) <b id="v-crowd">16</b></label>
+        <input type="range" id="crowd" min="6" max="30" value="16">
+      </div>
+
+      <div class="btns">
+        <button id="toggle">Start</button>
+        <button id="reset">Reset</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="stats">
+        <div class="stat"><div class="k">Served</div><div class="v" id="s-served">0</div></div>
+        <div class="stat"><div class="k">Balked</div><div class="v" id="s-lost">0</div></div>
+        <div class="stat"><div class="k">In line</div><div class="v" id="s-line">0</div></div>
+        <div class="stat"><div class="k">Waiting</div><div class="v" id="s-wait">0</div></div>
+        <div class="stat"><div class="k">Avg wait</div><div class="v" id="s-avg">0s</div></div>
+        <div class="stat"><div class="k">Throughput</div><div class="v" id="s-tput">0/m</div></div>
+        <div class="stat"><div class="k">Cook util</div><div class="v" id="s-util">0%</div></div>
+        <div class="stat"><div class="k">Peak crowd</div><div class="v" id="s-peak">0</div></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="legend">
+        <span><i class="dot" style="background:#3884ff"></i>Queue zone</span>
+        <span><i class="dot" style="background:#2eb67d"></i>Waiting zone</span>
+        <span><i class="dot" style="background:#ef5350"></i>Cook busy</span>
+        <span><i class="dot" style="background:#4caf50"></i>Cook idle</span>
+      </div>
+
+      <div class="how">
+        <h3>How it works</h3>
+        Customers arrive randomly (Poisson). They join one <b>FIFO order line</b>; the front person orders at the
+        <b>order window</b>, then steps aside to the waiting area. Orders drop into a shared queue that the
+        <b>cooks pull from</b> one at a time. When food is ready the customer is called to the single
+        <b>pickup window</b>, collects, and leaves. If the crowd hits the cap, new arrivals <b>balk</b> (give up).
+      </div>
+    </div>
+  </div>
+
+<script>
+"use strict";
+const TAU = Math.PI * 2;
+const W = 900, H = 560;
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+
+/* ---------- Theme & canvas palettes ---------- */
+const PALETTES = {
+  light:{
+    sky0:'#bfe3ff', sky1:'#eef7ff', sun:'#ffe08a', sunGlow:'rgba(255,224,138,.5)',
+    cloud:'rgba(255,255,255,.92)',
+    ground0:'#ece7da', ground1:'#ded8c8', groundLine:'rgba(0,0,0,.05)',
+    truck:'#ff7043', truckDark:'#e2562f', truckShade:'#ff8a65', trim:'#37474f',
+    roof:'#37474f', windowGlass:'#d6eef2', windowFrame:'#2b3a42',
+    counter:'#cfae7a', counterTop:'#e6c792', awningA:'#fafafa', awningB:'#e53935',
+    wheel:'#2b3138', hub:'#9aa7b1', sign:'#fff3e0', signBar:'#37474f',
+    text:'#26323d', subtext:'#6b7a89', faint:'rgba(38,50,61,.35)',
+    qFill:'rgba(56,132,255,.10)', qStroke:'rgba(56,132,255,.45)',
+    wFill:'rgba(46,182,125,.10)', wStroke:'rgba(46,182,125,.45)',
+    cookIdle:'#4caf50', cookBusy:'#ef5350', apron:'#fafafa', hat:'#ffffff',
+    ticket:'#ffffff', ticketEdge:'#d8dee6', ticketBar:'#ff7043', ticketBarBg:'#e7ebf0',
+    shadow:'rgba(0,0,0,.13)', plant:'#5b9a52', plantDark:'#3f7a3a', pot:'#b06a47',
+    lamp:'#5c6b78', lampGlow:'rgba(255,233,160,.0)',
+    panel:'rgba(255,255,255,.78)', panelEdge:'rgba(0,0,0,.08)', spark:'#3884ff', sparkFill:'rgba(56,132,255,.16)'
+  },
+  dark:{
+    sky0:'#13233f', sky1:'#0a1322', sun:'#cdd7e6', sunGlow:'rgba(205,215,230,.18)',
+    cloud:'rgba(255,255,255,.05)',
+    ground0:'#161d2b', ground1:'#0f141d', groundLine:'rgba(255,255,255,.05)',
+    truck:'#ff7043', truckDark:'#bf3d1e', truckShade:'#cc5634', trim:'#0e151b',
+    roof:'#11181f', windowGlass:'#11323a', windowFrame:'#0a1014',
+    counter:'#7a5f37', counterTop:'#977445', awningA:'#d7dadd', awningB:'#c62828',
+    wheel:'#0a0f14', hub:'#566069', sign:'#ffe6cf', signBar:'#0e151b',
+    text:'#e6edf3', subtext:'#9fb0c0', faint:'rgba(230,237,243,.30)',
+    qFill:'rgba(86,156,255,.14)', qStroke:'rgba(86,156,255,.5)',
+    wFill:'rgba(63,201,140,.14)', wStroke:'rgba(63,201,140,.5)',
+    cookIdle:'#66bb6a', cookBusy:'#ef5350', apron:'#dfe4ea', hat:'#eef1f5',
+    ticket:'#1b2632', ticketEdge:'#2b3a4a', ticketBar:'#ff7e59', ticketBarBg:'#2b3a4a',
+    shadow:'rgba(0,0,0,.4)', plant:'#3f7a4a', plantDark:'#2c5c36', pot:'#7a4631',
+    lamp:'#3a4651', lampGlow:'rgba(255,233,160,.10)',
+    panel:'rgba(18,26,38,.8)', panelEdge:'rgba(255,255,255,.08)', spark:'#5b9dff', sparkFill:'rgba(91,157,255,.2)'
+  }
+};
+let C = PALETTES.light;
+const themeSel = document.getElementById('theme');
+function effective(choice){
+  if(choice==='system') return matchMedia('(prefers-color-scheme:dark)').matches ? 'dark':'light';
+  return choice;
+}
+function applyTheme(){
+  const choice = localStorage.getItem('stsim-theme') || 'light';
+  themeSel.value = choice;
+  const eff = effective(choice);
+  document.documentElement.dataset.theme = eff;
+  C = PALETTES[eff];
+}
+themeSel.addEventListener('change', ()=>{ localStorage.setItem('stsim-theme', themeSel.value); applyTheme(); });
+matchMedia('(prefers-color-scheme:dark)').addEventListener('change', ()=>{
+  if((localStorage.getItem('stsim-theme')||'light')==='system') applyTheme();
+});
+applyTheme();
+
+/* ---------- Layout (logical 900x560) ---------- */
+const HORIZON = 168;
+const TRUCK = { x:312, y:58, w:336, h:120 };         // serving box
+const CAB   = { x:250, y:104, w:62, h:74 };
+const WIN   = { x:356, y:96, w:236, h:52 };          // serving window
+const COUNTER_Y = 240;                                // where customers stand
+const ORDER_POINT  = { x:402, y:COUNTER_Y };
+const PICKUP_POINT = { x:560, y:COUNTER_Y };
+const WAIT = { cx:706, cy:372, r:104 };
+const ENTRANCE_Y = 470;
+const EXIT = { x:W+30, y:300 };
+const BACK_OF_LINE = { x:360, y:470 };
+
+function queueSlot(i){
+  if(i===0) return ORDER_POINT;
+  const k = i-1, per = 9;
+  const col = Math.floor(k/per), row = k%per;
+  return { x: ORDER_POINT.x - col*32, y: 282 + row*28 };
+}
+function pickupSpot(i){
+  const cap=config.pickupCapacity;
+  return { x: PICKUP_POINT.x + (i-(cap-1)/2)*26, y: PICKUP_POINT.y };
+}
+
+/* ---------- Config ---------- */
+const config = {
+  numWorkers:2, prepTime:8, arrivalRate:15, speed:2, maxCrowd:16,
+  ORDER_TIME:2.2, PICKUP_TIME:1.3, walkSpeed:78, pickupCapacity:2
+};
+
+/* ---------- Patron palette ---------- */
+const SHIRTS=['#ef5350','#ab47bc','#5c6bc0','#29b6f6','#26a69a','#9ccc65','#ffa726','#ec407a','#7e57c2','#42a5f5','#66bb6a','#ffca28'];
+const PANTS =['#37474f','#455a64','#3e2723','#1a237e','#263238','#4e342e'];
+const SKINS =['#f1c27d','#e0ac69','#c68642','#8d5524','#ffdbac','#a86b3c'];
+const HAIRS =['#2b2b2b','#4b3621','#6b4423','#101010','#a0522d','#8a8a8a'];
+const pick = a => a[(Math.random()*a.length)|0];
+
+/* ---------- Simulation state ---------- */
+let sim;
+function newWorker(){ return { job:null, timeLeft:0, total:0, retiring:false, phase:Math.random()*TAU }; }
+function setWorkers(n){
+  if(n >= sim.workers.length){
+    while(sim.workers.length < n) sim.workers.push(newWorker());
+    sim.workers.forEach(w=>w.retiring=false);
+  } else {
+    let rm = sim.workers.length - n;
+    for(let i=sim.workers.length-1;i>=0 && rm>0;i--){ if(!sim.workers[i].job){ sim.workers.splice(i,1); rm--; } }
+    for(let i=sim.workers.length-1;i>=0 && rm>0;i--){ if(sim.workers[i].job && !sim.workers[i].retiring){ sim.workers[i].retiring=true; rm--; } }
+  }
+}
+function newPatron(){
+  return {
+    id:sim.idSeq++, state:'QUEUE',
+    x:-40, y:ENTRANCE_Y + (Math.random()*30-15),
+    target:{x:0,y:0}, waitSpot:null,
+    shirt:pick(SHIRTS), pants:pick(PANTS), skin:pick(SKINS), hair:pick(HAIRS),
+    phase:Math.random()*TAU, bob:Math.random()*TAU, face:1, moving:true,
+    timer:0, arrive:sim.time, placed:0, readyAt:0,
+    foodReady:false, sandwich:false, gone:false, balkLooked:false, pickSlot:null
+  };
+}
+function sampleExp(ratePerSec){
+  if(ratePerSec<=0) return 9999;
+  return -Math.log(1 - Math.random()) / ratePerSec;
+}
+function init(){
+  sim = {
+    time:0, running:false, paused:false,
+    patrons:[], queue:[], pending:[], workers:[],
+    orderBusy:false, pickupSlots:new Array(config.pickupCapacity).fill(null), nextArrival:0,
+    served:0, lost:0, sumSys:0, busyWS:0, totWS:0, peak:0,
+    samples:[], sampleAcc:0, idSeq:0
+  };
+  setWorkers(config.numWorkers);
+  sim.nextArrival = sampleExp(config.arrivalRate/60);
+}
+
+/* ---------- Helpers ---------- */
+const dist = (ax,ay,bx,by)=>Math.hypot(ax-bx, ay-by);
+function moveToward(p, t, dt){
+  const dx=t.x-p.x, dy=t.y-p.y, d=Math.hypot(dx,dy), step=config.walkSpeed*dt;
+  if(d>1){
+    p.moving = d>2.2;
+    if(step>=d){ p.x=t.x; p.y=t.y; } else { p.x+=dx/d*step; p.y+=dy/d*step; }
+    if(Math.abs(dx)>0.4) p.face = dx>=0 ? 1 : -1;
+    if(p.moving) p.phase += dt*9;
+  } else {
+    p.moving=false; p.bob += dt*3;
+  }
+}
+const near = (p,t,r)=>dist(p.x,p.y,t.x,t.y) < r;
+
+const ACTIVE = new Set(['QUEUE','ORDER','TO_WAIT','WAIT','TO_PICKUP','PICKUP']);
+function countCrowd(){ let n=0; for(const p of sim.patrons) if(ACTIVE.has(p.state)) n++; return n; }
+function randWaitSpot(){
+  const a=Math.random()*TAU, r=Math.sqrt(Math.random())*WAIT.r;
+  return { x: WAIT.cx + Math.cos(a)*r, y: WAIT.cy + Math.sin(a)*r*0.78 };
+}
+
+/* ---------- Simulation step ---------- */
+function spawn(){
+  const p = newPatron();
+  sim.patrons.push(p);
+  if(countCrowd() >= config.maxCrowd){
+    p.state='BALK'; p.target={...BACK_OF_LINE}; sim.lost++;
+  } else {
+    p.state='QUEUE'; sim.queue.push(p);
+  }
+}
+function finishOrder(p){
+  sim.orderBusy=false;
+  if(sim.queue[0]===p) sim.queue.shift();
+  sim.pending.push(p);
+  p.placed=sim.time; p.state='TO_WAIT'; p.waitSpot=randWaitSpot();
+}
+function completePickup(p){
+  if(p.pickSlot!=null){ sim.pickupSlots[p.pickSlot]=null; p.pickSlot=null; }
+  sim.served++;
+  sim.sumSys += (sim.time - p.arrive);
+  p.state='LEAVE'; p.sandwich=true;
+}
+function manageOrder(){
+  if(!sim.orderBusy && sim.queue.length){
+    const f=sim.queue[0];
+    if(f.state==='QUEUE' && near(f,ORDER_POINT,6)){
+      sim.orderBusy=true; f.state='ORDER'; f.timer=config.ORDER_TIME;
+    }
+  }
+}
+function kitchen(dt){
+  for(const w of sim.workers){
+    if(!w.job && !w.retiring && sim.pending.length){
+      w.job = sim.pending.shift(); w.total=config.prepTime; w.timeLeft=config.prepTime;
+    }
+  }
+  let busy=0;
+  for(const w of sim.workers){
+    if(w.job){
+      busy++; w.timeLeft-=dt; w.phase+=dt*6;
+      if(w.timeLeft<=0){ w.job.foodReady=true; w.job.readyAt=sim.time; w.job=null; }
+    }
+  }
+  sim.busyWS += busy*dt;
+  sim.totWS  += sim.workers.length*dt;
+  sim.workers = sim.workers.filter(w=>!(w.retiring && !w.job));
+}
+function managePickup(){
+  for(let s=0;s<sim.pickupSlots.length;s++){
+    if(sim.pickupSlots[s]) continue;
+    let best=null;
+    for(const p of sim.patrons){
+      if(p.state==='WAIT' && p.foodReady && p.pickSlot==null && (!best || p.readyAt<best.readyAt)) best=p;
+    }
+    if(best){ sim.pickupSlots[s]=best; best.pickSlot=s; best.state='TO_PICKUP'; }
+  }
+}
+function updatePatron(p, dt){
+  let tgt = p.target;
+  switch(p.state){
+    case 'QUEUE': tgt = p.target; break;
+    case 'ORDER': tgt = ORDER_POINT; p.timer-=dt; if(p.timer<=0) finishOrder(p); break;
+    case 'TO_WAIT': tgt = p.waitSpot; if(near(p,tgt,3)) p.state='WAIT'; break;
+    case 'WAIT': tgt = p.waitSpot; break;
+    case 'TO_PICKUP': tgt = pickupSpot(p.pickSlot); if(near(p,tgt,3)){ p.state='PICKUP'; p.timer=config.PICKUP_TIME; } break;
+    case 'PICKUP': tgt = pickupSpot(p.pickSlot); p.timer-=dt; if(p.timer<=0) completePickup(p); break;
+    case 'LEAVE': tgt = EXIT; if(p.x>W+20) p.gone=true; break;
+    case 'BALK':
+      if(!p.balkLooked){ tgt=BACK_OF_LINE; if(near(p,tgt,4)) p.balkLooked=true; }
+      else { tgt=EXIT; if(p.x>W+20) p.gone=true; }
+      break;
+  }
+  moveToward(p, tgt, dt);
+}
+function step(dt){
+  sim.time += dt;
+  sim.nextArrival -= dt;
+  let guard=0;
+  while(sim.nextArrival<=0 && guard++<50){
+    spawn();
+    sim.nextArrival += sampleExp(config.arrivalRate/60);
+  }
+  for(let i=0;i<sim.queue.length;i++) sim.queue[i].target = queueSlot(i);
+  manageOrder();
+  for(const p of sim.patrons) updatePatron(p, dt);
+  kitchen(dt);
+  managePickup();
+  sim.patrons = sim.patrons.filter(p=>!p.gone);
+
+  const crowd = countCrowd();
+  if(crowd>sim.peak) sim.peak=crowd;
+  sim.sampleAcc += dt;
+  if(sim.sampleAcc>=0.5){ sim.sampleAcc-=0.5; sim.samples.push(crowd); if(sim.samples.length>140) sim.samples.shift(); }
+}
+
+/* ---------- Drawing ---------- */
+function rr(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+function drawScene(){
+  // sky
+  const sky = ctx.createLinearGradient(0,0,0,HORIZON);
+  sky.addColorStop(0,C.sky0); sky.addColorStop(1,C.sky1);
+  ctx.fillStyle=sky; ctx.fillRect(0,0,W,HORIZON);
+  // sun / moon
+  ctx.save();
+  ctx.shadowColor=C.sunGlow; ctx.shadowBlur=40;
+  ctx.fillStyle=C.sun; ctx.beginPath(); ctx.arc(W-90,52,26,0,TAU); ctx.fill();
+  ctx.restore();
+  // clouds (drift by wall clock so they move even when paused)
+  const t = performance.now()/1000;
+  ctx.fillStyle=C.cloud;
+  const clouds=[[120,46,1],[320,70,0.8],[600,40,1.1]];
+  for(const [bx,by,s] of clouds){
+    const x=(bx + t*12*s) % (W+160) - 80;
+    ctx.beginPath();
+    ctx.arc(x,by,16*s,0,TAU); ctx.arc(x+20*s,by+4,20*s,0,TAU);
+    ctx.arc(x+44*s,by,15*s,0,TAU); ctx.rect(x,by,44*s,16*s);
+    ctx.fill();
+  }
+  // ground
+  const g = ctx.createLinearGradient(0,HORIZON,0,H);
+  g.addColorStop(0,C.ground0); g.addColorStop(1,C.ground1);
+  ctx.fillStyle=g; ctx.fillRect(0,HORIZON,W,H-HORIZON);
+  ctx.strokeStyle=C.groundLine; ctx.lineWidth=1;
+  for(let y=HORIZON+34;y<H;y+=44){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+}
+function drawZones(){
+  // queue zone
+  ctx.fillStyle=C.qFill; ctx.strokeStyle=C.qStroke; ctx.lineWidth=1.5;
+  ctx.setLineDash([7,6]);
+  rr(300,258,128,272,14); ctx.fill(); ctx.stroke();
+  // waiting zone
+  ctx.fillStyle=C.wFill; ctx.strokeStyle=C.wStroke;
+  ctx.beginPath(); ctx.ellipse(WAIT.cx,WAIT.cy,WAIT.r+16,WAIT.r*0.82+12,0,0,TAU); ctx.fill(); ctx.stroke();
+  ctx.setLineDash([]);
+  // labels
+  ctx.fillStyle=C.subtext; ctx.font='600 12px ui-sans-serif,system-ui,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('QUEUE', 364, 276);
+  ctx.fillText('WAITING AREA', WAIT.cx, WAIT.cy - WAIT.r*0.82 - 6);
+  // window labels
+  ctx.fillStyle=C.text; ctx.font='700 11px ui-sans-serif,system-ui,sans-serif';
+  ctx.fillText('ORDER', ORDER_POINT.x, COUNTER_Y-20);
+  ctx.fillText('PICK UP', PICKUP_POINT.x, COUNTER_Y-20);
+}
+function drawTruck(){
+  const T=TRUCK;
+  // shadow under truck
+  ctx.fillStyle=C.shadow;
+  ctx.beginPath(); ctx.ellipse(T.x+T.w/2-10, T.y+T.h+24, T.w*0.62, 14, 0, 0, TAU); ctx.fill();
+  // wheels
+  for(const wx of [CAB.x+18, T.x+T.w-44]){
+    ctx.fillStyle=C.wheel; ctx.beginPath(); ctx.arc(wx, T.y+T.h+14, 16,0,TAU); ctx.fill();
+    ctx.fillStyle=C.hub; ctx.beginPath(); ctx.arc(wx, T.y+T.h+14, 6,0,TAU); ctx.fill();
+  }
+  // cab
+  ctx.fillStyle=C.truckDark;
+  rr(CAB.x, CAB.y, CAB.w, CAB.h, 8); ctx.fill();
+  ctx.fillStyle=C.windowGlass;
+  rr(CAB.x+8, CAB.y+8, CAB.w-16, 26, 5); ctx.fill();
+  // body
+  ctx.fillStyle=C.truck;
+  rr(T.x, T.y, T.w, T.h, 12); ctx.fill();
+  // body shading strip
+  ctx.fillStyle=C.truckDark; ctx.globalAlpha=.55;
+  rr(T.x, T.y+T.h-16, T.w, 16, 8); ctx.fill(); ctx.globalAlpha=1;
+  // roof trim
+  ctx.fillStyle=C.roof; rr(T.x-4, T.y-8, T.w+8, 14, 6); ctx.fill();
+  // sign band
+  ctx.fillStyle=C.signBar; rr(T.x+14, T.y+10, T.w-28, 22, 6); ctx.fill();
+  ctx.fillStyle=C.sign; ctx.font='800 15px ui-sans-serif,system-ui,sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('THE SANDWICH TRUCK', T.x+T.w/2, T.y+22);
+  ctx.textBaseline='alphabetic';
+  // serving window
+  ctx.fillStyle=C.windowFrame; rr(WIN.x-4, WIN.y-4, WIN.w+8, WIN.h+8, 8); ctx.fill();
+  ctx.fillStyle=C.windowGlass; rr(WIN.x, WIN.y, WIN.w, WIN.h, 5); ctx.fill();
+  // awning (striped) above window
+  const aw=WIN.w+12, ax=WIN.x-6, ay=WIN.y-22, stripes=12, sw=aw/stripes;
+  for(let i=0;i<stripes;i++){
+    ctx.fillStyle = (i%2===0)?C.awningA:C.awningB;
+    ctx.fillRect(ax+i*sw, ay, sw, 16);
+    ctx.beginPath(); ctx.moveTo(ax+i*sw, ay+16); ctx.lineTo(ax+i*sw+sw, ay+16);
+    ctx.lineTo(ax+i*sw+sw/2, ay+24); ctx.closePath(); ctx.fill();
+  }
+  // counter shelf
+  ctx.fillStyle=C.counter; rr(WIN.x-14, WIN.y+WIN.h+2, WIN.w+28, 10, 4); ctx.fill();
+  ctx.fillStyle=C.counterTop; ctx.fillRect(WIN.x-14, WIN.y+WIN.h+2, WIN.w+28, 4);
+}
+function drawCook(x, y, busy, phase){
+  // legs hidden behind counter; draw torso up
+  const stir = busy ? Math.sin(phase)*3 : 0;
+  // apron/torso
+  ctx.fillStyle=C.apron; rr(x-7, y-14, 14, 16, 4); ctx.fill();
+  // arms
+  ctx.strokeStyle=C.apron; ctx.lineWidth=4; ctx.lineCap='round';
+  ctx.beginPath();
+  ctx.moveTo(x-6,y-10); ctx.lineTo(x-10, y-4+stir);
+  ctx.moveTo(x+6,y-10); ctx.lineTo(x+11, y-6-stir);
+  ctx.stroke();
+  // head
+  ctx.fillStyle=pickSkinFor(x); ctx.beginPath(); ctx.arc(x, y-19, 5,0,TAU); ctx.fill();
+  // chef hat
+  ctx.fillStyle=C.hat;
+  rr(x-5, y-28, 10, 6, 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x-3,y-28,4,0,TAU); ctx.arc(x+3,y-28,4,0,TAU); ctx.arc(x,y-30,4.5,0,TAU); ctx.fill();
+  // status dot
+  ctx.fillStyle = busy ? C.cookBusy : C.cookIdle;
+  ctx.beginPath(); ctx.arc(x+8, y-24, 3,0,TAU); ctx.fill();
+  // steam if busy
+  if(busy){
+    ctx.strokeStyle=C.faint; ctx.lineWidth=1.5;
+    const s=(performance.now()/300 + x)%6;
+    ctx.beginPath(); ctx.moveTo(x-11, y-4-s); ctx.quadraticCurveTo(x-14,y-9-s,x-11,y-13-s); ctx.stroke();
+  }
+}
+let _skinCache={};
+function pickSkinFor(seed){ // stable per cook x-position
+  if(!_skinCache[seed]) _skinCache[seed]=SKINS[(Math.abs(seed)|0)%SKINS.length];
+  return _skinCache[seed];
+}
+function drawCooks(){
+  const n=sim.workers.length;
+  const baseY = WIN.y+WIN.h-4;
+  for(let i=0;i<n;i++){
+    const x = WIN.x + (i+1)*WIN.w/(n+1);
+    drawCook(x, baseY, !!sim.workers[i].job, sim.workers[i].phase);
+  }
+}
+function drawTickets(){
+  // active cook tickets above the truck
+  const jobs = sim.workers.filter(w=>w.job);
+  if(!jobs.length) return;
+  const tw=54, th=30, gap=10;
+  const total = jobs.length*tw + (jobs.length-1)*gap;
+  let x = TRUCK.x + TRUCK.w/2 - total/2;
+  const y = 8;
+  ctx.textAlign='center';
+  jobs.forEach((w,i)=>{
+    ctx.fillStyle=C.ticket; ctx.strokeStyle=C.ticketEdge; ctx.lineWidth=1;
+    rr(x,y,tw,th,5); ctx.fill(); ctx.stroke();
+    ctx.fillStyle=C.subtext; ctx.font='600 9px ui-sans-serif,system-ui,sans-serif';
+    ctx.fillText('COOKING', x+tw/2, y+11);
+    const prog = w.total>0 ? 1 - Math.max(0,w.timeLeft)/w.total : 1;
+    ctx.fillStyle=C.ticketBarBg; rr(x+7, y+17, tw-14, 6, 3); ctx.fill();
+    ctx.fillStyle=C.ticketBar; rr(x+7, y+17, (tw-14)*prog, 6, 3); ctx.fill();
+    x += tw+gap;
+  });
+}
+function drawSandwich(x,y,s){
+  ctx.save(); ctx.translate(x,y); ctx.scale(s,s);
+  ctx.fillStyle='#e6b86b'; rr(-6,-4,12,4,2); ctx.fill();        // top bun
+  ctx.fillStyle='#7bc06a'; ctx.fillRect(-6,0,12,1.6);            // lettuce
+  ctx.fillStyle='#c0392b'; ctx.fillRect(-6,1.4,12,1.6);          // tomato/filling
+  ctx.fillStyle='#caa15a'; rr(-6,3,12,3,2); ctx.fill();          // bottom bun
+  ctx.restore();
+}
+function drawPatron(p){
+  const moving=p.moving;
+  const swing = moving ? Math.sin(p.phase)*3 : 0;
+  const bob = moving ? Math.abs(Math.sin(p.phase))*1.3 : Math.sin(p.bob)*0.7;
+  const x=p.x, y=p.y - bob - 14;  // y is feet-ish anchor; shift up to body
+  // shadow
+  ctx.fillStyle=C.shadow; ctx.beginPath(); ctx.ellipse(p.x, p.y+2, 8,3,0,0,TAU); ctx.fill();
+  // legs
+  ctx.strokeStyle=p.pants; ctx.lineWidth=3; ctx.lineCap='round';
+  ctx.beginPath();
+  ctx.moveTo(x-2, y+4); ctx.lineTo(x-2+swing, y+13);
+  ctx.moveTo(x+2, y+4); ctx.lineTo(x+2-swing, y+13);
+  ctx.stroke();
+  // body
+  ctx.fillStyle=p.shirt; rr(x-5, y-6, 10, 12, 4); ctx.fill();
+  // arms
+  ctx.strokeStyle=p.shirt; ctx.lineWidth=3;
+  ctx.beginPath();
+  ctx.moveTo(x-4,y-3); ctx.lineTo(x-7+swing, y+3);
+  ctx.moveTo(x+4,y-3); ctx.lineTo(x+7-swing, y+3);
+  ctx.stroke();
+  // head
+  ctx.fillStyle=p.skin; ctx.beginPath(); ctx.arc(x, y-12, 5,0,TAU); ctx.fill();
+  // hair
+  ctx.fillStyle=p.hair; ctx.beginPath(); ctx.arc(x, y-13, 5, Math.PI*1.02, Math.PI*1.98); ctx.fill();
+  // ticket above head while their order is in the system
+  if(p.state==='TO_WAIT' || p.state==='WAIT' || p.state==='TO_PICKUP'){
+    const ready=p.foodReady;
+    ctx.fillStyle = ready ? C.cookIdle : '#f0a93f';
+    rr(x-5, y-26, 10, 7, 2); ctx.fill();
+    ctx.fillStyle = ready ? '#fff' : 'rgba(0,0,0,.35)';
+    ctx.fillRect(x-3, y-23.5, ready?6:4, 1.4);
+    if(ready){ // little call pulse
+      const a=0.5+0.5*Math.sin(performance.now()/180);
+      ctx.strokeStyle=`rgba(76,175,80,${a})`; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.arc(x, y-12, 11+a*2, 0, TAU); ctx.stroke();
+    }
+  }
+  // sandwich when leaving
+  if(p.sandwich) drawSandwich(x + 8*p.face, y-7, 0.95);
+}
+function drawDeco(){
+  // a couple of planters flanking the waiting area
+  const planters=[[600,498],[812,498]];
+  for(const [px,py] of planters){
+    ctx.fillStyle=C.pot; rr(px-12,py,24,16,3); ctx.fill();
+    ctx.fillStyle=C.plantDark; ctx.beginPath(); ctx.arc(px-5,py-4,9,0,TAU); ctx.arc(px+6,py-3,8,0,TAU); ctx.fill();
+    ctx.fillStyle=C.plant; ctx.beginPath(); ctx.arc(px,py-10,9,0,TAU); ctx.arc(px-8,py-6,6,0,TAU); ctx.arc(px+8,py-7,6,0,TAU); ctx.fill();
+  }
+  // lamppost near exit
+  const lx=860, ly=300;
+  ctx.strokeStyle=C.lamp; ctx.lineWidth=4; ctx.lineCap='round';
+  ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx, ly-78); ctx.stroke();
+  ctx.fillStyle=C.lamp; rr(lx-7, ly-92, 14, 16, 4); ctx.fill();
+  ctx.fillStyle=C.sun; ctx.globalAlpha=.85; rr(lx-4, ly-89, 8, 10, 2); ctx.fill(); ctx.globalAlpha=1;
+}
+function drawSparkline(){
+  const bx=16, by=70, bw=180, bh=78;
+  ctx.fillStyle=C.panel; ctx.strokeStyle=C.panelEdge; ctx.lineWidth=1;
+  rr(bx,by,bw,bh,10); ctx.fill(); ctx.stroke();
+  ctx.fillStyle=C.subtext; ctx.font='600 10px ui-sans-serif,system-ui,sans-serif'; ctx.textAlign='left';
+  ctx.fillText('CROWD OVER TIME', bx+12, by+16);
+  const s=sim.samples; const max=Math.max(config.maxCrowd, ...s, 1);
+  const x0=bx+12, y0=by+bh-12, plotW=bw-24, plotH=bh-30;
+  // baseline
+  ctx.strokeStyle=C.panelEdge; ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x0+plotW,y0); ctx.stroke();
+  if(s.length>1){
+    ctx.beginPath();
+    s.forEach((v,i)=>{
+      const x=x0 + plotW*(i/(s.length-1));
+      const y=y0 - plotH*(v/max);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.lineTo(x0+plotW, y0); ctx.lineTo(x0, y0); ctx.closePath();
+    ctx.fillStyle=C.sparkFill; ctx.fill();
+    ctx.beginPath();
+    s.forEach((v,i)=>{
+      const x=x0 + plotW*(i/(s.length-1));
+      const y=y0 - plotH*(v/max);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.strokeStyle=C.spark; ctx.lineWidth=2; ctx.stroke();
+  }
+  ctx.fillStyle=C.faint; ctx.font='9px ui-monospace,monospace'; ctx.textAlign='right';
+  ctx.fillText(String(max), bx+bw-8, by+26);
+}
+function drawHUD(){
+  ctx.fillStyle=C.subtext; ctx.font='600 12px ui-monospace,monospace'; ctx.textAlign='left';
+  ctx.fillText(`t = ${sim.time.toFixed(0)}s   speed ${config.speed.toFixed(1)}x`, 16, 36);
+  if(!sim.running){
+    ctx.fillStyle=C.text; ctx.font='700 16px ui-sans-serif,system-ui,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Press Start', W/2, COUNTER_Y+150);
+  } else if(sim.paused){
+    ctx.fillStyle=C.text; ctx.font='700 16px ui-sans-serif,system-ui,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Paused', W/2, COUNTER_Y+150);
+  }
+}
+function render(){
+  ctx.clearRect(0,0,W,H);
+  drawScene();
+  drawZones();
+  drawDeco();
+  // depth order: truck behind counter, patrons sorted by y
+  drawTruck();
+  drawCooks();
+  drawTickets();
+  const ordered=[...sim.patrons].sort((a,b)=>a.y-b.y);
+  for(const p of ordered) drawPatron(p);
+  drawSparkline();
+  drawHUD();
+}
+
+/* ---------- Stats DOM ---------- */
+const el = id => document.getElementById(id);
+let statAcc=0;
+function updateStats(){
+  el('s-served').textContent = sim.served;
+  el('s-lost').textContent = sim.lost;
+  el('s-line').textContent = sim.queue.length;
+  let waiting=0; for(const p of sim.patrons) if(p.state==='TO_WAIT'||p.state==='WAIT'||p.state==='TO_PICKUP'||p.state==='PICKUP') waiting++;
+  el('s-wait').textContent = waiting;
+  el('s-avg').textContent = (sim.served? (sim.sumSys/sim.served):0).toFixed(1)+'s';
+  const tput = sim.time>0 ? sim.served/(sim.time/60) : 0;
+  el('s-tput').textContent = tput.toFixed(1)+'/m';
+  const util = sim.totWS>0 ? (sim.busyWS/sim.totWS*100) : 0;
+  el('s-util').textContent = util.toFixed(0)+'%';
+  el('s-peak').textContent = sim.peak;
+}
+
+/* ---------- Main loop ---------- */
+let last = performance.now();
+function frame(now){
+  let dtReal = (now-last)/1000; last=now;
+  if(dtReal>0.1) dtReal=0.1;            // clamp tab-switch jumps
+  if(sim.running && !sim.paused){
+    let t = dtReal*config.speed;
+    const STEP = 1/120;
+    let guard=0;
+    while(t>0 && guard++<2000){ const s=Math.min(STEP,t); step(s); t-=s; }
+  }
+  render();
+  statAcc += dtReal;
+  if(statAcc>=0.15){ statAcc=0; updateStats(); }
+  requestAnimationFrame(frame);
+}
+
+/* ---------- Canvas sizing ---------- */
+function setupCanvas(){
+  const dpr = Math.min(window.devicePixelRatio||1, 2);
+  cv.width = W*dpr; cv.height = H*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', setupCanvas);
+setupCanvas();
+
+/* ---------- Controls ---------- */
+const toggleBtn = el('toggle');
+function bindRange(id, fmt, apply){
+  const input = el(id), label = el('v-'+id);
+  const sync = ()=>{ label.textContent = fmt(input.value); apply(input.value); };
+  input.addEventListener('input', sync); sync();
+}
+bindRange('workers', v=>v, v=>{ config.numWorkers=+v; if(sim) setWorkers(config.numWorkers); });
+bindRange('prep', v=>v+'s', v=>{ config.prepTime=+v; });
+bindRange('arrival', v=>v, v=>{ config.arrivalRate=+v; });
+bindRange('speed', v=>parseFloat(v).toFixed(1)+'×', v=>{ config.speed=parseFloat(v); });
+bindRange('crowd', v=>v, v=>{ config.maxCrowd=+v; });
+
+toggleBtn.addEventListener('click', ()=>{
+  if(!sim.running){ sim.running=true; sim.paused=false; toggleBtn.textContent='Pause'; }
+  else { sim.paused=!sim.paused; toggleBtn.textContent = sim.paused?'Resume':'Pause'; }
+});
+el('reset').addEventListener('click', ()=>{
+  init(); toggleBtn.textContent='Start'; updateStats();
+});
+
+/* ---------- Go ---------- */
+init();
+updateStats();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
