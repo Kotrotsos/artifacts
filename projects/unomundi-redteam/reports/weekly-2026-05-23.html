@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Unomundi.com — Weekly Red Team, 2026-05-23</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg:#fbfaf7; --fg:#1b1b1b; --muted:#5c5c5c; --rule:#d9d6cf;
+  --code-bg:#f1efe8; --crit:#b3261e; --high:#c15f3c; --med:#8a6d1c; --low:#3f6f8a; --ok:#2e7d32;
+}
+html { background:var(--bg); color:var(--fg); }
+body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14.5px; line-height: 1.55; max-width: 980px; margin: 0 auto; padding: 48px 28px 96px; }
+h1 { font-size: 28px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+.sub { color: var(--muted); margin: 4px 0 28px; font-size: 14px; }
+h2 { font-size: 18px; font-weight: 600; margin: 38px 0 12px; padding-bottom: 4px; border-bottom: 1px solid var(--rule); }
+h3 { font-size: 15px; font-weight: 600; margin: 22px 0 6px; }
+code, pre { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 3px; }
+pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px; overflow-x: auto; line-height: 1.5; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0 22px; font-size: 14px; }
+th, td { border-bottom: 1px solid var(--rule); padding: 7px 10px; text-align: left; vertical-align: top; }
+th { font-weight: 600; }
+.sev { display:inline-block; font-size:11px; font-weight:700; padding:1px 7px; border-radius:10px; letter-spacing:0.03em; }
+.sev-crit { background: rgba(179,38,30,0.12); color: var(--crit); }
+.sev-high { background: rgba(193,95,60,0.14); color: var(--high); }
+.sev-med  { background: rgba(138,109,28,0.14); color: var(--med); }
+.sev-low  { background: rgba(63,111,138,0.14); color: var(--low); }
+.sev-ok   { background: rgba(46,125,50,0.12); color: var(--ok); }
+.callout { border-left: 3px solid var(--crit); background: var(--code-bg); padding: 12px 16px; margin: 16px 0; border-radius: 0 6px 6px 0; font-size: 14px; }
+.callout-ok { border-left-color: var(--ok); }
+.callout-med { border-left-color: var(--med); }
+ul { padding-left: 22px; }
+li { margin: 3px 0; }
+.muted { color: var(--muted); }
+@media print { body { max-width: none; padding: 0 0 18mm; font-size: 11pt; } }
+</style>
+</head>
+<body>
+
+<h1>Unomundi.com — Weekly Red Team</h1>
+<p class="sub">Engagement week 3 · 2026-05-23 · Authorized by engagement principal · Anonymous probe escalated to authenticated SQL via leaked service_role JWT (no PII rows read, no writes) · Workspace: <code>/Users/marcokotrotsos/PERSONAL/uno-weekly-2026-05-23/</code></p>
+
+<div class="callout">
+<strong>Bottom line.</strong> The org read the 2026-05-14 report and acted on it. They rotated the Supabase JWT secret on 2026-05-15 (day after the report was sent). They did <em>not</em> close the endpoint that leaks the secret, and they <em>extended</em> the replacement JWT's TTL from 5 years to 10 years. Net effect is worse than before. Confirmed today: the new <code>service_role</code> JWT authenticates against the production database, with full RLS-bypass SQL read access, full Storage read/write across 6 buckets including a new <code>data-exports</code> bucket created 2026-05-21, and a reachable GoTrue admin surface. Four new subdomains have appeared in CT logs in the last 9 days, one of which (<code>dev-api.unomundi.com</code>) re-exposes the full NestJS OpenAPI spec that was removed from prod, and another (<code>restore.unomundi.com</code>) is a public OTP-based child account restoration page.
+</div>
+
+<h2>Reachability sweep</h2>
+<table>
+<tr><th>Host</th><th>HTTP /</th><th>Notes</th></tr>
+<tr><td><code>unomundi.com</code></td><td>301</td><td>redirects to www</td></tr>
+<tr><td><code>www.unomundi.com</code></td><td>200</td><td>Wix marketing, unchanged stack</td></tr>
+<tr><td><code>app.unomundi.com</code></td><td>000</td><td>no listener / connection refused</td></tr>
+<tr><td><code>api.unomundi.com</code></td><td>404 (/health 200)</td><td>NestJS, locked-down posture; /docs removed</td></tr>
+<tr><td><code>admin.unomundi.com</code></td><td>200</td><td>SPA shell, bundle <code>index-DP3k2bAu.js</code> (rebuilt since 2026-05-14)</td></tr>
+<tr><td><code>supabase.unomundi.com</code></td><td>307</td><td>Studio + platform API still public</td></tr>
+<tr><td><code>dev-supabase.unomundi.com</code></td><td>401</td><td>Basic Auth wraps Studio + platform API (improvement)</td></tr>
+<tr><td><code>dev-admin.unomundi.com</code> <span class="sev sev-high">NEW</span></td><td>200</td><td>admin SPA mirror; bundle leaks internal Kong IP</td></tr>
+<tr><td><code>dev-api.unomundi.com</code> <span class="sev sev-high">NEW</span></td><td>404 (/health 200, /docs 200)</td><td>full OpenAPI spec re-exposed here</td></tr>
+<tr><td><code>restore.unomundi.com</code> <span class="sev sev-med">NEW</span></td><td>200</td><td>public child account restoration page (OTP form)</td></tr>
+<tr><td><code>dev-restore.unomundi.com</code> <span class="sev sev-low">NEW</span></td><td>200</td><td>dev mirror of restore</td></tr>
+</table>
+
+<h2>Status of prior findings</h2>
+<table>
+<tr><th>ID</th><th>Title</th><th>Prior status (2026-05-14)</th><th>Today</th><th>Severity</th></tr>
+<tr><td>F-1a</td><td><code>supabase.unomundi.com</code> Studio unauth</td><td>Open</td><td><strong>Open (worse)</strong> — Studio still loads, <code>/api/platform/profile</code> still 200, <code>/rest/v1/</code> OpenAPI grew from 245KB to 283KB</td><td><span class="sev sev-crit">CRIT</span></td></tr>
+<tr><td>F-1b</td><td><code>dev-supabase</code> Basic Auth scope</td><td>Partial — only Studio UI wrapped</td><td><strong>Partial</strong> — Basic Auth now also wraps <code>/api/platform/*</code>; <code>/rest/v1/</code> still 200 unauth (PostgREST schema disclosure unchanged)</td><td><span class="sev sev-high">HIGH</span></td></tr>
+<tr><td>F-2</td><td>dev-supabase Kong :8000 / :8443</td><td>Remediated (network)</td><td><span class="sev sev-ok">Confirmed remediated</span> — TCP still refused</td><td><span class="sev sev-ok">OK</span></td></tr>
+<tr><td>F-3</td><td>admin prod bundle hardcodes dev backend</td><td>Open</td><td><strong>Open</strong> — bundle rebuilt (<code>index-DP3k2bAu.js</code>) but still embeds <code>VITE_SUPABASE_URL=https://dev-supabase.unomundi.com</code> and the <em>pre-rotation</em> anon JWT (iat=2026-03-03). Dev-supabase still validates this old JWT, so the admin is functional against the dev backend, which means production admin work is happening on the dev Supabase instance.</td><td><span class="sev sev-high">HIGH</span></td></tr>
+<tr><td>F-5</td><td>JWT secret leak via <code>/api/platform/projects/default/settings</code></td><td>Critical, just discovered</td><td><strong>Open (worse)</strong> — keys rotated 2026-05-15 but endpoint still 200 and discloses the <em>new</em> secret. Replacement JWT TTL extended from 5yr to 10yr.</td><td><span class="sev sev-crit">CRIT</span></td></tr>
+<tr><td>F-6</td><td><code>api.unomundi.com/docs</code> Scalar exposure</td><td>Open</td><td><span class="sev sev-ok">Remediated on prod</span> — /docs now 404. /health still 200 (acceptable). But spec re-exposed on dev-api (see F-9).</td><td><span class="sev sev-ok">OK on prod</span></td></tr>
+</table>
+
+<h2>Authorized SQL exploitation — proof of compromise</h2>
+<p>This week's escalation: with engagement principal authorization, I used the leaked <code>service_role</code> JWT against <code>supabase.unomundi.com</code> (the production backend). Strictly read-only, no PII row contents fetched, no writes, no user enumeration via GoTrue admin.</p>
+
+<h3>JWT rotation timeline</h3>
+<pre>old jwt_secret  : vG3d9Z2h8aW4fK1s...  (iat 2026-03-03, exp 2031-03-02, ~5y)
+new jwt_secret  : rK9cd2vZmdKN2WPLu...  (iat 2026-05-15, exp 2036-05-13, ~10y)
+
+Same /api/platform/projects/default/settings endpoint, same disclosure, longer TTL.
+The endpoint must be closed; rotating tokens alone is structurally insufficient.</pre>
+
+<h3>What service_role can reach today on prod</h3>
+<table>
+<tr><th>Surface</th><th>Status</th><th>Proof</th></tr>
+<tr><td>PostgREST <code>/rest/v1/</code></td><td>Full RLS bypass</td><td>60 tables enumerable, row counts retrievable on all PII tables</td></tr>
+<tr><td>PostgREST <code>pg_stat_statements</code></td><td>Readable</td><td>Top queries by call count (1.2M, 1.2M, 814K, 795K, 795K — live prod DB)</td></tr>
+<tr><td>Storage <code>/storage/v1/bucket</code></td><td>Listable</td><td>6 buckets enumerated (see below)</td></tr>
+<tr><td>GoTrue <code>/auth/v1/admin/users</code></td><td>Endpoint accepts JWT</td><td>HEAD returns 405 with <code>Allow: POST, GET</code> — admin user management reachable; not exercised</td></tr>
+<tr><td>dev-supabase via leaked prod JWT</td><td>401</td><td>Confirms dev uses a separate (older) jwt_secret</td></tr>
+</table>
+
+<h3>Row counts (HEAD-only, no rows fetched)</h3>
+<p>Production database currently contains content but almost no users — either pre-launch or a freshly-rotated database. Either way, every user added from now on is exposed to whoever holds the JWT.</p>
+<pre>PII / user tables:
+  explorer_profiles                  1   row    (children's profiles)
+  guardian_explorer_relations        1   row
+  guardian_settings                  2   rows
+  guardian_action_logs               0
+  profiles                           3   rows
+  explorer_settings                  1   row
+  explorer_screen_time_*             0
+  consent_records                    0
+  legal_consent_archive              0
+  legal_document_versions            3
+
+Content tables (intellectual property):
+  lessons                           1131
+  chapters                           585
+  tracks                             585
+  gallery_images                     886
+  video_lessons                      364
+  quiz_questions                     384
+  quiz_lessons                        96
+  countries                          195
+  schema_migrations                   67  (last: 20260121000000)</pre>
+
+<h3>Storage buckets</h3>
+<table>
+<tr><th>Bucket</th><th>Public</th><th>Size limit</th><th>Created</th><th>Notes</th></tr>
+<tr><td><code>country-backgrounds</code></td><td>yes</td><td>10 MB</td><td>2026-03-25</td><td>50 country backgrounds</td></tr>
+<tr><td><code>content-private</code></td><td>no</td><td>10 GB</td><td>2026-03-19</td><td>gallery-import / quiz-import folders</td></tr>
+<tr><td><code>chapter-type-assets</code> <span class="sev sev-low">NEW</span></td><td>yes</td><td>10 MB</td><td>2026-05-20</td><td>track-sort backgrounds</td></tr>
+<tr><td><code>chapter-reward-badges</code> <span class="sev sev-low">NEW</span></td><td>yes</td><td>5 MB</td><td>2026-05-20</td><td>~50 country-keyed badge folders</td></tr>
+<tr><td><code>content-public</code> <span class="sev sev-low">NEW</span></td><td>yes</td><td>100 MB</td><td>2026-05-20</td><td>global-assets folder</td></tr>
+<tr><td><code>data-exports</code> <span class="sev sev-high">NEW, flag</span></td><td>no</td><td>200 MB</td><td>2026-05-21</td><td>Empty today. Destination for GDPR Art.15 exports of child-subject profiles (per OpenAPI spec). The service_role JWT has read access. Any future export landing in this bucket is reachable by an attacker holding the JWT.</td></tr>
+</table>
+
+<h2>New findings this week</h2>
+
+<h3>F-7 <span class="sev sev-crit">CRIT</span> — JWT rotation extended TTL to 10 years</h3>
+<p>Anthropic … sorry, Unomundi rotated the production JWT secret on 2026-05-15 in response to the prior report. They left the disclosure endpoint open and chose a replacement secret with an expiry of 2036-05-13. Net effect: every reader of <code>/api/platform/projects/default/settings</code> from now on gets a working <code>service_role</code> JWT valid for the next decade. Worse than the 5-year window before the rotation.</p>
+
+<h3>F-8 <span class="sev sev-high">HIGH</span> — <code>dev-admin.unomundi.com</code> bundle leaks internal infrastructure</h3>
+<p>The dev-admin SPA bundle (<code>/assets/index-DwFMvkjU.js</code>, 1.47 MB) hardcodes:</p>
+<pre>VITE_BACKEND_URL    = http://100.52.182.111:8000
+VITE_SUPABASE_URL   = http://100.52.182.111:8000
+VITE_SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsI...  (truncated, still present)</pre>
+<p>The IP <code>100.52.182.111</code> is RFC 6598 carrier-grade NAT space and matches the internal Kong endpoint previously leaked in F-5. The bundle is unauthenticated and downloadable to anyone, disclosing the org's internal network topology and confirming that the Kong gateway is reachable inside that network without TLS.</p>
+
+<h3>F-9 <span class="sev sev-high">HIGH</span> — Full API contract re-exposed on <code>dev-api.unomundi.com/docs</code></h3>
+<p>The Scalar API reference removed from prod is fully exposed on the dev mirror, unauthenticated, with the entire OpenAPI 3.0.0 spec inlined in the page JavaScript (46.8 KB). 13 endpoints documented:</p>
+<pre>POST /ai/session                              ElevenLabs voice session create
+POST /ai/session-events                       AI session lifecycle telemetry
+POST /ai/session/consume-minutes              Charge Una voice minutes
+POST /billing/checkout-intent                 Guardian checkout pre-payment
+GET  /billing/me                              Billing overview
+POST /billing/sync-catalog                    Subscription catalog sync
+POST /content-import/lessons                  Batch lesson import
+GET  /health                                  liveness
+POST /privacy/export-requests                 GDPR Art.15 export request
+GET  /privacy/export-requests/{id}            Export status + signed URL
+GET  /video/playback-token/{lessonId}         Mux signed playback token
+POST /webhooks/una                            Una safety webhook   ← security block empty in spec
+POST /webhooks/una/conversation-summary       Una conversation summary  ← security block empty in spec</pre>
+<p>Prod and dev API expose <em>identical</em> route sets (verified by GET probe: 401 for auth-required routes, 404 for POST-only routes, on both hosts). The differential is purely the doc page.</p>
+
+<h3>F-10 <span class="sev sev-med">MED</span> — Public child account restoration endpoint</h3>
+<p><code>https://restore.unomundi.com</code> serves a static HTML/JS page titled "Restore account" with an email + 6-digit OTP form ("Enter your email and verify OTP to reactivate the account before permanent deletion"). The accompanying <code>app.js</code> calls both <code>https://supabase.unomundi.com</code> and <code>https://dev-supabase.unomundi.com</code>. This is the user-facing surface for un-deleting a child / guardian account during the GDPR-mandated retention grace period. Issues to assess:</p>
+<ul>
+<li>Rate limiting on the OTP flow (not assessed — would require actual submission)</li>
+<li>OTP entropy and reuse window (not assessed)</li>
+<li>Why the page calls dev-supabase as well as prod</li>
+<li>Whether the restore action is logged in <code>guardian_action_logs</code> (currently 0 rows)</li>
+</ul>
+
+<h3>F-11 <span class="sev sev-med">MED</span> — New <code>data-exports</code> bucket reachable via leaked JWT</h3>
+<p>Bucket created 2026-05-21, private, 200 MB file size limit. Per the OpenAPI spec, this bucket receives async GDPR Art.15 exports keyed by <code>subject_profile_id</code> (child profile ID), with signed download URLs of the form <code>https://&lt;project&gt;.supabase.co/storage/v1/object/sign/data-exports/exports/file.txt?...</code>. The service_role JWT from F-5 has full read access. Currently empty; flagged for next-week monitoring.</p>
+
+<h3>F-12 <span class="sev sev-low">LOW (information)</span> — ElevenLabs "Una" voice agent for children</h3>
+<p>The product integrates ElevenLabs for a conversational voice agent ("Una"). The API exposes endpoints to create sessions, log lifecycle events, consume metered minutes, and receive webhooks (<code>/webhooks/una/*</code>) for safety events and conversation summaries. Notes:</p>
+<ul>
+<li>Children ages 6-12 are the speakers; voice data flows through ElevenLabs as a sub-processor (GDPR Art.28 DPA required, NL DPA notification for children's voice data is a real obligation here).</li>
+<li>Two webhook routes have an empty <code>security:</code> block in the OpenAPI spec. They likely use HMAC signature validation in headers (common pattern that doesn't surface in OpenAPI), but the spec doesn't say so. POST tests not performed (would create lifecycle artifacts).</li>
+<li>The <code>guardian_action_logs</code> table is 0 rows on prod, suggesting safety event flow is not yet wired or no flagged events have occurred.</li>
+</ul>
+
+<h2>Remediation order (priority)</h2>
+<ol>
+<li><strong>Close the leak path first, then rotate.</strong> Remove public reachability of <code>/api/platform/projects/default/settings</code> on <code>supabase.unomundi.com</code> entirely (VPN, IP allowlist, or SSO). Then rotate the JWT secret again and pick a TTL of months not decades. Without step one, rotation is theater.</li>
+<li><strong>Eliminate public reach of <code>supabase.unomundi.com</code> Studio + platform endpoints.</strong> Self-hosted Supabase Studio is not designed to be internet-facing.</li>
+<li><strong>Wrap <code>/rest/v1/</code> on <code>dev-supabase</code> too.</strong> Basic Auth currently stops at the Studio / platform API; PostgREST schema disclosure is still anonymous.</li>
+<li><strong>Repoint admin.unomundi.com at a real prod Supabase project.</strong> Current production admin work is happening on a dev backend that has a different JWT secret, no rate limits documented, and a known anonymous schema disclosure surface.</li>
+<li><strong>Take down or auth-wrap <code>dev-api.unomundi.com/docs</code>.</strong> The route was removed on prod for a reason; the dev mirror undoes that fix.</li>
+<li><strong>Take down or auth-wrap <code>dev-admin.unomundi.com</code>.</strong> The bundle there is more damaging than admin's (leaks internal Kong IP in cleartext HTTP).</li>
+<li><strong>Audit <code>restore.unomundi.com</code>:</strong> OTP entropy, replay window, rate limits, why it calls dev-supabase, and whether the restoration action emits a <code>guardian_action_logs</code> row.</li>
+<li><strong>Database + Storage log review</strong> for the period since the previous JWT secret was active (2026-03-03 onward). The fact that prod has only 1 explorer profile + 3 profiles + 2 guardian settings makes log review tractable — confirm no unexpected sessions used the prior service_role JWT.</li>
+<li><strong>GDPR-K Article 33 clock</strong>: 72-hour notification to the Dutch DPA (AP) is mandatory if logs show any unauthorized access to children's PII while the prior or current service_role JWT was in the wild. The legal basis is unambiguous — under-13 PII triggers the children's-data heightened standard.</li>
+</ol>
+
+<h2>Engagement guardrails honored</h2>
+<ul>
+<li>Anonymous probe (HEAD/GET) for surface enumeration. No bodies fetched for known PII tables.</li>
+<li>Authenticated probe with leaked <code>service_role</code> JWT used only for: row counts (HEAD with <code>Prefer: count=exact</code>), bucket listing, pg_stat_statements read, GoTrue admin reachability via HEAD only.</li>
+<li>No SELECT of any row from <code>explorer_profiles</code>, <code>guardian_*</code>, <code>profiles</code>, <code>consent_records</code>, <code>legal_consent_archive</code>, or any user-content tables. No GoTrue user listing.</li>
+<li>No writes. No POST to any endpoint that would create records or trigger user-visible side effects.</li>
+<li>Leaked JWTs treated as evidence. All raw HTTP captures in <code>evidence/</code>.</li>
+</ul>
+
+<p class="muted">Evidence: <code>/Users/marcokotrotsos/PERSONAL/uno-weekly-2026-05-23/evidence/</code> · prior runs: <code>/Users/marcokotrotsos/osint/engagements/unomundi-2026-05-05/</code> and <code>/Users/marcokotrotsos/PERSONAL/uno-rescan/</code></p>
+
+</body>
+</html>
