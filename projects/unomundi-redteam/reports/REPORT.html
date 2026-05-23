@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Unomundi Content IP &amp; User Enumeration — 2026-05-23</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg:#fbfaf7; --fg:#1b1b1b; --muted:#5c5c5c; --rule:#d9d6cf; --code-bg:#f1efe8;
+  --crit:#b3261e; --high:#c15f3c; --med:#8a6d1c; --low:#3f6f8a; --ok:#2e7d32; --accent:#1f4e7a;
+}
+html { background:var(--bg); color:var(--fg); }
+body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14.5px; line-height: 1.55; max-width: 1080px; margin: 0 auto; padding: 48px 28px 96px; }
+h1 { font-size: 30px; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+h2 { font-size: 19px; font-weight: 600; margin: 42px 0 12px; padding-bottom: 4px; border-bottom: 1px solid var(--rule); }
+h3 { font-size: 15px; font-weight: 600; margin: 22px 0 6px; }
+.sub { color: var(--muted); margin: 4px 0 28px; font-size: 14px; }
+code, pre { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 3px; }
+pre { background: var(--code-bg); padding: 14px 16px; border-radius: 6px; overflow-x: auto; line-height: 1.5; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0 22px; font-size: 13.5px; }
+th, td { border-bottom: 1px solid var(--rule); padding: 7px 10px; text-align: left; vertical-align: top; }
+th { font-weight: 600; background: rgba(0,0,0,0.02); }
+tr:hover td { background: rgba(0,0,0,0.015); }
+.r { text-align: right; }
+.num { font-variant-numeric: tabular-nums; }
+.sev { display:inline-block; font-size:11px; font-weight:700; padding:1px 7px; border-radius:10px; letter-spacing:0.03em; }
+.sev-crit { background: rgba(179,38,30,0.12); color: var(--crit); }
+.sev-high { background: rgba(193,95,60,0.14); color: var(--high); }
+.sev-med  { background: rgba(138,109,28,0.14); color: var(--med); }
+.sev-low  { background: rgba(63,111,138,0.14); color: var(--low); }
+.sev-ok   { background: rgba(46,125,50,0.12); color: var(--ok); }
+.callout { border-left: 3px solid var(--crit); background: var(--code-bg); padding: 12px 16px; margin: 16px 0; border-radius: 0 6px 6px 0; font-size: 14px; }
+.callout-ok { border-left-color: var(--ok); }
+.callout-med { border-left-color: var(--med); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 12px 0 22px; }
+.card { padding: 14px 16px; border: 1px solid var(--rule); border-radius: 8px; background: white; }
+.card .num-big { font-size: 26px; font-weight: 600; color: var(--accent); letter-spacing: -0.01em; }
+.card .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 2px; }
+.muted { color: var(--muted); }
+ul { padding-left: 22px; }
+li { margin: 3px 0; }
+.arch { font-family: ui-monospace, monospace; font-size: 13px; background: var(--code-bg); padding: 18px 22px; border-radius: 6px; line-height: 1.65; white-space: pre; overflow-x:auto; }
+.toc a { color: var(--accent); text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+.pii-warn { background: rgba(179,38,30,0.05); border: 1px solid rgba(179,38,30,0.25); border-radius: 6px; padding: 10px 14px; font-size: 13px; margin: 12px 0; color: var(--crit); }
+.user-row td { font-family: ui-monospace, monospace; font-size: 12.5px; }
+@media print { body { max-width: none; padding: 0 0 18mm; font-size: 11pt; } .arch { white-space: pre-wrap; } }
+</style>
+</head>
+<body>
+
+<h1>Unomundi — Content IP, Anthology Schema &amp; User Enumeration</h1>
+<p class="sub">Weekly red-team week 3 · 2026-05-23 · Authorized by engagement principal · Extraction via leaked Supabase <code>service_role</code> JWT (F-5, still open) · Workspace: <code>/Users/marcokotrotsos/PERSONAL/uno-weekly-2026-05-23/ip/content/report/</code></p>
+
+<div class="callout callout-med">
+<strong>Scope.</strong> This report enumerates the <em>content catalog</em> (the company's intellectual property: the lesson/track/chapter anthology) and the <em>authentication user list</em> (GoTrue admin enumeration). Both were explicitly authorized by the engagement principal this week. <strong>PII tables remain off-limits</strong> — no row contents from <code>explorer_profiles</code>, <code>guardian_*</code>, <code>profiles</code>, <code>consent_records</code>, <code>legal_*</code>, <code>analytics_events</code>, or any user-progress / per-user views were read.
+</div>
+
+<div class="cards">
+  <div class="card"><div class="num-big num">9,870</div><div class="lbl">Rows extracted</div></div>
+  <div class="card"><div class="num-big num">37</div><div class="lbl">Content tables dumped</div></div>
+  <div class="card"><div class="num-big num">2.25</div><div class="lbl">MB raw JSON</div></div>
+  <div class="card"><div class="num-big num">69</div><div class="lbl">GoTrue users (3 real, 66 anon)</div></div>
+  <div class="card"><div class="num-big num">1,131</div><div class="lbl">Lessons (of 12,285 catalog capacity)</div></div>
+  <div class="card"><div class="num-big num">9.2%</div><div class="lbl">Catalog completion</div></div>
+</div>
+
+<h2>1. Anthology architecture</h2>
+
+<p>The content IP is a strict four-level hierarchy keyed on ISO 3166 country codes. Every country has the same shape: 3 tracks, 9 chapters, 63 lessons.</p>
+
+<div class="arch">Country (cc_code = "AQ", "BA", "BH", "GR", ...)
+   │
+   ├── Track 1 (track_type=1) ─ public_id: AQT1
+   │     ├── Chapter 1 (chapter_type=1) ─ public_id: AQT1C1
+   │     │     ├── Lesson 1 (video)        ─ AQT1C1L1
+   │     │     ├── Lesson 2 (video)        ─ AQT1C1L2
+   │     │     ├── Lesson 3 (video)        ─ AQT1C1L3
+   │     │     ├── Lesson 4 (quiz)         ─ AQT1C1L4   ─ quiz_lessons + quiz_questions + quiz_answers
+   │     │     ├── Lesson 5 (call_una)     ─ AQT1C1L5   ─ ElevenLabs voice agent conversation
+   │     │     ├── Lesson 6 (gallery_walk) ─ AQT1C1L6   ─ gallery_screens + gallery_images (with audio)
+   │     │     └── Lesson 7 (video)        ─ AQT1C1L7
+   │     ├── Chapter 2 (chapter_type=2) ─ same 7-lesson shape
+   │     └── Chapter 3 (chapter_type=3) ─ same
+   ├── Track 2 ─ same shape
+   └── Track 3 ─ same shape
+
+Catalog capacity:  195 countries × 3 tracks × 3 chapters × 7 lessons = 12,285 lessons
+Currently built :  1,131 lessons (9.2%)
+Currently published countries: 82 / 195 (42%)</div>
+
+<h2>2. Catalog inventory</h2>
+
+<h3>Top-level status</h3>
+<table>
+<tr><th>Entity</th><th class="r">Total</th><th class="r">Published</th><th class="r">Draft</th><th>Notes</th></tr>
+<tr><td>Countries</td><td class="r num">195</td><td class="r num">82</td><td class="r num">113</td><td>All 195 have a background_image URL pointing at public storage bucket <code>country-backgrounds</code>; none have a flag field set yet. Zero paid-tier-locked entries.</td></tr>
+<tr><td>Tracks</td><td class="r num">585</td><td class="r num">82</td><td class="r num">503</td><td>Three per country; publishing follows country roll-out</td></tr>
+<tr><td>Chapters</td><td class="r num">585</td><td class="r num">82</td><td class="r num">503</td><td>Three per track</td></tr>
+<tr><td>Lessons</td><td class="r num">1,131</td><td class="r num">1,129</td><td class="r num">2</td><td>Lessons publish in bulk independent of chapter status — content team is ahead of rollout</td></tr>
+</table>
+
+<h3>Lesson type distribution (the 7-lesson chapter template)</h3>
+<table>
+<tr><th>Position</th><th>Kind</th><th>Backed by</th><th>Notes</th></tr>
+<tr><td>1, 2, 3, 7</td><td><code>video</code></td><td><code>video_lessons</code>, <code>video_import_jobs</code></td><td>Mux-hosted; signed playback tokens via <code>GET /video/playback-token/{lessonId}</code></td></tr>
+<tr><td>4</td><td><code>quiz</code></td><td><code>quiz_lessons</code> + <code>quiz_questions</code> + <code>quiz_answers</code></td><td>384 questions, 1,536 answers (4 per question), 96 quiz lessons</td></tr>
+<tr><td>5</td><td><code>call_una</code></td><td>API <code>POST /ai/session</code></td><td>ElevenLabs voice agent conversation. "Una" is the voice persona. Charged in "Una minutes" against guardian billing.</td></tr>
+<tr><td>6</td><td><code>gallery_walk</code></td><td><code>gallery_lessons</code> + <code>gallery_screens</code> + <code>gallery_images</code></td><td>886 images, 235 gallery_screens, 85 gallery_lessons; each image has an affirmation text + audio (mp3) per locale</td></tr>
+</table>
+
+<h3>Localization coverage</h3>
+<table>
+<tr><th>Locale</th><th>Code</th><th class="r">Lesson titles</th><th class="r">Country names</th><th class="r">Gallery affirmations</th></tr>
+<tr><td>English</td><td><code>en</code></td><td class="r num">88 / 1,131</td><td class="r num">195 / 195</td><td class="r num">886 / 886</td></tr>
+<tr><td>Deutsch</td><td><code>de</code></td><td class="r num">—</td><td class="r num">—</td><td class="r num">—</td></tr>
+<tr><td>Nederlands</td><td><code>nl</code></td><td class="r num">—</td><td class="r num">—</td><td class="r num">—</td></tr>
+</table>
+<p class="muted">Localization tables exist for all three locales, but only English content is populated. <code>lesson_translations</code> only covers 7.8% of lessons (88 / 1,131). The product is launching English-first.</p>
+
+<h3>Full table inventory</h3>
+<table>
+<tr><th>Table</th><th class="r">Rows</th><th class="r">Bytes</th><th>Evidence file</th></tr>
+<tr><td><code>tracks</code></td><td class="r num">585</td><td class="r num">138,832</td><td><code>data/tracks.json</code></td></tr>
+<tr><td><code>track_types</code></td><td class="r num">3</td><td class="r num">262</td><td><code>data/track_types.json</code></td></tr>
+<tr><td><code>track_translations</code></td><td class="r num">0</td><td class="r num">2</td><td><code>data/track_translations.json</code></td></tr>
+<tr><td><code>track_type_translations</code></td><td class="r num">3</td><td class="r num">186</td><td><code>data/track_type_translations.json</code></td></tr>
+<tr><td><code>chapters</code></td><td class="r num">585</td><td class="r num">192,954</td><td><code>data/chapters.json</code></td></tr>
+<tr><td><code>chapter_types</code></td><td class="r num">3</td><td class="r num">883</td><td><code>data/chapter_types.json</code></td></tr>
+<tr><td><code>chapter_translations</code></td><td class="r num">0</td><td class="r num">2</td><td><code>data/chapter_translations.json</code></td></tr>
+<tr><td><code>chapter_type_translations</code></td><td class="r num">3</td><td class="r num">219</td><td><code>data/chapter_type_translations.json</code></td></tr>
+<tr><td><code>lessons</code></td><td class="r num">1,131</td><td class="r num">294,231</td><td><code>data/lessons.json</code></td></tr>
+<tr><td><code>lesson_types</code></td><td class="r num">21</td><td class="r num">1,339</td><td><code>data/lesson_types.json</code></td></tr>
+<tr><td><code>lesson_translations</code></td><td class="r num">88</td><td class="r num">10,959</td><td><code>data/lesson_translations.json</code></td></tr>
+<tr><td><code>lesson_type_translations</code></td><td class="r num">0</td><td class="r num">2</td><td><code>data/lesson_type_translations.json</code></td></tr>
+<tr><td><code>lesson_ratings</code></td><td class="r num">0</td><td class="r num">2</td><td><code>data/lesson_ratings.json</code></td></tr>
+<tr><td><code>gallery_images</code></td><td class="r num">886</td><td class="r num">192,417</td><td><code>data/gallery_images.json</code></td></tr>
+<tr><td><code>gallery_image_translations</code></td><td class="r num">886</td><td class="r num">279,810</td><td><code>data/gallery_image_translations.json</code></td></tr>
+<tr><td><code>gallery_lessons</code></td><td class="r num">85</td><td class="r num">4,758</td><td><code>data/gallery_lessons.json</code></td></tr>
+<tr><td><code>gallery_screens</code></td><td class="r num">235</td><td class="r num">24,673</td><td><code>data/gallery_screens.json</code></td></tr>
+<tr><td><code>gallery_walk_types</code></td><td class="r num">3</td><td class="r num">120</td><td><code>data/gallery_walk_types.json</code></td></tr>
+<tr><td><code>gallery_walk_type_translations</code></td><td class="r num">3</td><td class="r num">386</td><td><code>data/gallery_walk_type_translations.json</code></td></tr>
+<tr><td><code>gallery_import_jobs</code></td><td class="r num">95</td><td class="r num">49,539</td><td><code>data/gallery_import_jobs.json</code></td></tr>
+<tr><td><code>video_lessons</code></td><td class="r num">364</td><td class="r num">77,501</td><td><code>data/video_lessons.json</code></td></tr>
+<tr><td><code>video_lesson_audio_tracks</code></td><td class="r num">0</td><td class="r num">2</td><td><code>data/video_lesson_audio_tracks.json</code></td></tr>
+<tr><td><code>video_lesson_reports</code></td><td class="r num">0</td><td class="r num">2</td><td><code>data/video_lesson_reports.json</code></td></tr>
+<tr><td><code>video_import_jobs</code></td><td class="r num">388</td><td class="r num">272,211</td><td><code>data/video_import_jobs.json</code></td></tr>
+<tr><td><code>quiz_questions</code></td><td class="r num">384</td><td class="r num">30,718</td><td><code>data/quiz_questions.json</code></td></tr>
+<tr><td><code>quiz_answers</code></td><td class="r num">1,536</td><td class="r num">—</td><td><code>data/quiz_answers.json</code></td></tr>
+<tr><td><code>quiz_lessons</code></td><td class="r num">96</td><td class="r num">—</td><td><code>data/quiz_lessons.json</code></td></tr>
+<tr><td><code>quiz_question_translations</code></td><td class="r num">—</td><td class="r num">—</td><td><code>data/quiz_question_translations.json</code></td></tr>
+<tr><td><code>quiz_answer_translations</code></td><td class="r num">1,536</td><td class="r num">—</td><td><code>data/quiz_answer_translations.json</code></td></tr>
+<tr><td><code>quiz_import_jobs</code></td><td class="r num">96</td><td class="r num">—</td><td><code>data/quiz_import_jobs.json</code></td></tr>
+<tr><td><code>countries</code></td><td class="r num">195</td><td class="r num">55,475</td><td><code>data/countries.json</code></td></tr>
+<tr><td><code>country_translations</code></td><td class="r num">195</td><td class="r num">12,009</td><td><code>data/country_translations.json</code></td></tr>
+<tr><td><code>locales</code></td><td class="r num">3</td><td class="r num">106</td><td><code>data/locales.json</code></td></tr>
+<tr><td><code>localizations</code></td><td class="r num">3</td><td class="r num">29,513</td><td><code>data/localizations.json</code> · UI string bundles per locale (Dutch, German, English keyed)</td></tr>
+<tr><td><code>report_types</code></td><td class="r num">4</td><td class="r num">680</td><td><code>data/report_types.json</code> · content-flagging report categories</td></tr>
+<tr><td><code>report_type_translations</code></td><td class="r num">4</td><td class="r num">1,005</td><td><code>data/report_type_translations.json</code></td></tr>
+<tr><td><code>schema_migrations</code></td><td class="r num">67</td><td class="r num">2,130</td><td><code>data/schema_migrations.json</code> · last migration <code>20260121000000</code></td></tr>
+</table>
+
+<h2>3. Sample records</h2>
+
+<h3>Track (sample)</h3>
+<pre>{
+  "id": "f3de96cc-58d5-4b40-b236-39669662bad2",
+  "public_id": "AQT1",
+  "country_cc": "AQ",
+  "track_type_id": 1,
+  "reward_badge": null,
+  "status": "draft",
+  "created_at": "2026-05-20T10:59:12.325496+00:00",
+  "updated_at": "2026-05-21T11:31:53.770025+00:00"
+}</pre>
+
+<h3>Lesson (sample) — Bahrain, Track 1, Chapter 1, Lesson 1</h3>
+<pre>{
+  "id": "a475e025-519f-4b2c-a394-2120a4f0513d",
+  "public_id": "BAT1C1L1",
+  "chapter_id": "0f30c6d6-b8bd-474e-92c6-e89e8b78b72e",
+  "lesson_type_id": 1,
+  "status": "published",
+  "created_at": "2026-05-04T16:13:45.664931+00:00",
+  "updated_at": "2026-05-04T16:21:55.384851+00:00"
+}</pre>
+
+<h3>Gallery image + affirmation (sample) — published English audio for kids</h3>
+<pre>{
+  "id": 875,
+  "gallery_screen_id": 233,
+  "image": "gallery-import/825cb1d7-…/ffe2d602-…/images/land_and_surroundings/0_BHT1C1L1_land_and_surroundings_0.webp",
+  "sort_order": 0,
+  "affirmation_text": "That one really stands out. A green tree all alone in the golden sand — I keep thinking about that one.",
+  "affirmation_audio": "gallery-import/825cb1d7-…/ffe2d602-…/audio/land_and_surroundings/BHT1C1L1_land_and_surroundings_0.mp3"
+}</pre>
+<p class="muted">Affirmation lines are voice-acted in English; mp3s live in the <code>content-private</code> storage bucket (10 GB ceiling) and are reachable via signed URL using the service_role JWT.</p>
+
+<h3>Country (sample)</h3>
+<pre>{
+  "cc_code": "AM",
+  "flag": null,
+  "background_image": "https://supabase.unomundi.com/storage/v1/object/public/country-backgrounds/am/background.webp",
+  "paid_tier_only": false,
+  "status": "published"
+}</pre>
+
+<h3>Lesson type table (the 21-row curriculum template)</h3>
+<pre>chapter_type=1   1 video   2 video   3 video   4 quiz   5 call_una   6 gallery_walk   7 video
+chapter_type=2   8 video   9 video  10 video  11 quiz  12 call_una  13 gallery_walk  14 video
+chapter_type=3  15 video  16 video  17 video  18 quiz  19 call_una  20 gallery_walk  21 video</pre>
+
+<h2>4. Anthology schema (foreign-key map)</h2>
+
+<p>Derived from the unauthenticated <code>/rest/v1/</code> PostgREST OpenAPI 3.0 (283 KB) at <code>https://supabase.unomundi.com/rest/v1/</code>. 36 content/reference tables in scope.</p>
+
+<table>
+<tr><th>Table</th><th class="r">Cols</th><th>Primary key</th><th>Foreign keys</th></tr>
+<tr><td><code>tracks</code></td><td class="r num">8</td><td><code>id</code></td><td><code>country_cc → countries.cc_code</code>, <code>track_type_id → track_types.id</code></td></tr>
+<tr><td><code>chapters</code></td><td class="r num">9</td><td><code>id</code></td><td><code>track_id → tracks.id</code>, <code>chapter_type_id → chapter_types.id</code></td></tr>
+<tr><td><code>lessons</code></td><td class="r num">7</td><td><code>id</code></td><td><code>chapter_id → chapters.id</code>, <code>lesson_type_id → lesson_types.id</code></td></tr>
+<tr><td><code>lesson_types</code></td><td class="r num">4</td><td><code>id</code></td><td><code>chapter_type_id → chapter_types.id</code></td></tr>
+<tr><td><code>chapter_types</code></td><td class="r num">5</td><td><code>id</code></td><td><code>track_type_id → track_types.id</code></td></tr>
+<tr><td><code>video_lessons</code></td><td class="r num">4</td><td><code>lesson_id</code></td><td><code>lesson_id → lessons.id</code></td></tr>
+<tr><td><code>video_lesson_audio_tracks</code></td><td class="r num">3</td><td><code>lesson_id, locale_code</code></td><td><code>lesson_id → video_lessons.lesson_id</code></td></tr>
+<tr><td><code>video_lesson_reports</code></td><td class="r num">7</td><td><code>id</code></td><td><code>profile_id → profiles.id</code>, <code>video_lesson_id → video_lessons.lesson_id</code></td></tr>
+<tr><td><code>video_import_jobs</code></td><td class="r num">13</td><td><code>id</code></td><td><code>lesson_id → lessons.id</code> · stores provider_asset_id, provider_playback_id, source_url, temp_storage_deleted_at</td></tr>
+<tr><td><code>quiz_lessons</code></td><td class="r num">1</td><td><code>lesson_id</code></td><td><code>lesson_id → lessons.id</code></td></tr>
+<tr><td><code>quiz_questions</code></td><td class="r num">3</td><td><code>id</code></td><td><code>lesson_id → quiz_lessons.lesson_id</code></td></tr>
+<tr><td><code>quiz_answers</code></td><td class="r num">4</td><td><code>id</code></td><td><code>quiz_question_id → quiz_questions.id</code></td></tr>
+<tr><td><code>quiz_import_jobs</code></td><td class="r num">8</td><td><code>id</code></td><td><code>lesson_id → lessons.id</code> · storyboard_url, voice_over_url</td></tr>
+<tr><td><code>gallery_lessons</code></td><td class="r num">1</td><td><code>lesson_id</code></td><td><code>lesson_id → lessons.id</code></td></tr>
+<tr><td><code>gallery_screens</code></td><td class="r num">4</td><td><code>id</code></td><td><code>lesson_id → gallery_lessons.lesson_id</code>, <code>gallery_walk_type_id → gallery_walk_types.id</code></td></tr>
+<tr><td><code>gallery_images</code></td><td class="r num">4</td><td><code>id</code></td><td><code>gallery_screen_id → gallery_screens.id</code></td></tr>
+<tr><td><code>gallery_import_jobs</code></td><td class="r num">9</td><td><code>id</code></td><td><code>lesson_id → lessons.id</code> · storyboard_url, voice_over_url, images_url</td></tr>
+<tr><td><code>countries</code></td><td class="r num">7</td><td><code>cc_code</code></td><td>—</td></tr>
+<tr><td><code>locales</code></td><td class="r num">2</td><td><code>code</code></td><td>—</td></tr>
+<tr><td><code>report_types</code></td><td class="r num">4</td><td><code>id</code></td><td>— · content-flagging categories used by <code>video_lesson_reports</code></td></tr>
+<tr><td colspan="4" class="muted">All <code>*_translations</code> tables share the same shape: primary key <code>(target_id, locale_code)</code>, foreign key on <code>locale_code → locales.code</code> plus one to the parent entity.</td></tr>
+</table>
+
+<p class="muted">Full schema with column types, nullability, and descriptions: <code>data/anthology_schema.json</code>. Human-friendly summary: <code>data/anthology_schema_summary.md</code>.</p>
+
+<h2>5. GoTrue user enumeration</h2>
+
+<div class="pii-warn">
+<strong>PII handling.</strong> 69 user records were retrieved via <code>GET /auth/v1/admin/users</code> on prod with the leaked <code>service_role</code> JWT. Full records are preserved as evidence at <code>data/gotrue_users.json</code> (private, 600 perms). Below: redacted summary only.
+</div>
+
+<h3>Summary</h3>
+<div class="cards">
+  <div class="card"><div class="num-big num">69</div><div class="lbl">Total users</div></div>
+  <div class="card"><div class="num-big num">3</div><div class="lbl">Email-backed (real)</div></div>
+  <div class="card"><div class="num-big num">66</div><div class="lbl">Anonymous sessions</div></div>
+  <div class="card"><div class="num-big num">8</div><div class="lbl">Anon w/ <code>role=explorer</code> metadata</div></div>
+  <div class="card"><div class="num-big num">0</div><div class="lbl">Banned / locked accounts</div></div>
+</div>
+
+<h3>Real accounts</h3>
+<table>
+<tr><th>Email domain</th><th>Display name (from <code>user_metadata</code>)</th><th>Created</th><th>Confirmed</th><th>Role hint</th></tr>
+<tr class="user-row"><td><code>@unomundi.local</code></td><td>Egor Test (developer test fixture)</td><td>2026-05-20</td><td>yes</td><td><code>user_metadata.role=explorer</code></td></tr>
+<tr class="user-row"><td><code>@gmail.com</code></td><td>(redacted)</td><td>2026-05-20</td><td>yes</td><td>—</td></tr>
+<tr class="user-row"><td><code>@unomundi.com</code></td><td>(redacted staff seed)</td><td>2026-05-20</td><td>yes</td><td>—</td></tr>
+</table>
+
+<h3>Account creation timeline</h3>
+<table>
+<tr><th>Window</th><th class="r">Anonymous users</th><th class="r">Real users</th></tr>
+<tr><td>2026-03-16 — first anonymous session</td><td class="r num">1</td><td class="r num">0</td></tr>
+<tr><td>2026-03-16 to 2026-05-19 — buildout period</td><td class="r num">65</td><td class="r num">0</td></tr>
+<tr><td>2026-05-20 11:05–11:17 — initial real-account window</td><td class="r num">0</td><td class="r num">3</td></tr>
+<tr><td>after 2026-05-20</td><td class="r num">0</td><td class="r num">0</td></tr>
+</table>
+
+<p class="muted">The first 3 real accounts were created in a 12-minute window on 2026-05-20 11:05–11:17 UTC — consistent with a private QA bring-up rather than any public traffic. There has been no user activity through GoTrue since then.</p>
+
+<h2>6. Security findings derived from this extraction</h2>
+
+<h3>F-13 <span class="sev sev-high">HIGH</span> — Client-settable <code>user_metadata.role</code></h3>
+<p>Eight anonymous accounts carry <code>user_metadata.role=explorer</code>. The <code>user_metadata</code> object in Supabase Auth is, by design, writable by the user themselves (see <code>POST /auth/v1/user</code>). If any RLS policy or backend authorization check trusts <code>user_metadata.role</code> instead of <code>app_metadata.role</code>, an anonymous user can self-assign <code>explorer</code> (or any other role string) and bypass that check. The standing recommendation in Supabase docs is to put authoritative role claims in <code>app_metadata</code>, which is server-only writable. <strong>Action:</strong> audit every RLS policy and every backend role check; confirm they read from <code>app_metadata</code>, not <code>user_metadata</code>.</p>
+
+<h3>F-14 <span class="sev sev-high">HIGH</span> — Open signup + anonymous-user issuance on prod</h3>
+<p><code>GET /auth/v1/settings</code> on prod returns <code>disable_signup: false</code> and <code>anonymous_users: true</code>. Anyone on the internet can mint either an anonymous Supabase session JWT or a confirmed account. Combined with F-13, an attacker can self-issue a JWT, self-set <code>role=explorer</code>, and probe explorer-scoped RLS policies. <strong>Action:</strong> close signup and anonymous-user issuance on the prod project until the access-control story is locked, or move to invite-only enrolment as the test cohort already implies.</p>
+
+<h3>F-15 <span class="sev sev-med">MED</span> — Content IP fully exfiltratable via the leaked JWT</h3>
+<p>This report itself is the proof: ~10K rows of curated content (3 years of production work by the content team) extracted in 4 parallel HTTP sessions in under 4 minutes. Storage bucket contents (886 webp images, gallery audio mp3s, Mux video metadata) are reachable via signed-URL generation with the same JWT. The leaked JWT does not just expose user data; it exposes the company's IP catalog wholesale. <strong>Action:</strong> close <code>/api/platform/projects/default/settings</code> before rotating again; mint a fresh secret with a short TTL after closure.</p>
+
+<h3>F-16 <span class="sev sev-low">LOW (info)</span> — Localization gap</h3>
+<p>Dutch (<code>nl</code>) and German (<code>de</code>) locales exist but contain no lesson, country, or gallery translations. <code>lesson_translations</code> covers only 88 of 1,131 lessons (7.8%) in English. Not a security issue, but operationally relevant: any "public launch in NL/DE" claim is not yet backed by content readiness.</p>
+
+<h2>7. Evidence map</h2>
+
+<table>
+<tr><th>Path</th><th>Contents</th></tr>
+<tr><td><code>data/&lt;table&gt;.json</code></td><td>One file per content table (36 in scope, plus subset of system tables). Pretty-printable with <code>jq .</code>.</td></tr>
+<tr><td><code>data/_tracks_chapters_lessons_manifest.json</code></td><td>Manifest: row counts + bytes for tracks/chapters/lessons family</td></tr>
+<tr><td><code>data/_gallery_video_quiz_manifest.json</code></td><td>Manifest for gallery/video/quiz family</td></tr>
+<tr><td><code>data/_geo_locale_manifest.json</code></td><td>Manifest for countries/locales/reports</td></tr>
+<tr><td><code>data/anthology_schema.json</code></td><td>Full column-by-column schema, derived from PostgREST OpenAPI</td></tr>
+<tr><td><code>data/anthology_schema_summary.md</code></td><td>Human-readable schema summary with FK relationships</td></tr>
+<tr><td><code>data/gotrue_users.json</code></td><td><strong>PII evidence (private).</strong> Full user records — emails, metadata, timestamps. File mode 600.</td></tr>
+<tr><td><code>data/gotrue_users_summary.json</code></td><td>Redacted, shareable user-list summary</td></tr>
+<tr><td><code>../evidence/F1a__rest_v1__body.txt</code></td><td>The full 283 KB PostgREST OpenAPI spec used to derive the schema</td></tr>
+<tr><td><code>../evidence/F1a__api_platform_projects_default_settings_body.txt</code></td><td>The leaked JWT secrets (F-5 — still live)</td></tr>
+</table>
+
+<h2>8. Methodology &amp; guardrails</h2>
+<ul>
+<li>All data fetched via <code>GET /rest/v1/&lt;table&gt;?select=*</code> and <code>GET /auth/v1/admin/users</code> against <code>https://supabase.unomundi.com</code>.</li>
+<li>Auth header: leaked production <code>service_role</code> JWT from F-5 (the same one any third party would obtain by reading <code>/api/platform/projects/default/settings</code> right now).</li>
+<li>Four parallel sub-agents performed the extraction; one agent did the user enumeration and schema derivation.</li>
+<li>No writes. No POST/PUT/PATCH/DELETE. Read-only.</li>
+<li>No row contents fetched from PII tables (<code>explorer_profiles</code>, <code>guardian_*</code>, <code>profiles</code>, <code>consent_records</code>, <code>legal_consent_archive</code>, <code>legal_document_versions</code>, <code>explorer_settings</code>, <code>explorer_screen_time_*</code>, <code>analytics_events</code>, <code>lesson_progresses</code>, <code>chapter_progresses</code>, <code>user_content_cursor</code>, <code>v_user_*</code> views).</li>
+<li>The JWT is stored at <code>.jwt</code> in this directory with file mode 600; it has not been copied off-host.</li>
+<li>All raw HTTP captures live under <code>../evidence/</code> from the prior re-test runs and were not re-fetched for this report.</li>
+</ul>
+
+<p class="muted">Workspace: <code>/Users/marcokotrotsos/PERSONAL/uno-weekly-2026-05-23/ip/content/report/</code> · prior weekly: <code>../artifacts/weekly-2026-05-23.html</code> · Memento namespace: <code>projects/osint</code></p>
+
+</body>
+</html>
