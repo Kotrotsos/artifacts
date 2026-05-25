@@ -220,3 +220,4 @@
 | 2026-05-25 | virtuele-assistent | reports | [index.html](projects/virtuele-assistent/reports/index.html) | Interactive prompt map: system prompt, strategy prompts, agent flow, variables |
 | 2026-05-25 | openhack | reports | [2houses-pentest-report.html](projects/openhack/reports/2houses-pentest-report.html) | 2houses.com external black-box pentest report, 5 findings (1 medium, 2 low, 2 info) |
 | 2026-05-25 | openhack | reports | [unomundi-pentest-report.html](projects/openhack/reports/unomundi-pentest-report.html) | unomundi.com external black-box pentest, 8 findings (1 critical, 1 high, 1 medium, 4 low, 1 info) |
+| 2026-05-25 | openhack | reports | [unomundi-pentest-report.html](projects/openhack/reports/unomundi-pentest-report.html) | unomundi.com pentest v2: prod parity confirmed, 2 critical (encryption key live on prod) |
