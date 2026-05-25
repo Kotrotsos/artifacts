@@ -216,3 +216,4 @@
 | 2026-05-23 | sandwichbench | reports | [sandwich-truck-sim-v2.html](projects/sandwichbench/reports/sandwich-truck-sim-v2.html) | Interactive canvas food-truck queueing simulation v2 with light/dark theme |
 | 2026-05-23 | unomundi-redteam | reports | [weekly-2026-05-23.html](projects/unomundi-redteam/reports/weekly-2026-05-23.html) | Unomundi.com weekly red-team week 3 2026-05-23: JWT rotation worse, 4 new subdomains, dev-api docs re-exposed, restore endpoint |
 | 2026-05-23 | unomundi-redteam | reports | [REPORT.html](projects/unomundi-redteam/reports/REPORT.html) | Unomundi content IP extraction + GoTrue user enumeration + anthology schema dump 2026-05-23 |
+| 2026-05-25 | virtuele-assistent | docs | [wcag-2.1-compliance.docx](projects/virtuele-assistent/docs/wcag-2.1-compliance.docx) | WCAG 2.1 AA compliance assessment for feature/accessibility_ branch |
