@@ -218,3 +218,4 @@
 | 2026-05-23 | unomundi-redteam | reports | [REPORT.html](projects/unomundi-redteam/reports/REPORT.html) | Unomundi content IP extraction + GoTrue user enumeration + anthology schema dump 2026-05-23 |
 | 2026-05-25 | virtuele-assistent | docs | [wcag-2.1-compliance.docx](projects/virtuele-assistent/docs/wcag-2.1-compliance.docx) | WCAG 2.1 AA compliance assessment for feature/accessibility_ branch |
 | 2026-05-25 | virtuele-assistent | reports | [index.html](projects/virtuele-assistent/reports/index.html) | Interactive prompt map: system prompt, strategy prompts, agent flow, variables |
+| 2026-05-25 | openhack | reports | [2houses-pentest-report.html](projects/openhack/reports/2houses-pentest-report.html) | 2houses.com external black-box pentest report, 5 findings (1 medium, 2 low, 2 info) |
