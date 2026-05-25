@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AskWell, brand and product kit</title>
+<style>
+  :root {
+    --bg: #fbfaf8;
+    --surface: #ffffff;
+    --surface-2: #f4f2ee;
+    --border: #e6e2db;
+    --text: #1b1a17;
+    --text-soft: #565249;
+    --text-faint: #8a857a;
+    --accent: #3b5bdb;
+    --accent-soft: #edf0fd;
+    --accent-text: #2842b8;
+    --warm: #d9822b;
+    --warm-soft: #fbf0e3;
+    --danger: #c0392b;
+    --danger-soft: #fbeae8;
+    --ok: #2f8a5b;
+    --ok-soft: #e8f5ee;
+    --radius: 14px;
+    --maxw: 880px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Inter", sans-serif;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.05);
+  }
+  [data-theme="dark"] {
+    --bg: #14130f;
+    --surface: #1d1c18;
+    --surface-2: #25241f;
+    --border: #34322b;
+    --text: #f3f1ea;
+    --text-soft: #c2bdb1;
+    --text-faint: #8a857a;
+    --accent: #8ea2ff;
+    --accent-soft: #20243a;
+    --accent-text: #aab8ff;
+    --warm: #e6a256;
+    --warm-soft: #2e2418;
+    --danger: #e08a7e;
+    --danger-soft: #34211e;
+    --ok: #7bc79c;
+    --ok-soft: #1c2c23;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    font-size: 17px;
+  }
+
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* Top bar */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar-inner {
+    max-width: var(--maxw); margin: 0 auto; padding: 12px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .brand-mini { font-weight: 700; letter-spacing: -.02em; font-size: 18px; }
+  .brand-mini .dot { color: var(--accent); }
+  nav.toc { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav.toc a {
+    color: var(--text-soft); text-decoration: none; font-size: 13.5px;
+    padding: 5px 10px; border-radius: 8px; font-weight: 500;
+  }
+  nav.toc a:hover { background: var(--surface-2); color: var(--text); }
+
+  .theme-toggle { display: flex; gap: 2px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+  .theme-toggle button {
+    border: 0; background: transparent; cursor: pointer; color: var(--text-faint);
+    font-size: 12px; padding: 4px 10px; border-radius: 999px; font-family: var(--font); font-weight: 600;
+  }
+  .theme-toggle button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+
+  /* Hero */
+  header.hero { padding: 80px 0 56px; text-align: center; }
+  .eyebrow {
+    display: inline-block; font-size: 12.5px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--accent-text); background: var(--accent-soft);
+    padding: 5px 12px; border-radius: 999px; margin-bottom: 22px;
+  }
+  h1.logo { font-size: clamp(52px, 9vw, 84px); font-weight: 800; letter-spacing: -.04em; margin: 0 0 8px; line-height: 1; }
+  h1.logo .dot { color: var(--accent); }
+  .tagline { font-size: clamp(20px, 3.5vw, 26px); font-weight: 600; letter-spacing: -.01em; margin: 14px 0 10px; }
+  .subhead { font-size: 18px; color: var(--text-soft); max-width: 600px; margin: 0 auto; }
+
+  /* Sections */
+  section { padding: 44px 0; border-top: 1px solid var(--border); }
+  .kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 6px; }
+  h2 { font-size: 30px; font-weight: 750; letter-spacing: -.025em; margin: 0 0 8px; }
+  h3 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; margin: 28px 0 8px; }
+  p { margin: 0 0 14px; color: var(--text-soft); }
+  p.lead { font-size: 18.5px; color: var(--text); }
+  strong { color: var(--text); font-weight: 650; }
+  a { color: var(--accent-text); }
+
+  /* Cards / grids */
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 720px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow); }
+  .card h4 { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
+  .card p { margin: 0; font-size: 15px; }
+
+  /* Tagline list */
+  .tag-rank { list-style: none; padding: 0; margin: 0; counter-reset: t; }
+  .tag-rank li { display: flex; gap: 16px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--border); }
+  .tag-rank li:last-child { border-bottom: 0; }
+  .tag-num { flex: none; width: 30px; height: 30px; border-radius: 8px; background: var(--accent-soft); color: var(--accent-text); font-weight: 800; font-size: 14px; display: grid; place-items: center; }
+  .tag-line { font-size: 20px; font-weight: 650; letter-spacing: -.01em; color: var(--text); }
+  .tag-note { font-size: 14px; color: var(--text-faint); margin-top: 2px; }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .pill { font-size: 14px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 6px 13px; color: var(--text-soft); }
+
+  /* Callouts */
+  .callout { border-radius: var(--radius); padding: 18px 20px; margin: 18px 0; border: 1px solid var(--border); }
+  .callout .label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+  .callout.accent { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 30%, var(--border)); }
+  .callout.accent .label { color: var(--accent-text); }
+  .callout.warm { background: var(--warm-soft); border-color: color-mix(in srgb, var(--warm) 35%, var(--border)); }
+  .callout.warm .label { color: var(--warm); }
+  .callout p { margin: 0; color: var(--text); }
+
+  /* Quote / chat bubble */
+  blockquote { margin: 0; padding: 0; }
+  .bubble {
+    background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
+    border-radius: 4px 16px 16px 16px; padding: 16px 18px; font-size: 16px; color: var(--text);
+    max-width: 600px;
+  }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 18px; font-size: 15px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint); font-weight: 700; }
+  td:first-child { font-weight: 650; color: var(--text); white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  .tbl-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+
+  /* Objective flow */
+  ol.flow { list-style: none; counter-reset: o; padding: 0; margin: 0; }
+  ol.flow > li { position: relative; padding: 0 0 22px 44px; }
+  ol.flow > li:before {
+    counter-increment: o; content: counter(o, upper-alpha);
+    position: absolute; left: 0; top: 0; width: 30px; height: 30px; border-radius: 8px;
+    background: var(--surface-2); border: 1px solid var(--border); color: var(--text-soft);
+    font-weight: 800; font-size: 14px; display: grid; place-items: center;
+  }
+  ol.flow > li:not(:last-child):after {
+    content: ""; position: absolute; left: 15px; top: 32px; bottom: 4px; width: 1px; background: var(--border);
+  }
+  ol.flow .obj-title { font-weight: 700; color: var(--text); }
+  ol.flow .obj-body { font-size: 15px; color: var(--text-soft); margin-top: 2px; }
+  .trigger { font-size: 14px; color: var(--text-faint); margin-top: 4px; }
+  .trigger b { color: var(--warm); font-weight: 700; }
+
+  ul.clean { padding-left: 18px; }
+  ul.clean li { margin-bottom: 7px; color: var(--text-soft); }
+  ul.clean li::marker { color: var(--accent); }
+
+  /* Conflict demo */
+  .conflict { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: stretch; margin: 8px 0; }
+  @media (max-width: 720px) { .conflict { grid-template-columns: 1fr; } .conflict .vs { transform: rotate(90deg); } }
+  .conflict .side { border-radius: var(--radius); padding: 16px 18px; border: 1px solid; }
+  .conflict .side.a { background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 35%, var(--border)); }
+  .conflict .side.b { background: var(--danger-soft); border-color: color-mix(in srgb, var(--danger) 35%, var(--border)); }
+  .conflict .side .who { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+  .conflict .side.a .who { color: var(--ok); }
+  .conflict .side.b .who { color: var(--danger); }
+  .conflict .side .what { color: var(--text); font-weight: 600; }
+  .conflict .vs { align-self: center; font-weight: 800; color: var(--text-faint); font-size: 13px; }
+
+  footer { padding: 40px 0 64px; border-top: 1px solid var(--border); color: var(--text-faint); font-size: 14px; text-align: center; }
+  footer .domains { margin-top: 8px; }
+  footer code { background: var(--surface-2); padding: 2px 7px; border-radius: 6px; font-size: 13px; color: var(--text-soft); }
+
+  /* Print */
+  @media print {
+    :root { --bg: #fff; --surface: #fff; --surface-2: #fff; }
+    body { font-size: 11.5pt; color: #000; }
+    .topbar, .theme-toggle { display: none !important; }
+    section, header.hero { page-break-inside: avoid; padding: 18px 0; }
+    .card, .tbl-wrap, .callout, .bubble, .conflict .side { box-shadow: none; }
+    a { color: #000; text-decoration: none; }
+    h1.logo { font-size: 46pt; }
+    header.hero { padding: 24px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-mini">AskWell<span class="dot">.</span></div>
+    <nav class="toc">
+      <a href="#glance">Overview</a>
+      <a href="#taglines">Taglines</a>
+      <a href="#positioning">Positioning</a>
+      <a href="#blurbs">Blurbs</a>
+      <a href="#pitch">Pitch</a>
+      <a href="#spec">Spec</a>
+    </nav>
+    <div class="theme-toggle" id="themeToggle">
+      <button data-mode="light">Light</button>
+      <button data-mode="dark">Dark</button>
+      <button data-mode="system">Auto</button>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Brand and Product Kit</span>
+    <h1 class="logo">AskWell<span class="dot">.</span></h1>
+    <p class="tagline">Ask well. Learn fast.</p>
+    <p class="subhead">Build an AI assistant that interviews people for you, then brings the answers back. A questionnaire that talks back.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="glance">
+    <p class="kicker">What it is</p>
+    <h2>An interviewer you can clone</h2>
+    <p class="lead">AskWell is a conversational research platform. Instead of sending a static form and hoping for thoughtful answers, you build an AI assistant that interviews people on your behalf, the way you would build a custom GPT.</p>
+    <div class="grid grid-2" style="margin-top:22px;">
+      <div class="card"><h4>1. Build</h4><p>Describe your goal in plain language. Set the tone. No prompt engineering.</p></div>
+      <div class="card"><h4>2. Invite</h4><p>Share a link or send it to a list. One person or ten thousand.</p></div>
+      <div class="card"><h4>3. Converse</h4><p>Each person has a natural, adaptive interview. The assistant digs in where it matters.</p></div>
+      <div class="card"><h4>4. Return</h4><p>Answers come back summarized into themes and structured fields, transcripts underneath.</p></div>
+    </div>
+    <div class="callout accent" style="margin-top:22px;">
+      <div class="label">The core insight</div>
+      <p>What makes an interview better than a form is not the human. It is the follow-up question, the adaptation, the listening. AI can now do that for every respondent at once. The scarce resource just stopped being scarce.</p>
+    </div>
+  </section>
+
+  <section id="taglines">
+    <p class="kicker">Taglines</p>
+    <h2>Lines, ranked</h2>
+    <p>The top three are launch-ready. Pick one primary, rotate the others across channels.</p>
+    <ol class="tag-rank">
+      <li><span class="tag-num">1</span><div><div class="tag-line">Ask well. Learn fast.</div><div class="tag-note">Verbs the name, promises the payoff. Best primary.</div></div></li>
+      <li><span class="tag-num">2</span><div><div class="tag-line">Surveys that talk back.</div><div class="tag-note">Explains the category and the twist in four words. Great for cold audiences.</div></div></li>
+      <li><span class="tag-num">3</span><div><div class="tag-line">Send an assistant. Get real answers.</div><div class="tag-note">The whole mechanic in five words: you delegate, people converse, you receive.</div></div></li>
+    </ol>
+    <h3>Alternates in rotation</h3>
+    <div class="pill-row">
+      <span class="pill">The questionnaire that has a conversation.</span>
+      <span class="pill">Stop sending forms. Start sending an assistant.</span>
+      <span class="pill">Forms ask. AskWell listens.</span>
+      <span class="pill">Build it once. It interviews everyone.</span>
+      <span class="pill">Better questions in, real answers out.</span>
+    </div>
+  </section>
+
+  <section id="positioning">
+    <p class="kicker">Positioning</p>
+    <h2>Where we sit</h2>
+    <p class="lead">For teams who need honest, detailed answers from people, AskWell replaces static forms with an AI assistant you build once and send to everyone. Unlike survey tools that collect flat, shallow responses, AskWell holds a real conversation, asks smart follow-ups, and returns results already summarized and organized.</p>
+    <div class="grid grid-3" style="margin-top:22px;">
+      <div class="card"><h4>Survey tools</h4><p>Easy to send, but answers are thin and people drop off.</p></div>
+      <div class="card" style="border-color: color-mix(in srgb, var(--accent) 40%, var(--border));"><h4 style="color:var(--accent-text);">AskWell</h4><p>The conversational depth of an assistant, with the send-to-many reach of a survey.</p></div>
+      <div class="card"><h4>Custom GPTs</h4><p>Deep and conversational, but built for one chat window, not collecting from many.</p></div>
+    </div>
+
+    <div class="callout warm">
+      <div class="label">Lead vertical</div>
+      <p><strong>Requirements and stakeholder discovery.</strong> It is the case where forms fail most expensively and the buyer (PM, business analyst, agency, consultant) feels the pain by name. The value of a requirements interview lives entirely in the follow-up question, and the real output is surfacing where stakeholders contradict each other before that conflict becomes three sprints of rework.</p>
+    </div>
+
+    <h3>Differentiators</h3>
+    <ul class="clean">
+      <li><strong>It asks follow-ups.</strong> The assistant adapts to each answer and digs in, like a good human interviewer.</li>
+      <li><strong>Build once, send to many.</strong> One assistant interviews ten people or ten thousand, identically and tirelessly.</li>
+      <li><strong>Results come back ready.</strong> Summaries, themes, and structured fields, not a pile of raw text.</li>
+      <li><strong>People actually finish.</strong> A conversation feels lighter than a long form, so completion goes up.</li>
+      <li><strong>No prompt engineering.</strong> Describe the goal in plain language, like setting up a custom GPT.</li>
+    </ul>
+  </section>
+
+  <section id="blurbs">
+    <p class="kicker">Blurbs</p>
+    <h2>Copy at every length</h2>
+
+    <h3>One sentence</h3>
+    <p>AskWell lets you build an AI assistant that interviews people for you and brings the answers back, like a questionnaire that talks back.</p>
+
+    <h3>Short, 50 words</h3>
+    <p>AskWell turns the boring survey into a real conversation. You build an AI assistant the way you would build a custom GPT, give it your goal, and send it to the people you want to hear from. It interviews each one, asks follow-ups, and returns the answers already organized.</p>
+
+    <h3>Medium, 100 words</h3>
+    <p>Most surveys get you what people can be bothered to type. The good stuff lives in the follow-up question a form can never ask, so you are stuck choosing between thin data and a calendar full of interview calls.</p>
+    <p>AskWell removes the trade-off. You build an AI assistant once, describe what you want to learn in plain language, and send it to as many people as you like. Each person has a natural conversation, the assistant digs into interesting answers, and everything comes back as summaries, themes, and structured fields. Every respondent gets a real interview. You get your time back.</p>
+
+    <h3>Call to action lines</h3>
+    <div class="pill-row">
+      <span class="pill">Build your first assistant in minutes.</span>
+      <span class="pill">Send an assistant instead of a survey.</span>
+      <span class="pill">Ask well. Start free.</span>
+      <span class="pill">See what people actually have to say.</span>
+    </div>
+  </section>
+
+  <section id="pitch">
+    <p class="kicker">Pitch</p>
+    <h2>The 30-second version</h2>
+    <p class="lead">You know how surveys give you shallow, half-finished answers, but actually interviewing people does not scale? AskWell fixes that. You build an AI assistant once, then send it to everyone you want to hear from. It interviews each person in a real conversation, asks its own follow-up questions, and sends you the answers already summarized.</p>
+
+    <div class="grid grid-2" style="margin-top:8px;">
+      <div class="card">
+        <h4>The problem</h4>
+        <p><strong>Forms are cheap but shallow.</strong> People skim, skip, and abandon. The most valuable answer is always the one the form did not think to ask for.</p>
+        <p style="margin-top:10px;"><strong>Interviews are rich but do not scale.</strong> You cannot book thirty calls this week, and certainly not a thousand. So everyone settles.</p>
+      </div>
+      <div class="card">
+        <h4>Why now</h4>
+        <p>Conversational AI is finally good enough to interview a stranger and stay on track. People already understand custom assistants. And the cost of a good conversation dropped to near zero, which flips the economics of research entirely.</p>
+      </div>
+    </div>
+
+    <div class="callout warm">
+      <div class="label">The wedge</div>
+      <p>Start with requirements and stakeholder discovery, where forms fail most expensively. One assistant interviews every stakeholder, presses on vague answers, and returns structured results with contradictions flagged. One missed requirement caught early pays for the product. From there, expand into every place a static form is sent out of habit.</p>
+    </div>
+  </section>
+
+  <section id="spec">
+    <p class="kicker">Sample assistant spec</p>
+    <h2>The Requirements Interviewer</h2>
+    <p class="lead">A concrete, buildable example for the lead vertical. This is what a PM or business analyst would create, send to stakeholders, and get results from, the reference demo to build the product toward.</p>
+
+    <h3>1. Setup (build like a custom GPT)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>Example value</th></tr></thead>
+        <tbody>
+          <tr><td>Assistant name</td><td>Requirements Interviewer for the Customer Portal rebuild</td></tr>
+          <tr><td>Goal</td><td>Understand what each stakeholder needs from the new portal, where their needs conflict, and what would make the project a failure in their eyes.</td></tr>
+          <tr><td>Who is interviewed</td><td>8 to 12 stakeholders across Sales, Support, Product, Legal, and two enterprise customers.</td></tr>
+          <tr><td>Must-cover topics</td><td>Jobs to be done, pain points, must-have vs. nice-to-have, success criteria, hard constraints, dealbreakers.</td></tr>
+          <tr><td>Tone</td><td>Professional, warm, concise. Senior-stakeholder appropriate.</td></tr>
+          <tr><td>Time budget</td><td>8 to 12 minutes. Respect that they are busy.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2. Opening message</h3>
+    <blockquote class="bubble">
+      Hi, thanks for taking a few minutes. I am an assistant helping the team gather requirements for the Customer Portal rebuild. I will ask you a handful of questions about what you need from it, and I will dig in where it is useful. There are no wrong answers, I am here to capture your view accurately. This takes about 10 minutes and you can pause anytime. Ready to start?
+    </blockquote>
+    <p class="tag-note">Names the purpose, sets the time expectation, signals it will adapt, respects a senior person's time. The invite framing is part of the product, not an afterthought.</p>
+
+    <h3>3. Interview flow (objectives, not a script)</h3>
+    <ol class="flow">
+      <li><span class="obj-title">Role and stake.</span><div class="obj-body">"What is your role, and how does the portal affect your work?" Tailor everything after this.</div></li>
+      <li><span class="obj-title">Jobs to be done.</span><div class="obj-body">"When you use the portal, what are you actually trying to get done?"</div><div class="trigger"><b>Trigger:</b> vague verbs (manage, handle) → "Walk me through the last time you did that, step by step."</div></li>
+      <li><span class="obj-title">Pain points.</span><div class="obj-body">"What about the current portal frustrates you most?"</div><div class="trigger"><b>Trigger:</b> complaint without impact → "How often, and what does it cost you when it happens?"</div></li>
+      <li><span class="obj-title">Must-have vs. nice-to-have.</span><div class="obj-body">"If we could only ship three things, what are your three? Which is a true dealbreaker?" The highest-value extraction.</div></li>
+      <li><span class="obj-title">Success criteria.</span><div class="obj-body">"Six months after launch, how would you judge whether it was worth it?"</div><div class="trigger"><b>Trigger:</b> soft answer → "Better how? What number or behavior would change?"</div></li>
+      <li><span class="obj-title">Constraints and dealbreakers.</span><div class="obj-body">"Any hard constraints I should flag, like compliance, security, integrations, or deadlines?"</div></li>
+      <li><span class="obj-title">Open floor.</span><div class="obj-body">"What have I not asked that I should have?" Often surfaces the most important requirement of all.</div></li>
+    </ol>
+
+    <h3>4. Follow-up behavior, the differentiator</h3>
+    <ul class="clean">
+      <li><strong>Press on vagueness.</strong> Ask for a concrete recent example before moving on.</li>
+      <li><strong>Quantify.</strong> Turn "slow" into seconds, "often" into a frequency, "important" into a ranking.</li>
+      <li><strong>Reflect and confirm.</strong> "So the dealbreaker is X, and Y is nice-to-have. Did I get that right?"</li>
+      <li><strong>Notice conflict signals.</strong> Flag likely clashes with other groups for the synthesis.</li>
+      <li><strong>Know when to stop.</strong> A complete 10-minute interview beats an abandoned 25-minute one.</li>
+      <li><strong>Stay neutral.</strong> Capture, do not steer. Do not lead the witness.</li>
+    </ul>
+
+    <h3>5. What comes back</h3>
+    <div class="grid grid-2">
+      <div class="card">
+        <h4>Per stakeholder</h4>
+        <p>Role and stake, jobs to be done, ranked pain points, must-haves, explicit dealbreakers, measurable success criteria, hard constraints, notable quotes, full transcript a click away.</p>
+      </div>
+      <div class="card" style="border-color: color-mix(in srgb, var(--accent) 40%, var(--border));">
+        <h4 style="color:var(--accent-text);">Across all stakeholders</h4>
+        <p>Consensus requirements, the conflict map, coverage gaps, aggregated risk flags, and a draft requirements list ready for the human to refine. This synthesis is the paid feature.</p>
+      </div>
+    </div>
+
+    <h3>6. The demo moment</h3>
+    <p>Send this to eight stakeholders on Monday. By Wednesday, open the synthesis view and find this, flagged automatically:</p>
+    <div class="conflict">
+      <div class="side a">
+        <div class="who">Sales, must-have</div>
+        <div class="what">One-click bulk export of customer data</div>
+      </div>
+      <div class="vs">conflicts with</div>
+      <div class="side b">
+        <div class="who">Legal, hard constraint</div>
+        <div class="what">No bulk data egress without audit logging</div>
+      </div>
+    </div>
+    <div class="callout accent">
+      <div class="label">Why it lands</div>
+      <p>That contradiction would normally surface in QA three months later, as rework. AskWell surfaced it in two days, before a line of code was written. That is the entire pitch in one screen.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>AskWell, brand and product kit</div>
+    <div class="domains">Primary <code>askwell.ai</code> &nbsp; Alt <code>askwell.co</code> &nbsp; <code>getaskwell.com</code></div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var toggle = document.getElementById('themeToggle');
+    var buttons = toggle.querySelectorAll('button');
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function apply(mode) {
+      if (mode === 'system') {
+        root.setAttribute('data-theme', media.matches ? 'dark' : 'light');
+      } else {
+        root.setAttribute('data-theme', mode);
+      }
+      buttons.forEach(function (b) { b.classList.toggle('active', b.dataset.mode === mode); });
+      try { localStorage.setItem('askwell-theme', mode); } catch (e) {}
+    }
+
+    var saved = 'light';
+    try { saved = localStorage.getItem('askwell-theme') || 'light'; } catch (e) {}
+    apply(saved);
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.mode); });
+    });
+    media.addEventListener('change', function () {
+      var current = 'light';
+      try { current = localStorage.getItem('askwell-theme') || 'light'; } catch (e) {}
+      if (current === 'system') apply('system');
+    });
+  })();
+</script>
+
+</body>
+</html>
