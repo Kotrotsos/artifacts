@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Virtuele Assistent — Prompt Map</title>
+  <link rel="stylesheet" href="assets/app.css" />
+</head>
+<body data-page="index.html">
+  <main class="wrap">
+    <div class="page-head">
+      <div class="eyebrow">Prompt visualization</div>
+      <h1>Every prompt in the Virtuele Assistent, mapped</h1>
+      <p>What each prompt is, where it runs, why it exists, and the exact conditions that select it.
+         Built from the live backend code, not a sketch. Use the tabs above; each page is interactive.</p>
+    </div>
+
+    <div class="note">
+      Two independent prompt layers. A <strong>system prompt</strong> is assembled once per request from a
+      tenant template plus database variables. <strong>Strategy prompts</strong> are short instructions injected
+      at specific nodes of the agent graph as the request moves through routing, retrieval and answering.
+    </div>
+
+    <section class="grid cols-3 hub" id="hub" style="margin-top:22px"></section>
+
+    <h2 class="section">At a glance</h2>
+    <div class="grid cols-2">
+      <div class="card pad">
+        <h3 class="sub" style="margin-top:0">The numbers</h3>
+        <table id="stats"></table>
+      </div>
+      <div class="card pad">
+        <h3 class="sub" style="margin-top:0">Assembly modes</h3>
+        <table id="modes"></table>
+      </div>
+    </div>
+
+    <h2 class="section">Request lifecycle, in one breath</h2>
+    <div class="card pad">
+      <ol class="muted" style="margin:0; padding-left:20px; line-height:1.9">
+        <li><strong>PII guard</strong> — <code>PiiRedactionService.redact()</code> masks IBAN, e-mail, phone, passport, licence and BSN before anything leaves the backend.</li>
+        <li><strong>Classify</strong> — <code>nodeClassify</code> (GPT-4.1 Mini, temp 0, org prompt stripped) routes to PROCEED, DISAMBIGUATE or REDIRECT.</li>
+        <li><strong>Route</strong> — disambiguate or redirect answer directly; PROCEED enters the tool loop.</li>
+        <li><strong>Retrieve</strong> — tools run the RAG pipeline: HyDE, vector + keyword search, RRF fusion, rerank.</li>
+        <li><strong>Answer</strong> — <code>answer_prompt</code> (round 1) or <code>answer_forced_prompt</code> (round 2+) synthesizes the sourced reply.</li>
+        <li><strong>Stream + trace</strong> — response streams out; Langfuse records the trace and automatic scores.</li>
+      </ol>
+    </div>
+
+    <footer class="foot" id="foot"></footer>
+  </main>
+
+  <script src="assets/data.js"></script>
+  <script src="assets/app.js"></script>
+  <script>
+    const D = window.VIZ, el = viz.el;
+
+    const cards = [
+      ["01", "flow.html", "Agent flow", "Interactive graph of the agent strategy. Click any node to see its prompt, model and the conditions that route into it."],
+      ["02", "system-prompt.html", "System prompt", "The generic_system_prompt_v3 template with live variable substitution. Flip tenant toggles and watch the assembled prompt change."],
+      ["03", "strategy-prompts.html", "Strategy prompts", "All 9 node-level prompts plus the HyDE prompt: full text, model, runtime variables and when each one fires."],
+      ["04", "variables.html", "Variables", "Every template placeholder: source, fallback default, the condition that resolves it, and injection risk. Searchable and filterable."],
+    ];
+    const hub = document.getElementById("hub");
+    cards.forEach(([num, href, title, desc]) => {
+      const a = el("a.hub-card", { href });
+      a.append(el("div.num", { text: num }), el("h3", { text: title }), el("p", { text: desc }));
+      hub.appendChild(a);
+    });
+
+    const stats = [
+      ["System prompt template", "generic_system_prompt_v3 (fallback v2)"],
+      ["Template placeholders", D.TEMPLATE_VARS.length + " (incl. 4 runtime date/time)"],
+      ["Strategy prompts", D.STRATEGY_PROMPTS.length + " + 1 HyDE prompt"],
+      ["Conversation-design defaults", "4 text blocks + 2 example sets (u / jij)"],
+      ["Agent graph nodes", D.FLOW_NODES.length],
+      ["PII patterns masked", D.PII.patterns.length + " (postcode detected, not masked)"],
+    ];
+    const st = document.getElementById("stats");
+    stats.forEach(([k, v]) => {
+      const tr = el("tr");
+      tr.append(el("td", { text: k }), el("td"));
+      tr.lastChild.append(el("strong", { text: v }));
+      st.appendChild(tr);
+    });
+
+    const modes = document.getElementById("modes");
+    D.ASSEMBLY_MODES.forEach((m) => {
+      const tr = el("tr");
+      const td1 = el("td"); td1.append(el("strong", { text: m.mode }), el("div", { class: "muted", text: m.trigger }));
+      tr.append(td1, el("td", { class: "muted", text: m.behaviour }));
+      modes.appendChild(tr);
+    });
+
+    document.getElementById("foot").append(
+      document.createTextNode("Source of truth: agent-backend (Kotlin) + promptviz/data + .promptviz docs. "),
+      el("span", { text: "All values verified against the codebase. Regenerate by re-reading assets/data.js." })
+    );
+  </script>
+</body>
+</html>
