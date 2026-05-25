@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AskWell, pitch deck</title>
+<style>
+  :root {
+    --bg: #fbfaf8; --surface: #ffffff; --surface-2: #f4f2ee; --border: #e6e2db;
+    --text: #1b1a17; --text-soft: #565249; --text-faint: #8a857a;
+    --accent: #3b5bdb; --accent-soft: #edf0fd; --accent-text: #2842b8;
+    --warm: #d9822b; --warm-soft: #fbf0e3;
+    --danger: #c0392b; --danger-soft: #fbeae8; --ok: #2f8a5b; --ok-soft: #e8f5ee;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Inter", sans-serif;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 10px 30px rgba(0,0,0,.06);
+  }
+  [data-theme="dark"] {
+    --bg: #14130f; --surface: #1d1c18; --surface-2: #25241f; --border: #34322b;
+    --text: #f3f1ea; --text-soft: #c2bdb1; --text-faint: #8a857a;
+    --accent: #8ea2ff; --accent-soft: #20243a; --accent-text: #aab8ff;
+    --warm: #e6a256; --warm-soft: #2e2418;
+    --danger: #e08a7e; --danger-soft: #34211e; --ok: #7bc79c; --ok-soft: #1c2c23;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); -webkit-font-smoothing: antialiased; overflow: hidden; }
+
+  .deck { height: 100vh; width: 100vw; position: relative; }
+  .slide {
+    position: absolute; inset: 0; display: none;
+    padding: 7vh 9vw; flex-direction: column; justify-content: center;
+    animation: fade .35s ease;
+  }
+  .slide.active { display: flex; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .num { position: absolute; top: 5vh; right: 9vw; font-size: 13px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+  .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-text); margin-bottom: 18px; }
+  h1 { font-size: clamp(40px, 7vw, 76px); font-weight: 800; letter-spacing: -.04em; line-height: 1.02; margin: 0; }
+  h2 { font-size: clamp(30px, 4.6vw, 52px); font-weight: 780; letter-spacing: -.03em; line-height: 1.06; margin: 0 0 22px; }
+  .lead { font-size: clamp(19px, 2.4vw, 27px); color: var(--text-soft); line-height: 1.45; max-width: 24ch; }
+  .lead.wide { max-width: 32ch; }
+  p { color: var(--text-soft); }
+  strong { color: var(--text); font-weight: 680; }
+  .accent { color: var(--accent-text); }
+
+  /* cover */
+  .cover h1 .dot { color: var(--accent); }
+  .cover .tag { font-size: clamp(20px, 2.8vw, 30px); font-weight: 600; margin-top: 18px; color: var(--text); }
+  .cover .sub { font-size: clamp(16px, 2vw, 20px); color: var(--text-soft); margin-top: 10px; max-width: 40ch; }
+
+  /* grids and cards */
+  .cols { display: grid; gap: 22px; margin-top: 8px; }
+  .c2 { grid-template-columns: 1fr 1fr; }
+  .c3 { grid-template-columns: repeat(3,1fr); }
+  .c4 { grid-template-columns: repeat(4,1fr); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); }
+  .card .k { font-size: 14px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--text-faint); }
+  .card h3 { font-size: 21px; margin: 6px 0 8px; letter-spacing: -.01em; }
+  .card p { font-size: 16px; margin: 0; line-height: 1.45; }
+  .card.spot { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+  .card.spot h3 { color: var(--accent-text); }
+
+  .step .n { width: 34px; height: 34px; border-radius: 9px; background: var(--accent-soft); color: var(--accent-text); font-weight: 800; display: grid; place-items: center; font-size: 16px; margin-bottom: 12px; }
+
+  .stat { text-align: left; }
+  .stat .v { font-size: clamp(30px, 4vw, 46px); font-weight: 850; letter-spacing: -.03em; color: var(--accent-text); line-height: 1; }
+  .stat .l { font-size: 15px; color: var(--text-faint); margin-top: 8px; }
+
+  ul.big { list-style: none; padding: 0; margin: 10px 0 0; }
+  ul.big li { font-size: clamp(17px, 2.1vw, 22px); padding: 12px 0 12px 34px; position: relative; color: var(--text-soft); border-bottom: 1px solid var(--border); }
+  ul.big li:last-child { border-bottom: 0; }
+  ul.big li:before { content: ""; position: absolute; left: 6px; top: 21px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+  ul.big li strong { color: var(--text); }
+
+  .lane { border-radius: 14px; border: 1px solid var(--border); padding: 18px 20px; background: var(--surface); box-shadow: var(--shadow); border-left-width: 5px; }
+  .lane.red { border-left-color: var(--danger); } .lane.amber { border-left-color: var(--warm); } .lane.green { border-left-color: var(--ok); }
+  .lane .t { font-size: 18px; font-weight: 750; }
+  .lane .tag { font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 9px; border-radius: 999px; margin-left: 8px; }
+  .lane.red .tag { background: var(--danger-soft); color: var(--danger); } .lane.amber .tag { background: var(--warm-soft); color: var(--warm); } .lane.green .tag { background: var(--ok-soft); color: var(--ok); }
+  .lane p { font-size: 15px; margin: 6px 0 0; }
+
+  /* conflict demo */
+  .conflict { display: grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items: center; margin-top: 10px; }
+  .side { border-radius: 16px; padding: 22px 24px; border: 1.5px solid; }
+  .side.a { background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 40%, var(--border)); }
+  .side.b { background: var(--danger-soft); border-color: color-mix(in srgb, var(--danger) 40%, var(--border)); }
+  .side .who { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+  .side.a .who { color: var(--ok); } .side.b .who { color: var(--danger); }
+  .side .what { font-size: clamp(18px, 2.2vw, 24px); font-weight: 650; color: var(--text); }
+  .vs { font-weight: 800; color: var(--text-faint); font-size: 14px; text-align: center; }
+
+  table { width: 100%; border-collapse: collapse; font-size: clamp(15px, 1.8vw, 18px); margin-top: 6px; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  th { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint); font-weight: 700; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.total td { font-weight: 800; color: var(--text); border-top: 2px solid var(--border); }
+  .tbl { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  .tbl table { margin: 0; } .tbl th, .tbl td { padding-left: 22px; padding-right: 22px; }
+
+  .note { font-size: 15px; color: var(--text-faint); margin-top: 16px; }
+
+  /* controls */
+  .controls { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 14px; z-index: 60; }
+  .dots { display: flex; gap: 7px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); border: 0; padding: 0; cursor: pointer; }
+  .dot.active { background: var(--accent); transform: scale(1.3); }
+  .arrow { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; width: 38px; height: 34px; cursor: pointer; color: var(--text-soft); font-size: 17px; box-shadow: var(--shadow); }
+  .arrow:hover { color: var(--text); }
+  .theme-toggle { position: fixed; top: 18px; left: 18px; z-index: 60; display: flex; gap: 2px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+  .theme-toggle button { border: 0; background: transparent; cursor: pointer; color: var(--text-faint); font-size: 11.5px; padding: 4px 9px; border-radius: 999px; font-family: var(--font); font-weight: 700; }
+  .theme-toggle button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+  .hint { position: fixed; bottom: 24px; right: 20px; font-size: 12px; color: var(--text-faint); z-index: 60; }
+
+  @media (max-width: 720px) {
+    .c2, .c3, .c4 { grid-template-columns: 1fr; }
+    .conflict { grid-template-columns: 1fr; } .vs { transform: rotate(90deg); }
+    .slide { padding: 9vh 7vw; }
+  }
+
+  /* print: one slide per page */
+  @media print {
+    @page { size: landscape; margin: 0; }
+    :root { --bg: #fff; --surface: #fff; --surface-2: #fff; }
+    body { overflow: visible; }
+    .deck { height: auto; }
+    .controls, .theme-toggle, .hint, .num { display: none !important; }
+    .slide { display: flex !important; position: relative; inset: auto; height: 100vh; page-break-after: always; box-shadow: none; animation: none; padding: 8vh 9vw; }
+    .card, .lane, .tbl, .side { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="theme-toggle" id="themeToggle">
+  <button data-mode="light">Light</button>
+  <button data-mode="dark">Dark</button>
+  <button data-mode="system">Auto</button>
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1. Cover -->
+  <section class="slide cover active">
+    <div class="num"></div>
+    <h1>AskWell<span class="dot">.</span></h1>
+    <div class="tag">Ask well. Learn fast.</div>
+    <div class="sub">Build an AI assistant that interviews people for you, then brings the answers back.</div>
+  </section>
+
+  <!-- 2. Problem -->
+  <section class="slide">
+    <div class="num"></div>
+    <div class="eyebrow">The problem</div>
+    <h2>Gathering answers from people is broken at both ends</h2>
+    <div class="cols c2">
+      <div class="card"><div class="k">Forms</div><h3>Cheap, but shallow</h3><p>People skim, skip, and abandon. A form can never ask the obvious follow-up. The most valuable answer is the one it didn't think to ask for.</p></div>
+      <div class="card"><div class="k">Interviews</div><h3>Rich, but don't scale</h3><p>A live conversation gets the truth, but you can't book thirty calls this week, and certainly not a thousand. So everyone settles.</p></div>
+    </div>
+  </section>
+
+  <!-- 3. Insight -->
+  <section class="slide">
+    <div class="num"></div>
+    <div class="eyebrow">The insight</div>
+    <h2>The magic of an interview isn't the human</h2>
+    <p class="lead wide">It's the <strong class="accent">follow-up question</strong>, the adaptation, the listening. AI can now do that part convincingly, for every respondent, at the same time. The scarce resource just stopped being scarce.</p>
+  </section>
+
+  <!-- 4. Product -->
+  <section class="slide">
+    <div class="num"></div>
+    <div class="eyebrow">The product</div>
+    <h2>An interviewer you can clone</h2>
+    <div class="cols c4">
+      <div class="card step"><div class="n">1</div><h3>Build</h3><p>Describe your goal in plain language. No prompt engineering.</p></div>
+      <div class="card step"><div class="n">2</div><h3>Invite</h3><p>A link or a list. One person or ten thousand.</p></div>
+      <div class="card step"><div class="n">3</div><h3>Converse</h3><p>Each person gets a real, adaptive interview that digs in.</p></div>
+      <div class="card step"><div class="n">4</div><h3>Return</h3><p>Answers come back summarized into themes and structured fields.</p></div>
+    </div>
+  </section>
+
+  <!-- 5. Wedge -->
+  <section class="slide">
+    <div class="num"></div>
+    <div class="eyebrow">The wedge</div>
+    <h2>We start with requirements &amp; stakeholder discovery</h2>
+    <p class="lead wide">The case where forms fail most expensively, and the buyer feels the pain by name. One assistant interviews every stakeholder, presses on vague answers, and returns a structured requirements doc, <strong>with the conflicts already flagged</strong>.</p>
+    <div class="note">Buyers: product managers, business analysts, agencies, consultants.</div>
+  </section>
+
+  <!-- 6. Demo / aha -->
+  <section class="slide">
+    <div class="num"></div>
+    <div class="eyebrow">The aha moment</div>
+    <h2>It catches the conflict before it becomes rework</h2>
+    <div class="conflict">
+      <div class="side a"><div class="who">Sales, must-have</div><div class="what">One-click bulk export of customer data</div></div>
+      <div class="vs">conflicts with</div>
+      <div class="side b"><div class="who">Legal, hard constraint</div><div class="what">No bulk data egress without audit logging</div></div>
+    </div>
+    <div class="note">Normally this surfaces in QA three months later. AskWell surfaced it in two days, before a line of code was written. That's the pitch in one screen.</div>
+  </section>
+
+  <!-- 7. Why now -->
+  <section class="slide">
+    <div class="num"></div>
+    <div class="eyebrow">Why now</div>
+    <h2>The economics of a conversation just flipped</h2>
+    <ul class="big">
+      <li><strong>AI is finally good enough</strong> to interview a stranger and stay on track.</li>
+      <li><strong>People understand custom assistants,</strong> so "build an assistant for X" needs no explanation.</li>
+      <li><strong>The cost of a good conversation dropped to near zero,</strong> which rewrites the math of research entirely.</li>
+    </ul>
+  </section>
+
+  <!-- 8. Competition -->
+  <section class="slide">
+    <div class="num"></div>
+    <div class="eyebrow">Landscape</div>
+    <h2>Three lanes, one place to play</h2>
+    <div class="cols" style="gap:14px;">
+      <div class="lane red"><span class="t">Customer / UX research</span><span class="tag">Red ocean</span><p>Listen Labs ($500M val), Outset (YC), Strella, User Intuition. Thesis proven, positioning taken.</p></div>
+      <div class="lane amber"><span class="t">Horizontal conversational forms</span><span class="tag">Commoditizing</span><p>Typeform, Jotform, Qualtrics added AI follow-ups. It's a feature now, not a product.</p></div>
+      <div class="lane green"><span class="t">Requirements &amp; stakeholder discovery</span><span class="tag">Open</span><p>Only meeting capture and dev plugins exist. Nobody owns "interview every stakeholder, return a requirements doc with a conflict map."</p></div>
+    </div>
+  </section>
+
+  <!-- 9. Business model -->
+  <section class="slide">
+    <div class="num"></div>
+    <div class="eyebrow">Business model</div>
+    <h2>~$0.30 to deliver, priced on value</h2>
+    <div class="cols c2" style="align-items:start;">
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Plan</th><th class="num">Price</th><th class="num">Interviews</th></tr></thead>
+          <tbody>
+            <tr><td>Free</td><td class="num">$0</td><td class="num">10 total</td></tr>
+            <tr><td>Starter</td><td class="num">$39/mo</td><td class="num">25/mo</td></tr>
+            <tr><td>Pro</td><td class="num">$149/mo</td><td class="num">150/mo</td></tr>
+            <tr><td>Team</td><td class="num">$399/mo</td><td class="num">500/mo</td></tr>
+            <tr><td>Enterprise</td><td class="num">$2K+/mo</td><td class="num">Volume</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="cols c2" style="gap:16px;">
+          <div class="card stat"><div class="v">85%</div><div class="l">Gross margin (Pro)</div></div>
+          <div class="card stat"><div class="v">~5x</div><div class="l">LTV / CAC, self-serve</div></div>
+        </div>
+        <p class="note" style="margin-top:18px;">Charge for the synthesis, not the chat. The conversation is table stakes; the conflict map, traceability, and export are the paid value.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Path -->
+  <section class="slide">
+    <div class="num"></div>
+    <div class="eyebrow">The path</div>
+    <h2>A blended route to ~$1M ARR</h2>
+    <div class="tbl" style="max-width:680px;">
+      <table>
+        <thead><tr><th>Segment</th><th class="num">Customers</th><th class="num">Avg ARR</th><th class="num">ARR</th></tr></thead>
+        <tbody>
+          <tr><td>Self-serve</td><td class="num">400</td><td class="num">~$1.1K</td><td class="num">~$432K</td></tr>
+          <tr><td>Team</td><td class="num">40</td><td class="num">~$4.8K</td><td class="num">~$192K</td></tr>
+          <tr><td>Enterprise</td><td class="num">14</td><td class="num">~$28K</td><td class="num">~$392K</td></tr>
+          <tr class="total"><td>Total</td><td class="num"></td><td class="num"></td><td class="num">~$1.0M</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">Reachable in 18 to 30 months. Self-serve gives volume and feedback; enterprise gives cash and logos.</div>
+  </section>
+
+  <!-- 11. Closing -->
+  <section class="slide cover">
+    <div class="num"></div>
+    <div class="eyebrow">The vision</div>
+    <h2 style="max-width:18ch;">Forms were a workaround for a world where you couldn't talk to everyone.</h2>
+    <p class="lead wide" style="margin-top:6px;">That world is ending. The default way to gather answers becomes a conversation, and the interviewer is one you built yourself.</p>
+    <div class="tag" style="margin-top:24px; font-weight:800; font-size:26px;">AskWell<span style="color:var(--accent)">.</span></div>
+  </section>
+
+</div>
+
+<div class="controls">
+  <button class="arrow" id="prev" aria-label="Previous">&#8249;</button>
+  <div class="dots" id="dots"></div>
+  <button class="arrow" id="next" aria-label="Next">&#8250;</button>
+</div>
+<div class="hint">Arrow keys, or click the dots. Press P to print.</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var dotsWrap = document.getElementById('dots');
+    var nums = document.querySelectorAll('.num');
+    var i = 0;
+
+    slides.forEach(function (s, idx) {
+      var d = document.createElement('button');
+      d.className = 'dot' + (idx === 0 ? ' active' : '');
+      d.addEventListener('click', function () { go(idx); });
+      dotsWrap.appendChild(d);
+      s.querySelector('.num').textContent = (idx + 1) + ' / ' + slides.length;
+    });
+    var dots = dotsWrap.querySelectorAll('.dot');
+
+    function go(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach(function (s, idx) { s.classList.toggle('active', idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
+    }
+    document.getElementById('next').addEventListener('click', function () { go(i + 1); });
+    document.getElementById('prev').addEventListener('click', function () { go(i - 1); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { go(i + 1); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { go(i - 1); e.preventDefault(); }
+      else if (e.key === 'Home') { go(0); }
+      else if (e.key === 'End') { go(slides.length - 1); }
+      else if (e.key.toLowerCase() === 'p') { window.print(); }
+    });
+
+    // theme
+    var buttons = document.querySelectorAll('#themeToggle button');
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+    function apply(mode) {
+      root.setAttribute('data-theme', mode === 'system' ? (media.matches ? 'dark' : 'light') : mode);
+      buttons.forEach(function (b) { b.classList.toggle('active', b.dataset.mode === mode); });
+      try { localStorage.setItem('askwell-theme', mode); } catch (e) {}
+    }
+    var saved = 'light';
+    try { saved = localStorage.getItem('askwell-theme') || 'light'; } catch (e) {}
+    apply(saved);
+    buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.mode); }); });
+    media.addEventListener('change', function () {
+      var c = 'light'; try { c = localStorage.getItem('askwell-theme') || 'light'; } catch (e) {}
+      if (c === 'system') apply('system');
+    });
+  })();
+</script>
+</body>
+</html>

@@ -225,3 +225,4 @@
 | 2026-05-25 | openhack | reports | [unomundi-pentest-report.html](projects/openhack/reports/unomundi-pentest-report.html) | unomundi pentest v4: added F9 RLS-bypass-via-view (High), 9 findings total |
 | 2026-05-25 | project7 | reports | [askwell-brand-kit.html](projects/project7/reports/askwell-brand-kit.html) | AskWell brand and product kit: taglines, positioning, pitch, requirements interviewer spec |
 | 2026-05-25 | project7 | reports | [askwell-viability-report.html](projects/project7/reports/askwell-viability-report.html) | AskWell viability and business model report: competitive landscape, unit economics, pricing, path to 1M ARR |
+| 2026-05-25 | project7 | reports | [askwell-pitch-deck.html](projects/project7/reports/askwell-pitch-deck.html) | AskWell pitch deck: 11 clean slides covering problem, product, wedge, market, business model, path to 1M ARR |
