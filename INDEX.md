@@ -222,3 +222,4 @@
 | 2026-05-25 | openhack | reports | [unomundi-pentest-report.html](projects/openhack/reports/unomundi-pentest-report.html) | unomundi.com external black-box pentest, 8 findings (1 critical, 1 high, 1 medium, 4 low, 1 info) |
 | 2026-05-25 | openhack | reports | [unomundi-pentest-report.html](projects/openhack/reports/unomundi-pentest-report.html) | unomundi.com pentest v2: prod parity confirmed, 2 critical (encryption key live on prod) |
 | 2026-05-25 | openhack | reports | [unomundi-pentest-report.html](projects/openhack/reports/unomundi-pentest-report.html) | unomundi pentest v3: F1+F2 both confirmed Critical on production (data-safe) |
+| 2026-05-25 | openhack | reports | [unomundi-pentest-report.html](projects/openhack/reports/unomundi-pentest-report.html) | unomundi pentest v4: added F9 RLS-bypass-via-view (High), 9 findings total |
