@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AskWell, viability and business model</title>
+<style>
+  :root {
+    --bg: #fbfaf8; --surface: #ffffff; --surface-2: #f4f2ee; --border: #e6e2db;
+    --text: #1b1a17; --text-soft: #565249; --text-faint: #8a857a;
+    --accent: #3b5bdb; --accent-soft: #edf0fd; --accent-text: #2842b8;
+    --warm: #d9822b; --warm-soft: #fbf0e3;
+    --danger: #c0392b; --danger-soft: #fbeae8; --ok: #2f8a5b; --ok-soft: #e8f5ee;
+    --radius: 14px; --maxw: 880px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Inter", sans-serif;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.05);
+  }
+  [data-theme="dark"] {
+    --bg: #14130f; --surface: #1d1c18; --surface-2: #25241f; --border: #34322b;
+    --text: #f3f1ea; --text-soft: #c2bdb1; --text-faint: #8a857a;
+    --accent: #8ea2ff; --accent-soft: #20243a; --accent-text: #aab8ff;
+    --warm: #e6a256; --warm-soft: #2e2418;
+    --danger: #e08a7e; --danger-soft: #34211e; --ok: #7bc79c; --ok-soft: #1c2c23;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font); line-height: 1.6; -webkit-font-smoothing: antialiased; font-size: 17px; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  .topbar { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+  .topbar-inner { max-width: var(--maxw); margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand-mini { font-weight: 700; letter-spacing: -.02em; font-size: 18px; }
+  .brand-mini .dot { color: var(--accent); }
+  nav.toc { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav.toc a { color: var(--text-soft); text-decoration: none; font-size: 13.5px; padding: 5px 10px; border-radius: 8px; font-weight: 500; }
+  nav.toc a:hover { background: var(--surface-2); color: var(--text); }
+  .theme-toggle { display: flex; gap: 2px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 3px; }
+  .theme-toggle button { border: 0; background: transparent; cursor: pointer; color: var(--text-faint); font-size: 12px; padding: 4px 10px; border-radius: 999px; font-family: var(--font); font-weight: 600; }
+  .theme-toggle button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+  header.hero { padding: 64px 0 40px; }
+  .eyebrow { display: inline-block; font-size: 12.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-text); background: var(--accent-soft); padding: 5px 12px; border-radius: 999px; margin-bottom: 18px; }
+  h1 { font-size: clamp(34px, 6vw, 48px); font-weight: 800; letter-spacing: -.03em; margin: 0 0 10px; line-height: 1.05; }
+  .hero p { font-size: 19px; color: var(--text-soft); margin: 0; max-width: 640px; }
+  .date { color: var(--text-faint); font-size: 14px; margin-top: 14px; }
+  section { padding: 40px 0; border-top: 1px solid var(--border); }
+  .kicker { font-size: 12.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 6px; }
+  h2 { font-size: 28px; font-weight: 750; letter-spacing: -.025em; margin: 0 0 10px; }
+  h3 { font-size: 18px; font-weight: 700; letter-spacing: -.01em; margin: 26px 0 8px; }
+  p { margin: 0 0 14px; color: var(--text-soft); }
+  p.lead { font-size: 18.5px; color: var(--text); }
+  strong { color: var(--text); font-weight: 650; }
+  a { color: var(--accent-text); }
+  .verdict { background: var(--ok-soft); border: 1px solid color-mix(in srgb, var(--ok) 35%, var(--border)); border-radius: var(--radius); padding: 22px 24px; }
+  .verdict .label { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ok); margin-bottom: 8px; }
+  .verdict p { color: var(--text); margin: 0; font-size: 18px; }
+  .lanes { display: grid; gap: 14px; margin-top: 18px; }
+  .lane { border-radius: var(--radius); border: 1px solid var(--border); padding: 18px 20px; background: var(--surface); box-shadow: var(--shadow); border-left-width: 4px; }
+  .lane.red { border-left-color: var(--danger); }
+  .lane.amber { border-left-color: var(--warm); }
+  .lane.green { border-left-color: var(--ok); }
+  .lane h4 { margin: 0 0 4px; font-size: 16px; }
+  .lane .tag { font-size: 11.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle; }
+  .lane.red .tag { background: var(--danger-soft); color: var(--danger); }
+  .lane.amber .tag { background: var(--warm-soft); color: var(--warm); }
+  .lane.green .tag { background: var(--ok-soft); color: var(--ok); }
+  .lane p { margin: 6px 0 0; font-size: 15px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 8px; font-size: 14.5px; }
+  th, td { text-align: left; padding: 10px 13px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-faint); font-weight: 700; }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  tr.total td { font-weight: 750; color: var(--text); border-top: 2px solid var(--border); }
+  .tbl-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); margin: 12px 0; }
+  .tbl-wrap table { margin: 0; }
+  .tbl-wrap th, .tbl-wrap td { padding-left: 18px; padding-right: 18px; }
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 18px 0; }
+  @media (max-width: 720px) { .stat-row { grid-template-columns: repeat(2, 1fr); } }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
+  .stat .v { font-size: 26px; font-weight: 800; letter-spacing: -.02em; color: var(--accent-text); }
+  .stat .k { font-size: 13px; color: var(--text-faint); margin-top: 2px; }
+  .callout { border-radius: var(--radius); padding: 18px 20px; margin: 16px 0; border: 1px solid var(--border); }
+  .callout .label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+  .callout.accent { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 30%, var(--border)); }
+  .callout.accent .label { color: var(--accent-text); }
+  .callout.warm { background: var(--warm-soft); border-color: color-mix(in srgb, var(--warm) 35%, var(--border)); }
+  .callout.warm .label { color: var(--warm); }
+  .callout p { margin: 0; color: var(--text); }
+  ul.clean { padding-left: 18px; } ul.clean li { margin-bottom: 7px; color: var(--text-soft); } ul.clean li::marker { color: var(--accent); }
+  .src { font-size: 13.5px; color: var(--text-faint); }
+  .src a { color: var(--text-soft); }
+  footer { padding: 36px 0 60px; border-top: 1px solid var(--border); color: var(--text-faint); font-size: 13.5px; text-align: center; }
+  footer .disc { max-width: 620px; margin: 0 auto; }
+  @media print {
+    :root { --bg: #fff; --surface: #fff; --surface-2: #fff; }
+    body { font-size: 11pt; color: #000; }
+    .topbar, .theme-toggle { display: none !important; }
+    section, header.hero { page-break-inside: avoid; padding: 16px 0; }
+    .lane, .stat, .tbl-wrap, .callout, .verdict { box-shadow: none; }
+    a { color: #000; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand-mini">AskWell<span class="dot">.</span></div>
+    <nav class="toc">
+      <a href="#verdict">Verdict</a>
+      <a href="#lanes">Landscape</a>
+      <a href="#cogs">Unit cost</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#economics">Economics</a>
+      <a href="#path">Path to $1M</a>
+    </nav>
+    <div class="theme-toggle" id="themeToggle">
+      <button data-mode="light">Light</button>
+      <button data-mode="dark">Dark</button>
+      <button data-mode="system">Auto</button>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Viability and Business Model</span>
+    <h1>Is AskWell worth building?</h1>
+    <p>A read on the competitive landscape and a modeled business case, with the numbers stated so you can change the assumptions.</p>
+    <div class="date">Research as of May 2026</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="verdict">
+    <p class="kicker">Verdict</p>
+    <div class="verdict">
+      <div class="label">Viable, conditional on the wedge</div>
+      <p>Build AskWell as a <strong>requirements and stakeholder-discovery</strong> product, not a horizontal AI survey tool and not another customer-research platform. The core mechanic is proven and well funded, which de-risks whether it works but means the obvious lanes are already contested by capitalized incumbents. Requirements discovery is the one credible opening, with a named buyer and quantifiable ROI.</p>
+    </div>
+  </section>
+
+  <section id="lanes">
+    <p class="kicker">Competitive landscape</p>
+    <h2>Three lanes, one place to play</h2>
+    <div class="lanes">
+      <div class="lane red">
+        <h4>Customer / UX research <span class="tag">Red ocean, avoid</span></h4>
+        <p>Crowded and very well capitalized. <strong>Listen Labs</strong> raised $27M (Sequoia) then a $69M Series B at a <strong>$500M valuation</strong>, with 1M+ interviews and 8-figure ARR. <strong>Outset</strong> (YC S23), <strong>Strella</strong> (Bessemer), <strong>User Intuition</strong> ($20/interview, 500+ teams), plus Conveo and Heymarvin. The thesis is validated, the positioning is taken.</p>
+      </div>
+      <div class="lane amber">
+        <h4>Horizontal conversational forms <span class="tag">Commoditizing, avoid</span></h4>
+        <p>Squeezed from both ends. <strong>Typeform, Jotform, Qualtrics, SurveySparrow</strong> all added AI follow-ups; cheap challengers (<strong>Duonut, PingPolls, Formshare</strong>) crowd the bottom near $0.29/response. "Conversational survey" is now a feature, not a product.</p>
+      </div>
+      <div class="lane green">
+        <h4>Requirements &amp; stakeholder discovery <span class="tag">Open, the wedge</span></h4>
+        <p>Under-served. What exists is meeting capture (<strong>Fireflies, Grain</strong>) and dev-tool plugins (<strong>Copilot4DevOps, Jama</strong>). <strong>Nobody owns "interview every stakeholder, return a requirements doc with a conflict map."</strong> AI elicitation captures ~37% more requirements and cuts requirements time ~50%, and 38% of projects stall in discovery. Named buyer, obvious ROI, no dominant incumbent.</p>
+      </div>
+    </div>
+    <div class="callout accent">
+      <div class="label">The moat</div>
+      <p>The generic "AI conducts an interview" layer is now table stakes. Defensibility comes from requirements-specific synthesis (the conflict map, traceability), workflow integrations (Jira, Linear, Azure DevOps), and a conflict-detection model that improves with use. Own the workflow, not the chat.</p>
+    </div>
+  </section>
+
+  <section id="cogs">
+    <p class="kicker">Unit cost</p>
+    <h2>What one interview costs us</h2>
+    <p>A completed text interview is ~10 minutes, ~18 turns. With prompt caching, roughly 60K billed input tokens and 6K output, on a Sonnet-class model, plus a share of synthesis and infra.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Math</th><th class="num">Cost</th></tr></thead>
+        <tbody>
+          <tr><td>LLM input</td><td>60,000 x $1.80 / 1M (cached blend)</td><td class="num">$0.108</td></tr>
+          <tr><td>LLM output</td><td>6,000 x $15 / 1M</td><td class="num">$0.090</td></tr>
+          <tr><td>Synthesis share</td><td>per-interview slice of batch</td><td class="num">$0.050</td></tr>
+          <tr><td>Infra, email, storage</td><td>allocated</td><td class="num">$0.050</td></tr>
+          <tr class="total"><td>Total per text interview</td><td></td><td class="num">~$0.30</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Voice adds roughly $0.40 to $1.00 (speech-to-text and text-to-speech). The takeaway: <strong>at $0.30 cost, every realistic price point has high margin.</strong> The constraint is willingness to pay, not unit cost. User Intuition charges $20 per interview, which would be a ~98% margin at our cost.</p>
+  </section>
+
+  <section id="pricing">
+    <p class="kicker">Pricing</p>
+    <h2>Hybrid: self-serve at the bottom, sales-led at the top</h2>
+    <p>Anchor on value. A missed requirement caught early is worth weeks of rework, so the buyer compares AskWell to a research study or a rework disaster, never to a $29 form plan.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Plan</th><th class="num">Price</th><th class="num">Included</th><th>Target</th></tr></thead>
+        <tbody>
+          <tr><td>Free</td><td class="num">$0</td><td class="num">10 total</td><td>Trial, virality</td></tr>
+          <tr><td>Starter</td><td class="num">$39/mo</td><td class="num">25/mo</td><td>Solo PM, freelancer</td></tr>
+          <tr><td>Pro</td><td class="num">$149/mo</td><td class="num">150/mo</td><td>Small product team</td></tr>
+          <tr><td>Team</td><td class="num">$399/mo</td><td class="num">500/mo</td><td>Agencies, larger teams</td></tr>
+          <tr><td>Enterprise</td><td class="num">from $2,000/mo</td><td class="num">Volume</td><td>Consultancies, enterprise</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">Overage $1.50/interview (~80% margin). Voice add-on +$1/interview. Annual billing: 2 months free. Worst-case margin (Team plan, full 500 interviews used): $150 COGS vs $399 = 62%; typical utilization pushes realized margin past 80%.</p>
+    <div class="callout warm">
+      <div class="label">Principle</div>
+      <p>Charge for the synthesis, not the chat. Keep basic interviews cheap or free, gate the conflict map, traceability, and export. That is the value an incumbent will not prioritize.</p>
+    </div>
+  </section>
+
+  <section id="economics">
+    <p class="kicker">Unit economics</p>
+    <h2>The math works</h2>
+    <div class="stat-row">
+      <div class="stat"><div class="v">~$0.30</div><div class="k">COGS per interview</div></div>
+      <div class="stat"><div class="v">85%</div><div class="k">Gross margin, Pro</div></div>
+      <div class="stat"><div class="v">~5x</div><div class="k">LTV / CAC, self-serve</div></div>
+      <div class="stat"><div class="v">~5 mo</div><div class="k">CAC payback, self-serve</div></div>
+    </div>
+    <ul class="clean">
+      <li><strong>Self-serve (Pro, $149/mo):</strong> 85% margin, 4% monthly churn implies ~25-month life, LTV ~$3,165 against a target CAC under $600.</li>
+      <li><strong>Enterprise (~$28K ARR):</strong> 88% margin, sales CAC ~$18K, payback ~9 months, improving with multi-year retention.</li>
+    </ul>
+  </section>
+
+  <section id="path">
+    <p class="kicker">Path</p>
+    <h2>Illustrative route to ~$1M ARR</h2>
+    <p>A blended motion, reachable in roughly 18 to 30 months. The mix matters more than the totals: self-serve gives volume and feedback, enterprise gives cash and logos.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Segment</th><th class="num">Customers</th><th class="num">Avg ARR</th><th class="num">ARR</th></tr></thead>
+        <tbody>
+          <tr><td>Self-serve (Starter + Pro)</td><td class="num">400</td><td class="num">~$1,080</td><td class="num">~$432K</td></tr>
+          <tr><td>Team</td><td class="num">40</td><td class="num">~$4,800</td><td class="num">~$192K</td></tr>
+          <tr><td>Enterprise</td><td class="num">14</td><td class="num">~$28,000</td><td class="num">~$392K</td></tr>
+          <tr class="total"><td>Total</td><td class="num"></td><td class="num"></td><td class="num">~$1.0M</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout accent">
+      <div class="label">Go-to-market</div>
+      <p>Beachhead: software consultancies and product agencies running client discovery; they feel the pain per engagement and bill it through. Expand to in-house PMs and business analysts. Land every demo on the conflict-map screen (Sales must-have vs Legal constraint), the one view that sells the product.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Sources</p>
+    <p class="src">
+      Listen Labs funding: <a href="https://fortune.com/article/ai-startup-listen-labs-sequoia-27-million-funding/">Fortune</a>, <a href="https://venturebeat.com/technology/listen-labs-raises-usd69m-after-viral-billboard-hiring-stunt-to-scale-ai">VentureBeat</a>.
+      Outset: <a href="https://www.ycombinator.com/companies/outset">Y Combinator</a>.
+      Strella: <a href="https://www.bvp.com/atlas/strella-transforming-qualitative-research-from-a-bottleneck-into-an-ai-superpower">Bessemer</a>, <a href="https://www.saasworthy.com/product/strella-io/pricing">SaaSworthy</a>.
+      User Intuition: <a href="https://www.userintuition.ai/">userintuition.ai</a>.
+      Conveo ROI: <a href="https://conveo.ai/insights/ai-moderated-research-framework-roi-benchmarks-2025">conveo.ai</a>.
+      Conversational forms: <a href="https://www.producthunt.com/products/duonut">Product Hunt</a>.
+      Typeform pricing: <a href="https://www.pollfish.com/resources/blog/market-research/ai-survey-tools/">Pollfish</a>.
+      Requirements AI: <a href="https://stepsize.com/blog/best-ai-tools-for-requirements-gathering">Stepsize</a>, <a href="https://copilot4devops.com/ai-in-requirements-gathering-and-documentation/">Copilot4DevOps</a>, <a href="https://arxiv.org/html/2409.00038v1">arXiv</a>.
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap"><p class="disc">All financial figures are modeled estimates for planning, not quotes or guarantees. Token costs, churn, CAC, and utilization are assumptions stated in the source documents and should be validated before any commitment.</p></div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement, toggle = document.getElementById('themeToggle');
+    var buttons = toggle.querySelectorAll('button'), media = window.matchMedia('(prefers-color-scheme: dark)');
+    function apply(mode) {
+      root.setAttribute('data-theme', mode === 'system' ? (media.matches ? 'dark' : 'light') : mode);
+      buttons.forEach(function (b) { b.classList.toggle('active', b.dataset.mode === mode); });
+      try { localStorage.setItem('askwell-theme', mode); } catch (e) {}
+    }
+    var saved = 'light';
+    try { saved = localStorage.getItem('askwell-theme') || 'light'; } catch (e) {}
+    apply(saved);
+    buttons.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.mode); }); });
+    media.addEventListener('change', function () {
+      var c = 'light'; try { c = localStorage.getItem('askwell-theme') || 'light'; } catch (e) {}
+      if (c === 'system') apply('system');
+    });
+  })();
+</script>
+</body>
+</html>
