@@ -244,3 +244,4 @@
 | 2026-05-26 | pool | reports | [prediction-approach.html](projects/pool/reports/prediction-approach.html) | WC2026 prediction system design doc: match model + Monte Carlo tournament sim approach |
 | 2026-05-26 | pool | reports | [PREDICTION_APPROACH.md](projects/pool/reports/PREDICTION_APPROACH.md) | WC2026 prediction approach (markdown source) |
 | 2026-05-26 | pool | reports | [course.html](projects/pool/reports/course.html) | Complete course: how the WC2026 Elo + Poisson + Monte Carlo predictor works |
+| 2026-05-26 | pool | reports | [forecast.html](projects/pool/reports/forecast.html) | WC2026 champion probabilities forecast (20k Monte Carlo sims) |
