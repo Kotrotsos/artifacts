@@ -68,6 +68,8 @@
   .pname{font-weight:600}
   .out{opacity:.55}
   .tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:6px;background:var(--bad);color:#fff;margin-left:6px;font-weight:600;letter-spacing:.3px}
+  .tag.doubt{background:#d97706}
+  .tag.prov{background:var(--blue)}
   .cap{display:inline-block;font-size:9px;padding:1px 5px;border-radius:4px;border:1px solid var(--accent);color:var(--accent);margin-left:6px;font-weight:700;vertical-align:middle}
 
   .bars{display:grid;gap:8px}
@@ -168,6 +170,15 @@
     </section>
 
     <section>
+      <h2>Provisional / Standby Pool <span style="text-transform:none;letter-spacing:0;font-weight:400">(in 55-man preliminary list, not in main squad)</span></h2>
+      <table>
+        <thead><tr><th>Player</th><th>Club</th><th class="num">Age</th><th class="num">Caps</th><th class="num">Int. G</th><th class="num">Club G</th><th class="num">Club A</th><th class="num">Value €m</th></tr></thead>
+        <tbody id="provBody"></tbody>
+      </table>
+      <p class="note"><span class="tag prov" style="margin:0">PROV</span> standby candidate · <span class="tag doubt" style="margin:0 0 0 4px">DOUBT</span> fitness concern. Jurriën Timber (groin) and Justin Kluivert (knee) were racing to prove fitness; Koeman delayed the final list to 27 May 2026 to assess them.</p>
+    </section>
+
+    <section>
       <h2>Squad Market Value (Top 10, € million)</h2>
       <div class="bars" id="valueBars"></div>
     </section>
@@ -234,6 +245,40 @@ order.forEach(pos=>{
     r.appendChild(cell(fmt(p.ca),'num'));
     r.appendChild(cell(fmt(p.mv),'num'));
     body.appendChild(r);
+  });
+});
+
+const provisionals=[
+  {n:"Frenkie de Jong",pos:"MID",club:"FC Barcelona",age:28,caps:64,ig:2,cg:1,ca:5,mv:45,kind:"prov"},
+  {n:"Jurriën Timber",pos:"DEF",club:"Arsenal",age:24,caps:23,ig:0,cg:3,ca:5,mv:70,kind:"doubt"},
+  {n:"Lutsharel Geertruida",pos:"DEF",club:"Sunderland (loan)",age:25,caps:20,ig:0,cg:0,ca:0,mv:20,kind:"prov"},
+  {n:"Robin Roefs",pos:"GK",club:"Sunderland",age:23,caps:0,ig:0,cg:0,ca:0,mv:25,kind:"prov"},
+  {n:"Justin Kluivert",pos:"FWD",club:"AFC Bournemouth",age:27,caps:11,ig:0,cg:2,ca:0,mv:30,kind:"doubt"}
+];
+const provBody=document.getElementById('provBody');
+order.forEach(pos=>{
+  const grp=provisionals.filter(p=>p.pos===pos);
+  if(!grp.length)return;
+  const hr=document.createElement('tr');hr.className='posrow';
+  const hc=document.createElement('td');hc.colSpan=8;hc.textContent=posNames[pos];
+  hr.appendChild(hc);provBody.appendChild(hr);
+  grp.forEach(p=>{
+    const r=document.createElement('tr');
+    const name=document.createElement('td');name.className='pname';
+    name.appendChild(document.createTextNode(p.n));
+    const s=document.createElement('span');
+    s.className=p.kind==="doubt"?'tag doubt':'tag prov';
+    s.textContent=p.kind==="doubt"?'DOUBT':'PROV';
+    name.appendChild(s);
+    r.appendChild(name);
+    r.appendChild(cell(p.club));
+    r.appendChild(cell(fmt(p.age),'num'));
+    r.appendChild(cell(fmt(p.caps),'num'));
+    r.appendChild(cell(fmt(p.ig),'num'));
+    r.appendChild(cell(fmt(p.cg),'num'));
+    r.appendChild(cell(fmt(p.ca),'num'));
+    r.appendChild(cell(fmt(p.mv),'num'));
+    provBody.appendChild(r);
   });
 });
 
