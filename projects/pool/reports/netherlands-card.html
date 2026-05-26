@@ -49,6 +49,13 @@
   section{padding:24px 28px;border-top:1px solid var(--border)}
   h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:16px;font-weight:700}
   .diagram{width:100%;height:auto}
+  .diagram text{font-family:inherit}
+  .diagram .d-edge{stroke:var(--accent);stroke-width:2;opacity:.55}
+  .diagram .d-center{fill:var(--accent)}
+  .diagram .d-node{fill:var(--surface-2);stroke:var(--border);stroke-width:2}
+  .diagram .d-elabel{fill:var(--muted);font-size:11px}
+  .diagram .d-code{fill:var(--text);font-weight:700}
+  .diagram .d-name{fill:var(--muted)}
 
   .fixtures{display:grid;gap:10px}
   .fix{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:14px;
@@ -119,31 +126,31 @@
     <section>
       <h2>Group F — Draw Diagram</h2>
       <svg class="diagram" viewBox="0 0 800 320" role="img" aria-label="Group F diagram">
-        <g stroke="var(--accent)" stroke-width="2" opacity="0.55">
+        <g class="d-edge">
           <line x1="400" y1="160" x2="150" y2="80"/>
           <line x1="400" y1="160" x2="650" y2="80"/>
           <line x1="400" y1="160" x2="650" y2="250"/>
         </g>
-        <g font-size="11" fill="var(--muted)" text-anchor="middle" font-family="sans-serif">
+        <g class="d-elabel" text-anchor="middle">
           <text x="265" y="105">Jun 14 · Dallas</text>
           <text x="535" y="105">Jun 20 · Houston</text>
           <text x="535" y="220">Jun 25 · Kansas City</text>
         </g>
         <g>
-          <circle cx="400" cy="160" r="52" fill="var(--accent)"/>
-          <text x="400" y="156" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" font-family="sans-serif">NED</text>
-          <text x="400" y="174" text-anchor="middle" font-size="10" fill="#fff" opacity="0.9" font-family="sans-serif">Netherlands</text>
+          <circle class="d-center" cx="400" cy="160" r="52"/>
+          <text x="400" y="156" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">NED</text>
+          <text x="400" y="174" text-anchor="middle" font-size="10" fill="#fff" opacity="0.9">Netherlands</text>
         </g>
-        <g font-family="sans-serif">
-          <circle cx="150" cy="80" r="40" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
-          <text x="150" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">JPN</text>
-          <text x="150" y="94" text-anchor="middle" font-size="9" fill="var(--muted)">Japan</text>
-          <circle cx="650" cy="80" r="40" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
-          <text x="650" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">SWE</text>
-          <text x="650" y="94" text-anchor="middle" font-size="9" fill="var(--muted)">Sweden</text>
-          <circle cx="650" cy="250" r="40" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
-          <text x="650" y="248" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">TUN</text>
-          <text x="650" y="264" text-anchor="middle" font-size="9" fill="var(--muted)">Tunisia</text>
+        <g>
+          <circle class="d-node" cx="150" cy="80" r="40"/>
+          <text class="d-code" x="150" y="78" text-anchor="middle" font-size="13">JPN</text>
+          <text class="d-name" x="150" y="94" text-anchor="middle" font-size="9">Japan</text>
+          <circle class="d-node" cx="650" cy="80" r="40"/>
+          <text class="d-code" x="650" y="78" text-anchor="middle" font-size="13">SWE</text>
+          <text class="d-name" x="650" y="94" text-anchor="middle" font-size="9">Sweden</text>
+          <circle class="d-node" cx="650" cy="250" r="40"/>
+          <text class="d-code" x="650" y="248" text-anchor="middle" font-size="13">TUN</text>
+          <text class="d-name" x="650" y="264" text-anchor="middle" font-size="9">Tunisia</text>
         </g>
       </svg>
     </section>
@@ -282,10 +289,10 @@ order.forEach(pos=>{
   });
 });
 
-const top=squad.filter(p=>p.mv&&p.status==="available").sort((a,b)=>b.mv-a.mv).slice(0,10);
-const max=Math.max.apply(null,top.map(p=>p.mv));
+const topPlayers=squad.filter(p=>p.mv&&p.status==="available").sort((a,b)=>b.mv-a.mv).slice(0,10);
+const max=Math.max.apply(null,topPlayers.map(p=>p.mv));
 const bars=document.getElementById('valueBars');
-top.forEach(p=>{
+topPlayers.forEach(p=>{
   const row=document.createElement('div');row.className='bar';
   const lbl=document.createElement('div');lbl.className='lbl';
   lbl.appendChild(document.createTextNode(p.n.split(' ').slice(-1)[0]+' '));
