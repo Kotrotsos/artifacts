@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Model Card — WC 2026 Predictor</title>
+<style>
+  :root{--bg:#f5f6f8;--surface:#fff;--surface-2:#f3f5f8;--border:#e4e7eb;--text:#15181d;--muted:#5f6b7a;
+    --accent:#2457d6;--accent-soft:#eaf0fe;--gold:#b8860b;--gold2:#e3b341;--shadow:0 1px 3px rgba(0,0,0,.06),0 10px 30px rgba(0,0,0,.06)}
+  [data-theme="dark"]{--bg:#0e1116;--surface:#161a21;--surface-2:#1c222b;--border:#2a313b;--text:#e8eaed;--muted:#9aa3af;
+    --accent:#6f9bff;--accent-soft:#16223f;--gold:#e3b341;--gold2:#f0cf6b;--shadow:0 1px 3px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);
+    color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding:32px 20px}
+  .wrap{max-width:960px;margin:0 auto}
+  .toggle{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit;float:right}
+.sitenav{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#13161b;border:1px solid #262c36;border-radius:12px;padding:9px 14px;margin-bottom:18px}.sitenav .brand{color:#fff;text-decoration:none;font-weight:800;font-size:14px}.sitenav .lk{display:flex;gap:4px;flex-wrap:wrap}.sitenav .lk a{color:#c2c9d4;text-decoration:none;font-size:13px;font-weight:600;padding:6px 11px;border-radius:8px}.sitenav .lk a:hover{background:#222a36;color:#fff}.sitenav .lk a.active{background:var(--accent);color:#fff}
+  .wrap{max-width:820px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+  header{padding:32px 36px;background:linear-gradient(135deg,#13161b,#2a3340);color:#fff}
+  header h1{font-size:24px;font-weight:800} header .sub{opacity:.85;font-size:14px;margin-top:5px}
+  main{padding:8px 36px 34px}
+  h2{font-size:18px;font-weight:800;margin:28px 0 8px;padding-top:18px;border-top:1px solid var(--border)} h2:first-of-type{border-top:none}
+  p{margin:9px 0} ul{margin:9px 0 9px 22px} li{margin:4px 0} code{background:var(--accent-soft);padding:1px 6px;border-radius:5px;font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0} th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)} td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .kv{display:grid;grid-template-columns:160px 1fr;gap:2px 14px;font-size:14px} .kv div{padding:5px 0;border-bottom:1px solid var(--border)} .kv .k{color:var(--muted)}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+  a{color:var(--accent)}
+  footer{padding:18px 36px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+</style></head><body><div class="wrap">
+<nav class="sitenav"><a class="brand" href="index.html">WC 2026 Predictor</a><div class="lk"><a href="index.html">Home</a><a href="cards/index.html">Teams</a><a href="forecast.html">Forecast</a><a href="model-card.html" class="active">Model</a></div></nav>
+<button class="toggle" id="themeBtn">Theme: System</button>
+<div class="card">
+<header><h1>Model Card — World Cup 2026 Predictor</h1>
+  <div class="sub">A standardized summary of what the model is, how well it works, and how to use it responsibly.</div></header>
+<main>
+<h2>At a glance</h2>
+<div class="kv">
+  <div class="k">Model</div><div>Match-outcome ensemble &rarr; Monte Carlo tournament simulator</div>
+  <div class="k">Version</div><div><span class="pill">v3</span> goal-rating bivariate-Poisson (best backtest)</div>
+  <div class="k">Date</div><div>2026-05-26 (pre-tournament)</div>
+  <div class="k">Status</div><div>Validated; squads provisional</div>
+  <div class="k">Outputs</div><div>Per-match win/draw/loss probabilities; per-team odds to reach each stage and win the title</div>
+</div>
+
+<h2>Intended use</h2>
+<ul>
+  <li>Analysis, storytelling and education around the 2026 World Cup.</li>
+  <li>Producing calibrated probabilities for matches and tournament outcomes.</li>
+  <li><b>Out of scope:</b> betting/financial decisions, and any use treating a probability as a certainty. A 30% favourite still loses most of the time.</li>
+</ul>
+
+<h2>Data</h2>
+<ul>
+  <li><b>Training corpus:</b> 40,994+ historical internationals (1872&ndash;2026) from the public results dataset; goals, competition, venue.</li>
+  <li><b>Current-state data:</b> 48 squads with club stats, market values, recent form and head-to-head (collected 2026-05-26).</li>
+  <li>Strict time split &mdash; train &lt; 2020-01-01, validate 2020-01-01&ndash;2023-01-01, test 2023-01-01&ndash;2026-05-26 (3,431 matches).</li>
+</ul>
+
+<h2>How it works</h2>
+<p>Two layers. A <b>match model</b> rates every team and turns any fixture into win/draw/loss probabilities and a scoreline; a <b>Monte Carlo simulator</b> plays the full 48-team tournament 20,000 times to turn those into title odds. The match model is an ensemble of an outcome <b>Elo</b> rating and an online <b>goal-based attack/defence</b> rating (a bivariate Poisson), with the goal model carrying most of the weight. Full walkthrough in <a href="course.html">the course</a>; the bake-off is in <a href="model-bakeoff.html">model-bakeoff</a>.</p>
+
+<h2>Performance</h2>
+<p>Measured on 3,431 held-out matches (2023&ndash;2026) the model never trained on. Ranked Probability Score (RPS) and log-loss are lower-is-better.</p>
+<table><thead><tr><th>Metric</th><th class="num">Ensemble (v3)</th><th class="num">Elo baseline</th></tr></thead><tbody>
+  <tr><td>Ranked Probability Score</td><td class="num">0.1657</td><td class="num">0.1686</td></tr>
+  <tr><td>Log-loss</td><td class="num">0.854</td><td class="num">0.867</td></tr>
+  <tr><td>Accuracy</td><td class="num">60.5%</td><td class="num">60.3%</td></tr>
+</tbody></table>
+<p><b>Tournament backtest:</b> rebuilt with only pre-tournament data, the model placed the eventual champions sensibly &mdash; France 2018 as the #6 favourite (4.8%) and Argentina 2022 as #2 (20.4%) &mdash; while correctly rating Cinderella runs (Croatia, Morocco) as longshots. Detail in <a href="backtest-2018-2022.html">the validation report</a>.</p>
+
+<h2>Limitations &amp; responsible use</h2>
+<ul>
+  <li><b>Provisional squads.</b> Collected before some final-26 deadlines; injuries (e.g. Xavi Simons) shift things.</li>
+  <li><b>Results-only signal.</b> No per-match lineups or expected goals (xG); the model cannot see tactics, fatigue or in-game events.</li>
+  <li><b>Form &amp; H2H were tested and excluded</b> &mdash; they add nothing beyond Elo, which already encodes recent results.</li>
+  <li><b>High variance is real.</b> Even a strong favourite usually has under a 1-in-3 chance; the spread across contenders is a feature, not a hedge.</li>
+  <li><b>Fixtures vary by source</b> in the per-team data; reconcile against the official schedule before using them.</li>
+</ul>
+
+<h2>Reproduce</h2>
+<p><code>python3 scripts/elo.py</code> &middot; <code>python3 scripts/ensemble.py</code> &middot; <code>python3 scripts/simulate.py 20000 v3</code> &middot; <code>python3 scripts/build_site.py</code></p>
+</main>
+<footer>World Cup 2026 ML prediction project &middot; model card v3 &middot; 2026-05-26</footer>
+</div></div><script>
+const btn=document.getElementById('themeBtn');const modes=["system","light","dark"];let idx=0;
+const mq=window.matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(){const m=modes[idx];const eff=m==="system"?(mq.matches?"dark":"light"):m;
+document.documentElement.setAttribute('data-theme',eff);btn.textContent="Theme: "+m.charAt(0).toUpperCase()+m.slice(1);}
+btn.onclick=()=>{idx=(idx+1)%3;applyTheme();};mq.addEventListener('change',()=>{if(modes[idx]==="system")applyTheme();});applyTheme();
+</script></body></html>

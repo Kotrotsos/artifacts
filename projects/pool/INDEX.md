@@ -16,3 +16,4 @@
 | 2026-05-26 | reports | [model-bakeoff.html](reports/model-bakeoff.html) | WC2026 model bake-off: 6 algorithms + ensemble, goal-rating model wins (RPS 0.166), pushed to forecast v3 | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/model-bakeoff.html |
 | 2026-05-26 | reports | [forecast.html](reports/forecast.html) | WC2026 forecast v3 (goal-rating model): Argentina 18%, Spain 13%, Brazil 11% | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast.html |
 | 2026-05-26 | reports | [index.html](reports/index.html) | WC2026 prediction hub: home page with title-odds podium + nav to teams/forecast/model | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/index.html |
+| 2026-05-26 | reports | [model-card.html](reports/model-card.html) | WC2026 model card: standardized model summary, performance, limitations | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/model-card.html |
