@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicting the 2026 World Cup — First-Pass Approach</title>
+<style>
+  :root{--bg:#f5f6f8;--surface:#fff;--surface-2:#fafbfc;--border:#e4e7eb;--text:#15181d;--muted:#6b7280;
+    --accent:#1d3a8a;--accent-soft:#eef2fb;--good:#16a34a;--shadow:0 1px 3px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.05)}
+  [data-theme="dark"]{--bg:#0e1116;--surface:#171b22;--surface-2:#1d2229;--border:#2a313b;--text:#e8eaed;
+    --muted:#9aa3af;--accent:#6f8fe0;--accent-soft:#16203a;--shadow:0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.4)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding:40px 20px}
+  .wrap{max-width:820px;margin:0 auto}
+  .toolbar{display:flex;justify-content:flex-end;margin-bottom:16px}
+  .toggle{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;
+    padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit}.toggle:hover{border-color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);
+    overflow:hidden}
+  header{padding:32px 36px;background:linear-gradient(135deg,var(--accent),#3a5bbf);color:#fff}
+  header h1{font-size:26px;font-weight:800;letter-spacing:-.4px}
+  header .sub{opacity:.9;font-size:14px;margin-top:4px}
+  main{padding:8px 36px 36px}
+  h2{font-size:18px;font-weight:700;margin:30px 0 10px;padding-top:18px;border-top:1px solid var(--border)}
+  h2:first-of-type{border-top:none}
+  h3{font-size:15px;font-weight:700;margin:18px 0 6px;color:var(--accent)}
+  p{margin:8px 0}
+  ul,ol{margin:8px 0 8px 22px}li{margin:4px 0}
+  code{background:var(--accent-soft);padding:1px 6px;border-radius:5px;font-size:13px}
+  pre{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:16px;overflow:auto;
+    font-size:12.5px;line-height:1.5;margin:12px 0}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:12px 0}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  .tag{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px}
+  .have{background:#dcfce7;color:#166534}.gap{background:#fee2e2;color:#991b1b}.partial{background:#fef9c3;color:#854d0e}
+  [data-theme="dark"] .have{background:#14331f;color:#7ee2a8}[data-theme="dark"] .gap{background:#3a1717;color:#f3a3a3}
+  [data-theme="dark"] .partial{background:#33290f;color:#e9cf7a}
+  .done{color:var(--good);font-weight:700}.todo{color:var(--muted)}
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:8px;padding:12px 16px;margin:14px 0;font-size:13.5px}
+  footer{padding:18px 36px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+  @media print{body{background:#fff;padding:0}.toolbar{display:none}.card{box-shadow:none;border:none}
+    h2,pre,table{break-inside:avoid}}
+</style></head>
+<body><div class="wrap">
+  <div class="toolbar"><button class="toggle" id="themeBtn">Theme: System</button></div>
+  <div class="card">
+    <header>
+      <h1>Predicting the 2026 World Cup</h1>
+      <div class="sub">First-pass modelling approach · v1 · 2026-05-26 · companion to the <code>data/</code> dataset</div>
+    </header>
+    <main>
+
+    <h2>1. Objective</h2>
+    <p>Two outputs:</p>
+    <ol>
+      <li><b>Match model</b> — for any pairing (A vs B) at a given venue, output probabilities of A win / draw / B win, plus an expected scoreline.</li>
+      <li><b>Tournament forecast</b> — for each of the 48 teams, the probability of finishing top-2 in its group, reaching each knockout round, and winning the trophy.</li>
+    </ol>
+    <p>Keep the two layers separate. The match model is the hard part; the tournament forecast is "run the match model 50,000 times and count."</p>
+
+    <h2>2. Architecture</h2>
+    <pre> data/ (current state)        history corpus (to acquire)
+        |                              |
+        v                              v
+   feature builder  &lt;----------  Elo / ratings engine
+        |                              |
+        +--------------+---------------+
+                       v
+                 MATCH MODEL  (P(W/D/L), expected goals)
+                       |
+                       v
+            TOURNAMENT SIMULATOR (Monte Carlo)
+                       |
+                       v
+   per-team stage probabilities + champion odds  -&gt;  dashboard</pre>
+
+    <h2>3. The match model — three options, in order of effort</h2>
+    <h3>A. Elo baseline (start here)</h3>
+    <p>One strength rating per team. Win probability is a logistic function of the rating gap plus a venue term:</p>
+    <pre>P(A beats B) = 1 / (1 + 10^(-(EloA - EloB + H) / 400))</pre>
+    <p><code>H</code> is a home/neutral adjustment (hosts get a bump; everyone else is on neutral US/CA/MX soil). Trivial to implement, generalises to <i>any</i> pairing (critical for knockout sims), needs only historical results to seed. Ignores goals and squad detail.</p>
+    <h3>B. Bivariate Poisson goals model (recommended target)</h3>
+    <p>Model each team's goals as Poisson with rates from attack and defence strengths:</p>
+    <pre>lambda_A = exp(mu + attackA - defenceB + home_adj)
+lambda_B = exp(mu + attackB - defenceA)</pre>
+    <p>Fit attack/defence per team (Dixon-Coles refinement: low-score correction + time-decay so recent matches count more). Gives a full scoreline distribution, so W/D/L, clean sheets and over/under all fall out. Interpretable and a genuinely strong football baseline.</p>
+    <h3>C. Gradient-boosted classifier (the ML layer)</h3>
+    <p>XGBoost/LightGBM predicting P(W/D/L) (or two goal regressors) from the engineered feature vector. Use it to beat the Poisson baseline and absorb features Elo/Poisson cannot (squad value, injuries, rest, travel).</p>
+    <div class="callout"><b>Recommendation:</b> ship Elo end-to-end first (fastest path to a real champion number), then upgrade the match model to Poisson + a GBM blending our squad/form/H2H features. Treat "DL or agents" as a later layer once the baseline is calibrated.</div>
+
+    <h2>4. Features and where they come from</h2>
+    <p>Per-match features are built from two team feature vectors plus match context.</p>
+    <table>
+      <thead><tr><th>Feature</th><th>Source</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>FIFA ranking</td><td><code>team.json</code></td><td><span class="tag have">have</span></td></tr>
+        <tr><td>Squad market value (sum + top XI)</td><td><code>squad.json</code></td><td><span class="tag have">have</span></td></tr>
+        <tr><td>Squad age / caps / experience</td><td><code>squad.json</code></td><td><span class="tag have">have</span></td></tr>
+        <tr><td>Share of players in top-5 leagues</td><td><code>squad.json.club_league</code></td><td><span class="tag have">have</span></td></tr>
+        <tr><td>Available vs injured ratio</td><td><code>squad.json.status</code></td><td><span class="tag have">have</span></td></tr>
+        <tr><td>Recent form (PPG, GF, GA, streak)</td><td><code>form.json</code></td><td><span class="tag have">have</span></td></tr>
+        <tr><td>Head-to-head record</td><td><code>data/h2h/</code></td><td><span class="tag have">have</span></td></tr>
+        <tr><td>Elo rating</td><td>ratings engine over history</td><td><span class="tag gap">gap</span></td></tr>
+        <tr><td>Venue / host advantage</td><td><code>team.json</code> fixtures</td><td><span class="tag partial">partial</span></td></tr>
+        <tr><td>Travel distance, rest days</td><td>fixtures + venue coords</td><td><span class="tag gap">gap</span></td></tr>
+        <tr><td>Altitude (Mexico City) / heat</td><td>venue metadata</td><td><span class="tag gap">gap</span></td></tr>
+        <tr><td>WC pedigree / past runs</td><td>history corpus</td><td><span class="tag gap">gap</span></td></tr>
+      </tbody>
+    </table>
+    <p>The squad-derived aggregates are computed now by <code>scripts/build_features.py</code> → <code>data/features.csv</code>.</p>
+
+    <h2>5. Training data (the biggest gap)</h2>
+    <p>The current <code>data/</code> is a snapshot of the <i>present</i> (who is in form, who is worth what). To <i>train</i> a model you need labelled <b>history</b>: thousands of past internationals with goals. The standard free option is the Kaggle "International football results 1872–present" dataset. It is used to seed Elo, fit Poisson attack/defence, train and cross-validate the GBM, and backtest on the 2018 and 2022 World Cups. Acquiring and cleaning it is the next real engineering task.</p>
+
+    <h2>6. Tournament simulation (Monte Carlo)</h2>
+    <p>One simulated tournament:</p>
+    <ol>
+      <li><b>Group stage</b> — simulate all 72 group matches; rank each group by points then official tiebreakers (goal difference, goals for, head-to-head, then fair-play / lots). Top 2 per group plus the 8 best third-placed teams advance (32 total).</li>
+      <li><b>Knockout</b> — build the Round of 32 from the fixed advancement map; simulate single matches; on a draw, extra time then a penalty model (≈ coin flip, optionally tilted by shootout history). Advance through the Final.</li>
+      <li>Record how far every team got.</li>
+    </ol>
+    <p>Run ~50,000 times. A team's champion probability is the fraction of sims it won; same for "reached QF", "won group", etc.</p>
+
+    <h2>7. Evaluation</h2>
+    <ul>
+      <li><b>Match level:</b> Ranked Probability Score (the football standard for ordered W/D/L), plus log-loss and Brier; calibration plots.</li>
+      <li><b>Tournament level:</b> compare simulated champion odds to the betting market (sanity check), and backtest the full pipeline on WC 2018 and 2022 using only pre-tournament data.</li>
+      <li>Always use a time-based train/test split (train pre-2022, test 2022+); never shuffle football matches.</li>
+    </ul>
+
+    <h2>8. Known modelling pitfalls</h2>
+    <ul>
+      <li><b>Draws are hard.</b> Plain win-prob models under-predict draws; use an ordered or Poisson model with a real draw probability.</li>
+      <li><b>Friendlies lie.</b> Weight competitive matches above friendlies; time-decay so 2026 form outweighs 2023.</li>
+      <li><b>Neutral venues.</b> Almost every 2026 match is neutral except the three hosts; do not bake in generic home advantage.</li>
+      <li><b>Squad churn.</b> Squads are provisional; injuries (e.g. Xavi Simons out) must flow into the availability feature.</li>
+      <li><b>H2H is sparse.</b> Many pairings have few or zero meetings, so H2H is a small adjustment, never the backbone; ratings carry unseen pairings.</li>
+    </ul>
+
+    <h2>9. Roadmap</h2>
+    <ul style="list-style:none;margin-left:0">
+      <li><span class="done">✓ Phase 1</span> — current-state data: 48 squads, club stats, market values.</li>
+      <li><span class="done">✓ Phase 2</span> — recent form + group head-to-head + <code>features.csv</code>.</li>
+      <li><span class="todo">☐ Phase 3</span> — historical results corpus; Elo engine; per-match feature matrix.</li>
+      <li><span class="todo">☐ Phase 4</span> — Elo baseline + Monte Carlo simulator → first champion odds.</li>
+      <li><span class="todo">☐ Phase 5</span> — Poisson/Dixon-Coles + GBM; calibrate; backtest 2018/2022 vs market.</li>
+      <li><span class="todo">☐ Phase 6</span> (stretch) — DL / agentic ensemble, live in-tournament updating.</li>
+    </ul>
+
+    <h2>10. Immediate next steps</h2>
+    <ol>
+      <li>Run <code>scripts/build_features.py</code> → <code>data/features.csv</code> (done; team strength features from data we already have).</li>
+      <li>Pull the historical results corpus and stand up the Elo engine.</li>
+      <li>Write the Monte Carlo group+knockout simulator against an Elo match model for an end-to-end champion probability, then iterate on the match model.</li>
+    </ol>
+
+    </main>
+    <footer>World Cup 2026 ML prediction project · markdown source at <code>docs/PREDICTION_APPROACH.md</code></footer>
+  </div>
+</div>
+<script>
+const btn=document.getElementById('themeBtn');const modes=["system","light","dark"];let idx=0;
+const mq=window.matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(){const m=modes[idx];const eff=m==="system"?(mq.matches?"dark":"light"):m;
+  document.documentElement.setAttribute('data-theme',eff);
+  btn.textContent="Theme: "+m.charAt(0).toUpperCase()+m.slice(1);}
+btn.onclick=()=>{idx=(idx+1)%3;applyTheme();};
+mq.addEventListener('change',()=>{if(modes[idx]==="system")applyTheme();});applyTheme();
+</script>
+</body></html>
