@@ -240,3 +240,4 @@
 | 2026-05-26 | virtuele-assistent | reports | [message-structure-fix.html](projects/virtuele-assistent/reports/message-structure-fix.html) | Implemented fix: send structured conversation turns to the model instead of a flattened blob |
 | 2026-05-26 | pool | reports | [netherlands-card.html](projects/pool/reports/netherlands-card.html) | Netherlands WC2026 team card (updated with provisional/standby pool) |
 | 2026-05-26 | pool | reports | [netherlands-card.html](projects/pool/reports/netherlands-card.html) | Netherlands WC2026 team card (fixed JS render bug + Safari-safe SVG) |
+| 2026-05-26 | pool | reports | [index.html](projects/pool/reports/index.html) | World Cup 2026 all-48-teams card index (links every team card) |
