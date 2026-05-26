@@ -251,3 +251,4 @@
 | 2026-05-26 | pool | reports | [backtest-2018-2022.html](projects/pool/reports/backtest-2018-2022.html) | WC2026 model validation: backtest on 2018 (France #6) and 2022 (Argentina #2) confirms calibration |
 | 2026-05-26 | definitive-book | docs | [from-vibe-to-production.pdf](projects/definitive-book/docs/from-vibe-to-production.pdf) | Illustrated edition: 18 chapters, 18 isometric heroes, 18 monochrome+coral diagrams, 240 pages |
 | 2026-05-26 | definitive-book | docs | [from-vibe-to-production.pdf](projects/definitive-book/docs/from-vibe-to-production.pdf) | Illustrated edition v2: fixed code-block wrapping and replaced ASCII diagrams with clean lists |
+| 2026-05-26 | pool | reports | [model-bakeoff.html](projects/pool/reports/model-bakeoff.html) | WC2026 model bake-off: 6 algorithms + ensemble, goal-rating model wins (RPS 0.166), pushed to forecast v3 |
