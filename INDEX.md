@@ -234,3 +234,4 @@
 | 2026-05-26 | content | images | [diagram-1-let-go-trust-keep.png](projects/content/images/diagram-1-let-go-trust-keep.png) | AI-native engineering org trifecta (let go and trust): diagram-1-let-go-trust-keep.png |
 | 2026-05-26 | content | images | [diagram-2-bottleneck-moved.png](projects/content/images/diagram-2-bottleneck-moved.png) | AI-native engineering org trifecta (let go and trust): diagram-2-bottleneck-moved.png |
 | 2026-05-26 | content | images | [diagram-3-rollout.png](projects/content/images/diagram-3-rollout.png) | AI-native engineering org trifecta (let go and trust): diagram-3-rollout.png |
+| 2026-05-26 | virtuele-assistent | reports | [conversation-memory-diagnosis.html](projects/virtuele-assistent/reports/conversation-memory-diagnosis.html) | Diagnosis: multi-turn hallucination from flattened history and TRACE-id placeholders, with fix plan |

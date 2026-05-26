@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Virtuele Assistent — Why it hallucinates after a few turns</title>
+  <style>
+    :root {
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+      --bg: #f6f7f9; --surface: #fff; --surface2: #eef1f5; --border: #e1e5ec; --border2: #cdd4de;
+      --text: #1b2027; --dim: #586073; --faint: #8b93a2;
+      --accent: #3a5bd9; --accent-soft: #e9eefc; --accent-text: #2942a6;
+      --red: #c2362f; --red-soft: #fbecea; --amber: #b06a17; --amber-soft: #f8efe2; --green: #2f8f5b; --green-soft: #e8f5ee;
+      --shadow: 0 1px 2px rgba(20,26,40,.06), 0 6px 22px rgba(20,26,40,.06);
+      --maxw: 860px;
+    }
+    html[data-theme="dark"] {
+      --bg: #0f1318; --surface: #161b22; --surface2: #1e242d; --border: #29313b; --border2: #3a444f;
+      --text: #e6eaf0; --dim: #a3adba; --faint: #717d8a;
+      --accent: #7d96f0; --accent-soft: #1d2740; --accent-text: #aebef7;
+      --red: #ef6f68; --red-soft: #2c1a19; --amber: #e0a35a; --amber-soft: #2a2114; --green: #5bc78c; --green-soft: #16271d;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 22px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:var(--font); background:var(--bg); color:var(--text); line-height:1.6; -webkit-font-smoothing:antialiased; }
+    .bar { position:sticky; top:0; z-index:10; background:color-mix(in srgb,var(--surface) 90%,transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+    .bar-in { max-width:var(--maxw); margin:0 auto; padding:12px 22px; display:flex; align-items:center; gap:14px; }
+    .bar .tag { font-size:12px; font-weight:700; letter-spacing:.04em; color:var(--faint); text-transform:uppercase; }
+    .toggle { margin-left:auto; display:flex; gap:2px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:3px; }
+    .toggle button { border:0; background:transparent; color:var(--dim); font:inherit; font-size:12px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; }
+    .toggle button.on { background:var(--surface); color:var(--text); box-shadow:var(--shadow); }
+    main { max-width:var(--maxw); margin:0 auto; padding:34px 22px 90px; }
+    h1 { font-size:30px; line-height:1.2; letter-spacing:-.02em; margin:0 0 10px; }
+    h2 { font-size:21px; letter-spacing:-.01em; margin:44px 0 14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+    h3 { font-size:16px; margin:26px 0 8px; }
+    p { margin:12px 0; }
+    .lead { font-size:18px; color:var(--dim); margin:0 0 8px; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--accent-text); margin-bottom:10px; }
+    code { font-family:var(--mono); font-size:.88em; background:var(--surface2); padding:1px 6px; border-radius:5px; }
+    pre { font-family:var(--mono); font-size:13px; line-height:1.55; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:16px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+    pre .u { color:var(--accent-text); font-weight:700; }
+    pre .bad { color:var(--red); font-weight:700; }
+    pre .ok { color:var(--green); font-weight:600; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:20px 22px; margin:16px 0; }
+    .tldr { border-left:4px solid var(--accent); }
+    .callout { border-radius:10px; padding:14px 18px; margin:16px 0; border:1px solid; }
+    .callout.red { background:var(--red-soft); border-color:color-mix(in srgb,var(--red) 35%,transparent); }
+    .callout.amber { background:var(--amber-soft); border-color:color-mix(in srgb,var(--amber) 35%,transparent); }
+    .callout.green { background:var(--green-soft); border-color:color-mix(in srgb,var(--green) 35%,transparent); }
+    .callout h3 { margin:0 0 6px; font-size:15px; }
+    .badge { display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:999px; letter-spacing:.02em; vertical-align:middle; }
+    .b-conf { background:var(--green-soft); color:var(--green); }
+    .b-inf { background:var(--amber-soft); color:var(--amber); }
+    .b-noisy { background:var(--surface2); color:var(--dim); }
+    .b-p1 { background:var(--red-soft); color:var(--red); }
+    .b-p2 { background:var(--amber-soft); color:var(--amber); }
+    .b-p3 { background:var(--accent-soft); color:var(--accent-text); }
+    .stat-row { display:flex; flex-wrap:wrap; gap:12px; margin:14px 0; }
+    .stat { flex:1; min-width:120px; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; box-shadow:var(--shadow); }
+    .stat b { display:block; font-size:26px; line-height:1.1; letter-spacing:-.01em; }
+    .stat span { font-size:12.5px; color:var(--dim); }
+    .flow { display:flex; flex-direction:column; gap:0; margin:18px 0; }
+    .step { display:flex; gap:14px; align-items:flex-start; }
+    .step .dot { flex:none; width:30px; height:30px; border-radius:50%; background:var(--accent-soft); color:var(--accent-text); font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; }
+    .step .body { padding-bottom:18px; }
+    .step .body b { font-size:14.5px; }
+    .step .body .where { font-family:var(--mono); font-size:11.5px; color:var(--faint); }
+    .conn { width:2px; height:14px; background:var(--border2); margin-left:14px; }
+    table { width:100%; border-collapse:collapse; font-size:14px; margin:12px 0; }
+    th { text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--faint); padding:9px 10px; border-bottom:1px solid var(--border2); }
+    td { padding:10px; border-bottom:1px solid var(--border); vertical-align:top; }
+    .fix { border-left:4px solid var(--border2); }
+    .fix.p1 { border-left-color:var(--red); }
+    .fix.p2 { border-left-color:var(--amber); }
+    .fix.p3 { border-left-color:var(--accent); }
+    .muted { color:var(--dim); }
+    .foot { margin-top:50px; padding-top:18px; border-top:1px solid var(--border); color:var(--faint); font-size:12.5px; }
+    @media print {
+      .bar, .toggle { display:none; }
+      body { background:#fff; color:#000; }
+      .card, pre, .stat { box-shadow:none; }
+      a { color:#000; }
+      h2 { break-after:avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div class="bar-in">
+      <span class="tag">Virtuele Assistent · diagnosis</span>
+      <div class="toggle" role="group" aria-label="Theme">
+        <button data-m="light" onclick="setTheme('light')">Light</button>
+        <button data-m="dark" onclick="setTheme('dark')">Dark</button>
+        <button data-m="system" onclick="setTheme('system')">Auto</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="eyebrow">Diagnosis and fix plan</div>
+    <h1>Why the assistant hallucinates after a few turns</h1>
+    <p class="lead">The conversation history reaching the model decays into placeholders after the first turn or two. This is what causes the drift, and it is fixable.</p>
+
+    <div class="card tldr">
+      <h3 style="margin-top:0">In one paragraph</h3>
+      <p style="margin:0">On each request the whole conversation is flattened into a single text blob and sent to the model as one user message. Worse, within that blob the earlier assistant answers are not the real text, they are replaced by trace-id placeholders like <code>TRACE:79e4b651...</code>. Only the most recent answer keeps its text. So after a few turns the model can no longer see what it told the user earlier, loses the thread, and answers off-topic. Retrieval makes it worse because it only ever sees the latest user message, with no conversation context. The fix is to send real, structured turns to the model and to rewrite follow-up questions into standalone queries before retrieval.</p>
+    </div>
+
+    <h2>The symptom</h2>
+    <p>The assistant answers well on the first question, then gets less reliable as the conversation continues. Follow-up questions that depend on earlier turns ("and for my child?", "is consent needed?") get vague, wrong, or off-topic answers. It looks like the model "forgets" what was just discussed.</p>
+
+    <h2>How a conversation flows through the backend</h2>
+    <p>Each chat request is handled fresh. The frontend sends the message history, the backend flattens it, and a fresh Koog agent runs once.</p>
+    <div class="flow">
+      <div class="step"><div class="dot">1</div><div class="body"><b>Frontend sends structured messages</b><br>An array of turns, each with a sender and text.<br><span class="where">ChatHttpRoute.kt:451 — body.messages(json) → List&lt;IncomingMessage(sender, text)&gt;</span></div></div>
+      <div class="conn"></div>
+      <div class="step"><div class="dot">2</div><div class="body"><b>PII is masked</b><br>IBAN, e-mail, phone, passport, licence, BSN are replaced with labels before anything leaves the backend. Good.<br><span class="where">ChatHttpRoute.kt:452 — PiiRedactionService.redact()</span></div></div>
+      <div class="conn"></div>
+      <div class="step"><div class="dot">3</div><div class="body"><b>The history is flattened to one string</b><br>All turns are joined into a single role-prefixed blob.<br><span class="where">ChatHttpRoute.kt:130 — messages.joinToString("\n") { "${'$'}{sender}: ${'$'}{text}" }</span></div></div>
+      <div class="conn"></div>
+      <div class="step"><div class="dot">4</div><div class="body"><b>The agent runs on that single string</b><br>Koog builds the prompt as a system message plus one user message containing the blob. No structured turns.<br><span class="where">ChatHttpRoute.kt:516 — agent.run(buildLLMQuery(messages)) · StreamingAgentBuilder → AIAgent(systemPrompt, strategy&lt;String,String&gt;)</span></div></div>
+      <div class="conn"></div>
+      <div class="step"><div class="dot">5</div><div class="body"><b>Retrieval sees only the latest user message</b><br>HyDE and search are anchored to the last question, not the conversation.<br><span class="where">ChatHttpRoute.kt:514 — OriginalQueryContext(lastUserMessage) · RagToolFactory.kt:86 — HyDE on the per-turn query</span></div></div>
+    </div>
+
+    <h2>What actually reaches the model <span class="badge b-conf">Confirmed in Langfuse</span></h2>
+    <p>This is the real prompt content from a live trace, the question "Is er ook toestemming nodig" (is consent needed) after a sequence about applying for a passport, including one for a child:</p>
+    <pre><span class="u">user:</span> Ik wil een paspoort aanvragen
+<span class="u">assistant:</span> <span class="bad">TRACE:79e4b651...</span>        the real earlier answer is GONE
+<span class="u">user:</span> Ik wil ook een paspoort voor mijn kind
+<span class="u">assistant:</span> <span class="bad">TRACE:7463fc53...</span>        the real earlier answer is GONE
+<span class="u">user:</span> Wat zijn de totale kosten
+<span class="u">assistant:</span> <span class="ok">De totale kosten ... € 155,70 ...</span>   only the latest keeps text
+<span class="u">user:</span> Is er ook toestemming nodig</pre>
+    <p>The whole thing is one user message. The question is about consent for a child's passport, but the turn that established "a child's passport" is now just <code>TRACE:7463fc53...</code>. The model cannot see it, so it answers off-topic. The judge scored this answer <code>answer_relevance = 0</code>.</p>
+
+    <h2>Why it happens: two stacked problems</h2>
+
+    <div class="callout amber">
+      <h3>Problem 1 — the conversation structure is lost <span class="badge b-conf">Confirmed</span></h3>
+      <p style="margin:0">The history is concatenated into one user message with <code>user:</code> / <code>assistant:</code> / <code>tool:</code> text prefixes, instead of being sent as real user and assistant turns. The model cannot cleanly tell apart what the user said, what it answered before, and what was retrieved. Models are trained on structured turns, not a transcript pasted into one message. Source: <code>buildLLMQuery</code> plus the <code>&lt;String, String&gt;</code> agent input type.</p>
+    </div>
+
+    <div class="callout red">
+      <h3>Problem 2 — earlier answers decay into trace-id placeholders <span class="badge b-conf">9 of 11 multi-turn traces</span></h3>
+      <p style="margin:0 0 8px">This is the main cause. In the history sent back to the model, older assistant answers are replaced by a marker like <code>​TRACE:&lt;id&gt;​</code>. Only the most recent answer keeps its real text. So the model's memory of the conversation rots after a turn or two. The answer text is generated in full (the trace output shows it), so this is a history persistence and replay problem, most likely in the frontend message store combined with a trace marker the stream appends. The backend then flattens whatever it receives. Empty <code>assistant:</code> and <code>tool:</code> lines from prior tool-calling steps are also flattened in as noise.</p>
+    </div>
+
+    <div class="callout amber">
+      <h3>Problem 3 — retrieval is starved of context <span class="badge b-conf">Confirmed</span></h3>
+      <p style="margin:0">HyDE and vector search only ever see the latest user message (<code>OriginalQueryContext(lastUserMessage)</code>), with no conversation. On a follow-up like "en wat kost dat?" the query is underspecified. HyDE then writes a hypothetical document from that vague query and embeds it, so retrieval can be steered toward the wrong pages with confidence. There is no step that rewrites a follow-up into a standalone question.</p>
+    </div>
+
+    <h2>Why it gets worse specifically after a few turns</h2>
+    <p>On turn 1 there is no prior context to lose, so the answer is good. On turn 2 the single prior answer is still recent, so it is usually intact. By turn 3 or 4 the earliest turns have decayed into <code>TRACE:&lt;id&gt;</code> placeholders, and the question increasingly refers back to them. So the grounding the model needs is exactly the part that has been deleted. "Hallucinates after a few turns" is literally the history rotting into trace ids after a few turns.</p>
+
+    <h2>Evidence <span class="badge b-conf">From the live Langfuse instance</span></h2>
+    <div class="stat-row">
+      <div class="stat"><b>9 / 11</b><span>multi-turn conversations where prior answers were trace-id placeholders</span></div>
+      <div class="stat"><b>1</b><span>user message per request (the whole conversation, flattened)</span></div>
+      <div class="stat"><b>0</b><span>conversations grouped as multi-turn sessions (an observability gap, see below)</span></div>
+    </div>
+    <p class="muted"><span class="badge b-noisy">Read with care</span> An automated relevance judge scored about a third of recent answers as irrelevant, but that signal is noisy: some are degenerate inputs ("BSN: 23918302", "test bericht") and some standalone questions with good retrieval also scored zero. The solid evidence is the concrete multi-turn traces above, not that percentage.</p>
+    <p class="muted">Separately, each turn is recorded as its own trace and conversations are not grouped into a single session in Langfuse. That does not cause the hallucination, but it makes multi-turn debugging harder and is worth fixing.</p>
+
+    <h2>What we can do</h2>
+
+    <div class="card fix p1">
+      <span class="badge b-p1">Priority 1</span> <b>Stop sending trace-id placeholders as assistant history</b>
+      <p>Preserve the actual assistant answer text for every prior turn, and strip the <code>​TRACE:...​</code> markers before the history reaches the model. This is the highest-impact and most concrete fix. With the real prior answers restored, the model can follow the thread again and most multi-turn hallucinations should drop.</p>
+      <p class="muted">Where to look: the frontend message store in <code>agent-frontend</code> (how assistant messages are saved and replayed), and wherever the <code>TRACE:</code> marker is appended to the stream. The backend should also strip these markers defensively.</p>
+    </div>
+
+    <div class="card fix p2">
+      <span class="badge b-p2">Priority 2</span> <b>Send structured turns to the model, not a flattened blob</b>
+      <p>Pass the <code>IncomingMessage</code> list to the agent as real user and assistant messages instead of joining them into one string. The data already exists at the boundary, it is discarded one layer before the model. Koog supports a prompt built from multiple turns; the strategy input type would change from <code>String</code> to a richer type, or the prompt would be seeded with the history before <code>run</code>.</p>
+      <p class="muted">Where: <code>buildLLMQuery</code> / <code>agent.run</code> in <code>ChatHttpRoute.kt</code>, and the strategy type in <code>AgentStrategy.kt</code>.</p>
+    </div>
+
+    <div class="card fix p3">
+      <span class="badge b-p3">Priority 3</span> <b>Rewrite follow-up questions into standalone queries before retrieval</b>
+      <p>Add a step that condenses the conversation plus the latest message into one complete, self-contained question, then run HyDE and search on that. This fixes the context starvation and makes HyDE on-topic again on follow-ups. It is the standard fix for multi-turn RAG.</p>
+      <p class="muted">Where: before the RAG tools run; feed the rewritten question into <code>OriginalQueryContext</code>.</p>
+    </div>
+
+    <div class="card fix">
+      <span class="badge b-noisy">Also worth doing</span> <b>Guards and hygiene</b>
+      <ul style="margin:8px 0 0">
+        <li><b>Gate the answer on retrieval quality.</b> You already compute <code>rag_top_score</code>. When it is low, have the assistant say it cannot find the answer and offer contact, instead of answering from thin context.</li>
+        <li><b>Bound the history</b> sent per turn (last N turns or a token budget) so older turns stop diluting attention once their real text is restored.</li>
+        <li><b>Fix session grouping</b> in Langfuse so a conversation is one session, which makes multi-turn debugging far easier.</li>
+      </ul>
+    </div>
+
+    <h2>What is still open</h2>
+    <p>I have not yet pinpointed where the <code>TRACE:&lt;id&gt;</code> marker is injected and why older assistant texts are dropped on replay. The answer is generated in full, so the loss happens in storage or replay, most likely in the <code>agent-frontend</code> assistant-ui message handling. Confirming that is the next concrete step before writing the Priority 1 fix.</p>
+
+    <h2>Confidence summary</h2>
+    <table>
+      <thead><tr><th>Claim</th><th>Confidence</th></tr></thead>
+      <tbody>
+        <tr><td>Conversation is flattened into one user message</td><td><span class="badge b-conf">Confirmed</span> in code and in every traced prompt</td></tr>
+        <tr><td>Older assistant answers replaced by TRACE-id placeholders</td><td><span class="badge b-conf">Confirmed</span> in 9 of 11 multi-turn traces</td></tr>
+        <tr><td>Retrieval and HyDE see only the latest user message</td><td><span class="badge b-conf">Confirmed</span> in code</td></tr>
+        <tr><td>This is the dominant cause of the multi-turn hallucinations</td><td><span class="badge b-inf">Strongly indicated</span> by the concrete traces; relevance metric too noisy to quantify exactly</td></tr>
+        <tr><td>Root of the TRACE marker is in the frontend message store</td><td><span class="badge b-inf">Inferred</span>, not yet verified</td></tr>
+      </tbody>
+    </table>
+
+    <div class="foot">
+      Sources: agent-backend (ChatHttpRoute.kt, AgentStrategy.kt, Extensions.kt, RagToolFactory.kt, HydeService.kt, PiiRedactionService.kt), the koog-ktor-agent library (StreamingAgentBuilder.kt), and live traces from the Langfuse instance. Generated as a diagnosis of the multi-turn behavior of the Virtuele Assistent.
+    </div>
+  </main>
+
+  <script>
+    function setTheme(m){
+      localStorage.setItem('vad-theme', m);
+      apply(m);
+    }
+    function apply(m){
+      var dark = m==='dark' || (m==='system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+      document.querySelectorAll('.toggle button').forEach(function(b){ b.classList.toggle('on', b.dataset.m===m); });
+    }
+    var saved = localStorage.getItem('vad-theme') || 'light';
+    apply(saved);
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ if((localStorage.getItem('vad-theme')||'light')==='system') apply('system'); });
+  </script>
+</body>
+</html>
