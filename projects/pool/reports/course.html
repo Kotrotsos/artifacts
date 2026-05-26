@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How We Predict the World Cup — A Complete Course</title>
+<style>
+  :root{--bg:#f5f6f8;--surface:#fff;--surface-2:#f3f5f8;--border:#e4e7eb;--text:#15181d;--muted:#5f6b7a;
+    --accent:#2457d6;--accent-soft:#eaf0fe;--good:#16a34a;--warn:#b45309;--shadow:0 1px 3px rgba(0,0,0,.06),0 10px 30px rgba(0,0,0,.06)}
+  [data-theme="dark"]{--bg:#0e1116;--surface:#161a21;--surface-2:#1c222b;--border:#2a313b;--text:#e8eaed;--muted:#9aa3af;
+    --accent:#6f9bff;--accent-soft:#16223f;--good:#5fd693;--warn:#e3b341;--shadow:0 1px 3px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);
+    color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;padding:40px 20px}
+  .wrap{max-width:780px;margin:0 auto}
+  .toolbar{display:flex;justify-content:flex-end;margin-bottom:16px}
+  .toggle{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+  .toggle:hover{border-color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+  header{padding:38px 40px;background:linear-gradient(135deg,var(--accent),#5b86f0);color:#fff}
+  header h1{font-size:28px;font-weight:800;letter-spacing:-.5px}
+  header .sub{opacity:.92;font-size:15px;margin-top:6px}
+  nav{padding:18px 40px;background:var(--surface-2);border-bottom:1px solid var(--border);font-size:13.5px}
+  nav b{display:block;text-transform:uppercase;letter-spacing:.6px;font-size:11px;color:var(--muted);margin-bottom:8px}
+  nav a{color:var(--accent);text-decoration:none;margin-right:14px;white-space:nowrap}
+  nav a:hover{text-decoration:underline}
+  main{padding:10px 40px 40px}
+  h2{font-size:21px;font-weight:800;margin:34px 0 6px;padding-top:22px;border-top:1px solid var(--border);letter-spacing:-.3px}
+  h2 .n{color:var(--accent);font-variant-numeric:tabular-nums}
+  h3{font-size:16px;font-weight:700;margin:20px 0 6px}
+  p{margin:10px 0}
+  ul,ol{margin:10px 0 10px 22px}li{margin:5px 0}
+  code{background:var(--accent-soft);padding:1px 6px;border-radius:5px;font-size:13px}
+  .formula{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin:14px 0;
+    font-size:15px;text-align:center;font-family:ui-monospace,Menlo,Consolas,monospace}
+  pre{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow:auto;font-size:12.5px;line-height:1.5;margin:12px 0}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:14px 0}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px}
+  .callout.warn{background:transparent;border-left-color:var(--warn)}
+  .callout b{color:var(--text)}
+  .ex{border:1px dashed var(--border);border-radius:10px;padding:14px 18px;margin:16px 0;background:var(--surface)}
+  .ex .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--accent);font-weight:700;margin-bottom:6px}
+  .step{display:flex;gap:12px;margin:8px 0}.step .num{flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+  footer{padding:22px 40px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+  @media print{body{background:#fff;padding:0}.toolbar,nav{display:none}.card{box-shadow:none;border:none}h2,table,pre,.ex,.formula{break-inside:avoid}}
+</style></head>
+<body><div class="wrap">
+<div class="toolbar"><button class="toggle" id="themeBtn">Theme: System</button></div>
+<div class="card">
+<header>
+  <h1>How We Predict the World Cup</h1>
+  <div class="sub">A complete, from-scratch course in the model we just built. No prior stats background assumed.</div>
+</header>
+<nav><b>Contents</b>
+  <a href="#big">1 · Big picture</a><a href="#elo">2 · Elo ratings</a><a href="#goals">3 · Ratings → a match</a>
+  <a href="#sim">4 · Simulating the cup</a><a href="#read">5 · Reading the forecast</a><a href="#good">6 · Is it any good?</a>
+  <a href="#run">7 · Run it</a><a href="#glossary">Glossary</a>
+</nav>
+<main>
+
+<h2 id="big"><span class="n">1.</span> The big picture</h2>
+<p>We want one headline number per team: its chance of winning the 2026 World Cup. You cannot read that off a spreadsheet, because it depends on 104 matches, who wins each, and who therefore meets whom next. So we split the problem in two:</p>
+<ol>
+  <li><b>A match model.</b> Given any two teams, output the probability of each result and a plausible scoreline. This is the hard, interesting part.</li>
+  <li><b>A tournament simulator.</b> Use the match model to play the entire World Cup start to finish, then do it again 20,000 times and count how often each team wins. This part is just bookkeeping at scale.</li>
+</ol>
+<div class="callout"><b>The mental model:</b> the match model is a loaded dice for any fixture. The simulator rolls those dice through the whole bracket thousands of times. A team's title probability is simply "in what fraction of those 20,000 alternate universes did it lift the trophy?"</div>
+<pre>history (49k matches) ──▶ ELO RATINGS ──▶ MATCH MODEL ──▶ SIMULATOR ──▶ forecast
+                          (one number      (probabilities    (play the cup
+                           per team)         + scoreline)      20,000 times)</pre>
+
+<h2 id="elo"><span class="n">2.</span> Rating every team with Elo</h2>
+<p>Before predicting anything we need a single number for each team's strength. We use <b>Elo</b>, the same system invented for chess. The idea: everyone starts equal, and after every match the winner takes points from the loser. Beat someone much stronger and you gain a lot; beat a minnow and you barely move.</p>
+
+<h3>The two formulas</h3>
+<p>First, before a match, the rating gap predicts an <i>expected result</i> for the home team (a number between 0 and 1, where 0.5 means "coin flip"):</p>
+<div class="formula">expected = 1 / (1 + 10<sup>-(gap) / 400</sup>)</div>
+<p>Then, after the match, we nudge both ratings by how surprising the result was:</p>
+<div class="formula">new rating = old rating + K × G × (actual − expected)</div>
+<ul>
+  <li><b>actual</b> = 1 for a win, 0.5 for a draw, 0 for a loss.</li>
+  <li><b>(actual − expected)</b> is the surprise. A favourite who wins as expected gains almost nothing; an upset moves ratings a lot.</li>
+  <li><b>K</b> is how much a match matters. We weight by competition: World Cup finals 60, continental finals / Nations League 50, qualifiers 40, minor tournaments 30, friendlies 20. A friendly should not swing a rating like a World Cup knockout does.</li>
+  <li><b>G</b> is a margin-of-victory multiplier: a 1-goal win counts ×1, a 2-goal win ×1.5, a 3+ goal win even more. Thrashings are stronger evidence.</li>
+  <li><b>gap</b> includes a <b>+100 home advantage</b> for the home team, switched off when the match is at a neutral venue.</li>
+</ul>
+
+<div class="ex"><div class="lbl">Worked example — the surprise term</div>
+Two equal teams (gap 0) meet on neutral ground, so each is "expected" 0.5. If team A wins (actual 1) in a friendly (K=20) by one goal (G=1):<br>
+new A = old + 20 × 1 × (1 − 0.5) = old <b>+10</b>. Team B drops <b>−10</b>. A clear but unsurprising result moves things modestly. Now if A had been the heavy favourite (expected 0.9), the same win gives only 20 × (1 − 0.9) = <b>+2</b>. You are supposed to win, so winning teaches us little.</div>
+
+<p>We run this update across <b>every international since 1872</b> in date order (~49,000 matches, filtered to before today so the model never peeks at 2026). After that many games, the starting value of 1500 has long washed out and the ratings reflect real strength.</p>
+
+<div class="callout"><b>Our top of the table today:</b> Spain 2233, Argentina 2187, France 2146, England 2088, Brazil 2060. These emerged purely from results, with no human opinion entered. That sanity-check (the usual giants on top) is the first sign the engine works.</div>
+
+<h2 id="goals"><span class="n">3.</span> Turning ratings into a match</h2>
+<p>A rating gap gives us a win expectation, but a World Cup needs <b>goals</b>: group tables are decided on goal difference, and knockout ties need a scoreline. So we convert the Elo gap into an <b>expected number of goals</b> for each team, then treat goals as random.</p>
+
+<h3>Step 1 — expected goals</h3>
+<p>An even match is about 2.7 goals total, so we start each side at <b>1.35</b>. The rating gap then tilts that: we convert the gap into a goal "supremacy" (we use roughly one goal per 210 Elo points) and hand half of it to the stronger side, taking the same from the weaker side.</p>
+
+<div class="ex"><div class="lbl">Worked example — Spain (2233) vs Netherlands (2020), neutral</div>
+<div class="step"><div class="num">1</div><div>Gap = 2233 − 2020 = <b>213</b>. Expected result for Spain = 1/(1+10<sup>−213/400</sup>) = <b>0.77</b> (Spain would average 0.77 "points" per game against this Dutch side).</div></div>
+<div class="step"><div class="num">2</div><div>Supremacy = 213 / 210 ≈ <b>1.01 goals</b>. Split it: Spain's expected goals = 1.35 + 0.51 = <b>1.86</b>; Netherlands = 1.35 − 0.51 = <b>0.84</b>.</div></div>
+</div>
+
+<h3>Step 2 — goals are random (the Poisson distribution)</h3>
+<p>"Expected 1.86 goals" does not mean Spain scores 1.86. It means that <i>on average</i>. Real scores are whole numbers and vary: sometimes 0, often 1 or 2, occasionally 4. Football goals follow the <b>Poisson distribution</b> almost perfectly: rare, independent events sprinkled across 90 minutes. Poisson takes one input (the average) and returns the probability of each exact count:</p>
+<div class="formula">P(k goals) = e<sup>−λ</sup> × λ<sup>k</sup> / k!</div>
+<p>where λ ("lambda") is the expected goals from Step 1.</p>
+<div class="ex"><div class="lbl">Worked example — chance Spain scores exactly 2 (λ = 1.86)</div>
+P(2) = e<sup>−1.86</sup> × 1.86<sup>2</sup> / (2×1) = 0.156 × 3.46 / 2 = <b>0.27</b>, so about a 27% chance of exactly two Spain goals.</div>
+
+<h3>Step 3 — from two goal counts to a result</h3>
+<p>We let each team's goals be an independent Poisson draw, then compare. Summing over every possible scoreline gives the full win / draw / loss split:</p>
+<table><thead><tr><th>Outcome (Spain vs Netherlands)</th><th class="num">Probability</th></tr></thead><tbody>
+  <tr><td>Spain win</td><td class="num">61.3%</td></tr>
+  <tr><td>Draw</td><td class="num">22.1%</td></tr>
+  <tr><td>Netherlands win</td><td class="num">16.5%</td></tr>
+</tbody></table>
+<p>Notice the model produced a sensible <b>22% draw</b> chance on its own. That matters: simpler "win probability" models forget draws exist, and draws decide group stages.</p>
+<div class="callout warn"><b>Why this is a "first pass":</b> we assume the two teams' goals are independent. In reality they are slightly linked (a team chasing a game concedes more), which nudges true draw rates up a touch. The fix is a small correction called Dixon-Coles, listed in section 6.</div>
+
+<h2 id="sim"><span class="n">4.</span> Simulating the whole tournament</h2>
+<p>Now we have a loaded dice for any fixture. To get title odds we could try to compute them by hand, but the bracket is far too tangled (who Spain meets in the quarters depends on a dozen earlier results). So we use <b>Monte Carlo simulation</b>: instead of solving the maths, we just <i>play it out</i> and repeat.</p>
+
+<h3>One simulated World Cup</h3>
+<div class="step"><div class="num">1</div><div><b>Group stage.</b> In each of the 12 groups, play all 6 matches with the match model. Award 3 points for a win, 1 for a draw. Rank the four teams by points, then goal difference, then goals scored. The top two qualify; we also note the 12 third-placed teams.</div></div>
+<div class="step"><div class="num">2</div><div><b>Best thirds.</b> The eight strongest third-placed teams (by the same tiebreakers) also advance, giving 32 teams, exactly as the real 48-team format works.</div></div>
+<div class="step"><div class="num">3</div><div><b>Knockout.</b> Seed the 32 survivors and play a single-elimination bracket: Round of 32 → 16 → quarters → semis → final. Each tie is one match; if it ends level we settle it with a penalty-shootout coin flip, slightly weighted toward the stronger side.</div></div>
+<div class="step"><div class="num">4</div><div><b>Record</b> how far every team got, then throw the whole tournament away and start again.</div></div>
+
+<h3>Why repeat 20,000 times</h3>
+<p>One simulation is just one story and tells you nothing reliable. But run it 20,000 times and the <b>law of large numbers</b> takes over: the fraction of simulations a team wins converges on its true probability. If Spain lifts the trophy in 6,220 of 20,000 runs, we call that a <b>31.1%</b> title chance. More runs means steadier numbers; 20,000 is plenty for two-decimal stability and finishes in about three seconds.</p>
+<div class="callout"><b>Host advantage.</b> The three hosts (USA, Canada, Mexico) play most matches at home, so we give them a smaller home bump in the simulation. You can see its effect: Mexico wins its group in 65% of runs despite a middling Elo.</div>
+
+<h2 id="read"><span class="n">5.</span> Reading the forecast</h2>
+<p>The output (see <code>artifacts/forecast.html</code>) is one row per team with the share of simulations in which it reached each stage. Current top of the board:</p>
+<table><thead><tr><th>Team</th><th class="num">Elo</th><th class="num">Win group</th><th class="num">Reach QF</th><th class="num">Final</th><th class="num">Champion</th></tr></thead><tbody>
+  <tr><td>Spain</td><td class="num">2233</td><td class="num">81%</td><td class="num">73%</td><td class="num">43%</td><td class="num">31.1%</td></tr>
+  <tr><td>Argentina</td><td class="num">2187</td><td class="num">80%</td><td class="num">65%</td><td class="num">31%</td><td class="num">19.2%</td></tr>
+  <tr><td>France</td><td class="num">2146</td><td class="num">63%</td><td class="num">55%</td><td class="num">22%</td><td class="num">11.9%</td></tr>
+  <tr><td>England</td><td class="num">2088</td><td class="num">57%</td><td class="num">45%</td><td class="num">13%</td><td class="num">6.0%</td></tr>
+  <tr><td>Brazil</td><td class="num">2060</td><td class="num">54%</td><td class="num">38%</td><td class="num">10%</td><td class="num">4.2%</td></tr>
+</tbody></table>
+<p>How to read it: champion probability falls off steeply because winning takes seven straight knockout wins, and small per-match edges compound. Spain looks high partly because it has the top rating <i>and</i> a soft group, so it reaches the latter stages most often. These are believable, market-like numbers, which is what we want from a first model.</p>
+
+<h2 id="good"><span class="n">6.</span> Is it any good, and how we make it better</h2>
+<h3>How we will judge it</h3>
+<ul>
+  <li><b>Ranked Probability Score (RPS):</b> the football-standard metric. It rewards probabilities that are both correct and well-spread across win/draw/loss, and punishes overconfidence.</li>
+  <li><b>Calibration:</b> of all the matches we called "60% home win", did home actually win about 60% of the time? A reliable model is calibrated.</li>
+  <li><b>Backtest:</b> rebuild the model using only data before the 2018 and 2022 World Cups, forecast those tournaments, and check the favourites landed in sensible bands. Never test on data the model trained on.</li>
+</ul>
+<h3>Known weaknesses of this first pass</h3>
+<ul>
+  <li>Elo knows results, not <b>who is playing</b>. It has no idea Spain are missing a key player. Our squad value, form and injury data are not in the match model yet.</li>
+  <li>Independent-Poisson slightly under-counts draws.</li>
+  <li>The knockout bracket is seeded by strength rather than the exact official slotting table.</li>
+  <li>Friendlies and competitive games are weighted in the ratings but not time-decayed in the goals model.</li>
+</ul>
+<h3>The upgrade path</h3>
+<ol>
+  <li><b>Dixon-Coles</b> correction for low-scoring draws and time-decay so recent form counts more.</li>
+  <li><b>Blend in our data:</b> feed squad market value, recent form (points per game), head-to-head and injuries into a gradient-boosted model that adjusts the Elo baseline. This is exactly why we collected all that per-player data.</li>
+  <li><b>Calibrate and backtest</b> against 2018/2022 and the betting market.</li>
+  <li><b>Stretch:</b> a neural or agent ensemble, and live updating as real 2026 results come in.</li>
+</ol>
+
+<h2 id="run"><span class="n">7.</span> Run it yourself</h2>
+<pre>python3 scripts/elo.py          # build ratings  -> data/elo_ratings.json
+python3 scripts/build_features.py   # team features -> data/features.csv
+python3 scripts/simulate.py 20000   # forecast -> data/simulation_results.json
+                                    #          + artifacts/forecast.html</pre>
+<p>Increase the number for steadier probabilities (e.g. <code>simulate.py 100000</code>). Re-running <code>elo.py</code> after new results refreshes everything downstream.</p>
+
+<h2 id="glossary">Glossary</h2>
+<table><tbody>
+  <tr><td><b>Elo rating</b></td><td>A single strength number per team, updated after every match by how surprising the result was.</td></tr>
+  <tr><td><b>K-factor</b></td><td>How much a given match is allowed to move ratings; bigger for important games.</td></tr>
+  <tr><td><b>λ (lambda)</b></td><td>A team's expected goals in a match; the single input to the Poisson formula.</td></tr>
+  <tr><td><b>Poisson distribution</b></td><td>The probability model for counting rare independent events (goals), given an average.</td></tr>
+  <tr><td><b>Monte Carlo</b></td><td>Estimating a probability by simulating the random process many times and counting outcomes.</td></tr>
+  <tr><td><b>Calibration</b></td><td>Whether stated probabilities match real frequencies (60% predictions happen 60% of the time).</td></tr>
+  <tr><td><b>RPS</b></td><td>Ranked Probability Score; the standard accuracy metric for ordered win/draw/loss forecasts.</td></tr>
+</tbody></table>
+
+</main>
+<footer>World Cup 2026 ML prediction project · code in <code>scripts/</code> · design in <code>docs/PREDICTION_APPROACH.md</code> · forecast in <code>artifacts/forecast.html</code></footer>
+</div></div>
+<script>
+const btn=document.getElementById('themeBtn');const modes=["system","light","dark"];let idx=0;
+const mq=window.matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(){const m=modes[idx];const eff=m==="system"?(mq.matches?"dark":"light"):m;
+document.documentElement.setAttribute('data-theme',eff);btn.textContent="Theme: "+m.charAt(0).toUpperCase()+m.slice(1);}
+btn.onclick=()=>{idx=(idx+1)%3;applyTheme();};mq.addEventListener('change',()=>{if(modes[idx]==="system")applyTheme();});applyTheme();
+</script>
+</body></html>

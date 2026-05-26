@@ -8,3 +8,4 @@
 | 2026-05-26 | reports | [index.html](reports/index.html) | World Cup 2026 all-48-teams card index (links every team card) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/cards/index.html |
 | 2026-05-26 | reports | [prediction-approach.html](reports/prediction-approach.html) | WC2026 prediction system design doc: match model + Monte Carlo tournament sim approach | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/prediction-approach.html |
 | 2026-05-26 | reports | [PREDICTION_APPROACH.md](reports/PREDICTION_APPROACH.md) | WC2026 prediction approach (markdown source) | /Users/marcokotrotsos/NXTPHASE/pool/docs/PREDICTION_APPROACH.md |
+| 2026-05-26 | reports | [course.html](reports/course.html) | Complete course: how the WC2026 Elo + Poisson + Monte Carlo predictor works | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/course.html |
