@@ -14,3 +14,4 @@
 | 2026-05-26 | reports | [forecast.html](reports/forecast.html) | WC2026 forecast v2 (Elo + value/injury priors, 20k sims) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast.html |
 | 2026-05-26 | reports | [backtest-2018-2022.html](reports/backtest-2018-2022.html) | WC2026 model validation: backtest on 2018 (France #6) and 2022 (Argentina #2) confirms calibration | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/backtest-2018-2022.html |
 | 2026-05-26 | reports | [model-bakeoff.html](reports/model-bakeoff.html) | WC2026 model bake-off: 6 algorithms + ensemble, goal-rating model wins (RPS 0.166), pushed to forecast v3 | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/model-bakeoff.html |
+| 2026-05-26 | reports | [forecast.html](reports/forecast.html) | WC2026 forecast v3 (goal-rating model): Argentina 18%, Spain 13%, Brazil 11% | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast.html |
