@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NHA SA Classification API — Project Overview & Onboarding</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #f6f7f9;
+    --bg-card: #ffffff;
+    --border: #e3e6ea;
+    --text: #1c2024;
+    --text-soft: #5b636c;
+    --accent: #2f6fed;
+    --accent-soft: #eaf1ff;
+    --code-bg: #f3f4f6;
+    --code-text: #1c2024;
+    --warn-bg: #fff7e6;
+    --warn-border: #f0c15a;
+    --good-bg: #ecf8f0;
+    --good-border: #7bc99a;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.04);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: "SF Mono", ui-monospace, "Cascadia Code", Menlo, Consolas, monospace;
+  }
+  [data-theme="dark"] {
+    --bg: #14171a;
+    --bg-soft: #1b1f23;
+    --bg-card: #1b1f23;
+    --border: #2b3137;
+    --text: #e7eaee;
+    --text-soft: #9aa3ad;
+    --accent: #6ea0ff;
+    --accent-soft: #1e2a44;
+    --code-bg: #23282e;
+    --code-text: #e7eaee;
+    --warn-bg: #2e2716;
+    --warn-border: #6b551f;
+    --good-bg: #16271d;
+    --good-border: #2f5e41;
+    --shadow: none;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .layout { display: flex; max-width: 1180px; margin: 0 auto; }
+  nav {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    width: 240px;
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 18px;
+    border-right: 1px solid var(--border);
+  }
+  nav .brand { font-weight: 700; font-size: 15px; letter-spacing: -.2px; margin-bottom: 4px; }
+  nav .brand-sub { font-size: 12px; color: var(--text-soft); margin-bottom: 22px; }
+  nav a {
+    display: block;
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 13.5px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    margin-bottom: 2px;
+  }
+  nav a:hover { background: var(--bg-soft); color: var(--text); }
+  nav .group { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--text-soft); margin: 18px 0 6px 10px; font-weight: 600; }
+  main { flex: 1; min-width: 0; padding: 40px 52px 96px; }
+  header.hero { margin-bottom: 40px; }
+  header.hero .eyebrow { color: var(--accent); font-weight: 600; font-size: 13px; letter-spacing: .4px; text-transform: uppercase; }
+  h1 { font-size: 34px; line-height: 1.2; letter-spacing: -.6px; margin: 8px 0 12px; }
+  h2 { font-size: 23px; letter-spacing: -.3px; margin: 52px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); scroll-margin-top: 24px; }
+  h3 { font-size: 17px; margin: 30px 0 8px; letter-spacing: -.2px; }
+  p { margin: 12px 0; }
+  .lead { font-size: 18px; color: var(--text-soft); max-width: 70ch; }
+  a { color: var(--accent); }
+  code { font-family: var(--mono); background: var(--code-bg); color: var(--code-text); padding: 1.5px 6px; border-radius: 5px; font-size: 13px; }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 16px 18px;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.5;
+    border: 1px solid var(--border);
+  }
+  pre code { background: none; padding: 0; font-size: 13px; }
+  ul, ol { padding-left: 22px; }
+  li { margin: 5px 0; }
+  .grid { display: grid; gap: 16px; margin: 20px 0; }
+  .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+  .card h3 { margin-top: 0; }
+  .card .meta { font-size: 12.5px; color: var(--text-soft); }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .4px; color: var(--text-soft); }
+  td code { white-space: nowrap; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+  .pill.get { background: var(--good-bg); color: #2f8c5a; }
+  .pill.post { background: var(--accent-soft); color: var(--accent); }
+  [data-theme="dark"] .pill.get { color: #7bc99a; }
+  .callout { border-radius: 10px; padding: 14px 18px; margin: 18px 0; border: 1px solid var(--border); background: var(--bg-soft); font-size: 14.5px; }
+  .callout.warn { background: var(--warn-bg); border-color: var(--warn-border); }
+  .callout.good { background: var(--good-bg); border-color: var(--good-border); }
+  .callout strong { display: block; margin-bottom: 2px; }
+  .flow { display: flex; flex-direction: column; gap: 0; margin: 22px 0; }
+  .flow-step { display: flex; gap: 16px; align-items: flex-start; }
+  .flow-step .num { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+  .flow-step .body { padding-bottom: 22px; }
+  .flow-step .body strong { display: block; }
+  .flow-step .connector { width: 30px; display: flex; justify-content: center; }
+  .flow-step .connector::before { content: ""; width: 2px; height: 22px; background: var(--border); display: block; }
+  .checklist { list-style: none; padding-left: 0; }
+  .checklist li { padding-left: 30px; position: relative; margin: 9px 0; }
+  .checklist li::before { content: ""; position: absolute; left: 0; top: 3px; width: 17px; height: 17px; border: 2px solid var(--border); border-radius: 5px; }
+  .theme-toggle { position: fixed; top: 16px; right: 20px; z-index: 50; display: flex; gap: 2px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 999px; padding: 3px; box-shadow: var(--shadow); }
+  .theme-toggle button { border: none; background: none; color: var(--text-soft); font-family: var(--font); font-size: 12px; padding: 5px 11px; border-radius: 999px; cursor: pointer; }
+  .theme-toggle button.active { background: var(--accent); color: #fff; }
+  footer { margin-top: 60px; padding-top: 22px; border-top: 1px solid var(--border); color: var(--text-soft); font-size: 13px; }
+  .kv { display: grid; grid-template-columns: 180px 1fr; gap: 6px 16px; font-size: 14px; margin: 16px 0; }
+  .kv dt { color: var(--text-soft); }
+  .kv dd { margin: 0; }
+  @media (max-width: 900px) {
+    nav { display: none; }
+    main { padding: 28px 22px 64px; }
+    .grid.cols-2, .grid.cols-3 { grid-template-columns: 1fr; }
+    .kv { grid-template-columns: 1fr; gap: 2px 0; }
+    .kv dd { margin-bottom: 8px; }
+  }
+  @media print {
+    nav, .theme-toggle { display: none; }
+    main { padding: 0; max-width: none; }
+    body { font-size: 11.5pt; color: #000; background: #fff; }
+    h2 { page-break-after: avoid; }
+    pre, .card, table { page-break-inside: avoid; }
+    a { color: #000; text-decoration: underline; }
+    .callout { border: 1px solid #ccc; background: #fff; }
+  }
+</style>
+</head>
+<body>
+<div class="theme-toggle" role="group" aria-label="Theme">
+  <button data-set="light">Light</button>
+  <button data-set="dark">Dark</button>
+  <button data-set="system">System</button>
+</div>
+
+<div class="layout">
+<nav>
+  <div class="brand">NHA SA Classification API</div>
+  <div class="brand-sub">Project overview &amp; onboarding</div>
+  <div class="group">Project</div>
+  <a href="#what">What it is</a>
+  <a href="#context">Business context</a>
+  <a href="#architecture">Architecture</a>
+  <a href="#endpoints">API endpoints</a>
+  <a href="#flow">Request flow</a>
+  <a href="#repo">Repository layout</a>
+  <div class="group">Process</div>
+  <a href="#setup">Local setup</a>
+  <a href="#config">Configuration</a>
+  <a href="#classifier">Working with categories</a>
+  <a href="#testing">Testing &amp; evaluation</a>
+  <a href="#deploy">Deployment</a>
+  <a href="#workflow">Dev workflow</a>
+  <a href="#checklist">Day-one checklist</a>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="eyebrow">Engineering onboarding</div>
+  <h1>NHA SA Classification API</h1>
+  <p class="lead">A FastAPI service that classifies inbound Dutch customer-service emails for NHA, an education institute, into the right handling category, with a fast guard for welcome-gift questions and a slot extractor for order numbers.</p>
+</header>
+
+<section id="what">
+<h2>What it is</h2>
+<p>NHA receives a high volume of customer emails (cancellations, enrolment questions, returns, payment queries, and so on). This service takes the subject and body of an incoming email and returns a single best-fit <strong>category</strong> so downstream systems can route or auto-respond. It exposes a small, key-authenticated REST API and is built to run on Azure App Service.</p>
+<p>Three distinct jobs live behind the API:</p>
+<div class="grid cols-3">
+  <div class="card">
+    <h3>Category classification</h3>
+    <p class="meta">Maps an email to one of ~193 NHA categories using a hosted LLM deployment (via ORQ.ai). This is the primary product.</p>
+  </div>
+  <div class="card">
+    <h3>Welcome-gift guard</h3>
+    <p class="meta">A cheap LLM pre-check that short-circuits "verzilveren welkomstcadeau" questions straight to category 199 before spending a full classification call.</p>
+  </div>
+  <div class="card">
+    <h3>Order-number extraction</h3>
+    <p class="meta">A GPT-4 "slot" extractor that pulls a 6-digit order number out of an email and reports its confidence and location.</p>
+  </div>
+</div>
+<div class="callout">
+  <strong>One-line mental model</strong>
+  Email in, category (and optionally an order number) out. Most of the intelligence lives in hosted LLM prompts, not in this codebase. The service is the routing, auth, cleaning, and validation layer around those prompts.
+</div>
+</section>
+
+<section id="context">
+<h2>Business context</h2>
+<p>NHA (Nederlandse Handels Academie) is a Dutch distance-learning institute. The category taxonomy is therefore in Dutch and very domain-specific: enrolment lifecycle, returns and retournering, welcome gifts, payment confirmations, digital learning environment access, and more. The canonical list of categories and the classification instructions live in <code>test_emails/prompt.md</code> (around 193 categories, with id <code>27</code> = "Overig" as the catch-all and id <code>199</code> = welcome-gift redemption handled by the guard).</p>
+<p>An ongoing evaluation effort lives in <code>test_emails/</code>: real exported inboxes (January, February, March 2026), model judgements (<code>judged.csv</code>, <code>judged1000.csv</code>, <code>result.csv</code>), a category-description reference, and an evaluation write-up (<code>NHA_Categorisatie_Evaluatie.docx</code>). This is how classification quality is measured against real mail.</p>
+</section>
+
+<section id="architecture">
+<h2>Architecture</h2>
+<p>A single FastAPI app (<code>main.py</code>, ~1,300 lines) is the whole service surface. It delegates the actual reasoning to external LLM providers and, for one endpoint, to a local prototype classifier.</p>
+<table>
+  <thead><tr><th>Layer</th><th>Responsibility</th><th>Where</th></tr></thead>
+  <tbody>
+    <tr><td><strong>API + auth</strong></td><td>Routing, <code>X-API-Key</code> verification, HTML cleaning of email text, request/response models, error handling, the tester UI</td><td><code>main.py</code></td></tr>
+    <tr><td><strong>LLM category classifier</strong></td><td>Calls the ORQ.ai-hosted deployment (<code>EMAIL_CAT_01</code>), parses the returned <code>{id, category_name}</code> JSON</td><td><code>main.py</code> → ORQ.ai</td></tr>
+    <tr><td><strong>Guard</strong></td><td>Calls the same ORQ deployment in a <code>guard_verzilveren</code> environment that returns <code>PASS</code>/<code>FAIL</code></td><td><code>main.py</code> → ORQ.ai</td></tr>
+    <tr><td><strong>Order-number slot</strong></td><td>Calls OpenAI GPT-4 with a specialised extraction prompt, then validates the result is exactly 6 digits</td><td><code>main.py</code> → OpenAI</td></tr>
+    <tr><td><strong>Prototype classifier</strong></td><td>Local embedding + cosine-similarity engine used by <code>/response</code> and <code>/train</code>; supports OpenAI or HuggingFace embeddings</td><td><code>classify/</code></td></tr>
+  </tbody>
+</table>
+<div class="callout">
+  <strong>Two classifiers, by design</strong>
+  The production category path is the <strong>LLM</strong> one (ORQ.ai). The <strong>prototype</strong> classifier in <code>classify/</code> is an earlier embedding-based approach kept for the <code>/response</code> and <code>/train</code> endpoints; its <code>label_cards.json</code> currently ships with a single label (53). Do not assume <code>/category</code> uses it.
+</div>
+<h3>External dependencies</h3>
+<div class="kv">
+  <dt>ORQ.ai</dt><dd>Hosts the email-category prompt and the welcome-gift guard as a deployment. Invoked over HTTPS with a bearer token (<code>ORQ_API_KEY</code>).</dd>
+  <dt>OpenAI</dt><dd>Used for order-number extraction (GPT-4) and, optionally, as the embedding backend for the prototype classifier (<code>text-embedding-3-small</code>).</dd>
+  <dt>Azure App Service</dt><dd>Production host. Runs gunicorn + uvicorn workers. Resource group and app name are environment-specific.</dd>
+</div>
+</section>
+
+<section id="endpoints">
+<h2>API endpoints</h2>
+<p>All routes are under <code>/api/v1</code>. Every endpoint except <code>status</code> requires the <code>X-API-Key</code> header.</p>
+<table>
+  <thead><tr><th>Method</th><th>Path</th><th>Purpose</th><th>Auth</th></tr></thead>
+  <tbody>
+    <tr><td><span class="pill get">GET</span></td><td><code>/api/v1/status</code></td><td>Health check; returns extra detail when authenticated</td><td>Optional</td></tr>
+    <tr><td><span class="pill post">POST</span></td><td><code>/api/v1/category</code></td><td>Guard first; <code>PASS</code> returns category 199, otherwise falls back to the LLM classifier</td><td>Required</td></tr>
+    <tr><td><span class="pill post">POST</span></td><td><code>/api/v1/category/lm</code></td><td>Direct LLM category classification (no guard)</td><td>Required</td></tr>
+    <tr><td><span class="pill post">POST</span></td><td><code>/api/v1/response</code></td><td>Prototype-classifier path (embedding + cosine similarity)</td><td>Required</td></tr>
+    <tr><td><span class="pill post">POST</span></td><td><code>/api/v1/slot/ordernumber</code></td><td>Extract a 6-digit order number with confidence and location</td><td>Required</td></tr>
+    <tr><td><span class="pill post">POST</span></td><td><code>/api/v1/train</code></td><td>Rebuild prototype vectors from <code>label_cards.json</code></td><td>Required</td></tr>
+    <tr><td><span class="pill get">GET</span></td><td><code>/ui/category-tester</code></td><td>Built-in web UI for pasting an email and running the guard pipeline</td><td>Key entered in UI</td></tr>
+  </tbody>
+</table>
+<p>Interactive docs are always available at <code>/api/v1/docs</code> (Swagger) and <code>/api/v1/redoc</code>.</p>
+<h3>Example call</h3>
+<pre><code>curl -X POST "http://localhost:8000/api/v1/category" \
+  -H "X-API-Key: $SA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+        "subject": "Vraag over mijn inschrijving",
+        "body": "Ik wil graag mijn welkomstcadeau verzilveren...",
+        "use_subject": true
+      }'</code></pre>
+</section>
+
+<section id="flow">
+<h2>Request flow: <code>/api/v1/category</code></h2>
+<p>This is the endpoint that ties everything together. Follow it once and the rest of the service is easy to read.</p>
+<div class="flow">
+  <div class="flow-step"><div class="num">1</div><div class="body"><strong>Authenticate</strong>Verify the <code>X-API-Key</code> header against the configured keys. Reject with 401 if missing or invalid.</div></div>
+  <div class="flow-step"><div class="connector"></div></div>
+  <div class="flow-step"><div class="num">2</div><div class="body"><strong>Build email summary</strong>Strip HTML tags and entities from subject and body, then combine into a clean text summary.</div></div>
+  <div class="flow-step"><div class="connector"></div></div>
+  <div class="flow-step"><div class="num">3</div><div class="body"><strong>Run the guard</strong>Call ORQ.ai in the <code>guard_verzilveren</code> environment. It answers <code>PASS</code> or <code>FAIL</code>.</div></div>
+  <div class="flow-step"><div class="connector"></div></div>
+  <div class="flow-step"><div class="num">4</div><div class="body"><strong>Short-circuit on PASS</strong>If <code>PASS</code>, immediately return <code>{id: 199, category_name: "Vraag over verzilveren welkomstcadeau"}</code>. No full classification needed.</div></div>
+  <div class="flow-step"><div class="connector"></div></div>
+  <div class="flow-step"><div class="num">5</div><div class="body"><strong>Fall back to LLM classifier</strong>On <code>FAIL</code>, call the full ORQ deployment, parse <code>{id, category_name}</code>, and return it with the guard decision and raw generations attached for debugging.</div></div>
+</div>
+</section>
+
+<section id="repo">
+<h2>Repository layout</h2>
+<table>
+  <thead><tr><th>Path</th><th>What lives there</th></tr></thead>
+  <tbody>
+    <tr><td><code>main.py</code></td><td>The entire FastAPI app: routes, auth, ORQ/OpenAI integration, the tester UI, error handlers</td></tr>
+    <tr><td><code>classify/</code></td><td>Prototype classifier: <code>classifier.py</code>, <code>label_cards.json</code> (category definitions), <code>prototypes.pkl</code> (trained vectors), and its own README</td></tr>
+    <tr><td><code>requirements.txt</code></td><td>Full local deps incl. PyTorch + sentence-transformers (~3-4 GB installed)</td></tr>
+    <tr><td><code>requirements-azure.txt</code></td><td>Minimal production deps, OpenAI embeddings only (~200 MB)</td></tr>
+    <tr><td><code>deploy.sh</code> / <code>create_webapp.sh</code></td><td>Azure deployment and one-time web app provisioning scripts</td></tr>
+    <tr><td><code>startup.sh</code> / <code>update_startup_command.sh</code></td><td>gunicorn startup command and helper to set it on Azure</td></tr>
+    <tr><td><code>load_test.py</code></td><td>Concurrent load tester with latency percentiles and throughput stats</td></tr>
+    <tr><td><code>smoke_*.sh</code>, <code>test_*.sh</code></td><td>Smoke and integration scripts hitting local and/or Azure targets</td></tr>
+    <tr><td><code>test_emails/</code></td><td>Evaluation data: real inbox exports, judged results, the master <code>prompt.md</code> with the full category list, and evaluation write-ups</td></tr>
+    <tr><td><code>*.md</code> docs</td><td><code>README.md</code> (full guide), <code>AZURE_DEPLOYMENT.md</code>, <code>AZURE_QUOTA.md</code>, <code>SLOT_EXTRACTION.md</code>, <code>EMBEDDING_SETUP.md</code>, <code>ORQ_ORDER_EXTRACTION.md</code></td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="setup">
+<h2>Local setup</h2>
+<p>Requires Python 3.10 or higher.</p>
+<pre><code># 1. Clone and enter the repo
+cd nha-sa
+
+# 2. Create and activate a virtualenv
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Install dependencies (full set, includes ML libs)
+pip install -r requirements.txt
+
+# 4. Create your .env (see the next section), then run:
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload</code></pre>
+<p>Then open:</p>
+<ul>
+  <li>API: <code>http://localhost:8000</code></li>
+  <li>Swagger: <code>http://localhost:8000/api/v1/docs</code></li>
+  <li>Tester UI: <code>http://localhost:8000/ui/category-tester</code></li>
+</ul>
+<div class="callout good">
+  <strong>Fast first run</strong>
+  If you only need the LLM category path, install <code>requirements-azure.txt</code> instead and set <code>USE_OPENAI_EMBEDDINGS=true</code>. You skip the multi-GB PyTorch download and the server starts in seconds.
+</div>
+</section>
+
+<section id="config">
+<h2>Configuration</h2>
+<p>Configuration is entirely environment-variable driven (a local <code>.env</code> is loaded automatically; see <code>.env.example</code>).</p>
+<table>
+  <thead><tr><th>Variable</th><th>Required</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><code>SA_API_KEY</code></td><td>Yes</td><td>API key(s) clients must send as <code>X-API-Key</code>. Comma-separated for multiple.</td></tr>
+    <tr><td><code>ORQ_API_KEY</code></td><td>For category</td><td>Bearer token for the ORQ.ai hosted classifier and guard.</td></tr>
+    <tr><td><code>ORQ_DEPLOYMENT_KEY</code></td><td>No</td><td>ORQ deployment key. Defaults to <code>EMAIL_CAT_01</code>.</td></tr>
+    <tr><td><code>OPENAI_API_KEY</code></td><td>For slot / embeddings</td><td>Used by order-number extraction and OpenAI embeddings.</td></tr>
+    <tr><td><code>USE_OPENAI_EMBEDDINGS</code></td><td>No</td><td><code>true</code> (recommended) uses OpenAI; <code>false</code> uses local HuggingFace.</td></tr>
+    <tr><td><code>OPENAI_EMBEDDING_MODEL</code></td><td>No</td><td>Defaults to <code>text-embedding-3-small</code>.</td></tr>
+    <tr><td><code>PORT</code></td><td>No</td><td>Server port; defaults to 8000.</td></tr>
+  </tbody>
+</table>
+<div class="callout warn">
+  <strong>Secrets hygiene</strong>
+  Real API keys and the ORQ token currently appear in some committed helper files (for example <code>notes.txt</code> and parts of the README). Treat any key you find in the repo as compromised: do not reuse it, rotate it, and keep new keys in <code>.env</code> or Azure App Settings only. Never paste live secrets into docs or commits.
+</div>
+</section>
+
+<section id="classifier">
+<h2>Working with categories</h2>
+<p>There are two places categories live, depending on which classifier you are touching.</p>
+<h3>LLM classifier (production)</h3>
+<p>The category list and instructions are the ORQ.ai prompt, mirrored locally in <code>test_emails/prompt.md</code>. To change categories or classification behaviour for the production path, you edit the prompt in ORQ.ai, not this repo. Use the <code>orq</code> tooling / dashboard for that.</p>
+<h3>Prototype classifier (<code>classify/</code>)</h3>
+<p>Used by <code>/response</code> and <code>/train</code>. Each category is a "label card" in <code>label_cards.json</code> with a definition, positive examples, exemplars, and negatives. The classifier embeds these into a prototype vector and classifies by cosine similarity against a per-label threshold (<code>tau</code>).</p>
+<pre><code># After editing label_cards.json, rebuild prototypes:
+curl -X POST "http://localhost:8000/api/v1/train" -H "X-API-Key: $SA_API_KEY"
+# or delete classify/prototypes.pkl and restart (auto-retrains)</code></pre>
+<div class="callout warn">
+  <strong>Switching embedding backends means retraining</strong>
+  Embeddings from OpenAI and HuggingFace are not interchangeable. If you flip <code>USE_OPENAI_EMBEDDINGS</code>, you must retrain or the cosine scores will be meaningless. See <code>classify/README.md</code> and <code>EMBEDDING_SETUP.md</code>.
+</div>
+</section>
+
+<section id="testing">
+<h2>Testing &amp; evaluation</h2>
+<h3>Smoke and integration scripts</h3>
+<ul>
+  <li><code>smoke_guard_and_llm.sh</code> — validates the guard + LLM category path against representative emails, local and/or Azure.</li>
+  <li><code>test_ordernumber.sh</code> — eight cases for the order-number extractor (subject, body, labels, multi-number, none found, hashtags).</li>
+  <li><code>test_azure.sh</code>, <code>test_api.sh</code>, <code>test.sh</code> — broader endpoint checks.</li>
+  <li><code>test_orq_order_extraction.py</code> — Python test for the ORQ-based order extraction.</li>
+</ul>
+<pre><code>SA_API_KEY="..." ORQ_API_KEY="..." ./smoke_guard_and_llm.sh
+APP_URLS="http://localhost:8000 https://&lt;app&gt;.azurewebsites.net" ./smoke_guard_and_llm.sh</code></pre>
+<h3>Load testing</h3>
+<pre><code>python load_test.py --url https://&lt;app&gt;.azurewebsites.net \
+  --key "$SA_API_KEY" --endpoint all -n 100 -c 10</code></pre>
+<p>Reports success rate, min/max/mean/median latency, P50/P90/P95/P99, status-code distribution, and throughput.</p>
+<h3>Quality evaluation</h3>
+<p>Classification accuracy is assessed against real mail in <code>test_emails/</code>. Monthly inbox exports are run through the classifier, results are recorded in <code>judged.csv</code> / <code>result.csv</code>, and findings are summarised in the evaluation documents. <code>evaluation_chart.html</code> visualises the outcome. This is the source of truth for "how good is the model right now".</p>
+</section>
+
+<section id="deploy">
+<h2>Deployment</h2>
+<p>Production runs on Azure App Service (Linux, Python). The key wrinkle is the requirements swap.</p>
+<div class="callout">
+  <strong>Why two requirements files</strong>
+  The full <code>requirements.txt</code> pulls in PyTorch and sentence-transformers (3-4 GB), which times out Azure builds. Production uses only OpenAI embeddings, so it does not need them. <code>deploy.sh</code> automatically backs up the full file, swaps in <code>requirements-azure.txt</code>, deploys, and restores the original for local use.
+</div>
+<h3>Deploy</h3>
+<pre><code>./deploy.sh        # handles requirements swap, packaging, zip-deploy, restart</code></pre>
+<h3>What Azure needs configured</h3>
+<ul>
+  <li><strong>Startup command:</strong> <code>gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind=0.0.0.0:8000</code> (see <code>startup.sh</code>).</li>
+  <li><strong>Build on deploy:</strong> <code>SCM_DO_BUILD_DURING_DEPLOYMENT=true</code> must be set, or you get <code>ModuleNotFoundError</code>. This is the single most common deploy failure.</li>
+  <li><strong>App settings:</strong> <code>SA_API_KEY</code>, <code>ORQ_API_KEY</code>, <code>OPENAI_API_KEY</code>, <code>USE_OPENAI_EMBEDDINGS=true</code>.</li>
+</ul>
+<p>Provisioning a fresh web app is scripted in <code>create_webapp.sh</code>. Detailed guidance, including quota notes, is in <code>AZURE_DEPLOYMENT.md</code> and <code>AZURE_QUOTA.md</code>.</p>
+<h3>Verify after deploy</h3>
+<pre><code>curl https://&lt;app&gt;.azurewebsites.net/api/v1/status
+az webapp log tail --name &lt;app&gt; --resource-group &lt;rg&gt;   # stream logs</code></pre>
+<table>
+  <thead><tr><th>Symptom</th><th>Likely cause</th></tr></thead>
+  <tbody>
+    <tr><td><code>ModuleNotFoundError</code></td><td><code>SCM_DO_BUILD_DURING_DEPLOYMENT</code> not set</td></tr>
+    <tr><td>502 Bad Gateway</td><td>Wrong startup command or not binding to port 8000</td></tr>
+    <tr><td>401 Unauthorized</td><td><code>SA_API_KEY</code> missing or mismatched in app settings</td></tr>
+    <tr><td>Slow first request</td><td>Cold start / model load (normal once, then fast)</td></tr>
+  </tbody>
+</table>
+</section>
+
+<section id="workflow">
+<h2>Day-to-day developer workflow</h2>
+<ol>
+  <li>Branch off <code>main</code> (the team works on feature branches such as <code>ui</code>).</li>
+  <li>Run locally with <code>--reload</code> and exercise changes through the tester UI or curl.</li>
+  <li>Run the relevant smoke script before pushing anything that touches classification.</li>
+  <li>Commit with a clear, concise message. Commit after each meaningful change.</li>
+  <li>Deploy with <code>./deploy.sh</code>, then verify <code>/api/v1/status</code> and tail logs.</li>
+  <li>For prompt or category changes, edit in ORQ.ai and re-run evaluation against <code>test_emails/</code>.</li>
+</ol>
+</section>
+
+<section id="checklist">
+<h2>Day-one checklist</h2>
+<ul class="checklist">
+  <li>Clone the repo and create a Python 3.10+ virtualenv.</li>
+  <li>Get an <code>SA_API_KEY</code>, an <code>ORQ_API_KEY</code>, and an <code>OPENAI_API_KEY</code> from the team (do not reuse keys found in the repo).</li>
+  <li>Create <code>.env</code> from <code>.env.example</code> and fill in the keys.</li>
+  <li>Install dependencies and start the server with <code>uvicorn main:app --reload</code>.</li>
+  <li>Hit <code>/api/v1/status</code> and open <code>/api/v1/docs</code> to confirm the app is up.</li>
+  <li>Run a classification through <code>/ui/category-tester</code> and watch the guard decision.</li>
+  <li>Read <code>README.md</code>, <code>classify/README.md</code>, and <code>SLOT_EXTRACTION.md</code> end to end.</li>
+  <li>Open <code>test_emails/prompt.md</code> to see the full category taxonomy.</li>
+  <li>Run <code>smoke_guard_and_llm.sh</code> against local to confirm the LLM path works.</li>
+  <li>Skim <code>AZURE_DEPLOYMENT.md</code> so the deploy story is not a surprise later.</li>
+</ul>
+</section>
+
+<footer>
+  <p>NHA SA Classification API. Generated as an onboarding reference. For details always defer to the source files in the repository, which are the authoritative record.</p>
+</footer>
+</main>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var buttons = document.querySelectorAll('.theme-toggle button');
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function apply(pref) {
+      var theme = pref === 'system' ? (media.matches ? 'dark' : 'light') : pref;
+      root.setAttribute('data-theme', theme);
+      buttons.forEach(function (b) { b.classList.toggle('active', b.dataset.set === pref); });
+    }
+
+    var saved = 'light';
+    try { saved = localStorage.getItem('nha-theme') || 'light'; } catch (e) {}
+    apply(saved);
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var pref = b.dataset.set;
+        try { localStorage.setItem('nha-theme', pref); } catch (e) {}
+        apply(pref);
+      });
+    });
+
+    media.addEventListener('change', function () {
+      var pref = 'light';
+      try { pref = localStorage.getItem('nha-theme') || 'light'; } catch (e) {}
+      if (pref === 'system') apply('system');
+    });
+  })();
+</script>
+</body>
+</html>
