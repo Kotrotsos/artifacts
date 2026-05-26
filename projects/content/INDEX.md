@@ -123,3 +123,4 @@
 | 2026-05-26 | reports | [draft.md](reports/draft.md) | AI-native engineering org trifecta (let go and trust): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-engineering-org/draft.md |
 | 2026-05-26 | reports | [substack-version.md](reports/substack-version.md) | AI-native engineering org trifecta (let go and trust): substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-engineering-org/substack-version.md |
 | 2026-05-26 | reports | [linkedin-post.md](reports/linkedin-post.md) | AI-native engineering org trifecta (let go and trust): linkedin-post.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-engineering-org/linkedin-post.md |
+| 2026-05-26 | images | [hero.png](images/hero.png) | AI-native engineering org trifecta (let go and trust): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-engineering-org/hero.png |
