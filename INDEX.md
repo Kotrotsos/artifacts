@@ -231,3 +231,4 @@
 | 2026-05-26 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | AI-native engineering org trifecta (let go and trust): substack-version.md |
 | 2026-05-26 | content | reports | [linkedin-post.md](projects/content/reports/linkedin-post.md) | AI-native engineering org trifecta (let go and trust): linkedin-post.md |
 | 2026-05-26 | content | images | [hero.png](projects/content/images/hero.png) | AI-native engineering org trifecta (let go and trust): hero.png |
+| 2026-05-26 | content | images | [diagram-1-let-go-trust-keep.png](projects/content/images/diagram-1-let-go-trust-keep.png) | AI-native engineering org trifecta (let go and trust): diagram-1-let-go-trust-keep.png |
