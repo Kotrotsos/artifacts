@@ -1,43 +1,39 @@
-# LinkedIn Post: The Claude Code Harness
+# LinkedIn Post: Becoming AI-Native
 
-Anthropic dropped a substantial guide on May 14: "How Claude Code works in large codebases."
+Most teams try to become AI-native by adding things. More agents, more dashboards, more bots.
 
-One sentence in it carries the whole argument:
+The teams that actually get there do the opposite. They remove.
 
-The harness matters as much as the model.
+Fiona Fun runs engineering and product for Claude Code at Anthropic. Her talk on running an AI-native org reframed the whole thing for me: it is an act of subtraction plus trust, not adoption.
 
-Performance at scale is determined by six layers around the model, plus one delegation capability:
+The logic is simple. For twenty years, engineering bandwidth was the expensive resource, so we built everything to protect it. Heavy planning. Gatekept reviews. Ownership tracking. Documentation rituals.
 
-1. CLAUDE.md (context every session)
-2. Hooks (event-triggered scripts)
-3. Skills (on-demand expertise)
-4. Plugins (distribute what works)
-5. LSP integrations (symbol-level navigation)
-6. MCP servers (external tools and data)
-+ Subagents (delegation, available anytime)
+That bandwidth is no longer scarce. Coding is no longer the bottleneck. So every process built to protect it has quietly stopped working, and it is now the tax.
 
-The model is one of seven things.
+What to let go:
+- Heavy upfront planning (generate three versions and look at them instead)
+- Design docs as the main artifact (discuss in PRs and prototypes)
+- Gatekept review as the only safety net
+- The reflex to ask "who touched this"
+- Documentation as the source of truth
 
-Teams that fixate on model benchmarks are tuning the wrong knob. The benchmark differences between current frontier models are real but small. The differences in harness quality between teams are massive.
+What to trust instead:
+- Verification, shifted as far left as it goes
+- Code as the source of truth (turn specs into skills, check them in)
+- Generation over argument
+- Claude to fill each person's cross-functional gaps
 
-Build order matters.
+What to keep, because keeping it makes the rest safe:
+- Taste and product sense
+- Risk and trust boundaries
+- Deep system expertise
 
-CLAUDE.md first, because nothing else has anywhere to live until it exists. Hooks next, because hooks make the harness self-improving. Skills, then plugins, then LSP, then MCP. Subagents whenever you need them.
+The story that stuck with me: Fun coded a holiday snowman theme for Claude in the CLI, asked a designer to review, and got told it looked nothing like a snowman, it looked like Mr. Peanut. She looked again and it was unmistakably a peanut. That is the kind of call a model will not make for you. Taste stays human.
 
-The biggest configuration pathology I see in client teams: loading everything into CLAUDE.md instead of building skills. CLAUDE.md becomes the dumping ground, performance degrades, skills never get built. The fix is mechanical: any time you find yourself writing a chunk of CLAUDE.md that starts with "when doing X, do Y," ask whether X is a recurring task type. If yes, it is a skill. Move it.
+The exercise she leaves you with, and the one I would run this week: pick your noisiest workflow, the highest-tax meeting or process. Ask two questions. Is it still serving its purpose? And if it is expensive, could Claude do it instead? Then do the next one.
 
-The second-biggest mistake: building MCP integrations before the basics are working. Teams get excited about MCP, spend two weeks wiring up Jira and Datadog, then wonder why Claude is not producing quality output. The model has access to every tool in the company and no idea what to do with any of it.
+You do not become AI-native by adding the most. You become AI-native by being willing to remove what stopped working, and trusting what replaces it.
 
-Three configuration patterns travel across every successful deployment:
+What is the noisiest workflow on your team right now, the one you suspect quietly stopped working?
 
-- Make the codebase legible (layered CLAUDE.md, scoped commands, LSP)
-- Keep the harness current (audit every 3 to 6 months, after every major model release)
-- Assign ownership from day one (a named DRI, a plugin marketplace, eventually an agent manager role)
-
-If you remember one line from this post: the model is one layer of seven.
-
-Full annotated breakdown of each layer, the build order, and what to do this week:
-
-[link to Medium article]
-
-What does your CLAUDE.md root file look like? Mine had 1,200 lines a month ago. Now it has 60.
+[link to full article]
