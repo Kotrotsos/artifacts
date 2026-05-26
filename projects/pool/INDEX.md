@@ -12,3 +12,4 @@
 | 2026-05-26 | reports | [forecast.html](reports/forecast.html) | WC2026 champion probabilities forecast (20k Monte Carlo sims) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast.html |
 | 2026-05-26 | reports | [model-v2.html](reports/model-v2.html) | WC2026 model v2: backtest (form/H2H redundant with Elo) + injury/value priors, before-after odds | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/model-v2.html |
 | 2026-05-26 | reports | [forecast.html](reports/forecast.html) | WC2026 forecast v2 (Elo + value/injury priors, 20k sims) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast.html |
+| 2026-05-26 | reports | [backtest-2018-2022.html](reports/backtest-2018-2022.html) | WC2026 model validation: backtest on 2018 (France #6) and 2022 (Argentina #2) confirms calibration | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/backtest-2018-2022.html |
