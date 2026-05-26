@@ -245,3 +245,4 @@
 | 2026-05-26 | pool | reports | [PREDICTION_APPROACH.md](projects/pool/reports/PREDICTION_APPROACH.md) | WC2026 prediction approach (markdown source) |
 | 2026-05-26 | pool | reports | [course.html](projects/pool/reports/course.html) | Complete course: how the WC2026 Elo + Poisson + Monte Carlo predictor works |
 | 2026-05-26 | pool | reports | [forecast.html](projects/pool/reports/forecast.html) | WC2026 champion probabilities forecast (20k Monte Carlo sims) |
+| 2026-05-26 | definitive-book | docs | [from-vibe-to-production.pdf](projects/definitive-book/docs/from-vibe-to-production.pdf) | Definitive guide to shipping real AI agents, 18 chapters, 227 pages, standalone source |
