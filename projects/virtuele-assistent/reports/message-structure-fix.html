@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fix: structured conversation turns to the model</title>
+  <style>
+    :root {
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+      --bg: #f6f7f9; --surface: #fff; --surface2: #eef1f5; --border: #e1e5ec; --border2: #cdd4de;
+      --text: #1b2027; --dim: #586073; --faint: #8b93a2;
+      --accent: #3a5bd9; --accent-soft: #e9eefc; --accent-text: #2942a6;
+      --red: #c2362f; --red-soft: #fbecea; --amber: #b06a17; --amber-soft: #f8efe2; --green: #2f8f5b; --green-soft: #e8f5ee;
+      --shadow: 0 1px 2px rgba(20,26,40,.06), 0 6px 22px rgba(20,26,40,.06);
+      --maxw: 880px;
+    }
+    html[data-theme="dark"] {
+      --bg: #0f1318; --surface: #161b22; --surface2: #1e242d; --border: #29313b; --border2: #3a444f;
+      --text: #e6eaf0; --dim: #a3adba; --faint: #717d8a;
+      --accent: #7d96f0; --accent-soft: #1d2740; --accent-text: #aebef7;
+      --red: #ef6f68; --red-soft: #2c1a19; --amber: #e0a35a; --amber-soft: #2a2114; --green: #5bc78c; --green-soft: #16271d;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 22px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:var(--font); background:var(--bg); color:var(--text); line-height:1.6; -webkit-font-smoothing:antialiased; }
+    .bar { position:sticky; top:0; z-index:10; background:color-mix(in srgb,var(--surface) 90%,transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+    .bar-in { max-width:var(--maxw); margin:0 auto; padding:12px 22px; display:flex; align-items:center; gap:14px; }
+    .bar .tag { font-size:12px; font-weight:700; letter-spacing:.04em; color:var(--faint); text-transform:uppercase; }
+    .toggle { margin-left:auto; display:flex; gap:2px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:3px; }
+    .toggle button { border:0; background:transparent; color:var(--dim); font:inherit; font-size:12px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; }
+    .toggle button.on { background:var(--surface); color:var(--text); box-shadow:var(--shadow); }
+    main { max-width:var(--maxw); margin:0 auto; padding:34px 22px 90px; }
+    h1 { font-size:29px; line-height:1.2; letter-spacing:-.02em; margin:0 0 10px; }
+    h2 { font-size:20px; letter-spacing:-.01em; margin:42px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+    h3 { font-size:15px; margin:22px 0 8px; }
+    p { margin:12px 0; }
+    .lead { font-size:18px; color:var(--dim); margin:0 0 8px; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--accent-text); margin-bottom:10px; }
+    code { font-family:var(--mono); font-size:.88em; background:var(--surface2); padding:1px 6px; border-radius:5px; }
+    pre { font-family:var(--mono); font-size:12.5px; line-height:1.55; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:15px; overflow:auto; white-space:pre-wrap; word-break:break-word; }
+    pre .add { color:var(--green); }
+    pre .del { color:var(--red); }
+    pre .u { color:var(--accent-text); font-weight:700; }
+    pre .ok { color:var(--green); font-weight:600; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:20px 22px; margin:16px 0; }
+    .tldr { border-left:4px solid var(--green); }
+    .callout { border-radius:10px; padding:13px 18px; margin:16px 0; border:1px solid; }
+    .callout.amber { background:var(--amber-soft); border-color:color-mix(in srgb,var(--amber) 35%,transparent); }
+    .callout.green { background:var(--green-soft); border-color:color-mix(in srgb,var(--green) 35%,transparent); }
+    .callout h3 { margin:0 0 6px; font-size:14.5px; }
+    .badge { display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:999px; letter-spacing:.02em; vertical-align:middle; }
+    .b-add { background:var(--green-soft); color:var(--green); }
+    .b-new { background:var(--accent-soft); color:var(--accent-text); }
+    .b-warn { background:var(--amber-soft); color:var(--amber); }
+    table { width:100%; border-collapse:collapse; font-size:13.5px; margin:12px 0; }
+    th { text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--faint); padding:9px 10px; border-bottom:1px solid var(--border2); }
+    td { padding:10px; border-bottom:1px solid var(--border); vertical-align:top; }
+    td code { white-space:nowrap; }
+    .muted { color:var(--dim); }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media (max-width:780px){ .grid2 { grid-template-columns:1fr; } }
+    .panel { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; box-shadow:var(--shadow); }
+    .panel h3 { margin-top:0; }
+    .foot { margin-top:50px; padding-top:18px; border-top:1px solid var(--border); color:var(--faint); font-size:12.5px; }
+    @media print { .bar,.toggle { display:none; } body { background:#fff;color:#000; } .card,pre,.panel { box-shadow:none; } a { color:#000; } }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div class="bar-in">
+      <span class="tag">Virtuele Assistent · fix/messagestructure</span>
+      <div class="toggle" role="group" aria-label="Theme">
+        <button data-m="light" onclick="setTheme('light')">Light</button>
+        <button data-m="dark" onclick="setTheme('dark')">Dark</button>
+        <button data-m="system" onclick="setTheme('system')">Auto</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="eyebrow">Implemented fix</div>
+    <h1>Send the conversation as structured turns, not a flattened blob</h1>
+    <p class="lead">The model now receives real user and assistant messages. No feature flag, the behavior is changed directly.</p>
+
+    <div class="card tldr">
+      <h3 style="margin-top:0">What changed in one paragraph</h3>
+      <p style="margin:0">Instead of joining the whole conversation into one <code>user:</code> / <code>assistant:</code> text blob and sending it as a single user message, the backend now runs the agent with only the latest user message and replays the prior turns as proper <code>user</code> and <code>assistant</code> messages. Prior tool-call steps and empty messages are dropped, so the model sees a clean, structured conversation. Retrieval is unchanged. No switch: this is the new default.</p>
+    </div>
+
+    <h2>Before and after</h2>
+    <div class="grid2">
+      <div class="panel">
+        <h3>Before</h3>
+        <p class="muted" style="margin-top:0">One user message containing the whole transcript.</p>
+        <pre>system: <span class="muted">[org prompt]</span>
+<span class="u">user:</span> "user: Ik wil een paspoort aanvragen
+assistant: U kunt online ...
+tool:
+user: en wat kost dat"
+system: <span class="muted">[toolcall instruction]</span></pre>
+      </div>
+      <div class="panel">
+        <h3>After</h3>
+        <p class="muted" style="margin-top:0">Real role-tagged turns.</p>
+        <pre>system: <span class="muted">[org prompt]</span>
+<span class="u">user:</span> Ik wil een paspoort aanvragen
+<span class="ok">assistant:</span> U kunt online ...
+<span class="u">user:</span> en wat kost dat
+system: <span class="muted">[toolcall instruction]</span></pre>
+      </div>
+    </div>
+
+    <h2>The change, file by file</h2>
+
+    <div class="card">
+      <span class="badge b-new">New file</span> <code>agent-backend/src/main/kotlin/assistant/rag/ConversationHistory.kt</code>
+      <p>A coroutine-context carrier for the prior turns, mirroring the existing <code>OriginalQueryContext</code> pattern. It holds a list of <code>ConversationTurn(role, text)</code>.</p>
+      <pre>data class ConversationTurn(val role: String, val text: String)
+
+class ConversationHistory(val turns: List&lt;ConversationTurn&gt;) : CoroutineContext.Element {
+    companion object Key : CoroutineContext.Key&lt;ConversationHistory&gt;
+    override val key get() = Key
+}</pre>
+    </div>
+
+    <div class="card">
+      <span class="badge b-add">Changed</span> <code>ChatHttpRoute.kt</code>
+      <p>Build the history (prior turns, filtered to real user/assistant text), pass it via context, and run with only the latest user message. <code>buildLLMQuery</code> is removed.</p>
+      <pre><span class="del">- private fun buildLLMQuery(messages) =</span>
+<span class="del">-     messages.joinToString("\n") { "${it.sender}: ${it.text}" }</span>
+<span class="add">+ private fun conversationHistory(messages): List&lt;ConversationTurn&gt; =</span>
+<span class="add">+     messages.dropLast(1)</span>
+<span class="add">+         .filter { (it.sender == "user" || it.sender == "assistant") &amp;&amp; it.text.isNotBlank() }</span>
+<span class="add">+         .map { ConversationTurn(it.sender, it.text) }</span>
+...
+<span class="add">+ val history = conversationHistory(messages)</span>
+...
+  withContext(
+      SourceEmitterContext { ... }
+        + OriginalQueryContext(lastUserMessage)
+<span class="add">+       + ConversationHistory(history)</span>
+        + ragOverride
+  ) {
+<span class="del">-     agent.run(buildLLMQuery(messages))</span>
+<span class="add">+     agent.run(lastUserMessage)   // latest turn only; prior turns via context</span>
+  }</pre>
+    </div>
+
+    <div class="card">
+      <span class="badge b-add">Changed</span> <code>AgentStrategy.kt</code>
+      <p>The four prompt-building nodes (<code>nodeClassify</code>, <code>nodeCallLLM</code>, <code>nodeDisambiguate</code>, <code>nodeRedirect</code>) read the history from context and replay it as structured turns before the latest user message.</p>
+      <pre><span class="add">+ val history = currentCoroutineContext()[ConversationHistory]?.turns.orEmpty()</span>
+  ...
+  appendPrompt {
+<span class="add">+     history.forEach { if (it.role == "assistant") assistant(it.text) else user(it.text) }</span>
+      user(message)
+      system(StrategyPromptService.getToolcallPrompt())
+  }</pre>
+      <p class="muted">The classifier now also sees the real conversation, which should improve routing on follow-up questions ("en wat kost dat?").</p>
+    </div>
+
+    <h2>Why this is correct and safe</h2>
+    <table>
+      <thead><tr><th>Concern</th><th>How it is handled</th></tr></thead>
+      <tbody>
+        <tr><td>Library / agent signature</td><td>Unchanged. Agent still runs on a <code>String</code> (the latest message); prior turns travel via coroutine context, exactly like <code>OriginalQueryContext</code>. No fork of <code>koog-ktor-agent</code>.</td></tr>
+        <tr><td>Replaying prior tool steps</td><td>Avoided. Only real <code>user</code> and <code>assistant</code> text turns are replayed; tool-call steps and empty messages are filtered out, so Koog's tool-call/result pairing inside the live run is untouched.</td></tr>
+        <tr><td>PII</td><td>Unchanged. History is built from the already-redacted <code>messages</code> list.</td></tr>
+        <tr><td>Retrieval</td><td>Unchanged. <code>OriginalQueryContext(lastUserMessage)</code> still drives HyDE and search. This change is orthogonal to the retrieval-rewrite item.</td></tr>
+        <tr><td>API used</td><td>Verified against Koog 0.6.0: <code>PromptBuilder</code> has <code>user()</code> and <code>assistant()</code>; <code>currentCoroutineContext()</code> is already used elsewhere in the codebase (RagToolFactory).</td></tr>
+        <tr><td>Prompt caching</td><td>Improves. The system prompt plus older turns form a stable prefix, so each new turn caches more of the conversation rather than rebuilding one growing blob.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout green" id="buildbox">
+      <h3>Build verification <span class="badge b-add">Compiles</span></h3>
+      <p style="margin:0"><code>./gradlew compileKotlin</code> on JDK 17 returns <b>BUILD SUCCESSFUL</b>. The change compiles cleanly. Still recommended before merge: a multi-turn smoke test and an eval run (below).</p>
+    </div>
+
+    <h2>How to validate before merge</h2>
+    <ul>
+      <li><b>Compile:</b> <code>./gradlew compileKotlin</code> (JDK 17).</li>
+      <li><b>Smoke test multi-turn:</b> ask a question, then a coreferent follow-up ("en wat kost dat?"), and confirm the answer uses the earlier context.</li>
+      <li><b>Eval:</b> run the existing Langfuse evals (<code>answer_relevance_v2</code>, <code>faithfulness_v2</code>) on a sample and compare to the current production baseline.</li>
+      <li><b>Trace check:</b> in a new trace, the answer generation should show separate <code>user</code> and <code>assistant</code> messages, not one blob with <code>user:</code> / <code>assistant:</code> prefixes.</li>
+    </ul>
+
+    <div class="foot">
+      Branch: <code>fix/messagestructure</code> (off current <code>test</code>). Files: <code>ConversationHistory.kt</code> (new), <code>ChatHttpRoute.kt</code>, <code>AgentStrategy.kt</code>. Retrieval, PII, and the agent/library signatures are unchanged.
+    </div>
+  </main>
+
+  <script>
+    function setTheme(m){ localStorage.setItem('msf-theme', m); apply(m); }
+    function apply(m){
+      var dark = m==='dark' || (m==='system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+      document.querySelectorAll('.toggle button').forEach(function(b){ b.classList.toggle('on', b.dataset.m===m); });
+    }
+    apply(localStorage.getItem('msf-theme') || 'light');
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ if((localStorage.getItem('msf-theme')||'light')==='system') apply('system'); });
+  </script>
+</body>
+</html>
