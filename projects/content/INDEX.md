@@ -121,3 +121,4 @@
 | 2026-05-22 | reports | [linkedin-post.md](reports/linkedin-post.md) | Harness annotated post humanizer v2.5 sweep: linkedin-post.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-harness-annotated/linkedin-post.md |
 | 2026-05-22 | reports | [index.html](reports/index.html) | Course site post humanizer v2.5 sweep, all false-insight hooks removed | /Users/marcokotrotsos/PERSONAL/Content/course/index.html |
 | 2026-05-26 | reports | [draft.md](reports/draft.md) | AI-native engineering org trifecta (let go and trust): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-engineering-org/draft.md |
+| 2026-05-26 | reports | [substack-version.md](reports/substack-version.md) | AI-native engineering org trifecta (let go and trust): substack-version.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-engineering-org/substack-version.md |

@@ -1,176 +1,115 @@
-# The Claude Code Harness: A Practitioner's Read on Anthropic's Scale Guide
+# Becoming AI-Native Is Mostly About What You Stop Doing
 
-*Anthropic dropped a substantial guide on May 14 covering how Claude Code works in large codebases. It is mandatory reading. It is also dense enough that the most actionable points get lost in the prose. This is the annotated version, save it for your next harness audit.*
+*A talk from Anthropic's Claude Code lead reframed the whole thing for me. Becoming AI-native is not adoption. It is subtraction plus trust. Here is the map, and the one exercise to run on your team this week.*
 
-![A tall stacked tower of six labeled translucent teal layers on a white platform, with subagents floating beside as a separate capability, all in isometric perspective with the caption the model is one layer of seven](hero.png)
+![On the left a tall tower of process blocks tilting and dissolving, on the right a flat stable platform, a hand releasing a block between them](hero.png)
 
-A lot of my client conversations this year have included some version of the question: "we are on the best Claude model. Why is our team not getting the productivity gains we hoped for?" The answer, when I look at the actual setup, is almost always the same. The model is fine. The harness around the model is the problem.
+I have watched a lot of teams try to become "AI-native" by adding things. A new agent here, a dashboard there, a Slack bot that summarizes standups. Six months later they are slightly faster and a lot more cluttered, and nobody can say what actually changed.
 
-Anthropic just published the playbook for what to do about that. The guide is called "How Claude Code works in large codebases" and it lays out the patterns they have observed across their largest customer deployments. The load-bearing sentence in it is one line: *the harness matters as much as the model*. If you take only one thing from either article, take that.
+Then I watched Fiona Fun's talk on running the Claude Code and Co-work teams at Anthropic, and it reframed the whole problem. She has built and led teams at Meta and Microsoft, and her point is the opposite of adding. Becoming AI-native is mostly about what you stop doing.
 
-This newsletter is the practitioner annotation. I am pulling each individual point out, giving it depth from my own deployment experience, marking the common mistakes I see, and ordering by what actually matters on day one.
+Hit reply and tell me which process on your team quietly stopped working. I am collecting these.
 
-Save it. Reread it after every major Claude release. The harness work is not a one-time setup.
+**Three things to hold onto:**
 
-Reply if you want me to look at your specific configuration. I read everything.
+- AI-native is a control change, not a tooling upgrade. For twenty years we built planning, reviews, and ownership rituals to protect scarce engineering bandwidth. That bandwidth is no longer scarce. The rituals are now the tax.
+- The hard part is letting go. You give up heavy planning, gatekept reviews, design-doc culture, and the reflex to ask "who touched this," and you trust verification, automation, and code-as-source-of-truth instead. The speed comes after you let go, not before.
+- A short list of things you keep, and keeping them is what makes the letting-go safe: taste, risk and trust boundaries, deep system expertise, product sense.
 
-**Three things to know up front:**
+## The bottleneck moved and the process did not notice
 
-Anthropic's guide contains one sentence the rest of the article unpacks: "the harness matters as much as the model." Performance at scale is determined by six layers around the model (CLAUDE.md, hooks, skills, plugins, LSP, MCP) plus one delegation capability (subagents). Teams that focus on the model alone are tuning the wrong knob.
+Fun keeps coming back to one line: what served you before may no longer serve you.
 
-Build order is not optional. The layers compose. CLAUDE.md comes first because nothing else has anywhere to live until it exists. Hooks next, because hooks are how the harness gets self-improving. Skills, plugins, LSP, MCP follow in that order. Subagents come in whenever you need them. Teams that build MCP integrations before CLAUDE.md is solid are building on sand.
+For years, engineering bandwidth was the expensive thing, so everything got built to protect it. Heavy planning to avoid wasting precious hours. Careful reviews because rework was costly. Ownership tracking because the person who knew the code was scarce.
 
-Three configuration patterns travel across every successful deployment: make the codebase legible to Claude (layered CLAUDE.md, scoped commands, codebase maps, LSP), keep the harness current (review every 3 to 6 months because models evolve), and assign ownership from day one (a named DRI, a plugin marketplace, eventually an agent manager role). The technical and organizational layers cannot be separated.
+She points out this is not the first time the bottleneck moved. Microsoft, early 2000s, building Visual Studio. No cloud. One server room. A build queue that merged six PRs at a time, and when a test failed you had to find which of the six broke it. Cloud and continuous build dissolved that. Nobody mourns the six-PR queue.
 
-## Why agentic search wins, and where it loses
+Same shift now. On the Claude Code team, coding is no longer the slow part. Writing code, writing tests, refactoring: all cheap. And when the expensive thing becomes cheap, the processes built to protect it quietly stop working.
 
-The first technical claim in the Anthropic piece is that Claude Code uses agentic search instead of RAG. The difference is more important than it looks.
+That phrase is the whole problem. A process rarely fails loudly. It keeps running, eating time, long after its reason is gone. Someone set it up to solve a real problem. Nobody scheduled the meeting to check whether the problem still exists.
 
-![Two side-by-side scenes showing RAG with a stale index returning a renamed function versus agentic search with grep against the live codebase returning the current state](diagram-1-rag-vs-agentic.png)
+![Split screen showing coding as the bottleneck before, verification as the bottleneck now](diagram-2-bottleneck-moved.png)
 
-A RAG-powered AI coding tool embeds the entire codebase ahead of time and retrieves relevant chunks at query time. At small scale this is fine. At large scale it breaks, because the embedding pipeline cannot keep up with active engineering teams committing code. By the time a developer queries the index, the index reflects the codebase as it existed days or weeks ago. Retrieval returns a function the team renamed two weeks ago. The model confidently uses it. The build fails.
+## What to let go
 
-Agentic search avoids that failure mode by working from the live codebase. Claude traverses the file system, reads files, runs grep, follows references. No index. No staleness window. Every query operates on what is true right now.
+**Heavy upfront planning.** When coding was expensive you planned hard. When it is cheap you build three versions and look at them. Fun describes a refactoring debate with a colleague where, in the old days, they would have booked a room and whiteboarded approaches. Instead she generated three versions of the PRs. The debate got better because they were comparing real implementations and real impact on callers.
 
-Anthropic flags one tradeoff that the client teams I have worked with consistently underestimate: agentic search works best when Claude has enough starting context to know where to look. If you ask it to find all instances of a vague pattern across a billion-line codebase, you hit the context window before the work begins. The quality of the navigation is shaped entirely by how well the codebase is set up.
+**Design docs as the main artifact.** The team reduced in-depth design docs. Discussion happens in PRs and prototypes now. The doc was a proxy for the expensive thing you were about to build. When building is cheap, the proxy costs more than the thing.
 
-This is why the rest of the article matters. The setup is the load-bearing investment.
+**Gatekept review as the only safety net.** Review still matters. It is no longer a single human funnel everything waits behind. Claude handles style, lint, obvious bugs, and spec drift, which frees human review for the parts that need a human.
 
-## The harness matters as much as the model
+**The reflex to ask "who made this change."** Interrogate the question. Are you hunting a regression, looking for context, trying to learn the area? In most cases Claude answers faster, and you are not interrupting an engineer.
 
-The capabilities of Claude Code are not the capabilities of the model. The capabilities of Claude Code are the capabilities of the model plus the harness wrapped around it. Six extension points and one delegation capability. The model is one of seven things.
+**Documentation as the source of truth.** High throughput means anything outside the update loop goes stale fast. Documentation that lives apart from the code is a liability. This is a real reversal. For years the advice was to document more. Now the advice is to document inside the thing that stays current, and treat anything else as a snapshot that will lie to you within weeks.
 
-Teams that fixate on model benchmarks are tuning the wrong knob. The benchmark differences between current frontier models are real but small. The differences in harness quality between teams are massive. I have seen two teams running the same model where one team finishes ten times the work because their harness is set up properly and the other is fighting against it.
+**Whiteboard-first debate.** Code wins. Building is cheap, argument is expensive. When you can generate the alternatives in the time it takes to schedule the debate, you generate them. Fun describes nearly walking a colleague to a meeting room to whiteboard a refactoring approach, then catching herself and generating three real versions of the PRs instead. The debate that followed was better, because it was about real code and real impact on callers, not sketches of code.
 
-The six extension points: CLAUDE.md, hooks, skills, plugins, LSP integrations, MCP servers. Plus subagents as a delegation capability. Each gets its own section below, in build order.
+A pattern runs through all of these. Each thing you let go was a proxy. Planning was a proxy for confidence. Design docs were a proxy for the build. Ownership tracking was a proxy for knowledge. When the underlying work gets cheap, the proxy costs more than the real thing, and you can finally drop it.
 
-## The build order
+## What to trust instead
 
-![A horizontal flow of six numbered nodes from CLAUDE.md through hooks, skills, plugins, LSP, and MCP servers with a note that subagents are available throughout](diagram-2-build-order.png)
+![Three columns: let go, trust, keep](diagram-1-let-go-trust-keep.png)
 
-The order is not arbitrary. It is the order in which each layer requires the previous one.
+Letting go without a replacement is chaos. The weight moves onto different supports.
 
-## Layer 1: CLAUDE.md
+**Verification, shifted left.** This is the new center of gravity. When more people check in more changes, correctness is the question that matters. Fun's framing: better than you catching the bug first is automation catching it closer to the source. The investment that protected code-writing time now goes into verification.
 
-CLAUDE.md files are the foundation. Nothing else has anywhere to live until these are right.
+**Code as the source of truth.** When Fun onboarded, her first deep-dive was with Claude, not a person. She asked Claude to teach her the area around a bug before fixing it. Her advice: get your source of truth into the codebase. If it is a spec, make it a skill and check it in. Things in the codebase stay current. Things outside it rot.
 
-The Anthropic guidance is concise: root file for the big picture, subdirectory files for local conventions. The mistake I see most often is the inverse pattern. Teams pile every convention, every style rule, every "do not do this" rule into a single root CLAUDE.md that grows to 2,000 lines over six weeks. Claude tries to honor all of it, runs out of context space, and the team blames the model.
+**Generation over argument.** Generate the candidates and look at them instead of debating which is right.
 
-Three operational rules I have arrived at across client deployments:
+**Prototypes you then scale.** The old fear was getting attached to throwaway code. Now you prototype to learn, then scale to production fast. The prototype stops being a trap.
 
-**Lean.** The root CLAUDE.md should fit on one screen. Pointers, critical gotchas, and the highest-leverage conventions only. If the root file is more than 80 lines, it is doing too much.
+**Claude for the cross-functional gaps.** Designers make their own polish fixes instead of red-lining and handing to an engineering queue. Fun, who writes too verbosely, uses Claude to tighten copy. It augments where each person is weak.
 
-**Layered.** Claude walks up the directory tree and loads every CLAUDE.md file it finds along the way. Put module-specific conventions in module-specific files. Keep the root for things that apply everywhere.
+## What to keep
 
-**Audited.** Anthropic recommends reviewing CLAUDE.md every three to six months. I would tighten that: audit after every major model release. A rule that helped Sonnet 4.0 stay on track may actively constrain Sonnet 4.6 from doing something it handles natively.
+Some things do not move to the model, and protecting them is what lets you trust the rest.
 
-**Common mistake:** using CLAUDE.md for reusable expertise that belongs in a skill. If the same instruction would help across multiple projects, it is a skill. If it only applies to this codebase, it is CLAUDE.md.
+Human judgment on risk and trust boundaries. Legal reviews, anything about risk tolerance, anything crossing a trust boundary. This is trust-but-verify territory, and the verify is human. The more you automate everywhere else, the more important it is to be precise about where a human still has to sign off. Drawing that line clearly is what lets you move fast on everything that sits inside it.
 
-## Layer 2: Hooks
+Taste and product sense. Fun's example is small and exactly right. Last December she wanted to give Claude a holiday theme in the CLI and turn it into a snowman. She coded it up, asked a designer to review, and got told it looked nothing like a snowman, it looked like Mr. Peanut. She looked again and it was unmistakably a peanut. A model will not make that call for you. Taste is a human input, and no amount of throughput substitutes for it.
 
-The default use of hooks is guardrails. That is the boring use.
+Two engineering profiles to hire for: creative builders with product sense, and people with deep system expertise. As roles blur and Claude augments, these are the two she doubles down on. The hard parts still need humans who hold the whole system in their head and know what good looks like.
 
-The valuable use, which the Anthropic guide flags clearly, is continuous improvement. A stop hook that runs at session end can reflect on what happened, propose CLAUDE.md updates while context is fresh, and surface skill candidates. A start hook can load team-specific context dynamically.
+And build product sense deliberately, because people asked her how. Her answer: dogfood relentlessly. Anthropic calls it ant food. She joins a team and immediately starts using the product, because that is how you feel it in your bones and remember the problem you were trying to solve. For managers this is newly possible, because before Claude they often had no time to be in the codebase or the product at all. Then iterate, ship, and go talk to actual customers. Fun's passion project is small businesses; she onboarded restaurant-owner friends onto Co-work and got humbling feedback on an onboarding flow she thought was fine. The alternative is deciding off metrics, dashboards, and slide decks, which is how you slowly lose touch with what your product actually does.
 
-Three hook patterns worth implementing in your first week:
+## Org shape and rollout
 
-**The reflection hook.** At session end, ask the agent to summarize what was learned and propose updates. After two weeks of running this in a client deployment, the typical backlog is five to ten proposed CLAUDE.md changes worth reviewing.
+Flat and agile, and every manager starts as an IC first. Before taking on supporting people, they learn what it is to be an engineer on the team. For managers this is the moment to get maker hours back, because onboarding is far less daunting now. Fun shipped her first bug fix with test-driven development, which she used to treat like eating broccoli; with Claude writing the test scaffolding, the broccoli tax came off.
 
-**The dynamic context hook.** At session start, detect which module the developer is working in and load the relevant skills. Replaces "every developer configures manually" with "the environment knows itself."
+![Forcing functions from the top meeting bottoms-up adaptation from the bottom](diagram-3-rollout.png)
 
-**The enforcement hook.** For deterministic checks like linting and formatting, hooks beat instructions. Telling Claude to run the linter and Claude forgets 15% of the time means that 15% is your bug rate. A hook running unconditionally is 100% reliable.
+The rollout has two halves. Align top-down on a few forcing functions: everyone uses Claude Code and Co-work daily, claudify everything you can, and give explicit permission to kill old processes. Then leave room for bottoms-up adaptation: each pod decides how Claude shows up in triage, standups, and which workflow gets claudified first.
 
-**Common mistake:** putting things in CLAUDE.md that should be hooks. Instructions get forgotten under context pressure. Hooks do not.
+The permission-to-kill function matters because people do not delete processes on their own. They pile up. Fun was once on a team with so many SLAs, one for P0 bugs, one for incident response, on and on, that engineers came to her asking which SLA they were even supposed to satisfy in a 24-hour day. Nobody had ever scheduled the audit. Removing a process has to be somebody's explicit, blessed job, or it never happens. And keep revisiting, because the models keep improving. What Claude could not do three months ago it may handle now, which means the audit is not one-time hygiene, it is how you catch the capabilities that quietly became available.
 
-## Layer 3: Skills
+## How to know it is working
 
-Skills are the answer to "I keep needing this expertise but only sometimes." They load on demand, which means they do not compete with CLAUDE.md for the always-loaded budget.
+Onboarding ramp-up time drops. The span from a new engineer joining to landing their first PR shrinks, and so does the cost to existing teammates, because new joiners ask Claude the questions they used to ask a busy colleague. Fun points out a nice side effect: managers stop feeling guilty about getting back into the codebase, because they are no longer taking an engineer's time to learn an area, they are asking Claude.
 
-The Anthropic frame is "progressive disclosure." Not everything needs to be in front of Claude at the same time. A security review skill loads when Claude is assessing code for vulnerabilities. A deployment skill loads when work is in the payments service. The path-scoping mechanism is the operationally useful detail: skills can be bound to specific directories so they only auto-load where they apply.
+PR cycle time drops, but measure it in pieces. This one has a trap. If your PR cycle time is not dropping, it does not automatically mean you are failing to adopt AI. The jam might be elsewhere in the queue, your build or CI failing to keep up with the new throughput. Break the cycle time into its funnel stages and find the stage that is actually the constraint now.
 
-**Common mistake:** loading everything into CLAUDE.md instead of building skills. CLAUDE.md becomes the dumping ground, performance degrades because every session reads 2,000 lines of mostly-irrelevant context, and skills never get built. This is the single biggest configuration pathology I see in client teams.
+Claude-assisted commits climb. On the Claude Code team, nearly every commit in recent months has been Claude-assisted.
 
-The fix is mechanical. Any time you find yourself writing a chunk of CLAUDE.md that starts with "when doing X, do Y," ask whether X is a recurring task type. If yes, it is a skill. Move it.
+The signal that beats all the throughput numbers: measure whatever your product is actually trying to improve. Throughput going up is meaningless if the product is not getting better. Find the metric that maps to the thing you are building, and watch that.
 
-## Layer 4: Plugins
+She was also honest that the work is unfinished. Open questions the team is still sitting with: do you still need separate iOS and Android orgs when engineers can flex across platforms? How far do you push fully automated reviews before you lose something that mattered? These are not cracks in the approach. They are what the frontier looks like when you are standing on it.
 
-Plugins are the distribution mechanism. They bundle skills, hooks, and MCP configurations into a single installable package.
+## The exercise to run this week
 
-The point that lands hardest: good setups tend to stay tribal. One engineer figures out a great configuration, the team next to them rebuilds the same thing from scratch six months later, the second version is slightly worse, the cycle continues.
+Pick your noisiest workflow. The highest-tax one, or the meeting nobody enjoys where everyone is on their laptop except to give status. For that one workflow, ask two questions. Is it still serving its purpose? And if it is expensive, could Claude do it instead?
 
-Plugins solve this by making the setup itself a shareable artifact. New engineer day one installs the company plugin. Same context, same skills, same MCP connections as everyone who has been using Claude Code for six months.
+Then do the next one. One workflow at a time.
 
-**Common mistake:** trying to centrally author every plugin from one team. The pattern that works is letting teams build their own plugins, with a centralized curation function approving what goes into the company-wide marketplace.
+That is the method. AI-native is not a tool you install. It is a sequence of small acts of letting go, each backed by something you trust, with a short list of things you refuse to give up.
 
-## Layer 5: LSP integrations
+What is your noisiest workflow? Reply and tell me. I want to know which ones are hardest to give up.
 
-This is the highest-value-per-effort layer for multi-language codebases. Anthropic flags one customer who deployed LSP integrations org-wide before their Claude Code rollout, specifically to make C and C++ navigation reliable at scale.
-
-Without LSP, Claude pattern-matches on text. Grep for `processOrder` returns dozens of matches across languages, comments, deleted code in stale branches, and different functions with the same name. Claude opens files trying to figure out which one matters. Context burns.
-
-With LSP, the search happens at the symbol level. The language server returns only the references that point to the same symbol. Claude reads what it needs and nothing else. For C, C++, Java, C#, Go, and Rust codebases especially, this is the single highest-leverage configuration change.
-
-**Common mistake:** assuming LSP integration is automatic. It is not. The plugin layer activates it. If your team is on a typed language and not using LSP, the rollout is fighting against itself.
-
-## Layer 6: MCP servers
-
-MCP servers are how Claude connects to internal tools, data sources, and APIs it cannot otherwise reach. The most sophisticated teams build MCP servers that expose structured search as a tool Claude can call directly.
-
-That detail is worth slowing down on. Structured search as an MCP tool means your team's existing code search infrastructure (Sourcegraph, internal indexers) becomes something Claude can query alongside its native grep and file traversal. This is not a replacement for agentic search. It is an addition.
-
-The pattern at the most mature deployments: Notion MCP for product docs and specs. Linear MCP for ticket context. An internal search MCP for code search at scale. A custom MCP for the analytics platform. Each gives Claude access to a source of truth it could not otherwise reach.
-
-**Common mistake the Anthropic guide flags:** building MCP connections before the basics are working. Teams discover MCP, get excited, spend two weeks wiring up integrations with Jira, Confluence, Datadog, Sentry, then wonder why Claude is not producing quality output. The model has access to every tool in the company and no idea what to do with any of it because CLAUDE.md, hooks, and skills were never set up.
-
-MCP is the last layer. Build the others first.
-
-## Subagents
-
-Subagents work differently from the six layers above. They are a delegation capability, available whenever you need them, configured nowhere upfront.
-
-The pattern Anthropic flags is "split exploration from editing." Spin up a read-only subagent to map a subsystem and write findings to a file. Then have the main agent edit with the full picture. The subagent burns its own context window on the mapping work without polluting the editor agent's context.
-
-Two other patterns worth knowing: parallel exploration (three subagents map three different subsystems in parallel; main agent gets three small writeups) and specialized review (a subagent with a security-review skill reviews a change before the main agent commits).
-
-## Three patterns that travel
-
-![Three columns showing the three patterns: make the codebase legible to Claude, keep the harness current as models evolve, and assign ownership from day one](diagram-3-three-patterns.png)
-
-**Make the codebase legible.** Layered CLAUDE.md files, initialization in subdirectories rather than at the repo root, test and lint commands scoped per directory, `.ignore` files for generated content, codebase maps when the directory structure does not do the work, LSP running so search happens at the symbol level. Every one of these is a small investment. The compound effect is what makes Claude Code work at scale.
-
-**Keep the harness current.** Models evolve. Instructions written for the model you have today can work against the model you will have in six months. Anthropic recommends reviewing configurations every three to six months. I would add: do an audit after every major model release, not just on the calendar.
-
-**Assign ownership.** This is the pattern most engineering organizations get wrong. Technical configuration alone does not drive adoption. The rollouts that spread fastest had a dedicated infrastructure investment before broad access. A small team, sometimes just one person, wired up the tooling so Claude already fit developer workflows when they first touched it. The Anthropic guide identifies an emerging role here: the agent manager. A hybrid PM-engineer function dedicated to managing the Claude Code ecosystem.
-
-## What to do this week
-
-If you are running Claude Code with a team and have not done the harness work yet, here is the order I would take it in.
-
-**Day 1.** Audit your CLAUDE.md files. Are they lean? Are they layered? Is the root file under 80 lines? If not, this is the highest-leverage thing you can fix today.
-
-**Day 2.** Identify one feedback hook to build. The reflection hook is the best starting point. Five to ten lines of shell. Run at session end. Output goes to a log the DRI reviews weekly.
-
-**Day 3.** Build or audit your first plugin. If the team has any tribal configuration, package it.
-
-**This month.** Wire up LSP for your primary language if you are on a typed language. Identify one MCP integration that would unblock workflow friction.
-
-**This quarter.** Assign a DRI if you have not. Establish a plugin marketplace. Run the cross-functional working group Anthropic recommends.
-
-## What is coming next
-
-The next two newsletter issues will continue this thread:
-
-- **The reflection hook walkthrough.** The actual shell script that surfaces CLAUDE.md update candidates after every session. Five to ten lines, working with Claude Code, output format that turns into a Monday morning review ritual.
-- **Plugin marketplace patterns.** What the successful internal marketplaces look like, who owns curation, the approval flow, and the rollback mechanism. Pulled from three client deployments.
-
-**One open question:** how many CLAUDE.md files are in your repo right now, and is the root one under 80 lines? Be honest. (Mine had 1,200 lines a month ago. Now it has 60. The other 1,140 lines are skill files.)
-
-Until next week.
+Until next week,
 
 Marco
 
 ---
 
-*Autocomplete is a free weekly newsletter on practical AI implementation. If you are not subscribed yet, the button above this paragraph is the easiest way to fix that. If you are already subscribed, forwarding this to one engineering lead who would benefit is the single best thing you can do for me.*
-
-*Source article: Anthropic, "How Claude Code works in large codebases: Best practices and where to start." May 14, 2026.*
+*Marco Kotrotsos writes Autocomplete, a free newsletter on practical AI for people actually shipping it. Source talk: Running an AI-Native Engineering Org by Fiona Fun at Code with Claude. https://www.youtube.com/watch?v=IA5LWIGqnyM*

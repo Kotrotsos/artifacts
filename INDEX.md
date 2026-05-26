@@ -228,3 +228,4 @@
 | 2026-05-25 | project7 | reports | [askwell-pitch-deck.html](projects/project7/reports/askwell-pitch-deck.html) | AskWell pitch deck: 11 clean slides covering problem, product, wedge, market, business model, path to 1M ARR |
 | 2026-05-26 | project7 | reports | [askwell-pitch-deck.html](projects/project7/reports/askwell-pitch-deck.html) | AskWell pitch deck v2 with interactive live-demo slide (animated interview to conflict map) |
 | 2026-05-26 | content | reports | [draft.md](projects/content/reports/draft.md) | AI-native engineering org trifecta (let go and trust): draft.md |
+| 2026-05-26 | content | reports | [substack-version.md](projects/content/reports/substack-version.md) | AI-native engineering org trifecta (let go and trust): substack-version.md |
