@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netherlands — World Cup 2026 Team Card</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --surface:#ffffff; --surface-2:#fafbfc; --border:#e4e7eb;
+    --text:#15181d; --muted:#6b7280; --accent:#ff6a00; --accent-soft:#fff1e6;
+    --blue:#1d3a8a; --good:#16a34a; --bad:#dc2626; --shadow:0 1px 3px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.05);
+  }
+  [data-theme="dark"]{
+    --bg:#0e1116; --surface:#171b22; --surface-2:#1d2229; --border:#2a313b;
+    --text:#e8eaed; --muted:#9aa3af; --accent:#ff7a1a; --accent-soft:#33230f;
+    --blue:#6f8fe0; --shadow:0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;
+    padding:32px 20px;
+  }
+  .wrap{max-width:980px;margin:0 auto}
+  .toolbar{display:flex;justify-content:flex-end;margin-bottom:16px;gap:8px}
+  .toggle{
+    border:1px solid var(--border);background:var(--surface);color:var(--text);
+    border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer;font-family:inherit;
+  }
+  .toggle:hover{border-color:var(--accent)}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+
+  .hero{position:relative;padding:28px 28px 24px;background:linear-gradient(135deg,var(--accent) 0%,#ff8c3a 100%);color:#fff}
+  .hero .flag{display:flex;height:10px;border-radius:4px;overflow:hidden;width:60px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+  .flag i{flex:1}.flag .r{background:#ae1c28}.flag .w{background:#fff}.flag .b{background:#21468b}
+  .hero h1{font-size:30px;font-weight:800;letter-spacing:-.5px}
+  .hero .nick{font-size:14px;opacity:.92;margin-top:2px}
+  .hero .rankbadge{position:absolute;top:24px;right:24px;background:rgba(255,255,255,.18);
+    border:1px solid rgba(255,255,255,.4);border-radius:12px;padding:10px 16px;text-align:center;backdrop-filter:blur(4px)}
+  .hero .rankbadge b{font-size:24px;display:block;line-height:1}
+  .hero .rankbadge span{font-size:10px;letter-spacing:1px;text-transform:uppercase;opacity:.9}
+
+  .meta{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+  .meta div{background:var(--surface);padding:14px 16px}
+  .meta .k{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}
+  .meta .v{font-size:15px;font-weight:600;margin-top:3px}
+
+  section{padding:24px 28px;border-top:1px solid var(--border)}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:16px;font-weight:700}
+  .diagram{width:100%;height:auto}
+
+  .fixtures{display:grid;gap:10px}
+  .fix{display:grid;grid-template-columns:64px 1fr auto;align-items:center;gap:14px;
+    background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px 16px}
+  .fix .date{font-weight:700;font-size:13px;text-align:center;color:var(--accent);line-height:1.2}
+  .fix .date small{display:block;color:var(--muted);font-weight:500;font-size:11px}
+  .fix .opp{font-weight:600}
+  .fix .opp small{display:block;color:var(--muted);font-weight:400;font-size:12px}
+  .fix .md{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border)}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600}
+  tbody tr:hover{background:var(--surface-2)}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .posrow td{background:var(--accent-soft);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);padding:6px 10px}
+  .pname{font-weight:600}
+  .out{opacity:.55}
+  .tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:6px;background:var(--bad);color:#fff;margin-left:6px;font-weight:600;letter-spacing:.3px}
+  .cap{display:inline-block;font-size:9px;padding:1px 5px;border-radius:4px;border:1px solid var(--accent);color:var(--accent);margin-left:6px;font-weight:700;vertical-align:middle}
+
+  .bars{display:grid;gap:8px}
+  .bar{display:grid;grid-template-columns:150px 1fr 46px;align-items:center;gap:10px;font-size:12px}
+  .bar .lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bar .lbl span{color:var(--muted)}
+  .bar .track{background:var(--surface-2);border-radius:6px;height:20px;overflow:hidden;border:1px solid var(--border)}
+  .bar .fill{height:100%;background:linear-gradient(90deg,var(--accent),#ff9a52);border-radius:6px}
+  .bar .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+
+  .note{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.6}
+  footer{padding:18px 28px;font-size:11px;color:var(--muted);border-top:1px solid var(--border)}
+
+  @media (max-width:640px){
+    .meta{grid-template-columns:repeat(2,1fr)}
+    .bar{grid-template-columns:110px 1fr 40px}
+    table{font-size:12px} th,td{padding:6px 6px}
+  }
+  @media print{
+    body{background:#fff;padding:0}.toolbar{display:none}
+    .card{box-shadow:none;border:none}
+    section,.meta div,.fix{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="toolbar">
+    <button class="toggle" id="themeBtn">Theme: System</button>
+  </div>
+
+  <div class="card">
+    <div class="hero">
+      <div class="flag"><i class="r"></i><i class="w"></i><i class="b"></i></div>
+      <h1>Netherlands</h1>
+      <div class="nick">Oranje · Clockwork Orange · UEFA</div>
+      <div class="rankbadge"><b>#7</b><span>FIFA Rank</span></div>
+    </div>
+
+    <div class="meta">
+      <div><div class="k">Head Coach</div><div class="v">Ronald Koeman</div></div>
+      <div><div class="k">Captain</div><div class="v">Virgil van Dijk</div></div>
+      <div><div class="k">WC 2026 Group</div><div class="v">Group F</div></div>
+      <div><div class="k">All-time Top Scorer</div><div class="v">M. Depay (55)</div></div>
+    </div>
+
+    <section>
+      <h2>Group F — Draw Diagram</h2>
+      <svg class="diagram" viewBox="0 0 800 320" role="img" aria-label="Group F diagram">
+        <g stroke="var(--accent)" stroke-width="2" opacity="0.55">
+          <line x1="400" y1="160" x2="150" y2="80"/>
+          <line x1="400" y1="160" x2="650" y2="80"/>
+          <line x1="400" y1="160" x2="650" y2="250"/>
+        </g>
+        <g font-size="11" fill="var(--muted)" text-anchor="middle" font-family="sans-serif">
+          <text x="265" y="105">Jun 14 · Dallas</text>
+          <text x="535" y="105">Jun 20 · Houston</text>
+          <text x="535" y="220">Jun 25 · Kansas City</text>
+        </g>
+        <g>
+          <circle cx="400" cy="160" r="52" fill="var(--accent)"/>
+          <text x="400" y="156" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" font-family="sans-serif">NED</text>
+          <text x="400" y="174" text-anchor="middle" font-size="10" fill="#fff" opacity="0.9" font-family="sans-serif">Netherlands</text>
+        </g>
+        <g font-family="sans-serif">
+          <circle cx="150" cy="80" r="40" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+          <text x="150" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">JPN</text>
+          <text x="150" y="94" text-anchor="middle" font-size="9" fill="var(--muted)">Japan</text>
+          <circle cx="650" cy="80" r="40" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+          <text x="650" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">SWE</text>
+          <text x="650" y="94" text-anchor="middle" font-size="9" fill="var(--muted)">Sweden</text>
+          <circle cx="650" cy="250" r="40" fill="var(--surface-2)" stroke="var(--border)" stroke-width="2"/>
+          <text x="650" y="248" text-anchor="middle" font-size="13" font-weight="700" fill="var(--text)">TUN</text>
+          <text x="650" y="264" text-anchor="middle" font-size="9" fill="var(--muted)">Tunisia</text>
+        </g>
+      </svg>
+    </section>
+
+    <section>
+      <h2>Group Stage Fixtures</h2>
+      <div class="fixtures">
+        <div class="fix"><div class="date">Jun 14<small>16:00 ET</small></div>
+          <div class="opp">vs Japan<small>AT&amp;T Stadium · Dallas (Arlington), TX</small></div><div class="md">MD 1</div></div>
+        <div class="fix"><div class="date">Jun 20<small>13:00 ET</small></div>
+          <div class="opp">vs Sweden<small>NRG Stadium · Houston, TX</small></div><div class="md">MD 2</div></div>
+        <div class="fix"><div class="date">Jun 25<small>19:00 ET</small></div>
+          <div class="opp">vs Tunisia<small>Arrowhead Stadium · Kansas City, MO</small></div><div class="md">MD 3</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Provisional Squad <span style="text-transform:none;letter-spacing:0;font-weight:400">(2025-26 club stats)</span></h2>
+      <table>
+        <thead><tr><th>Player</th><th>Club</th><th class="num">Age</th><th class="num">Caps</th><th class="num">Int. G</th><th class="num">Club G</th><th class="num">Club A</th><th class="num">Value €m</th></tr></thead>
+        <tbody id="squadBody"></tbody>
+      </table>
+      <p class="note">Caps / Int. G = international caps and goals. Club G/A = goals/assists in 2025-26 (competition scope varies per player; see <code>data/netherlands/sources.md</code>). Xavi Simons is ruled out (ACL rupture, 25 Apr 2026). Squad provisional until official announcement 27 May 2026.</p>
+    </section>
+
+    <section>
+      <h2>Squad Market Value (Top 10, € million)</h2>
+      <div class="bars" id="valueBars"></div>
+    </section>
+
+    <footer>
+      Data collected 2026-05-26 · Sources: Wikipedia, FIFA.com, FotMob, Transfermarkt · Part of the World Cup 2026 ML prediction dataset.
+    </footer>
+  </div>
+</div>
+
+<script>
+const squad = [
+  {n:"Bart Verbruggen",pos:"GK",club:"Brighton",age:23,caps:27,ig:0,cg:0,ca:0,mv:40,status:"available"},
+  {n:"Mark Flekken",pos:"GK",club:"Bayer Leverkusen",age:32,caps:11,ig:0,cg:0,ca:null,mv:8,status:"available"},
+  {n:"Justin Bijlow",pos:"GK",club:"Genoa",age:28,caps:8,ig:0,cg:0,ca:0,mv:4,status:"available"},
+  {n:"Virgil van Dijk",pos:"DEF",club:"Liverpool",age:34,caps:90,ig:12,cg:8,ca:3,mv:18,status:"available",cap:true},
+  {n:"Stefan de Vrij",pos:"DEF",club:"Inter Milan",age:34,caps:79,ig:4,cg:0,ca:0,mv:3.5,status:"available"},
+  {n:"Denzel Dumfries",pos:"DEF",club:"Inter Milan",age:30,caps:71,ig:11,cg:5,ca:1,mv:25,status:"available"},
+  {n:"Nathan Aké",pos:"DEF",club:"Manchester City",age:31,caps:58,ig:5,cg:0,ca:0,mv:15,status:"available"},
+  {n:"Micky van de Ven",pos:"DEF",club:"Tottenham",age:25,caps:19,ig:1,cg:4,ca:1,mv:65,status:"available"},
+  {n:"Jeremie Frimpong",pos:"DEF",club:"Liverpool",age:25,caps:15,ig:1,cg:0,ca:2,mv:35,status:"available"},
+  {n:"Jan Paul van Hecke",pos:"DEF",club:"Brighton",age:25,caps:10,ig:0,cg:3,ca:3,mv:35,status:"available"},
+  {n:"Jorrel Hato",pos:"DEF",club:"Chelsea",age:20,caps:7,ig:0,cg:0,ca:0,mv:35,status:"available"},
+  {n:"Tijjani Reijnders",pos:"MID",club:"Manchester City",age:27,caps:30,ig:7,cg:5,ca:null,mv:60,status:"available"},
+  {n:"Teun Koopmeiners",pos:"MID",club:"Juventus",age:28,caps:27,ig:3,cg:0,ca:null,mv:20,status:"available"},
+  {n:"Ryan Gravenberch",pos:"MID",club:"Liverpool",age:24,caps:25,ig:1,cg:5,ca:5,mv:90,status:"available"},
+  {n:"Jerdy Schouten",pos:"MID",club:"PSV Eindhoven",age:29,caps:17,ig:0,cg:1,ca:2,mv:22,status:"available"},
+  {n:"Quinten Timber",pos:"MID",club:"Marseille",age:24,caps:8,ig:1,cg:0,ca:0,mv:25,status:"available"},
+  {n:"Luciano Valente",pos:"MID",club:"Feyenoord",age:22,caps:2,ig:0,cg:2,ca:6,mv:20,status:"available"},
+  {n:"Kees Smit",pos:"MID",club:"AZ Alkmaar",age:20,caps:0,ig:0,cg:4,ca:8,mv:null,status:"available"},
+  {n:"Memphis Depay",pos:"FWD",club:"Corinthians",age:32,caps:108,ig:55,cg:1,ca:null,mv:null,status:"available"},
+  {n:"Wout Weghorst",pos:"FWD",club:"Ajax",age:33,caps:51,ig:14,cg:8,ca:4,mv:null,status:"available"},
+  {n:"Donyell Malen",pos:"FWD",club:"AS Roma",age:27,caps:51,ig:13,cg:14,ca:2,mv:35,status:"available"},
+  {n:"Cody Gakpo",pos:"FWD",club:"Liverpool",age:27,caps:48,ig:19,cg:8,ca:4,mv:65,status:"available"},
+  {n:"Noa Lang",pos:"FWD",club:"Galatasaray",age:26,caps:15,ig:3,cg:2,ca:3,mv:22,status:"available"},
+  {n:"Brian Brobbey",pos:"FWD",club:"Sunderland",age:24,caps:null,ig:1,cg:7,ca:1,mv:25,status:"available"},
+  {n:"Xavi Simons",pos:"MID",club:"Tottenham",age:23,caps:34,ig:6,cg:5,ca:null,mv:50,status:"OUT"}
+];
+
+const posNames={GK:"Goalkeepers",DEF:"Defenders",MID:"Midfielders",FWD:"Forwards"};
+const order=["GK","DEF","MID","FWD"];
+const fmt=v=>(v===null||v===undefined)?"—":String(v);
+
+function cell(text,cls){const td=document.createElement('td');if(cls)td.className=cls;td.textContent=text;return td;}
+
+const body=document.getElementById('squadBody');
+order.forEach(pos=>{
+  const hr=document.createElement('tr');hr.className='posrow';
+  const hc=document.createElement('td');hc.colSpan=8;hc.textContent=posNames[pos];
+  hr.appendChild(hc);body.appendChild(hr);
+  squad.filter(p=>p.pos===pos).forEach(p=>{
+    const r=document.createElement('tr');
+    if(p.status!=="available")r.className='out';
+    const name=document.createElement('td');name.className='pname';
+    name.appendChild(document.createTextNode(p.n));
+    if(p.cap){const s=document.createElement('span');s.className='cap';s.textContent='C';name.appendChild(s);}
+    if(p.status!=="available"){const s=document.createElement('span');s.className='tag';s.textContent='OUT';name.appendChild(s);}
+    r.appendChild(name);
+    r.appendChild(cell(p.club));
+    r.appendChild(cell(fmt(p.age),'num'));
+    r.appendChild(cell(fmt(p.caps),'num'));
+    r.appendChild(cell(fmt(p.ig),'num'));
+    r.appendChild(cell(fmt(p.cg),'num'));
+    r.appendChild(cell(fmt(p.ca),'num'));
+    r.appendChild(cell(fmt(p.mv),'num'));
+    body.appendChild(r);
+  });
+});
+
+const top=squad.filter(p=>p.mv&&p.status==="available").sort((a,b)=>b.mv-a.mv).slice(0,10);
+const max=Math.max.apply(null,top.map(p=>p.mv));
+const bars=document.getElementById('valueBars');
+top.forEach(p=>{
+  const row=document.createElement('div');row.className='bar';
+  const lbl=document.createElement('div');lbl.className='lbl';
+  lbl.appendChild(document.createTextNode(p.n.split(' ').slice(-1)[0]+' '));
+  const sp=document.createElement('span');sp.textContent=p.club;lbl.appendChild(sp);
+  const track=document.createElement('div');track.className='track';
+  const fill=document.createElement('div');fill.className='fill';fill.style.width=(p.mv/max*100).toFixed(1)+'%';
+  track.appendChild(fill);
+  const val=document.createElement('div');val.className='val';val.textContent=p.mv;
+  row.appendChild(lbl);row.appendChild(track);row.appendChild(val);
+  bars.appendChild(row);
+});
+
+const btn=document.getElementById('themeBtn');
+const modes=["system","light","dark"];let i=0;
+const mq=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(){
+  const m=modes[i];
+  const eff=m==="system"?(mq.matches?"dark":"light"):m;
+  document.documentElement.setAttribute('data-theme',eff);
+  btn.textContent="Theme: "+m.charAt(0).toUpperCase()+m.slice(1);
+}
+btn.onclick=()=>{i=(i+1)%3;apply();};
+mq.addEventListener('change',()=>{if(modes[i]==="system")apply();});
+apply();
+</script>
+</body>
+</html>
