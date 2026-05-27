@@ -255,3 +255,4 @@
 | 2026-05-26 | pool | reports | [forecast.html](projects/pool/reports/forecast.html) | WC2026 forecast v3 (goal-rating model): Argentina 18%, Spain 13%, Brazil 11% |
 | 2026-05-26 | pool | reports | [index.html](projects/pool/reports/index.html) | WC2026 prediction hub: home page with title-odds podium + nav to teams/forecast/model |
 | 2026-05-26 | pool | reports | [model-card.html](projects/pool/reports/model-card.html) | WC2026 model card: standardized model summary, performance, limitations |
+| 2026-05-27 | definitive-book | other | [from-vibe-to-production.epub](projects/definitive-book/other/from-vibe-to-production.epub) | EPUB3 eBook color Kindle-ready |
