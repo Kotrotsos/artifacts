@@ -25,3 +25,4 @@
 | 2026-05-27 | reports | [signals.html](reports/signals.html) | WC2026 signals.html (v4 signal-adjusted, live) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/signals.html |
 | 2026-05-27 | reports | [signals-backtest.html](reports/signals-backtest.html) | WC2026 signal-layer backtest report (agent team): magnitude harmless, momentum gain was test-set artifact, keep v3 as engine | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/signals-backtest.html |
 | 2026-05-27 | reports | [model-card.html](reports/model-card.html) | WC2026 model-card.html (current v3 prediction numbers for infographic) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/model-card.html |
+| 2026-05-27 | reports | [course.html](reports/course.html) | WC2026 course.html (current v3 prediction numbers for infographic) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/course.html |
