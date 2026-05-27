@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KDP Submission Playbook — From Vibe to Production</title>
+<style>
+:root{
+  --bg:#ffffff; --fg:#1a1a1a; --muted:#6b6560; --line:#e4ded6;
+  --card:#faf7f2; --accent:#FF5A4D; --code-bg:#f3efe9; --ok:#2f7d52;
+  --maxw:860px;
+}
+:root[data-theme="dark"]{
+  --bg:#16140f; --fg:#ece7df; --muted:#a39c92; --line:#332f28;
+  --card:#1f1c16; --accent:#FF6F63; --code-bg:#23201a; --ok:#6fcf97;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;font-size:16px;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:48px 24px 96px;}
+h1{font-size:30px;line-height:1.15;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0 0 28px}
+h2{font-size:21px;margin:42px 0 10px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:16px;margin:24px 0 8px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+p{margin:10px 0}
+ol,ul{margin:10px 0;padding-left:22px}
+li{margin:6px 0}
+code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin:14px 0}
+.copy{position:relative}
+.copy pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow:auto;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;white-space:pre-wrap;margin:6px 0}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:14px;font-weight:600}
+.pill{display:inline-block;background:var(--accent);color:#fff;font-size:12px;font-weight:600;padding:2px 9px;border-radius:20px;vertical-align:middle}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--card)}
+.note{border-left:3px solid var(--accent);background:var(--card);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+.toggle{position:fixed;top:14px;right:16px;display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:3px}
+.toggle button{border:0;background:none;color:var(--muted);font-size:12px;padding:5px 11px;border-radius:16px;cursor:pointer}
+.toggle button.active{background:var(--accent);color:#fff}
+.step{font-weight:600}
+.files td:first-child{white-space:nowrap}
+@media print{
+  .toggle{display:none}
+  body{font-size:11pt;color:#000;background:#fff}
+  h2{border-top:1px solid #ccc}
+  .card,.note,pre{border-color:#ccc!important;background:#fafafa!important}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<div class="toggle" role="group" aria-label="Theme">
+  <button data-set="light" class="active">Light</button>
+  <button data-set="dark">Dark</button>
+  <button data-set="system">System</button>
+</div>
+<div class="wrap">
+
+<h1>KDP Submission Playbook</h1>
+<p class="sub"><em>From Vibe to Production: The Definitive Guide to Shipping Real AI Agents</em> &mdash; everything you need to publish the eBook and the paperback yourself, in order.</p>
+
+<div class="note">
+You do the clicking; this page gives you every value to paste and every file to upload. Publish the <strong>eBook first</strong>, then add the paperback as a linked format so they share one product page. Budget ~30&ndash;45 minutes.
+</div>
+
+<h2>0. Before you start <span class="pill">one-time</span></h2>
+<ol>
+<li>Sign in at <code>kdp.amazon.com</code>.</li>
+<li>If this is your first title, finish <span class="step">account setup</span> under your account menu: the <strong>tax interview</strong> and <strong>bank/deposit details</strong>. Titles cannot be created until this is done.</li>
+<li>Have these files on hand (full paths below in section 5).</li>
+</ol>
+
+<h2>1. Create the Kindle eBook</h2>
+<p>Bookshelf &rarr; <span class="step">Create</span> &rarr; <span class="step">Kindle eBook</span>. Three tabs follow.</p>
+
+<h3>Tab 1 — Kindle eBook Details</h3>
+<table>
+<tr><th>Field</th><th>Value</th></tr>
+<tr><td>Language</td><td>English</td></tr>
+<tr><td>Book Title</td><td><code>From Vibe to Production</code></td></tr>
+<tr><td>Subtitle</td><td><code>The Definitive Guide to Shipping Real AI Agents</code></td></tr>
+<tr><td>Series</td><td>Leave blank</td></tr>
+<tr><td>Edition number</td><td><code>1</code></td></tr>
+<tr><td>Author</td><td>Primary: <code>Marco</code> / <code>Kotrotsos</code></td></tr>
+<tr><td>Contributors</td><td>None</td></tr>
+<tr><td>Publishing rights</td><td>Select <strong>&ldquo;I own the copyright and hold the publishing rights.&rdquo;</strong></td></tr>
+<tr><td>Primary audience (explicit content)</td><td>No</td></tr>
+<tr><td>Reading age</td><td>Leave blank (adult/professional)</td></tr>
+</table>
+
+<div class="label">Description (paste into the description box)</div>
+<div class="card">Use the editor's <strong>B</strong> button on the first line and <em>i</em> on the book title. The text:</div>
+<div class="copy"><pre>A working demo is not a shipped agent.
+
+You can wire up an AI agent in an afternoon. Getting it to run reliably in front of real users, every time, while you sleep, is a different discipline. This book is that discipline.
+
+From Vibe to Production walks the entire gap between a prototype that works once and an agent you can trust in production: the architecture that holds up, the evaluations that prove it works, the deployment that survives its first incident, and the team and business that grow around it.
+
+Inside, you will learn how to:
+- Strip an agent to the parts you can debug: a model, its tools, and a loop, without the framework cargo cult
+- Design the harness that turns a clever prompt into a reliable system
+- Decide when a capability should be a tool, a skill, or a subagent
+- Build an eval suite and wire it into CI so you catch regressions before users do
+- Draw the trust boundary between what runs unsupervised and what a human signs off
+- Ship a managed agent, decide whether you actually need multi-agent, and run an AI-native team
+- Find the durable advantage when everyone has the same models
+
+Written for engineers and engineering leaders building agents right now, this is a practitioner's field guide, not a survey. Eighteen chapters, each ending with concrete Ship Notes you can act on the same day.
+
+If you have shipped a demo that impressed the room and then wondered what it would take to put it in production, start here.</pre></div>
+<p style="font-size:13px;color:var(--muted)">HTML version (if you publish via a tool that takes HTML) is stored in <code>.claude/kdp.local.md</code> under <code>kdp.blurb</code>.</p>
+
+<div class="label">Keywords (7 boxes, one phrase each)</div>
+<div class="copy"><pre>LLM application development
+machine learning systems design
+model evaluation and testing
+prompt engineering handbook
+deploying language models
+MLOps for engineers
+autonomous software workflows</pre></div>
+
+<div class="label">Categories (choose up to 3)</div>
+<ul>
+<li>COMPUTERS &rsaquo; Artificial Intelligence &rsaquo; General</li>
+<li>COMPUTERS &rsaquo; Software Development &amp; Engineering &rsaquo; General</li>
+<li>COMPUTERS &rsaquo; Data Science &rsaquo; Machine Learning Applications</li>
+</ul>
+<p style="font-size:13px;color:var(--muted)">After publishing you can ask KDP support to add more (up to 10). Good extras: AI &rsaquo; Natural Language Processing, Programming &rsaquo; General.</p>
+
+<h3>Tab 2 — Kindle eBook Content</h3>
+<ol>
+<li>Manuscript: <span class="step">Upload eBook manuscript</span> &rarr; choose <code>from-vibe-to-production.epub</code>.</li>
+<li>Cover: <span class="step">Upload it</span> &rarr; choose <code>ebook-cover.jpg</code> (1600&times;2560).</li>
+<li>ISBN: not needed for eBook (Amazon assigns a free ASIN).</li>
+<li>Wait for conversion, then open the <span class="step">Kindle Previewer</span> and spot-check a few chapters, the TOC links, and an image.</li>
+</ol>
+
+<h3>Tab 3 — Kindle eBook Pricing</h3>
+<table>
+<tr><th>Setting</th><th>Recommendation</th></tr>
+<tr><td>KDP Select (90-day Amazon exclusive)</td><td>Your call. Enroll if you want Kindle Unlimited page reads and launch promos and are fine being Amazon-only for 90 days. Skip if you plan to sell on Apple/Kobo soon.</td></tr>
+<tr><td>Royalty tier</td><td><strong>70%</strong></td></tr>
+<tr><td>List price (US)</td><td><strong>$9.99</strong> (top of the 70% band; ~$6.70 royalty after the ~$0.42 delivery fee)</td></tr>
+<tr><td>Other marketplaces</td><td>Let KDP auto-convert from USD</td></tr>
+</table>
+<p>Click <span class="step">Publish Your Kindle eBook</span> when you are ready. Review takes 24&ndash;72 hours.</p>
+
+<h2>2. Add the Paperback</h2>
+<p>From the same title on your Bookshelf, choose <span class="step">Create Paperback</span> (links it to the eBook so they share one product page). Most details copy over; verify them.</p>
+
+<h3>Paperback Details</h3>
+<p>Title, subtitle, author, description, keywords, categories: <strong>identical to the eBook</strong> (above). Confirm they carried over.</p>
+
+<h3>Paperback Content</h3>
+<table>
+<tr><th>Setting</th><th>Value</th></tr>
+<tr><td>ISBN</td><td>Get a <strong>free KDP ISBN</strong></td></tr>
+<tr><td>Print options</td><td>Black &amp; white interior on <strong>white</strong> paper</td></tr>
+<tr><td>Trim size</td><td><strong>6 &times; 9 in</strong></td></tr>
+<tr><td>Bleed</td><td>No bleed (text interior)</td></tr>
+<tr><td>Cover finish</td><td>Matte or glossy (your taste; matte suits this design)</td></tr>
+<tr><td>Manuscript upload</td><td><code>from-vibe-to-production-interior-6x9.pdf</code> (360 pp)</td></tr>
+<tr><td>Cover upload</td><td><code>from-vibe-to-production-fullwrap-6x9.pdf</code> (spine sized for 360 pp)</td></tr>
+</table>
+<div class="note">After upload, open the <span class="step">Print Previewer</span> and check: title/spine alignment, margins not cut off, images legible in grayscale. The cover was built for exactly 360 pages; if the page count ever changes, the spine must be rebuilt.</div>
+
+<h3>Paperback Pricing</h3>
+<p>Printing cost (US, 6&times;9 B&amp;W white, 360 pp): <code>$1.00 fixed + 360 &times; $0.012 = <strong>$5.32</strong></code>. Minimum list price for the 60% royalty is about <strong>$8.87</strong>.</p>
+<table>
+<tr><th>List price (US)</th><th>Royalty per sale</th></tr>
+<tr><td><strong>$19.99</strong> (recommended)</td><td>~$6.67</td></tr>
+<tr><td>$24.99 (premium)</td><td>~$9.67</td></tr>
+</table>
+<p>Order a <span class="step">proof copy</span> (~$5&ndash;$10) before approving, then click <span class="step">Publish Your Paperback</span>. Paperback review takes up to 5 business days.</p>
+
+<h2>3. After publishing</h2>
+<ul>
+<li>Claim your author page at <code>authorcentral.amazon.com</code> and paste the bio (section 5).</li>
+<li>Verify the listing once live: &ldquo;Look Inside,&rdquo; category placement, the Buy button.</li>
+<li>If you skipped KDP Select, the eBook can later be sold on other stores.</li>
+</ul>
+
+<h2>4. Pricing recap</h2>
+<table>
+<tr><th>Format</th><th>Price (US)</th><th>Royalty model</th><th>~Net per sale</th></tr>
+<tr><td>Kindle eBook</td><td>$9.99</td><td>70% &minus; ~$0.42 delivery</td><td>~$6.70</td></tr>
+<tr><td>Paperback 6&times;9 B&amp;W</td><td>$19.99</td><td>60% &minus; $5.32 print</td><td>~$6.67</td></tr>
+</table>
+
+<h2>5. Files and copy blocks</h2>
+<p class="label">All paths are under <code>/Users/marcokotrotsos/PERSONAL/Content/drafts/definitive-book/</code></p>
+<table class="files">
+<tr><th>Use</th><th>File</th></tr>
+<tr><td>eBook manuscript</td><td><code>book/output/from-vibe-to-production.epub</code></td></tr>
+<tr><td>eBook cover</td><td><code>book/images/ebook-cover.jpg</code></td></tr>
+<tr><td>Paperback interior</td><td><code>book/output/from-vibe-to-production-interior-6x9.pdf</code></td></tr>
+<tr><td>Paperback cover</td><td><code>book/output/from-vibe-to-production-fullwrap-6x9.pdf</code></td></tr>
+<tr><td>All listing values</td><td><code>.claude/kdp.local.md</code></td></tr>
+</table>
+
+<div class="label">Author bio (Author Central + product page)</div>
+<div class="copy"><pre>Marco Kotrotsos specializes in practical AI implementation for organizations ready to close the gap between AI hype and AI value. With 30 years in IT now focused entirely on AI deployment, he works hands-on with companies to turn AI potential into measurable business outcomes. He writes Autocomplete, a newsletter on real-world AI for practitioners and decision-makers. From Vibe to Production distills that hands-on work into a field guide for the engineers who are actually shipping agents.</pre></div>
+
+</div>
+<script>
+(function(){
+  var root=document.documentElement, btns=document.querySelectorAll('.toggle button');
+  var mq=window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode){
+    if(mode==='system'){root.setAttribute('data-theme', mq.matches?'dark':'light');}
+    else{root.setAttribute('data-theme', mode);}
+    btns.forEach(function(b){b.classList.toggle('active', b.dataset.set===mode);});
+    try{localStorage.setItem('kdp-theme', mode);}catch(e){}
+  }
+  btns.forEach(function(b){b.onclick=function(){apply(b.dataset.set);};});
+  mq.addEventListener('change',function(){if(localStorage.getItem('kdp-theme')==='system')apply('system');});
+  var saved='light';try{saved=localStorage.getItem('kdp-theme')||'light';}catch(e){}
+  apply(saved);
+})();
+</script>
+</body>
+</html>
