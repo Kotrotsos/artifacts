@@ -19,3 +19,4 @@
 | 2026-05-26 | reports | [model-card.html](reports/model-card.html) | WC2026 model card: standardized model summary, performance, limitations | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/model-card.html |
 | 2026-05-27 | reports | [bracket.html](reports/bracket.html) | WC2026 predicted knockout bracket (chalk): favourites advance, Argentina champion, ARG v ESP final | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/bracket.html |
 | 2026-05-27 | reports | [signals.html](reports/signals.html) | WC2026 qualitative signals card: news-signal layer (v4), effect on title odds, before/after | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/signals.html |
+| 2026-05-27 | reports | [forecast.html](reports/forecast.html) | WC2026 forecast.html (v4 signal-adjusted, live) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast.html |
