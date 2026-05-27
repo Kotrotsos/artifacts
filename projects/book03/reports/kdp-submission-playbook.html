@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KDP Submission Playbook — Claude Code for Everyone Else</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--muted:#6b6560;--line:#e4ded6;--card:#faf7f2;--accent:#c4715a;--code-bg:#f3f3f3;--maxw:860px;}
+:root[data-theme="dark"]{--bg:#16140f;--fg:#ece7df;--muted:#a39c92;--line:#332f28;--card:#1f1c16;--accent:#d98a6a;--code-bg:#23201a;}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;line-height:1.55;font-size:16px;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:48px 24px 96px;}
+h1{font-size:30px;line-height:1.15;margin:0 0 6px;}
+.sub{color:var(--muted);margin:0 0 28px}
+h2{font-size:21px;margin:42px 0 10px;padding-top:18px;border-top:1px solid var(--line)}
+h3{font-size:15px;margin:24px 0 8px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px}
+.copy pre{background:var(--code-bg);border:1px solid var(--line);border-radius:8px;padding:14px 16px;overflow:auto;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:13px;white-space:pre-wrap;margin:6px 0}
+.label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-top:14px;font-weight:600}
+.pill{display:inline-block;background:var(--accent);color:#fff;font-size:12px;font-weight:600;padding:2px 9px;border-radius:20px;vertical-align:middle}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}th{background:var(--card)}
+.note{border-left:3px solid var(--accent);background:var(--card);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+.step{font-weight:600}.files td:first-child{white-space:nowrap}
+.toggle{position:fixed;top:14px;right:16px;display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:3px}
+.toggle button{border:0;background:none;color:var(--muted);font-size:12px;padding:5px 11px;border-radius:16px;cursor:pointer}
+.toggle button.active{background:var(--accent);color:#fff}
+@media print{.toggle{display:none}body{font-size:11pt;color:#000;background:#fff}.card,.note,pre{border-color:#ccc!important;background:#fafafa!important}}
+</style></head>
+<body>
+<div class="toggle" role="group" aria-label="Theme">
+  <button data-set="light" class="active">Light</button><button data-set="dark">Dark</button><button data-set="system">System</button>
+</div>
+<div class="wrap">
+
+<h1>KDP Submission Playbook</h1>
+<p class="sub"><em>Claude Code for Everyone Else</em> &mdash; everything you need to publish the eBook and paperback yourself, in order.</p>
+<div class="note">You do the clicking; this page has every value to paste and every file to upload. Publish the <strong>eBook first</strong>, then add the paperback as a linked format. Budget ~30&ndash;45 minutes.</div>
+
+<h2>0. Before you start <span class="pill">one-time</span></h2>
+<ol>
+<li>Sign in at <code>kdp.amazon.com</code>.</li>
+<li>If this is your first title, finish <span class="step">account setup</span>: the <strong>tax interview</strong> and <strong>bank details</strong>. Nothing can be created until that is done.</li>
+</ol>
+
+<h2>1. Create the Kindle eBook</h2>
+<p>Bookshelf &rarr; <span class="step">Create</span> &rarr; <span class="step">Kindle eBook</span>.</p>
+<h3>Tab 1 — Details</h3>
+<table>
+<tr><th>Field</th><th>Value</th></tr>
+<tr><td>Language</td><td>English</td></tr>
+<tr><td>Book Title</td><td><code>Claude Code for Everyone Else</code></td></tr>
+<tr><td>Subtitle</td><td><code>The Complete Beginner's Guide to the Most Powerful Coding Agent in the World</code></td></tr>
+<tr><td>Author</td><td><code>Marco</code> / <code>Kotrotsos</code></td></tr>
+<tr><td>Edition</td><td><code>1</code></td></tr>
+<tr><td>Publishing rights</td><td>Select <strong>&ldquo;I own the copyright and hold the publishing rights.&rdquo;</strong></td></tr>
+<tr><td>Primary audience</td><td>Not for kids; no explicit content</td></tr>
+</table>
+
+<div class="label">Description (paste; bold the first line, italicize the title)</div>
+<div class="copy"><pre>You do not need to be a programmer to build software anymore.
+
+Claude Code is an AI agent that writes and runs code for you, right on your own computer. You describe what you want in plain English, and it builds it: a website, a small tool, a script that automates the boring parts of your week. This book takes you from never having opened a terminal to building and running your own projects.
+
+Written for complete beginners. No coding background, no jargon, nothing assumed. Every step is shown with real screenshots, in plain language, at a pace that does not rush you.
+
+Inside, you will:
+- Open the terminal for the first time and stop being scared of it
+- Install Claude Code and have your first real conversation with it
+- Build a personal website from a single sentence
+- Understand what Claude shows you, and when to say yes or no
+- Fix things when they go wrong, and teach Claude about your project
+- Save what works so you can do it again
+
+By the end you will have built real things, and you will know how to keep going on your own.
+
+If you have ever watched developers conjure things out of thin air and wished you could do that too, start here.</pre></div>
+
+<div class="label">Keywords (7 boxes)</div>
+<div class="copy"><pre>AI for non-programmers
+build a website with AI
+how to use the terminal
+learn AI tools step by step
+no-code app building
+AI productivity for new users
+vibe coding</pre></div>
+
+<div class="label">Categories (choose 3)</div>
+<ul>
+<li>COMPUTERS &rsaquo; Artificial Intelligence &rsaquo; General</li>
+<li>COMPUTERS &rsaquo; Programming &rsaquo; General</li>
+<li>COMPUTERS &rsaquo; Introductory &amp; Beginning</li>
+</ul>
+
+<h3>Tab 2 — Content</h3>
+<ol>
+<li>Manuscript: upload <code>claude-code-for-everyone-else.epub</code> (full color, Kindle-ready).</li>
+<li>Cover: upload <code>ebook-cover.jpg</code> (1600&times;2560, titled).</li>
+<li>ISBN: not needed for eBook (Amazon assigns an ASIN).</li>
+<li>Open the <span class="step">Kindle Previewer</span> and check a few chapters, the TOC links, and a screenshot.</li>
+</ol>
+
+<h3>Tab 3 — Pricing</h3>
+<table>
+<tr><th>Setting</th><th>Recommendation</th></tr>
+<tr><td>KDP Select</td><td>Your call. Good for a debut: Kindle Unlimited reads and launch promos, in exchange for 90 days Amazon-only.</td></tr>
+<tr><td>Royalty tier</td><td><strong>70%</strong></td></tr>
+<tr><td>List price (US)</td><td><strong>$6.99</strong> (accessible for a beginner book; ~$4.75 royalty after the ~$0.21 delivery fee). $4.99 if you want maximum reach.</td></tr>
+</table>
+<p>Click <span class="step">Publish Your Kindle eBook</span>. Review takes 24&ndash;72 hours.</p>
+
+<h2>2. Add the Paperback</h2>
+<p>From the same title, choose <span class="step">Create Paperback</span> (links it to the eBook). Details copy over; verify them.</p>
+<h3>Content</h3>
+<table>
+<tr><th>Setting</th><th>Value</th></tr>
+<tr><td>ISBN</td><td>Get a <strong>free KDP ISBN</strong></td></tr>
+<tr><td>Print options</td><td>Black &amp; white interior on <strong>white</strong> paper</td></tr>
+<tr><td>Trim size</td><td><strong>6 &times; 9 in</strong></td></tr>
+<tr><td>Bleed</td><td>No bleed</td></tr>
+<tr><td>Cover finish</td><td>Matte (suits this design)</td></tr>
+<tr><td>Manuscript</td><td><code>cc-everyone-interior-6x9.pdf</code> (141 pages, grayscale)</td></tr>
+<tr><td>Cover</td><td><code>cc-everyone-fullwrap-6x9.pdf</code> (spine sized for 141 pages, your photo on the back)</td></tr>
+</table>
+<div class="note">Open the <span class="step">Print Previewer</span> and check title/spine alignment and that the screenshots read clearly in grayscale. The cover spine is built for exactly 141 pages; if the interior page count ever changes, the cover must be rebuilt.</div>
+<h3>Pricing</h3>
+<p>Printing cost (US, 6&times;9 B&amp;W white, 141 pp): <code>$1.00 + 141 &times; $0.012 = <strong>$2.69</strong></code>. Minimum list for 60% royalty is about <strong>$4.49</strong>.</p>
+<table>
+<tr><th>List price (US)</th><th>Royalty per sale</th></tr>
+<tr><td><strong>$12.99</strong> (recommended)</td><td>~$5.10</td></tr>
+<tr><td>$9.99 (accessible)</td><td>~$3.30</td></tr>
+</table>
+<p>Order a <span class="step">proof copy</span> first, then <span class="step">Publish Your Paperback</span>. Review takes up to 5 business days.</p>
+
+<h2>3. After publishing</h2>
+<ul>
+<li>Claim your author page at <code>authorcentral.amazon.com</code>; upload your photo and the bio below.</li>
+<li>Verify the live listing: &ldquo;Look Inside,&rdquo; categories, the Buy button.</li>
+</ul>
+
+<h2>4. Pricing recap</h2>
+<table>
+<tr><th>Format</th><th>Price (US)</th><th>~Net per sale</th></tr>
+<tr><td>Kindle eBook (70%)</td><td>$6.99</td><td>~$4.75</td></tr>
+<tr><td>Paperback 6&times;9 B&amp;W (60%)</td><td>$12.99</td><td>~$5.10 (print cost $2.69 for 141 pp)</td></tr>
+</table>
+
+<h2>5. Files and copy blocks</h2>
+<p class="label">All paths under <code>/Users/marcokotrotsos/PERSONAL/Content/book03/</code></p>
+<table class="files">
+<tr><th>Use</th><th>File</th></tr>
+<tr><td>eBook manuscript</td><td><code>output/claude-code-for-everyone-else.epub</code></td></tr>
+<tr><td>eBook cover</td><td><code>images/ebook-cover.jpg</code></td></tr>
+<tr><td>Paperback interior</td><td><code>output/cc-everyone-interior-6x9.pdf</code></td></tr>
+<tr><td>Paperback cover</td><td><code>output/cc-everyone-fullwrap-6x9.pdf</code></td></tr>
+<tr><td>All listing values</td><td><code>.claude/kdp.local.md</code></td></tr>
+</table>
+<div class="label">Author bio (Author Central + product page)</div>
+<div class="copy"><pre>Marco Kotrotsos specializes in practical AI implementation, with 30 years in IT now focused entirely on AI deployment. He works hands-on with companies to turn AI potential into measurable results, and writes Autocomplete, a newsletter on real-world AI for people who are actually using it. He wrote this book for everyone who was told that building software was not for them.</pre></div>
+
+</div>
+<script>
+(function(){var root=document.documentElement,btns=document.querySelectorAll('.toggle button'),mq=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(m){root.setAttribute('data-theme',m==='system'?(mq.matches?'dark':'light'):m);btns.forEach(function(b){b.classList.toggle('active',b.dataset.set===m)});try{localStorage.setItem('cc-kdp-theme',m)}catch(e){}}
+btns.forEach(function(b){b.onclick=function(){apply(b.dataset.set)}});mq.addEventListener('change',function(){if(localStorage.getItem('cc-kdp-theme')==='system')apply('system')});
+var s='light';try{s=localStorage.getItem('cc-kdp-theme')||'light'}catch(e){}apply(s);})();
+</script>
+</body></html>

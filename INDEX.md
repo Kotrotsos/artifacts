@@ -274,3 +274,4 @@
 | 2026-05-27 | book03 | docs | [cc-everyone-interior-6x9.pdf](projects/book03/docs/cc-everyone-interior-6x9.pdf) | 6x9 grayscale paperback interior, 141pp |
 | 2026-05-27 | book03 | docs | [cc-everyone-fullwrap-6x9.pdf](projects/book03/docs/cc-everyone-fullwrap-6x9.pdf) | 6x9 full-wrap cover with title, spine, author photo and bio |
 | 2026-05-27 | book03 | images | [cover-titled.png](projects/book03/images/cover-titled.png) | Titled front cover |
+| 2026-05-27 | book03 | reports | [kdp-submission-playbook.html](projects/book03/reports/kdp-submission-playbook.html) | KDP submission walkthrough for the beginner book |
