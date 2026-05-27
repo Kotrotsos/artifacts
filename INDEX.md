@@ -281,3 +281,4 @@
 | 2026-05-27 | pool | reports | [signals.html](projects/pool/reports/signals.html) | WC2026 signals.html (v4 signal-adjusted, live) |
 | 2026-05-27 | pool | reports | [signals-backtest.html](projects/pool/reports/signals-backtest.html) | WC2026 signal-layer backtest report (agent team): magnitude harmless, momentum gain was test-set artifact, keep v3 as engine |
 | 2026-05-27 | book03 | docs | [cc-everyone-interior-6x9.pdf](projects/book03/docs/cc-everyone-interior-6x9.pdf) | 6x9 grayscale interior, code blocks now wrap within margins (KDP fix) |
+| 2026-05-27 | pool | reports | [model-card.html](projects/pool/reports/model-card.html) | WC2026 model-card.html (current v3 prediction numbers for infographic) |
