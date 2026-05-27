@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backtesting the Signal Layer — WC 2026</title>
+<style>
+  :root{--bg:#f5f6f8;--surface:#fff;--surface-2:#f3f5f8;--border:#e4e7eb;--text:#15181d;--muted:#5f6b7a;
+    --accent:#9333ea;--accent-soft:#f3e8fd;--good:#16a34a;--bad:#dc2626;--warn:#b45309;--shadow:0 1px 3px rgba(0,0,0,.06),0 10px 30px rgba(0,0,0,.06)}
+  [data-theme="dark"]{--bg:#0e1116;--surface:#161a21;--surface-2:#1c222b;--border:#2a313b;--text:#e8eaed;--muted:#9aa3af;
+    --accent:#c084fc;--accent-soft:#2a1640;--good:#5fd693;--bad:#f3a3a3;--warn:#e3b341;--shadow:0 1px 3px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.4)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;padding:32px 20px}
+  .wrap{max-width:880px;margin:0 auto}
+  .toggle{float:right;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer}
+  .sitenav{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#13161b;border:1px solid #262c36;border-radius:12px;padding:9px 14px;margin-bottom:18px}
+  .sitenav .brand{color:#fff;text-decoration:none;font-weight:800;font-size:14px}
+  .sitenav .lk{display:flex;gap:4px;flex-wrap:wrap}
+  .sitenav .lk a{color:#c2c9d4;text-decoration:none;font-size:13px;font-weight:600;padding:6px 11px;border-radius:8px}
+  .sitenav .lk a:hover{background:#222a36;color:#fff} .sitenav .lk a.active{background:var(--accent);color:#fff}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+  header{padding:32px 36px;background:linear-gradient(135deg,#581c87,#9333ea);color:#fff}
+  header h1{font-size:24px;font-weight:800} header .sub{opacity:.92;font-size:14px;margin-top:5px}
+  main{padding:8px 36px 34px}
+  h2{font-size:18px;font-weight:800;margin:28px 0 8px;padding-top:18px;border-top:1px solid var(--border)}h2:first-of-type{border-top:none}
+  p{margin:9px 0}ul{margin:9px 0 9px 22px}li{margin:5px 0}
+  code{background:var(--accent-soft);padding:1px 6px;border-radius:5px;font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .team{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0}
+  .role{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .role b{display:block;font-size:13px} .role span{font-size:12px;color:var(--muted)}
+  .v-strong{color:var(--good);font-weight:700} .v-weak{color:var(--warn);font-weight:700} .v-none{color:var(--bad);font-weight:700}
+  .callout{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px}
+  .callout.flag{border-left-color:var(--bad)} .callout b{color:var(--text)}
+  .tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;color:#fff}
+  .tag.pass{background:var(--good)} .tag.fail{background:var(--bad)} .tag.null{background:var(--muted)}
+  a{color:var(--accent)} footer{padding:18px 36px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+  @media print{body{background:#fff;padding:0}.toggle{display:none}.card{box-shadow:none;border:none}h2,table{break-inside:avoid}}
+</style></head><body><div class="wrap">
+<nav class="sitenav"><a class="brand" href="index.html">WC 2026 Predictor</a><div class="lk"><a href="index.html">Home</a><a href="cards/index.html">Teams</a><a href="forecast.html">Forecast</a><a href="model-card.html" class="active">Model</a></div></nav>
+<button class="toggle" id="themeBtn">Theme: System</button>
+<div class="card">
+<header><h1>Backtesting the signal layer</h1>
+<div class="sub">A four-agent team stress-tested the v4 news-signal layer. The honest answer: it is a harmless editorial overlay, not a validated accuracy gain.</div></header>
+<main>
+
+<h2>The team</h2>
+<div class="team">
+  <div class="role"><b>Analyst</b><span>Designed 4 valid tests given that 2026 news can't be reconstructed historically.</span></div>
+  <div class="role"><b>Researcher</b><span>Graded each signal category against real tournament history.</span></div>
+  <div class="role"><b>Developer</b><span>Built <code>scripts/backtest_v4.py</code>, ran all tests on held-out matches.</span></div>
+  <div class="role"><b>Reviewer</b><span>Adversarially audited the code and caught a test-set leak.</span></div>
+</div>
+
+<h2>What can even be tested</h2>
+<p>The specific 2026 signals (Iran's visa crisis, Ghana's coaching change) cannot be turned into structured scores for matches played in 2014, so we cannot directly measure "did these signals improve held-out accuracy." Instead the team tested what <i>is</i> testable: the <b>mechanism</b> (does a nudge of this size help or hurt), reconstructable <b>proxies</b> for the signal categories, and tournament <b>robustness</b>. Metric: Ranked Probability Score (RPS, lower better) on 3,431 real matches from 2023–2026 the model never trained on. Baseline RPS 0.1660.</p>
+
+<h2>Does history support these signals?</h2>
+<table><thead><tr><th>Signal category</th><th>Historical evidence</th><th>Note</th></tr></thead><tbody>
+  <tr><td>Key injuries</td><td class="v-strong">STRONG</td><td>Quantified (Neymar 2014 dropped Brazil's title odds ~9pp). The one channel worth real weight.</td></tr>
+  <tr><td>Squad turmoil / revolts</td><td class="v-weak">WEAK-MODERATE</td><td>France 2010, NED 2012 are real but tiny-n and reverse-causal (losing breeds turmoil stories).</td></tr>
+  <tr><td>Late manager change</td><td class="v-weak">WEAK</td><td>Usually a symptom, not a cause; direction ambiguous.</td></tr>
+  <tr><td>Momentum / warm-up form</td><td class="v-none">NONE-WEAK</td><td>Argentina 2022 lost its opener after a 36-game unbeaten run, then won it. Already in the rating.</td></tr>
+  <tr><td>Off-field / geopolitical crisis</td><td class="v-none">NONE</td><td>Sign isn't even consistent. Pure post-hoc narrative.</td></tr>
+</tbody></table>
+
+<h2>The four tests (honest results)</h2>
+<table><thead><tr><th>Test</th><th>Result</th><th>Verdict</th></tr></thead><tbody>
+  <tr><td><b>Placebo</b> — shuffle the real magnitudes onto random teams (300×)</td>
+      <td>Mean ΔRPS +0.00005; <b>43% of random shuffles "improve"</b>. The real assignment scores −0.00029 (z≈−1.3, p≈0.09) — not significant.</td>
+      <td><span class="tag null">NOISE</span> magnitude is harmless</td></tr>
+  <tr><td><b>Magnitude sweep</b> — does any scale of a momentum nudge help?</td>
+      <td>On an honest VAL→TEST split, ≈−0.0001 at the production scale (within noise) and <b>harmful (+0.0029) by scale 0.12</b>. Random nudges always hurt.</td>
+      <td><span class="tag null">FLAT</span> only tiny scale is safe</td></tr>
+  <tr><td><b>Proxy flags</b> — reconstructable momentum/coaching/absence flags in a GBM</td>
+      <td>ΔRPS +0.00001 — within noise.</td>
+      <td><span class="tag null">NULL</span> adds nothing (like form/H2H)</td></tr>
+  <tr><td><b>Tournament robustness</b> — perturb 2018/2022 at signal magnitude</td>
+      <td>France 2018 stays #6 (~5.1%), Argentina 2022 stays #2 (~23%).</td>
+      <td><span class="tag pass">ROBUST</span> won't blow up the forecast</td></tr>
+</tbody></table>
+
+<div class="callout flag"><b>Peer review caught a false positive.</b> The developer's first pass reported a clear win — a momentum nudge cutting RPS by 0.0026. The reviewer found it was an artifact: the proxy was built and its scale chosen <i>on the test set</i>, with look-ahead aggregation. Re-run honestly, the gain disappears and at large scale flips to harm. This is exactly why the team has a skeptic — and why no number here is sold without an out-of-sample check.</div>
+
+<h2>Verdict</h2>
+<p>No test cleared statistical significance. The signal layer's magnitude is <b>harmless at the small production scale</b>, the reconstructable proxies add nothing beyond the validated rating, and the forecast is robust to it. That makes v4 defensible as a <b>clearly-labelled qualitative overlay</b> — a transparent way to encode current-conditions news — but <b>not</b> as an accuracy improvement backed by evidence.</p>
+<div class="callout"><b>Recommendation to the project:</b>
+<ul>
+<li>Treat the backtested <b>v3</b> (RPS 0.166) as the engine of record; present v4 as an editorial prior, clearly labelled, not "more accurate".</li>
+<li><b>Shrink the cap</b> well below ±0.15 — anything ≥0.05 degrades accuracy on honest data.</li>
+<li>Drop the momentum and crisis contributions (no evidence); concentrate weight on <b>injuries</b>, the only channel with quantified backing.</li>
+</ul></div>
+
+<h2>Reuse</h2>
+<p>Code <code>scripts/backtest_v4.py</code> · numbers <code>data/signal_backtest.json</code> · research <code>data/signals/_research_notes.md</code> · synthesis <code>data/signals/_backtest_findings.md</code>.</p>
+</main>
+<footer>World Cup 2026 ML prediction project · agent-team backtest · 2026-05-27</footer>
+</div></div>
+<script>
+const btn=document.getElementById('themeBtn');const modes=["system","light","dark"];let idx=0;
+const mq=window.matchMedia('(prefers-color-scheme: dark)');
+function applyTheme(){const m=modes[idx];const eff=m==="system"?(mq.matches?"dark":"light"):m;
+document.documentElement.setAttribute('data-theme',eff);btn.textContent="Theme: "+m.charAt(0).toUpperCase()+m.slice(1);}
+btn.onclick=()=>{idx=(idx+1)%3;applyTheme();};mq.addEventListener('change',()=>{if(modes[idx]==="system")applyTheme();});applyTheme();
+</script></body></html>
