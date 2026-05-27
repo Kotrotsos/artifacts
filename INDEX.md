@@ -258,3 +258,4 @@
 | 2026-05-27 | definitive-book | other | [from-vibe-to-production.epub](projects/definitive-book/other/from-vibe-to-production.epub) | EPUB3 eBook color Kindle-ready |
 | 2026-05-27 | definitive-book | docs | [from-vibe-to-production-interior-6x9.pdf](projects/definitive-book/docs/from-vibe-to-production-interior-6x9.pdf) | 6x9 grayscale paperback interior 360pp |
 | 2026-05-27 | definitive-book | docs | [from-vibe-to-production-fullwrap-6x9.pdf](projects/definitive-book/docs/from-vibe-to-production-fullwrap-6x9.pdf) | 6x9 full-wrap paperback cover spine 0.811in |
+| 2026-05-27 | definitive-book | reports | [kdp-audit-report.md](projects/definitive-book/reports/kdp-audit-report.md) | KDP manuscript audit gap report |

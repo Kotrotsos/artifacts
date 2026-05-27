@@ -8,3 +8,4 @@
 | 2026-05-27 | other | [from-vibe-to-production.epub](other/from-vibe-to-production.epub) | EPUB3 eBook color Kindle-ready | /Users/marcokotrotsos/PERSONAL/Content/drafts/definitive-book/book/output/from-vibe-to-production.epub |
 | 2026-05-27 | docs | [from-vibe-to-production-interior-6x9.pdf](docs/from-vibe-to-production-interior-6x9.pdf) | 6x9 grayscale paperback interior 360pp | /Users/marcokotrotsos/PERSONAL/Content/drafts/definitive-book/book/output/from-vibe-to-production-interior-6x9.pdf |
 | 2026-05-27 | docs | [from-vibe-to-production-fullwrap-6x9.pdf](docs/from-vibe-to-production-fullwrap-6x9.pdf) | 6x9 full-wrap paperback cover spine 0.811in | /Users/marcokotrotsos/PERSONAL/Content/drafts/definitive-book/book/output/from-vibe-to-production-fullwrap-6x9.pdf |
+| 2026-05-27 | reports | [kdp-audit-report.md](reports/kdp-audit-report.md) | KDP manuscript audit gap report | /Users/marcokotrotsos/PERSONAL/Content/drafts/definitive-book/kdp-audit-report.md |
