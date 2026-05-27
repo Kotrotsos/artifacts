@@ -268,3 +268,4 @@
 | 2026-05-27 | definitive-book | reports | [kdp-submission-playbook.html](projects/definitive-book/reports/kdp-submission-playbook.html) | Self-service KDP submission playbook (eBook + paperback, copy-paste values + pricing) |
 | 2026-05-27 | pool | reports | [bracket.html](projects/pool/reports/bracket.html) | WC2026 predicted knockout bracket (chalk): favourites advance, Argentina champion, ARG v ESP final |
 | 2026-05-27 | book03 | docs | [claude-code-for-everyone-else.pdf](projects/book03/docs/claude-code-for-everyone-else.pdf) | Claude Code for Everyone Else: 105pp with all 44 UI screenshots embedded |
+| 2026-05-27 | pool | reports | [signals.html](projects/pool/reports/signals.html) | WC2026 qualitative signals card: news-signal layer (v4), effect on title odds, before/after |
