@@ -7,3 +7,4 @@
 | 2026-05-27 | other | [claude-code-for-everyone-else.epub](other/claude-code-for-everyone-else.epub) | Beginner book EPUB, color, Kindle-ready | /Users/marcokotrotsos/PERSONAL/Content/book03/output/claude-code-for-everyone-else.epub |
 | 2026-05-27 | docs | [cc-everyone-interior-6x9.pdf](docs/cc-everyone-interior-6x9.pdf) | 6x9 grayscale paperback interior, 141pp | /Users/marcokotrotsos/PERSONAL/Content/book03/output/cc-everyone-interior-6x9.pdf |
 | 2026-05-27 | docs | [cc-everyone-fullwrap-6x9.pdf](docs/cc-everyone-fullwrap-6x9.pdf) | 6x9 full-wrap cover with title, spine, author photo and bio | /Users/marcokotrotsos/PERSONAL/Content/book03/output/cc-everyone-fullwrap-6x9.pdf |
+| 2026-05-27 | images | [cover-titled.png](images/cover-titled.png) | Titled front cover | /Users/marcokotrotsos/PERSONAL/Content/book03/images/cover-titled.png |

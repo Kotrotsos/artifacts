@@ -273,3 +273,4 @@
 | 2026-05-27 | book03 | other | [claude-code-for-everyone-else.epub](projects/book03/other/claude-code-for-everyone-else.epub) | Beginner book EPUB, color, Kindle-ready |
 | 2026-05-27 | book03 | docs | [cc-everyone-interior-6x9.pdf](projects/book03/docs/cc-everyone-interior-6x9.pdf) | 6x9 grayscale paperback interior, 141pp |
 | 2026-05-27 | book03 | docs | [cc-everyone-fullwrap-6x9.pdf](projects/book03/docs/cc-everyone-fullwrap-6x9.pdf) | 6x9 full-wrap cover with title, spine, author photo and bio |
+| 2026-05-27 | book03 | images | [cover-titled.png](projects/book03/images/cover-titled.png) | Titled front cover |
