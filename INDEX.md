@@ -266,3 +266,4 @@
 | 2026-05-27 | definitive-book | docs | [from-vibe-to-production-fullwrap-6x9.pdf](projects/definitive-book/docs/from-vibe-to-production-fullwrap-6x9.pdf) | Paperback full-wrap, titled front, balanced art |
 | 2026-05-27 | definitive-book | other | [from-vibe-to-production.epub](projects/definitive-book/other/from-vibe-to-production.epub) | EPUB3 eBook, titled cover, balanced art |
 | 2026-05-27 | definitive-book | reports | [kdp-submission-playbook.html](projects/definitive-book/reports/kdp-submission-playbook.html) | Self-service KDP submission playbook (eBook + paperback, copy-paste values + pricing) |
+| 2026-05-27 | pool | reports | [bracket.html](projects/pool/reports/bracket.html) | WC2026 predicted knockout bracket (chalk): favourites advance, Argentina champion, ARG v ESP final |
