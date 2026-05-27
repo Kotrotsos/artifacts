@@ -11,3 +11,4 @@
 | 2026-05-27 | reports | [kdp-audit-report.md](reports/kdp-audit-report.md) | KDP manuscript audit gap report | /Users/marcokotrotsos/PERSONAL/Content/drafts/definitive-book/kdp-audit-report.md |
 | 2026-05-27 | docs | [from-vibe-to-production-fullwrap-6x9.pdf](docs/from-vibe-to-production-fullwrap-6x9.pdf) | Paperback full-wrap cover with title on front spine and back | /Users/marcokotrotsos/PERSONAL/Content/drafts/definitive-book/book/output/from-vibe-to-production-fullwrap-6x9.pdf |
 | 2026-05-27 | other | [from-vibe-to-production.epub](other/from-vibe-to-production.epub) | EPUB3 eBook with titled cover | /Users/marcokotrotsos/PERSONAL/Content/drafts/definitive-book/book/output/from-vibe-to-production.epub |
+| 2026-05-27 | images | [cover-titled.png](images/cover-titled.png) | Titled front cover art | /Users/marcokotrotsos/PERSONAL/Content/drafts/definitive-book/book/images/cover-titled.png |
