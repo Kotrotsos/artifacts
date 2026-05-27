@@ -256,3 +256,4 @@
 | 2026-05-26 | pool | reports | [index.html](projects/pool/reports/index.html) | WC2026 prediction hub: home page with title-odds podium + nav to teams/forecast/model |
 | 2026-05-26 | pool | reports | [model-card.html](projects/pool/reports/model-card.html) | WC2026 model card: standardized model summary, performance, limitations |
 | 2026-05-27 | definitive-book | other | [from-vibe-to-production.epub](projects/definitive-book/other/from-vibe-to-production.epub) | EPUB3 eBook color Kindle-ready |
+| 2026-05-27 | definitive-book | docs | [from-vibe-to-production-interior-6x9.pdf](projects/definitive-book/docs/from-vibe-to-production-interior-6x9.pdf) | 6x9 grayscale paperback interior 360pp |
