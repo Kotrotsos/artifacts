@@ -21,3 +21,4 @@
 | 2026-05-27 | reports | [signals.html](reports/signals.html) | WC2026 qualitative signals card: news-signal layer (v4), effect on title odds, before/after | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/signals.html |
 | 2026-05-27 | reports | [forecast.html](reports/forecast.html) | WC2026 forecast.html (v4 signal-adjusted, live) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast.html |
 | 2026-05-27 | reports | [bracket.html](reports/bracket.html) | WC2026 bracket.html (v4 signal-adjusted, live) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/bracket.html |
+| 2026-05-27 | reports | [index.html](reports/index.html) | WC2026 index.html (v4 signal-adjusted, live) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/index.html |

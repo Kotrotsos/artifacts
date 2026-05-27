@@ -277,3 +277,4 @@
 | 2026-05-27 | book03 | reports | [kdp-submission-playbook.html](projects/book03/reports/kdp-submission-playbook.html) | KDP submission walkthrough for the beginner book |
 | 2026-05-27 | pool | reports | [forecast.html](projects/pool/reports/forecast.html) | WC2026 forecast.html (v4 signal-adjusted, live) |
 | 2026-05-27 | pool | reports | [bracket.html](projects/pool/reports/bracket.html) | WC2026 bracket.html (v4 signal-adjusted, live) |
+| 2026-05-27 | pool | reports | [index.html](projects/pool/reports/index.html) | WC2026 index.html (v4 signal-adjusted, live) |
