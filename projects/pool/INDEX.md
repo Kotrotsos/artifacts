@@ -31,3 +31,4 @@
 | 2026-05-28 | reports | [forecast.html](reports/forecast.html) | WC2026 forecast.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast.html |
 | 2026-05-28 | reports | [bracket.html](reports/bracket.html) | WC2026 bracket.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/bracket.html |
 | 2026-05-28 | reports | [model-card.html](reports/model-card.html) | WC2026 model-card.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/model-card.html |
+| 2026-05-28 | reports | [course.html](reports/course.html) | WC2026 course.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/course.html |

@@ -135,20 +135,21 @@ P(2) = e<sup>−1.86</sup> × 1.86<sup>2</sup> / (2×1) = 0.156 × 3.46 / 2 = <b
 <div class="step"><div class="num">4</div><div><b>Record</b> how far every team got, then throw the whole tournament away and start again.</div></div>
 
 <h3>Why repeat 20,000 times</h3>
-<p>One simulation is just one story and tells you nothing reliable. But run it 20,000 times and the <b>law of large numbers</b> takes over: the fraction of simulations a team wins converges on its true probability. If Argentina lifts the trophy in 3,520 of 20,000 runs, we call that a <b>17.6%</b> title chance. More runs means steadier numbers; 20,000 is plenty for two-decimal stability and finishes in about three seconds.</p>
+<p>One simulation is just one story and tells you nothing reliable. But run it 20,000 times and the <b>law of large numbers</b> takes over: the fraction of simulations a team wins converges on its true probability. If Argentina lifts the trophy in 3,640 of 20,000 runs, we call that an <b>18.2%</b> title chance. More runs means steadier numbers; 20,000 is plenty for two-decimal stability and finishes in about three seconds.</p>
 <div class="callout"><b>Host advantage.</b> The three hosts (USA, Canada, Mexico) play most matches at home, so we give them a smaller home bump in the simulation. You can see its effect: Mexico wins its group in 65% of runs despite a middling Elo.</div>
 
 <h2 id="read"><span class="n">5.</span> Reading the forecast</h2>
-<p>The output (see <code>forecast.html</code>) is one row per team with the share of simulations in which it reached each stage. The headline model is now the goal-rating ensemble (v3 — see the <a href="model-bakeoff.html">bake-off</a>); current top of the board, from 20,000 simulations:</p>
+<p>The output (see <code>forecast.html</code>) is one row per team with the share of simulations in which it reached each stage. The headline model is now <b>v5</b> — the goal-rating ensemble plus an empirical confederation calibration and a squad-depth prior (see <a href="model-bakeoff.html">bake-off</a> and <a href="model-vs-market.html">model vs market</a>). Current top of the board, from 20,000 simulations:</p>
 <table><thead><tr><th>Team</th><th class="num">Elo</th><th class="num">Win group</th><th class="num">Reach QF</th><th class="num">Final</th><th class="num">Champion</th></tr></thead><tbody>
-  <tr><td>Argentina</td><td class="num">2187</td><td class="num">72.7%</td><td class="num">57.0%</td><td class="num">26.9%</td><td class="num">17.6%</td></tr>
-  <tr><td>Spain</td><td class="num">2233</td><td class="num">70.6%</td><td class="num">52.4%</td><td class="num">21.4%</td><td class="num">12.8%</td></tr>
-  <tr><td>Brazil</td><td class="num">2060</td><td class="num">69.9%</td><td class="num">49.5%</td><td class="num">18.9%</td><td class="num">10.8%</td></tr>
-  <tr><td>Colombia</td><td class="num">2057</td><td class="num">51.9%</td><td class="num">46.2%</td><td class="num">17.0%</td><td class="num">9.6%</td></tr>
-  <tr><td>England</td><td class="num">2088</td><td class="num">58.9%</td><td class="num">40.1%</td><td class="num">12.4%</td><td class="num">6.4%</td></tr>
-  <tr><td>Portugal</td><td class="num">2054</td><td class="num">40.7%</td><td class="num">37.5%</td><td class="num">11.6%</td><td class="num">6.0%</td></tr>
+  <tr><td>Argentina</td><td class="num">2187</td><td class="num">75.9%</td><td class="num">59.5%</td><td class="num">28.0%</td><td class="num">18.2%</td></tr>
+  <tr><td>Spain</td><td class="num">2233</td><td class="num">72.9%</td><td class="num">57.1%</td><td class="num">24.2%</td><td class="num">14.7%</td></tr>
+  <tr><td>Brazil</td><td class="num">2060</td><td class="num">71.9%</td><td class="num">53.0%</td><td class="num">20.6%</td><td class="num">11.9%</td></tr>
+  <tr><td>Colombia</td><td class="num">2057</td><td class="num">50.6%</td><td class="num">45.7%</td><td class="num">15.7%</td><td class="num">8.3%</td></tr>
+  <tr><td>England</td><td class="num">2088</td><td class="num">63.8%</td><td class="num">44.5%</td><td class="num">14.5%</td><td class="num">7.6%</td></tr>
+  <tr><td>France</td><td class="num">2146</td><td class="num">54.1%</td><td class="num">43.0%</td><td class="num">13.4%</td><td class="num">6.8%</td></tr>
+  <tr><td>Portugal</td><td class="num">2054</td><td class="num">44.0%</td><td class="num">40.7%</td><td class="num">12.6%</td><td class="num">6.5%</td></tr>
 </tbody></table>
-<p>How to read it: champion probability falls off steeply because winning takes a string of knockout wins and small per-match edges compound. Argentina leads but at under one in five — most of the probability still sits with "someone else", which is exactly what an honest, well-calibrated forecast for a 48-team field looks like. The predicted final is Argentina vs Spain.</p>
+<p>How to read it: champion probability falls off steeply because winning takes a string of knockout wins and small per-match edges compound. Argentina leads but at under one in five — most of the probability still sits with "someone else", which is exactly what an honest, well-calibrated forecast for a 48-team field looks like. The predicted final is Argentina vs Spain. Where do we disagree with the Polymarket market? Argentina (we higher), France (market higher); see the <a href="model-vs-market.html">model vs market</a> page.</p>
 
 <h2 id="good"><span class="n">6.</span> Is it any good, and how we make it better</h2>
 <h3>How we will judge it</h3>
