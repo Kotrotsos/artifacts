@@ -292,3 +292,4 @@
 | 2026-05-28 | pool | reports | [model-vs-market.html](projects/pool/reports/model-vs-market.html) | WC2026 model-vs-market.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) |
 | 2026-05-28 | pool | reports | [signals.html](projects/pool/reports/signals.html) | WC2026 signals.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) |
 | 2026-05-28 | kyssbook-kdp | docs | [paperback-interior.pdf](projects/kyssbook-kdp/docs/paperback-interior.pdf) | Kill Your SaaS Stack KDP paperback-interior.pdf |
+| 2026-05-28 | kyssbook-kdp | docs | [paperback-cover.pdf](projects/kyssbook-kdp/docs/paperback-cover.pdf) | Kill Your SaaS Stack KDP paperback-cover.pdf |
