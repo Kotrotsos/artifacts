@@ -27,3 +27,4 @@
 | 2026-05-27 | reports | [model-card.html](reports/model-card.html) | WC2026 model-card.html (current v3 prediction numbers for infographic) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/model-card.html |
 | 2026-05-27 | reports | [course.html](reports/course.html) | WC2026 course.html (current v3 prediction numbers for infographic) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/course.html |
 | 2026-05-28 | reports | [model-vs-market.html](reports/model-vs-market.html) | WC2026 v3 vs v5 vs Polymarket: confederation calibration + squad depth improve market alignment (r +0.57->+0.65) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/model-vs-market.html |
+| 2026-05-28 | reports | [index.html](reports/index.html) | WC2026 index.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/index.html |
