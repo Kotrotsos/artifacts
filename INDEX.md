@@ -287,3 +287,4 @@
 | 2026-05-28 | pool | reports | [index.html](projects/pool/reports/index.html) | WC2026 index.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) |
 | 2026-05-28 | pool | reports | [forecast.html](projects/pool/reports/forecast.html) | WC2026 forecast.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) |
 | 2026-05-28 | pool | reports | [bracket.html](projects/pool/reports/bracket.html) | WC2026 bracket.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) |
+| 2026-05-28 | pool | reports | [model-card.html](projects/pool/reports/model-card.html) | WC2026 model-card.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) |
