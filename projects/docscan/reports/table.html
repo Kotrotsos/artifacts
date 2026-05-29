@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Table</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f7f8fa;
+    --border: #e2e5ea;
+    --text: #1a1d23;
+    --muted: #6b7280;
+    --header-bg: #eef1f5;
+    --row-alt: #fafbfc;
+    --accent: #2563eb;
+  }
+  [data-theme="dark"] {
+    --bg: #14171c;
+    --surface: #1c2027;
+    --border: #2c313a;
+    --text: #e6e8eb;
+    --muted: #9aa3af;
+    --header-bg: #232831;
+    --row-alt: #181c22;
+    --accent: #60a5fa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2.5rem 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  h1 { font-size: 1.5rem; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  p.sub { color: var(--muted); font-size: 0.875rem; margin: 0.35rem 0 0; }
+  .theme-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .theme-toggle button {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .theme-toggle button[aria-pressed="true"] {
+    background: var(--accent);
+    color: #fff;
+  }
+  .table-scroll {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+  }
+  thead th {
+    background: var(--header-bg);
+    text-align: right;
+    padding: 0.7rem 1rem;
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  thead th:first-child { text-align: left; }
+  tbody td {
+    padding: 0.55rem 1rem;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td:first-child { text-align: left; color: var(--text); }
+  tbody tr:nth-child(even) { background: var(--row-alt); }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr.spacer td { padding: 0.3rem; background: var(--surface); }
+  td.empty { color: var(--border); }
+  footer { color: var(--muted); font-size: 0.78rem; margin-top: 1.25rem; }
+
+  @media print {
+    body { padding: 0; color: #000; background: #fff; }
+    .theme-toggle { display: none; }
+    .table-scroll { border-color: #999; }
+    thead th { background: #eee !important; color: #000; }
+    tbody tr:nth-child(even) { background: #f5f5f5 !important; }
+    a { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Data Table</h1>
+      <p class="sub">Reconstructed from the source markup, 4 columns.</p>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-set="light" aria-pressed="true">Light</button>
+      <button data-set="dark" aria-pressed="false">Dark</button>
+      <button data-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Col 1</th><th>Col 2</th><th>Col 3</th><th>Col 4</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>3.75 miles</td><td>7.5</td><td>11.25</td><td>15.0</td></tr>
+        <tr><td>30.0</td><td>33.75</td><td>37.5</td><td>41.25</td></tr>
+        <tr><td>36</td><td>117</td><td>155</td><td>240</td></tr>
+        <tr><td>648</td><td>757</td><td>859</td><td>959</td></tr>
+        <tr><td>38</td><td>1:29</td><td>2:15</td><td>3:18</td></tr>
+        <tr class="spacer"><td colspan="4"></td></tr>
+        <tr><td>38</td><td>120</td><td>209</td><td>300</td></tr>
+        <tr class="spacer"><td colspan="4"></td></tr>
+        <tr><td>37:49</td><td>1:17:00</td><td>2:02:20</td><td>2:57:00</td></tr>
+        <tr><td>7:19:27</td><td>8:34:52</td><td>7:49:52</td><td>10:59:00</td></tr>
+        <tr class="spacer"><td colspan="4"></td></tr>
+        <tr><td>8:12</td><td>901</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td></tr>
+        <tr><td>8:42:52</td><td>9:57:10</td><td>1120:04</td><td>12472</td></tr>
+        <tr class="spacer"><td colspan="4"></td></tr>
+        <tr><td>58:08</td><td>9:18</td><td>10:11</td><td>11:04:31</td></tr>
+        <tr class="spacer"><td colspan="4"></td></tr>
+        <tr><td>806.55</td><td>244:45</td><td>92411</td><td>1006</td></tr>
+        <tr class="spacer"><td colspan="4"></td></tr>
+        <tr><td>4941</td><td>5156</td><td>5731</td><td>10149</td></tr>
+        <tr class="spacer"><td colspan="4"></td></tr>
+        <tr><td>8:10</td><td>8:58</td><td>9:52</td><td>11:07</td></tr>
+        <tr><td class="empty">&mdash;</td><td>8:47</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td></tr>
+        <tr><td>38</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td></tr>
+        <tr><td class="empty">&mdash;</td><td>8:47</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td></tr>
+        <tr><td>38</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td></tr>
+        <tr><td>809.08</td><td>8:47:08</td><td>9:26:51</td><td>100418</td></tr>
+        <tr><td>01:07:30</td><td>8:55:00</td><td>8:40:00</td><td>34156</td></tr>
+        <tr><td>8:03:40</td><td>8:40:50</td><td>9:24:44</td><td>10:06:11</td></tr>
+        <tr class="spacer"><td colspan="4"></td></tr>
+        <tr><td>1.11</td><td>9.44</td><td>11.11</td><td>12.47</td></tr>
+        <tr><td class="empty">&mdash;</td><td class="empty">&mdash;</td><td>9.21:98</td><td>10.08</td></tr>
+        <tr><td>34.00</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td></tr>
+        <tr><td>1:09</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td></tr>
+        <tr><td>54.00</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td></tr>
+        <tr><td>1:09</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td><td class="empty">&mdash;</td></tr>
+        <tr><td>8:03:54</td><td>8.39:00</td><td>9:18</td><td>10:00</td></tr>
+        <tr><td>1:08</td><td>11:58</td><td>2149</td><td>341</td></tr>
+        <tr><td>8:10</td><td>8.51</td><td>9:35</td><td>10:27</td></tr>
+        <tr><td>1:42</td><td>2:44</td><td>3444</td><td>4:48</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>The source markup was malformed (overlapping, duplicated fragments). Rows were de-duplicated and reconstructed; em dashes mark cells that were empty in the source.</footer>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var buttons = document.querySelectorAll('.theme-toggle button');
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function apply(mode) {
+      if (mode === 'system') {
+        root.setAttribute('data-theme', media.matches ? 'dark' : 'light');
+      } else {
+        root.setAttribute('data-theme', mode);
+      }
+      buttons.forEach(function (b) {
+        b.setAttribute('aria-pressed', b.dataset.set === mode ? 'true' : 'false');
+      });
+      try { localStorage.setItem('theme-mode', mode); } catch (e) {}
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.set); });
+    });
+    media.addEventListener('change', function () {
+      if ((localStorage.getItem('theme-mode') || 'light') === 'system') apply('system');
+    });
+
+    var saved = 'light';
+    try { saved = localStorage.getItem('theme-mode') || 'light'; } catch (e) {}
+    apply(saved);
+  })();
+</script>
+</body>
+</html>
