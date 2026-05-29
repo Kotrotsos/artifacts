@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Quotes</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f7f8fa;
+    --border: #e2e5ea;
+    --text: #1a1d23;
+    --muted: #6b7280;
+    --header-bg: #eef1f5;
+    --row-alt: #fafbfc;
+    --accent: #2563eb;
+    --up: #15803d;
+    --down: #b91c1c;
+    --divider: #cbd2dc;
+  }
+  [data-theme="dark"] {
+    --bg: #14171c;
+    --surface: #1c2027;
+    --border: #2c313a;
+    --text: #e6e8eb;
+    --muted: #9aa3af;
+    --header-bg: #232831;
+    --row-alt: #181c22;
+    --accent: #60a5fa;
+    --up: #4ade80;
+    --down: #f87171;
+    --divider: #3a4150;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2.5rem 1.5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; }
+  header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  h1 { font-size: 1.5rem; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  p.sub { color: var(--muted); font-size: 0.875rem; margin: 0.35rem 0 0; }
+  .theme-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .theme-toggle button {
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.75rem;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .theme-toggle button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  .table-scroll {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.875rem;
+  }
+  .span-head th {
+    background: var(--header-bg);
+    padding: 0.55rem 1rem;
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .col-head th {
+    background: var(--header-bg);
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .col-head th.stock { text-align: left; }
+  tbody td {
+    padding: 0.5rem 1rem;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td.stock { text-align: left; font-weight: 500; }
+  tbody tr:nth-child(even) { background: var(--row-alt); }
+  tbody tr:last-child td { border-bottom: 0; }
+  .divider { border-left: 2px solid var(--divider); }
+  .up { color: var(--up); }
+  .down { color: var(--down); }
+  footer { color: var(--muted); font-size: 0.78rem; margin-top: 1.25rem; }
+
+  @media print {
+    body { padding: 0; color: #000; background: #fff; }
+    .theme-toggle { display: none; }
+    .table-scroll { border-color: #999; overflow: visible; }
+    .span-head th, .col-head th { background: #eee !important; color: #000; }
+    tbody tr:nth-child(even) { background: #f5f5f5 !important; }
+    .up { color: #060 !important; }
+    .down { color: #900 !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Stock Quotes</h1>
+      <p class="sub">52-week high/low, last price, and change. Two panels side by side.</p>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-set="light" aria-pressed="true">Light</button>
+      <button data-set="dark" aria-pressed="false">Dark</button>
+      <button data-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr class="span-head">
+          <th colspan="2">52-week</th><th></th><th colspan="2">Quote</th>
+          <th colspan="2" class="divider">52-week</th><th></th><th colspan="2">Quote</th>
+        </tr>
+        <tr class="col-head">
+          <th>High</th><th>Low</th><th class="stock">Stock</th><th>Last</th><th>Change</th>
+          <th class="divider">High</th><th>Low</th><th class="stock">Stock</th><th>Last</th><th>Change</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>9.19</td><td>6.89</td><td class="stock">ABX Air n</td><td>7.52</td><td class="down">-0.10</td>
+          <td class="divider">45.71</td><td>32.50</td><td class="stock">Biomet</td><td>36.71</td><td class="down">-0.42</td>
+        </tr>
+        <tr>
+          <td>33.25</td><td>12.40</td><td class="stock">ACMoore</td><td>13.58</td><td class="down">-1.57</td>
+          <td class="divider">2.76</td><td>1.20</td><td class="stock">Biomira</td><td>1.46</td><td class="up">+0.03</td>
+        </tr>
+        <tr>
+          <td>31.38</td><td>13.51</td><td class="stock">ADA&mdash;ES</td><td>20.96</td><td class="up">+3.16</td>
+          <td class="divider">9.07</td><td>5.13</td><td class="stock">BioScrip</td><td>8.05</td><td class="up">+0.34</td>
+        </tr>
+        <tr>
+          <td>27.14</td><td>12.88</td><td class="stock">ADC Tel rs</td><td>23.21</td><td class="up">+0.13</td>
+          <td class="divider">18.21</td><td>10.73</td><td class="stock">Bickbaud</td><td>17.90</td><td class="up">+0.70</td>
+        </tr>
+        <tr>
+          <td>30.40</td><td>16.70</td><td class="stock">ADECp</td><td>27.32</td><td class="up">+0.73</td>
+          <td class="divider">52.73</td><td>13.86</td><td class="stock">BluCoat</td><td>41.29</td><td class="up">+1.30</td>
+        </tr>
+        <tr>
+          <td>16.45</td><td>10.47</td><td class="stock">AFC Ent s</td><td>15.40</td><td class="down">-0.14</td>
+          <td class="divider">44.35</td><td>24.15</td><td class="stock">BlueNile</td><td>40.30</td><td class="down">-1.10</td>
+        </tr>
+        <tr>
+          <td>8.37</td><td>4.50</td><td class="stock">ASE Tst</td><td>7.76</td><td class="up">+0.40</td>
+          <td class="divider">26.45</td><td>19.91</td><td class="stock">BobEvn</td><td>22.99</td><td>&hellip;</td>
+        </tr>
+        <tr>
+          <td>19.25</td><td>12.75</td><td class="stock">ASM Intl</td><td>17.65</td><td class="down">-0.03</td>
+          <td class="divider">15.94</td><td>6.12</td><td class="stock">Bodisen n</td><td>15.45</td><td class="up">+0.45</td>
+        </tr>
+        <tr>
+          <td>20.92</td><td>13.94</td><td class="stock">ASM Hld</td><td>21.24</td><td class="up">+0.46</td>
+          <td class="divider">6.21</td><td>1.56</td><td class="stock">Bookham</td><td>5.94</td><td class="up">+0.06</td>
+        </tr>
+        <tr>
+          <td>27.38</td><td>16.39</td><td class="stock">ASV Inc s</td><td>26.76</td><td class="up">+0.14</td>
+          <td class="divider">11.80</td><td>4.99</td><td class="stock">Borland</td><td>6.68</td><td class="up">+0.14</td>
+        </tr>
+        <tr>
+          <td>19.82</td><td>10.47</td><td class="stock">ATI Tech</td><td>17.89</td><td class="up">+0.68</td>
+          <td class="divider">31.90</td><td>21.10</td><td class="stock">BostPrv</td><td>31.18</td><td class="down">-0.07</td>
+        </tr>
+        <tr>
+          <td>33.62</td><td>20.53</td><td class="stock">ATMl Inc</td><td>29.95</td><td class="up">+1.29</td>
+          <td class="divider">18.62</td><td>10.01</td><td class="stock">BftmInT</td><td>11.53</td><td class="up">+0.20</td>
+        </tr>
+        <tr>
+          <td>39.20</td><td>16.76</td><td class="stock">ATP O&amp;G</td><td>38.40</td><td class="down">-0.59</td>
+          <td class="divider">14.68</td><td>7.10</td><td class="stock">BrigExp</td><td>12.10</td><td class="down">-0.23</td>
+        </tr>
+        <tr>
+          <td>4.24</td><td>1.99</td><td class="stock">AVI Blo</td><td>3.62</td><td class="down">-0.02</td>
+          <td class="divider">46.72</td><td>26.65</td><td class="stock">BrightHrz s</td><td>38.90</td><td class="down">-0.80</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>The source markup was malformed (overlapping, duplicated fragments). Rows were de-duplicated and reconstructed. A trailing duplicate of the AVI&nbsp;Blo / BrightHrz&nbsp;s row carried conflicting 52-week values (20.55 / 4.73) and was dropped as corruption.</footer>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var buttons = document.querySelectorAll('.theme-toggle button');
+    var media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function apply(mode) {
+      if (mode === 'system') {
+        root.setAttribute('data-theme', media.matches ? 'dark' : 'light');
+      } else {
+        root.setAttribute('data-theme', mode);
+      }
+      buttons.forEach(function (b) {
+        b.setAttribute('aria-pressed', b.dataset.set === mode ? 'true' : 'false');
+      });
+      try { localStorage.setItem('theme-mode', mode); } catch (e) {}
+    }
+
+    buttons.forEach(function (b) {
+      b.addEventListener('click', function () { apply(b.dataset.set); });
+    });
+    media.addEventListener('change', function () {
+      if ((localStorage.getItem('theme-mode') || 'light') === 'system') apply('system');
+    });
+
+    var saved = 'light';
+    try { saved = localStorage.getItem('theme-mode') || 'light'; } catch (e) {}
+    apply(saved);
+  })();
+</script>
+</body>
+</html>
