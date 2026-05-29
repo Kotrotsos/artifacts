@@ -297,3 +297,4 @@
 | 2026-05-28 | kyssbook-kdp | other | [ebook.epub](projects/kyssbook-kdp/other/ebook.epub) | Kill Your SaaS Stack KDP ebook.epub |
 | 2026-05-28 | kyssbook-kdp | docs | [ebook.docx](projects/kyssbook-kdp/docs/ebook.docx) | Kill Your SaaS Stack KDP ebook.docx |
 | 2026-05-28 | kyssbook-kdp | images | [cover-ebook.jpg](projects/kyssbook-kdp/images/cover-ebook.jpg) | Kill Your SaaS Stack KDP cover-ebook.jpg |
+| 2026-05-29 | kyssbook-kdp | reports | [kdp-submission-playbook.html](projects/kyssbook-kdp/reports/kdp-submission-playbook.html) | KDP submission playbook for Kill Your SaaS Stack (book04): eBook, paperback, hardcover upload steps, paste-ready listing copy, pricing math |

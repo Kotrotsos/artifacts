@@ -8,3 +8,4 @@
 | 2026-05-28 | other | [ebook.epub](other/ebook.epub) | Kill Your SaaS Stack KDP ebook.epub | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book02/kdp/ebook.epub |
 | 2026-05-28 | docs | [ebook.docx](docs/ebook.docx) | Kill Your SaaS Stack KDP ebook.docx | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book02/kdp/ebook.docx |
 | 2026-05-28 | images | [cover-ebook.jpg](images/cover-ebook.jpg) | Kill Your SaaS Stack KDP cover-ebook.jpg | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book02/kdp/cover-ebook.jpg |
+| 2026-05-29 | reports | [kdp-submission-playbook.html](reports/kdp-submission-playbook.html) | KDP submission playbook for Kill Your SaaS Stack (book04): eBook, paperback, hardcover upload steps, paste-ready listing copy, pricing math | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book04/artifacts/kdp-submission-playbook.html |
