@@ -137,3 +137,4 @@
 | 2026-05-30 | reports | [draft.md](reports/draft.md) | Five ambitious builds with ultracode article: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ultracode-five-builds/draft.md |
 | 2026-05-30 | reports | [draft.html](reports/draft.html) | Five ambitious builds with ultracode article: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/ultracode-five-builds/draft.html |
 | 2026-05-30 | images | [hero.png](images/hero.png) | Five ambitious builds with ultracode article: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ultracode-five-builds/hero.png |
+| 2026-05-30 | images | [idea-grid.png](images/idea-grid.png) | Five ambitious builds with ultracode article: idea-grid.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ultracode-five-builds/idea-grid.png |
