@@ -311,3 +311,4 @@
 | 2026-05-30 | content | images | [forgemcp.png](projects/content/images/forgemcp.png) | Dynamic workflows Saturday article (updated, ForgeMCP + docs): forgemcp.png |
 | 2026-05-30 | content | reports | [draft.md](projects/content/reports/draft.md) | Five ambitious builds with ultracode article: draft.md |
 | 2026-05-30 | content | reports | [draft.html](projects/content/reports/draft.html) | Five ambitious builds with ultracode article: draft.html |
+| 2026-05-30 | content | images | [hero.png](projects/content/images/hero.png) | Five ambitious builds with ultracode article: hero.png |
