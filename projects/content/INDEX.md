@@ -135,3 +135,4 @@
 | 2026-05-30 | reports | [draft.html](reports/draft.html) | Dynamic workflows Saturday article (updated, ForgeMCP + docs): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-saturday/draft.html |
 | 2026-05-30 | images | [forgemcp.png](images/forgemcp.png) | Dynamic workflows Saturday article (updated, ForgeMCP + docs): forgemcp.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-saturday/forgemcp.png |
 | 2026-05-30 | reports | [draft.md](reports/draft.md) | Five ambitious builds with ultracode article: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ultracode-five-builds/draft.md |
+| 2026-05-30 | reports | [draft.html](reports/draft.html) | Five ambitious builds with ultracode article: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/ultracode-five-builds/draft.html |
