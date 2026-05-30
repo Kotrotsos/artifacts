@@ -315,3 +315,4 @@
 | 2026-05-30 | content | images | [idea-grid.png](projects/content/images/idea-grid.png) | Five ambitious builds with ultracode article: idea-grid.png |
 | 2026-05-30 | atlas | reports | [atlas-2026.html](projects/atlas/reports/atlas-2026.html) | Interactive Atlas of Marco 2026 projects, writing themes, and fresh article pitches |
 | 2026-05-30 | project | reports | [gap-analysis.html](projects/project/reports/gap-analysis.html) | Gap analysis of 182 local projects; case for the Project Atlas tool |
+| 2026-05-31 | mailplus | images | [feed-scroll.gif](projects/mailplus/images/feed-scroll.gif) | MailPlus TikTok email client - feed-scroll.gif |
