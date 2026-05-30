@@ -304,3 +304,4 @@
 | 2026-05-29 | docscan | reports | [table2.html](projects/docscan/reports/table2.html) | Light/dark stock-quotes table, two 52-week panels with color-coded change |
 | 2026-05-30 | content | reports | [draft.md](projects/content/reports/draft.md) | Dynamic workflows Saturday Substack article: draft.md |
 | 2026-05-30 | content | reports | [draft.html](projects/content/reports/draft.html) | Dynamic workflows Saturday Substack article: draft.html |
+| 2026-05-30 | content | images | [hero.png](projects/content/images/hero.png) | Dynamic workflows Saturday Substack article: hero.png |

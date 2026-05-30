@@ -129,3 +129,4 @@
 | 2026-05-26 | images | [diagram-3-rollout.png](images/diagram-3-rollout.png) | AI-native engineering org trifecta (let go and trust): diagram-3-rollout.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-engineering-org/diagram-3-rollout.png |
 | 2026-05-30 | reports | [draft.md](reports/draft.md) | Dynamic workflows Saturday Substack article: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-saturday/draft.md |
 | 2026-05-30 | reports | [draft.html](reports/draft.html) | Dynamic workflows Saturday Substack article: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-saturday/draft.html |
+| 2026-05-30 | images | [hero.png](images/hero.png) | Dynamic workflows Saturday Substack article: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-saturday/hero.png |
