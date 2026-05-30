@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas 2026 — Marco Kotrotsos</title>
+<style>
+  :root {
+    --teal: #0E8C7F;
+    --teal-soft: rgba(14, 140, 127, 0.10);
+    --teal-line: rgba(14, 140, 127, 0.30);
+    --coral: #FF6B5C;
+    --coral-soft: rgba(255, 107, 92, 0.12);
+    --bg: #FAFBFB;
+    --surface: #FFFFFF;
+    --ink: #16322E;
+    --muted: #5F726E;
+    --hair: #E7ECEB;
+    --shadow: 0 1px 2px rgba(16,50,46,.04), 0 8px 24px rgba(16,50,46,.06);
+    --radius: 14px;
+    --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  [data-theme="dark"] {
+    --teal: #2BD4BE;
+    --teal-soft: rgba(43, 212, 190, 0.12);
+    --teal-line: rgba(43, 212, 190, 0.28);
+    --coral: #FF8475;
+    --coral-soft: rgba(255, 132, 117, 0.14);
+    --bg: #0C1413;
+    --surface: #11201D;
+    --ink: #E8F0EE;
+    --muted: #93A6A1;
+    --hair: #1F302C;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    transition: background .3s ease, color .3s ease;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+
+  /* Top bar */
+  header.top {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(10px);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom: 1px solid var(--hair);
+  }
+  .top-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 650; letter-spacing: -.01em; }
+  .logo-mark { width: 26px; height: 26px; border-radius: 7px; background: linear-gradient(135deg, var(--teal), var(--coral)); }
+  .top-nav { display: flex; gap: 22px; align-items: center; }
+  .top-nav a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; }
+  .top-nav a:hover { color: var(--ink); }
+  .toggle {
+    border: 1px solid var(--hair); background: var(--surface); color: var(--ink);
+    border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 550; cursor: pointer;
+    font-family: var(--font); transition: border-color .2s;
+  }
+  .toggle:hover { border-color: var(--teal-line); }
+
+  /* Hero */
+  .hero { padding: 72px 0 40px; position: relative; overflow: hidden; }
+  .eyebrow { color: var(--teal); font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 18px; }
+  h1 { font-size: clamp(38px, 6vw, 66px); line-height: 1.02; letter-spacing: -.03em; margin: 0 0 18px; font-weight: 700; }
+  h1 .accent { color: var(--teal); }
+  .lede { font-size: clamp(17px, 2.2vw, 20px); color: var(--muted); max-width: 660px; margin: 0 0 30px; }
+  .stat-row { display: flex; flex-wrap: wrap; gap: 14px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--hair); border-radius: var(--radius);
+    padding: 16px 20px; min-width: 120px; box-shadow: var(--shadow);
+  }
+  .stat .num { font-size: 30px; font-weight: 720; letter-spacing: -.02em; color: var(--ink); }
+  .stat .num span { color: var(--coral); }
+  .stat .lbl { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+  .iso { position: absolute; right: -40px; top: 40px; width: 360px; height: 360px; opacity: .9; pointer-events: none; }
+  @media (max-width: 880px) { .iso { display: none; } }
+
+  /* Section heading */
+  .sec { padding: 54px 0; border-top: 1px solid var(--hair); }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+  h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); margin: 0; font-weight: 650; }
+  .sec-title { font-size: clamp(24px, 3.6vw, 34px); letter-spacing: -.02em; margin: 6px 0 6px; font-weight: 700; }
+  .sec-sub { color: var(--muted); max-width: 620px; margin: 0 0 26px; }
+
+  /* Filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+  .chip {
+    border: 1px solid var(--hair); background: var(--surface); color: var(--muted);
+    border-radius: 999px; padding: 7px 15px; font-size: 13px; font-weight: 550; cursor: pointer;
+    font-family: var(--font); transition: all .16s ease;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--teal-line); }
+  .chip.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+  [data-theme="dark"] .chip.active { color: #06110F; }
+
+  /* Project grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--hair); border-radius: var(--radius);
+    padding: 22px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px;
+    transition: transform .18s ease, border-color .18s ease, opacity .25s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--teal-line); }
+  .card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .card h3 { margin: 0; font-size: 18px; letter-spacing: -.01em; font-weight: 660; }
+  .status { font-size: 11px; font-weight: 650; letter-spacing: .04em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+  .status.live, .status.released { background: var(--teal-soft); color: var(--teal); }
+  .status.active { background: var(--coral-soft); color: var(--coral); }
+  .status.prototype, .status.archived, .status.unknown { background: var(--hair); color: var(--muted); }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.5; }
+  .tech { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+  .tech span { font-size: 11.5px; color: var(--muted); background: var(--bg); border: 1px solid var(--hair); border-radius: 6px; padding: 3px 8px; }
+  .count-note { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+
+  /* Themes */
+  .themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .theme {
+    background: var(--surface); border: 1px solid var(--hair); border-left: 3px solid var(--teal);
+    border-radius: 10px; padding: 18px 20px;
+  }
+  .theme h4 { margin: 0 0 7px; font-size: 15.5px; font-weight: 640; letter-spacing: -.01em; }
+  .theme p { margin: 0; font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+
+  /* Idea engine */
+  .engine {
+    background: var(--surface); border: 1px solid var(--hair); border-radius: 18px;
+    box-shadow: var(--shadow); padding: 34px; position: relative; overflow: hidden;
+  }
+  .engine::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(600px 200px at 100% 0%, var(--teal-soft), transparent 70%);
+  }
+  .pitch-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .pitch-num { font-size: 12px; font-weight: 650; color: var(--coral); letter-spacing: .05em; }
+  .pitch-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted); }
+  .pitch-label { font-size: 12px; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+  .pitch-title { font-size: clamp(21px, 3vw, 28px); letter-spacing: -.02em; margin: 0 0 14px; font-weight: 700; line-height: 1.15; }
+  .pitch-thesis { color: var(--ink); opacity: .9; font-size: 15.5px; line-height: 1.6; margin: 0 0 22px; max-width: 760px; }
+  .takeaways { margin: 0 0 22px; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .takeaways li { position: relative; padding-left: 26px; font-size: 14px; color: var(--muted); line-height: 1.5; }
+  .takeaways li::before {
+    content: ""; position: absolute; left: 0; top: 7px; width: 12px; height: 12px;
+    border: 2px solid var(--teal); border-radius: 4px;
+  }
+  .why { font-size: 13px; color: var(--muted); border-top: 1px dashed var(--hair); padding-top: 16px; line-height: 1.55; }
+  .why b { color: var(--teal); font-weight: 600; }
+  .engine-controls { display: flex; align-items: center; gap: 12px; margin-top: 24px; }
+  .btn {
+    border: none; border-radius: 10px; padding: 11px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+    font-family: var(--font); transition: transform .12s ease, filter .15s ease;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: var(--teal); color: #fff; }
+  [data-theme="dark"] .btn-primary { color: #06110F; }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-ghost { background: transparent; border: 1px solid var(--hair); color: var(--ink); }
+  .btn-ghost:hover { border-color: var(--teal-line); }
+  .progress { display: flex; gap: 5px; margin-left: auto; }
+  .progress .pip { width: 22px; height: 4px; border-radius: 999px; background: var(--hair); transition: background .2s; }
+  .progress .pip.on { background: var(--coral); }
+  @media (max-width: 560px) { .progress { display: none; } }
+
+  footer { padding: 44px 0 60px; border-top: 1px solid var(--hair); color: var(--muted); font-size: 13px; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  .fade { animation: fade .35s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  @media print {
+    header.top, .toggle, .engine-controls, .filters, .iso { display: none !important; }
+    body { background: #fff; color: #000; }
+    .card, .theme, .engine, .stat { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+    .sec, .hero { padding: 18px 0; }
+    a { color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <div class="brand"><span class="logo-mark"></span> Atlas 2026</div>
+    <nav class="top-nav">
+      <a href="#build">Build</a>
+      <a href="#themes">Themes</a>
+      <a href="#engine">Idea engine</a>
+      <button class="toggle" id="themeToggle" type="button">Dark</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">A map of the year so far</div>
+    <h1>Eighteen things built.<br>One <span class="accent">consistent</span> argument.</h1>
+    <p class="lede">A living atlas of Marco Kotrotsos's 2026: the software shipped, the ideas that keep returning across the writing, and an engine that turns those ideas into the next six pieces worth publishing.</p>
+    <div class="stat-row" id="stats"></div>
+    <svg class="iso" viewBox="0 0 360 360" fill="none" aria-hidden="true">
+      <g stroke="var(--teal)" stroke-width="1.4" opacity="0.85">
+        <path d="M180 60 L300 130 L180 200 L60 130 Z" fill="var(--teal-soft)"/>
+        <path d="M60 130 L60 230 L180 300 L180 200 Z" fill="var(--teal-soft)"/>
+        <path d="M300 130 L300 230 L180 300 L180 200 Z" fill="rgba(0,0,0,0)"/>
+      </g>
+      <g stroke="var(--coral)" stroke-width="1.4">
+        <path d="M180 110 L240 145 L180 180 L120 145 Z" fill="var(--coral-soft)"/>
+        <circle cx="180" cy="145" r="4" fill="var(--coral)"/>
+        <circle cx="300" cy="130" r="4" fill="var(--coral)"/>
+        <circle cx="60" cy="230" r="4" fill="var(--coral)"/>
+        <path d="M184 147 L296 131" stroke-dasharray="4 4"/>
+        <path d="M176 149 L64 228" stroke-dasharray="4 4"/>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="sec" id="build">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>The build log</h2>
+        <div class="sec-title">What got made</div>
+      </div>
+    </div>
+    <p class="sec-sub">Filter by what it is. From shipped SaaS to client work to the Claude Code tooling that quietly underpins everything else.</p>
+    <div class="filters" id="filters"></div>
+    <div class="count-note" id="countNote"></div>
+    <div class="grid" id="projectGrid"></div>
+  </div>
+</section>
+
+<section class="sec" id="themes">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>The throughline</h2>
+        <div class="sec-title">Ideas that keep coming back</div>
+      </div>
+    </div>
+    <p class="sec-sub">Across dozens of articles, the same questions resurface. These are the load-bearing themes of the writing.</p>
+    <div class="themes" id="themeGrid"></div>
+  </div>
+</section>
+
+<section class="sec" id="engine">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <h2>Idea engine</h2>
+        <div class="sec-title">The next six</div>
+      </div>
+    </div>
+    <p class="sec-sub">Fresh pitches generated from the themes above, each a contrarian turn on an argument already in motion. Step through them or shuffle.</p>
+    <div class="engine" id="engine"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Atlas 2026 — generated from memory, assembled as a single file.</span>
+    <span id="genline"></span>
+  </div>
+</footer>
+
+<script>
+const DATA = {
+  "projects": [
+    {"name":"ForgeMCP","oneLiner":"A no-code SaaS to build and host Model Context Protocol servers, where users define http, ai, or static tools and expose each server as a single authenticated MCP endpoint.","status":"live","tags":["saas","mcp","no-code","developer-tools"],"tech":["Next.js 15","TypeScript","Prisma","Postgres","Tailwind v4","OpenAI SDK","Railway"]},
+    {"name":"Lethe","oneLiner":"A data anonymization CLI that detects PII and produces format-preserving anonymized output with consistent cross-table mapping, published on PyPI.","status":"released","tags":["cli","privacy","anonymization","compliance"],"tech":["Python","Presidio","spaCy","Faker","hatchling","Netlify"]},
+    {"name":"Maica","oneLiner":"An AI-powered language learning platform where students practice spoken French, English, and German with a voice bot while teachers assign lessons and track success criteria.","status":"active","tags":["education","ai","voice","edtech"],"tech":["FastAPI","Python","SQLAlchemy","Next.js 16","React 19","PostgreSQL","Azure CIAM","OpenAI Realtime API","WebRTC","Azure Container Apps"]},
+    {"name":"DesignPro.md","oneLiner":"A visual builder and playground for DESIGN.md design-token files that lints tokens, checks contrast, and streams full HTML mockups from a user's own tokens via the Claude Agent SDK.","status":"live","tags":["design-tools","design-tokens","saas"],"tech":["Next.js 15","Tailwind v4","Drizzle","Postgres","Claude Agent SDK","Vitest","Bun","Railway"]},
+    {"name":"Symphony","oneLiner":"A Python orchestrator that runs Codex app-server sessions against Linear issues, polling the tracker, dispatching eligible work, and managing retries and workspaces.","status":"active","tags":["orchestration","automation","agents","developer-tools"],"tech":["Python","Typer","FastAPI","httpx","python-liquid","watchfiles","Linear GraphQL","Codex"]},
+    {"name":"Metis","oneLiner":"A CLI and web UI tool for managing Claude Code agent skills, supporting list, search, create, and serve commands, published on PyPI.","status":"released","tags":["cli","developer-tools","claude-code","skills"],"tech":["Python","Click","FastAPI","Jinja2","hatchling"]},
+    {"name":"Hermes","oneLiner":"A file-based inter-project messaging system for Claude Code that sends async tasks between projects with no server and an approval-based access model.","status":"active","tags":["developer-tools","claude-code","messaging","cli"],"tech":["Bash","JSON"]},
+    {"name":"Pool","oneLiner":"A 2026 World Cup match predictor running Monte Carlo simulations with a v5 engine that adds confederation calibration and squad-depth priors, benchmarked against Polymarket.","status":"live","tags":["ml","prediction","sports","data-science"],"tech":["Python","Monte Carlo","Elo","Railway"]},
+    {"name":"Gloss","oneLiner":"An AI-first blog platform with live markdown preview and AI helpers for titles, tags, excerpts, and drafting.","status":"active","tags":["blogging","cms","ai","content"],"tech":["Python","Flask","markdown-it-py","SQLite","OpenAI"]},
+    {"name":"Bunch","oneLiner":"A Tauri desktop app for managing Claude Code configuration files that scans global and project configs, infers the owning agent, and edits them in a Monaco editor.","status":"active","tags":["desktop","developer-tools","claude-code"],"tech":["Tauri 2","Rust","React 18","TypeScript","TailwindCSS","Monaco Editor"]},
+    {"name":"StitchBoy","oneLiner":"A pixel and cross-stitch pattern editor with a three-layer compositing system, undo grouped by layer, and export to patterns and instructions.","status":"active","tags":["creative-tools","editor","graphics"],"tech":["React","TypeScript","Zustand","Canvas"]},
+    {"name":"animstudio","oneLiner":"The Nxtphase logo animator with parameter and full After Effects style studio modes, including a timeline, bezier easing editor, and Lottie and CSS keyframe export.","status":"active","tags":["animation","creative-tools","branding"],"tech":["React","babel-standalone","JavaScript"]},
+    {"name":"Traffic Control","oneLiner":"A real-time dashboard that monitors running Claude CLI sessions by parsing process and file-descriptor data, showing per-project CPU, memory, and uptime cards.","status":"active","tags":["developer-tools","monitoring","dashboard"],"tech":["Bun","TypeScript","WebSocket","HTML","JavaScript"]},
+    {"name":"Remembered","oneLiner":"A reminder scheduling app with email, SMS, and webhook channels on free and pro tiers.","status":"live","tags":["saas","productivity","scheduling"],"tech":["Next.js","Prisma","PostgreSQL","Clerk","Resend","Railway"]},
+    {"name":"CERTARG","oneLiner":"A Claude Certified Architect exam prep portal with five exam domains, quizzes, team chat, and a bring-your-own-key Ask Claude chatbot.","status":"active","tags":["education","exam-prep","internal-tool"],"tech":["Next.js 16","Tailwind v4","better-sqlite3","jose","Anthropic SDK"]},
+    {"name":"Zittingslijsten (ZL2026)","oneLiner":"A system for ANP and De Rechtspraak that produces weekly court hearing lists for journalists, with editor assignment, journalistic summaries, and a four-eye review cycle.","status":"active","tags":["enterprise","media","editorial","client-work"],"tech":["Next.js 15","TypeScript","Tailwind","shadcn/ui","tRPC","Prisma","PostgreSQL","GKE"]},
+    {"name":"AgentInbox","oneLiner":"A digital twin SaaS concept positioned as an HR system for AI employees, giving agents a full identity of email, phone, calendar, and org chart.","status":"prototype","tags":["saas","ai-agents","concept","spec"],"tech":["Go","Next.js","PostgreSQL","NATS","Postal MTA","Telnyx"]},
+    {"name":"Keesing Dot2Dot","oneLiner":"An SVG-based dot-to-dot puzzle generator for puzzle publisher Keesing, with an Illustrator extension, AI segmentation backend, and collision-aware number placement.","status":"active","tags":["creative-tools","puzzles","client-work","graphics"],"tech":["Node.js","Python","FastAPI","Google Vision API","Adobe CEP","ExtendScript"]}
+  ],
+  "themes": [
+    {"theme":"AI coding tools and the vibe-coding shift","gist":"Developers now run a stack of multiple AI coding tools rather than one, and vibe coding democratized building but not judgment. The person who cannot code is dangerous, and productivity panic is really a management problem."},
+    {"theme":"AI agents and silent failure","gist":"Agents fail quietly through drift and misalignment rather than loud crashes, making monitoring and validation frameworks the real risk."},
+    {"theme":"The enterprise AI adoption and deployment gap","gist":"Companies buy platforms first then hunt for problems. Budgets rise while actual agentic deployment stays tiny, and most adoption is backwards."},
+    {"theme":"AI governance, trust, and verification cost","gist":"Governance vacuums, hallucination losses, and a hidden verification tax mean trusting AI output carries real, measurable cost that organizations underprice."},
+    {"theme":"AI regulation and policy fights","gist":"State-level chatbot bills proliferate while the federal government pursues preemption, and most AI companies have not read the rules they are subject to."},
+    {"theme":"AI market economics: funding, layoffs, concentration","gist":"Record funding flows to a handful of companies while the same firms run layoffs to fund infrastructure. Capital and value concentrate, and the AI budget is paid for by you."},
+    {"theme":"Cheap, small, and edge models winning","gist":"Small language models and the cheapest fast models are the real deployment story, with the race flipping toward lowest cost and on-device inference."},
+    {"theme":"Domain expertise and configuration as the new moat","gist":"Technical execution is cheap, so domain knowledge is the last moat, and artifacts like the CLAUDE.md file become the actual product through constraint and voice."}
+  ],
+  "pitches": [
+    {"title":"Your AI Strategy Is the Rollback Button, Not the Model You Picked","thesis":"By mid-2026 the model you deploy barely matters, because they are all good enough to drift in production in ways nobody notices for hours. The only control that separates teams who actually run agents from teams who are still evaluating them is whether they can detect a bad run and reverse it before it reaches a customer. If you cannot answer how fast can we undo this in seconds, you do not have an AI strategy, you have a demo.","takeaways":["Treat every agent action as reversible by default, and refuse to ship the ones that are not, because an action you cannot undo is a liability you chose to take on","Measure mean time to rollback, not model accuracy, because silent drift gets caught in hours not milliseconds and the clock that matters starts when something goes wrong","Budget for the undo path before the capability, since the verification tax you pay up front is always cheaper than the cleanup tax you pay after a customer is touched"],"why":"Connects the recurring silent-failure and verification-cost themes to a concrete operational lever nobody is naming yet. Model choice has commoditized, and rollback is the unsexy control that actually separates the teams who deployed from the ones still buying.","label":"silent failure"},
+    {"title":"Your CLAUDE.md Walks Out the Door With Your Best Contractor","thesis":"Configuration is the new moat: the prompts and rules you accumulate are where your real domain knowledge lives. That was right, and that is exactly the problem. The file that makes your AI worth more than a generic chatbot is plain text with no DRM, no watermark, and no exit interview. Every CLAUDE.md is now your most valuable asset and your softest target at once, copyable in one command by anyone you grant access. The moat is real, and it is one git clone wide.","takeaways":["Audit every config and rules file for embedded secrets, client specifics, and decision logic you cannot afford to leak, because that text is now your crown jewels in plaintext","Version and access-gate CLAUDE.md like production source, since it often carries more proprietary value than the code it sits next to","Split the file in two, a shareable layer for voice and constraints and a guarded layer for proprietary logic, so you can hand out one without losing the other"],"why":"A contrarian turn on the configuration-as-moat thesis. Challenging your own recurring idea keeps it honest, and the departure-and-leakage framing gives a familiar theme a sharper, more concrete angle.","label":"the new moat"},
+    {"title":"Your LLM Routing Layer Is Untested Code, and It Fails Silently","thesis":"The cheap and edge model race is over, cost is no longer the interesting question, and most teams have replaced it with a worse one they refuse to name. They route across five models with a hardcoded if-statement and a prayer, then call the result a savings win. It is not. It is a new production code path with no tests, no observability, and a failure mode that looks exactly like the model being dumb.","takeaways":["Build a routing layer you can observe and evaluate, not a static map of task to model that nobody can debug when it drifts","Track escalation rate, the share of cheap-model calls retried on a bigger model, as your real cost metric, because it is where the savings quietly leak back out","Test the router itself, since a bad route fails silently and gets blamed on the model, so the bug you never find is the one routing your hardest requests to your weakest model"],"why":"Extends the cheap-and-edge-model thesis past the obvious cost point into the next concrete engineering problem. By mid-2026 the price war is yesterday's story and routing is the live one.","label":"cheap models"},
+    {"title":"Three Coding Assistants, One Codebase: Why Your AI Stack Is Slowing You Down","thesis":"The fastest team in mid-2026 is not the one with the most AI, it is the one that deleted two of its three coding assistants. Adoption was never the bottleneck, reconciliation is. When three models disagree on the same diff, your engineers stop building and start refereeing, and that referee tax is now larger than the productivity the tools were bought to deliver.","takeaways":["Audit your coding-tool stack for overlap and cut to the smallest set that covers the work, every assistant past the first one has to earn its seat","Measure the reconciliation tax directly, the hours engineers lose comparing, distrusting, and re-prompting outputs from competing assistants","Make the keep-one call at the team level and own it, a per-developer free-for-all is not empowerment, it is a manager declining to decide"],"why":"Sharpens the vibe-coding-as-management-problem theme into a direct, contrarian call against the multi-tool stack. Reframes the cost as a measurable reconciliation tax rather than abstract overhead.","label":"vibe coding"},
+    {"title":"Read the Chatbot Bills Before Legal Does, Because They Are Telling You How to Build","thesis":"There are 78 chatbot bills moving across 27 states, and a federal preemption fight aimed at 38 of them, yet most builders still file all of it under legal's inbox. That is the mistake. Disclosure, audit logging, and age-gating are not paperwork you attach after launch, they are load-bearing decisions baked into how the agent is built.","takeaways":["Build disclosure and audit logging into the agent from the first commit, because retrofitting them after launch is not a patch, it is a rewrite","Map which states your traffic actually touches, then design to the strictest regime you serve, because the strictest one sets your real ceiling","Read the bills your product is subject to before your lawyers do, because the binding constraints are technical, not just legal"],"why":"Leads with the sharpest idea, that builders should read the law before legal does. The bill counts and preemption fight are real, and the architecture claim is the practical hook.","label":"regulation"},
+    {"title":"Your AI Stack Runs on Someone Else's Severance and a Subsidy That Expires","thesis":"When a model lab posts a record raise and a round of layoffs in the same month, that is not a contradiction, it is the operating manual. The cheap inference you are building on is paid for twice, once by the people whose jobs got cut to extend the runway, and once by investors eating the gap between what you pay and what compute costs. Both subsidies are temporary.","takeaways":["Treat today's inference price as a promotional rate, not a market rate, and model your costs at two to three times current levels before you commit to a margin","Refuse hard single-provider dependencies on any lab still burning to win share, because the subsidy ends the day the funding does and you inherit the repricing","Read the layoff-plus-raise pattern as a confession of what a lab considers core versus disposable, and route your vendor risk toward what they protect"],"why":"Names the two funding sources explicitly, which is what makes a reader uncomfortable enough to click, and stays defensible because the layoff-and-raise pattern is observable and documented.","label":"market economics"}
+  ]
+};
+
+/* Stats */
+(function(){
+  const live = DATA.projects.filter(p => p.status === 'live' || p.status === 'released').length;
+  const tech = new Set(DATA.projects.flatMap(p => p.tech)).size;
+  const stats = [
+    {num: DATA.projects.length, lbl: 'projects mapped'},
+    {num: live, lbl: 'shipped or released', accent: true},
+    {num: DATA.themes.length, lbl: 'recurring themes'},
+    {num: tech, lbl: 'tools in the stack'},
+    {num: DATA.pitches.length, lbl: 'fresh pitches', accent: true}
+  ];
+  document.getElementById('stats').innerHTML = stats.map(s =>
+    `<div class="stat"><div class="num">${s.accent ? '<span>'+s.num+'</span>' : s.num}</div><div class="lbl">${s.lbl}</div></div>`
+  ).join('');
+})();
+
+/* Project filters + grid */
+const grid = document.getElementById('projectGrid');
+const countNote = document.getElementById('countNote');
+const FILTERS = ['all','saas','developer-tools','claude-code','creative-tools','client-work','education','cli','ai'];
+let activeFilter = 'all';
+
+function renderFilters(){
+  document.getElementById('filters').innerHTML = FILTERS.map(f =>
+    `<button class="chip ${f===activeFilter?'active':''}" data-f="${f}">${f === 'all' ? 'All' : f}</button>`
+  ).join('');
+  document.querySelectorAll('#filters .chip').forEach(c => c.addEventListener('click', () => {
+    activeFilter = c.dataset.f; renderFilters(); renderProjects();
+  }));
+}
+function renderProjects(){
+  const list = activeFilter === 'all' ? DATA.projects : DATA.projects.filter(p => p.tags.includes(activeFilter));
+  countNote.textContent = `Showing ${list.length} of ${DATA.projects.length}`;
+  grid.innerHTML = list.map(p => `
+    <article class="card fade">
+      <div class="card-top">
+        <h3>${p.name}</h3>
+        <span class="status ${p.status}">${p.status}</span>
+      </div>
+      <p>${p.oneLiner}</p>
+      <div class="tech">${p.tech.slice(0,6).map(t => `<span>${t}</span>`).join('')}</div>
+    </article>`).join('');
+}
+renderFilters(); renderProjects();
+
+/* Themes */
+document.getElementById('themeGrid').innerHTML = DATA.themes.map(t =>
+  `<div class="theme"><h4>${t.theme}</h4><p>${t.gist}</p></div>`
+).join('');
+
+/* Idea engine */
+const engine = document.getElementById('engine');
+let pi = 0;
+function renderPitch(){
+  const p = DATA.pitches[pi];
+  engine.innerHTML = `
+    <div class="fade">
+      <div class="pitch-meta">
+        <span class="pitch-num">PITCH ${String(pi+1).padStart(2,'0')} / ${String(DATA.pitches.length).padStart(2,'0')}</span>
+        <span class="pitch-dot"></span>
+        <span class="pitch-label">${p.label}</span>
+      </div>
+      <h3 class="pitch-title">${p.title}</h3>
+      <p class="pitch-thesis">${p.thesis}</p>
+      <ul class="takeaways">${p.takeaways.map(t => `<li>${t}</li>`).join('')}</ul>
+      <div class="why"><b>Why this lands.</b> ${p.why}</div>
+      <div class="engine-controls">
+        <button class="btn btn-primary" id="nextPitch" type="button">Next pitch</button>
+        <button class="btn btn-ghost" id="shufflePitch" type="button">Shuffle</button>
+        <div class="progress">${DATA.pitches.map((_,i)=>`<span class="pip ${i===pi?'on':''}"></span>`).join('')}</div>
+      </div>
+    </div>`;
+  document.getElementById('nextPitch').addEventListener('click', () => { pi = (pi+1) % DATA.pitches.length; renderPitch(); });
+  document.getElementById('shufflePitch').addEventListener('click', () => {
+    let n; do { n = Math.floor(Math.random()*DATA.pitches.length); } while (n === pi && DATA.pitches.length > 1);
+    pi = n; renderPitch();
+  });
+}
+renderPitch();
+
+/* Theme toggle */
+const root = document.documentElement;
+const tbtn = document.getElementById('themeToggle');
+tbtn.addEventListener('click', () => {
+  const dark = root.getAttribute('data-theme') === 'dark';
+  root.setAttribute('data-theme', dark ? 'light' : 'dark');
+  tbtn.textContent = dark ? 'Dark' : 'Light';
+});
+
+document.getElementById('genline').textContent = 'Light mode default. Dark is opt-in.';
+</script>
+</body>
+</html>
