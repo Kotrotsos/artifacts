@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project Atlas — Gap Analysis</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #5c5c5c;
+    --line: #e3e3e3;
+    --card: #fafafa;
+    --accent: #2f5fd6;
+    --accent-soft: #eef2fc;
+    --warn: #9a5b00;
+    --warn-soft: #fbf2e3;
+    --kill: #8a2a2a;
+    --kill-soft: #f8ecec;
+    --ok: #2c6a3f;
+    --ok-soft: #ebf3ee;
+    --shadow: 0 1px 2px rgba(0,0,0,.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme="system"] {
+      --bg: #15171a; --fg: #e9eaec; --muted: #9aa0a8; --line: #2a2e34;
+      --card: #1c1f24; --accent: #6f97ee; --accent-soft: #1f2733;
+      --warn: #d9a23b; --warn-soft: #2c2415; --kill: #e08585; --kill-soft: #2c1a1a;
+      --ok: #7fc596; --ok-soft: #18241c; --shadow: 0 1px 2px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15171a; --fg: #e9eaec; --muted: #9aa0a8; --line: #2a2e34;
+    --card: #1c1f24; --accent: #6f97ee; --accent-soft: #1f2733;
+    --warn: #d9a23b; --warn-soft: #2c2415; --kill: #e08585; --kill-soft: #2c1a1a;
+    --ok: #7fc596; --ok-soft: #18241c; --shadow: 0 1px 2px rgba(0,0,0,.3);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+    font-size: 16px;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 64px 28px 96px; }
+  header.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 8px; }
+  h1 { font-size: 2.1rem; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.02em; font-weight: 650; }
+  h2 { font-size: 1.35rem; margin: 56px 0 14px; letter-spacing: -0.01em; font-weight: 620; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  h3 { font-size: 1.05rem; margin: 28px 0 8px; font-weight: 620; }
+  p { margin: 0 0 14px; }
+  .sub { color: var(--muted); font-size: 0.95rem; margin: 0; }
+  .lede { font-size: 1.1rem; color: var(--fg); }
+  .muted { color: var(--muted); }
+  a { color: var(--accent); }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88em; background: var(--card); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+
+  .toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+  .toggle button { background: var(--bg); color: var(--muted); border: 0; padding: 7px 12px; font: inherit; font-size: 0.82rem; cursor: pointer; }
+  .toggle button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 32px 0 8px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; box-shadow: var(--shadow); }
+  .stat .n { font-size: 1.7rem; font-weight: 680; letter-spacing: -0.02em; }
+  .stat .l { font-size: 0.82rem; color: var(--muted); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin: 16px 0; box-shadow: var(--shadow); }
+  .winner { border-color: var(--accent); background: var(--accent-soft); }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-weight: 600; }
+  td.score { font-weight: 680; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .tag { display: inline-block; font-size: 0.72rem; padding: 2px 8px; border-radius: 999px; font-weight: 600; letter-spacing: 0.02em; }
+  .t-kill { background: var(--kill-soft); color: var(--kill); }
+  .t-merge { background: var(--warn-soft); color: var(--warn); }
+  .t-ship { background: var(--ok-soft); color: var(--ok); }
+
+  ul { margin: 0 0 14px; padding-left: 20px; }
+  li { margin: 4px 0; }
+  .dup { display: grid; grid-template-columns: 130px 1fr 70px; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .dup:last-child { border-bottom: 0; }
+  .dup .name { font-weight: 620; }
+  .dup .cnt { text-align: right; font-variant-numeric: tabular-nums; color: var(--kill); font-weight: 680; }
+
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; }
+
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .dup { grid-template-columns: 1fr 60px; }
+    .dup .desc { grid-column: 1 / -1; }
+    header.top { flex-direction: column; }
+  }
+  @media print {
+    :root { --bg:#fff; --fg:#000; --card:#fff; --line:#ccc; --accent:#000; --accent-soft:#f2f2f2; }
+    .toggle { display: none; }
+    .wrap { max-width: 100%; padding: 0; }
+    .card, .stat { box-shadow: none; break-inside: avoid; }
+    h2 { break-after: avoid; }
+    a { color: #000; text-decoration: none; }
+    body { font-size: 11pt; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Project Atlas</h1>
+      <p class="sub">Gap analysis of 182 project folders — what is missing, and the one service to build now</p>
+    </div>
+    <div class="toggle" role="group" aria-label="Color theme">
+      <button data-set="light" aria-pressed="true">Light</button>
+      <button data-set="dark" aria-pressed="false">Dark</button>
+      <button data-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="n">182</div><div class="l">project folders</div></div>
+    <div class="stat"><div class="n">74</div><div class="l">git repos (108 without)</div></div>
+    <div class="stat"><div class="n">102 GB</div><div class="l">on disk</div></div>
+    <div class="stat"><div class="n">6</div><div class="l">major dup clusters</div></div>
+  </div>
+
+  <h2>How Marco works</h2>
+  <p class="lede">Marco builds the same idea over and over, never resumes, and never ships the good version.</p>
+  <p>The folder tree reads like a workbench, not a portfolio. He is a fast, prolific prototyper who reaches for a fresh directory every time an idea returns instead of reopening the prior attempt. The pattern is consistent across every cluster:</p>
+  <ul>
+    <li><strong>New folder, not new branch.</strong> When a concept comes back, he scaffolds again from zero. The same coding agent is rebuilt 5 times under <code>archer*</code>; the same note app 6 times under <code>notee/noti/zen-notee</code>; the same random-string CLI 4 times under <code>randy*</code>.</li>
+    <li><strong>The mature version is rarely the deployed one.</strong> The most invested apps (aside, notee-desktop, promptlan) have no deploy config, while the abandoned or throwaway ones got Docker and Railway. Polish and shipping are decoupled.</li>
+    <li><strong>Client work repeats the same wiring by hand.</strong> Next.js front end + Python ML back end + Azure/EntraID auth is re-plumbed per engagement (nha-sa, bsr, complia, klafs) with no shared scaffold.</li>
+    <li><strong>Git is inconsistent.</strong> 108 of 182 folders have no repo. Active creative and security work (osint, iam, dot2dot, nonomaker, worldbuilder) has no history, so rebuilds cannot even be diffed against the prior attempt.</li>
+    <li><strong>Secrets leak.</strong> Live Railway Postgres creds in <code>ai insights</code>, a hardcoded Keesing JWT in <code>nonomaker/notes.txt</code>, loose <code>cert.pem/key.pem</code> in inboxinsights.</li>
+  </ul>
+  <p>The throughline is not a technology gap. It is a <strong>memory gap</strong>. There is no catalog of what already exists, so prior work is invisible at the moment a new idea strikes, and the cheapest move is always to start over.</p>
+
+  <h2>The duplication problem</h2>
+  <p>Six clusters account for the bulk of the waste. Every one is a symptom of the same missing thing: no index to check before starting.</p>
+  <div class="card">
+    <div class="dup"><div class="name">archer</div><div class="desc">Identical Rich-powered Anthropic tool-calling coding agent (archer, archer-code, archer-research, how-to-build-a-coding-agent, Reverse/claude-lite). Two ship the same <code>archer-cli v0.2.3</code> pyproject.</div><div class="cnt">x5</div></div>
+    <div class="dup"><div class="name">notee</div><div class="desc">Frictionless note capture rebuilt as notes/notee, notee-desktop, zen-notee, noti, vsnote, plus an empty notee stub. Only zen-notee has tests; none of the polished ones are deployed.</div><div class="cnt">x6</div></div>
+    <div class="dup"><div class="name">bsr</div><div class="desc">Dutch BSR-leefstijl persona engine: bsr, classification_bsr, bsr_selector, bsr-website. Same XGBoost target at four fidelities.</div><div class="cnt">x4</div></div>
+    <div class="dup"><div class="name">randy</div><div class="desc">Random-string / format CLI rebuilt as randy, randy-cli, randy-cursor, randy2. Tiny, superseded, never consolidated.</div><div class="cnt">x4</div></div>
+    <div class="dup"><div class="name">dot2dot</div><div class="desc">Connect-the-dots generator: dot-to-dot, dot2dot, dot2dot-agent, keesing-dot2dot, laura_colouring_book. Python Cairo tracer vs JS Claude-API editor.</div><div class="cnt">x5</div></div>
+    <div class="dup"><div class="name">profiler</div><div class="desc">HOG similarity over DXF rubber-mould profiles: a-profiler-tool-nxtphase, elastofirm-profiler (same git remote), rubbermoulds-profiler-old, "rubbermoulds-profiler-main copy".</div><div class="cnt">x4</div></div>
+  </div>
+  <p class="muted">a-profiler-tool-nxtphase and elastofirm-profiler literally share one GitHub remote. That is duplication a registry would have caught on day one.</p>
+
+  <h2>What is missing</h2>
+  <p>Across all six clusters the recurring true gaps rank as follows: (1) no master index of projects, (2) no shared libraries so the same tool code is copy-pasted, (3) no secrets discipline, (4) no consistent deploy convention, (5) no ML/eval/observability sink. Every downstream gap is enabled by the first one. You cannot build a shared agent-core, dedup the rebuilds, or enforce secrets hygiene if you do not first know what the 182 folders contain.</p>
+
+  <h2>Candidates considered</h2>
+  <table>
+    <thead><tr><th>Candidate</th><th>What it does</th><th class="score">Score</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Project Atlas</strong></td><td>Scans the projects dir; catalogs status, last-touched, size, language, git, deploy state; clusters duplicates; flags abandoned vs shippable; emits a ship/merge/kill verdict and dedup map per project.</td><td class="score">9.4</td></tr>
+      <tr><td>agent-core lib</td><td>One published package of the Anthropic tool-calling agent so archer copies import instead of re-paste.</td><td class="score">7.1</td></tr>
+      <tr><td>Secrets sweeper</td><td>Scans all folders for committed creds/tokens, reports and helps rotate.</td><td class="score">6.5</td></tr>
+      <tr><td>Deploy abstraction</td><td>One convention over Railway/Azure/Vercel/Cloud Run to replace per-project hand-wiring.</td><td class="score">5.8</td></tr>
+      <tr><td>Eval/observability hub</td><td>Central trace + eval store wired into the agents (Langfuse-style).</td><td class="score">5.2</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Why Project Atlas wins</h2>
+  <div class="card winner">
+    <p style="margin-top:0"><strong>Atlas is the root-cause fix; every other candidate is a leaf.</strong> The duplication, the dead 102 GB, the orphaned best-versions, the leaked secrets — all of them exist because there is no answer to "what do I already have?" at the moment work starts.</p>
+    <ul>
+      <li><strong>It is upstream of the other four.</strong> agent-core, the secrets sweeper, and the deploy abstraction all need to know which projects exist and which are alive. Atlas produces that input. Build it first and the others get cheaper.</li>
+      <li><strong>It pays back immediately.</strong> 108 ungit'd folders and 102 GB with 20 GB+ stale means the first run reclaims disk and surfaces kill/merge candidates the same day.</li>
+      <li><strong>It is small and self-contained.</strong> A local read-only scanner over one directory. No auth, no deploy target, no client dependency. Marco can finish it in a sitting, which matters given the shipping pattern.</li>
+      <li><strong>It directly attacks the behavior.</strong> The reason the 5th archer and 6th notee got built is that prior work was invisible. A queryable index, checked before <code>mkdir</code>, breaks the new-folder reflex.</li>
+    </ul>
+    <p style="margin-bottom:0">The secrets leak is real and urgent, but it is one finding Atlas can surface as a flag rather than a separate product. Atlas first, then act on what it reveals.</p>
+  </div>
+
+  <h2>What to build now</h2>
+  <p>A single local CLI, <code>atlas</code>, that walks <code>/Users/marcokotrotsos/projects</code> and writes both a machine-readable <code>atlas.json</code> and a static <code>atlas.html</code> dashboard. Per folder it records: name, path, size, last-modified, primary language, git presence and last-commit date, remote URL, and deploy signals (Dockerfile, railway/vercel/azure config). It then groups by name-stem and code similarity to surface duplicate clusters, classifies each project as <span class="tag t-ship">ship</span> <span class="tag t-merge">merge</span> or <span class="tag t-kill">kill</span> using last-touched, git, deploy state and cluster membership, and prints a dedup map plus a secrets-leak flag. Re-runnable so the catalog stays current.</p>
+
+  <footer>
+    <p>Project Atlas gap analysis. Report at <code>/Users/marcokotrotsos/projects/atlas/gap-analysis.html</code>. Light mode default; theme toggle and print stylesheet included.</p>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btns = document.querySelectorAll('.toggle button');
+    function set(mode) {
+      root.setAttribute('data-theme', mode);
+      btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === mode)); });
+      try { localStorage.setItem('atlas-theme', mode); } catch (e) {}
+    }
+    btns.forEach(function (b) { b.addEventListener('click', function () { set(b.dataset.set); }); });
+    var saved;
+    try { saved = localStorage.getItem('atlas-theme'); } catch (e) {}
+    set(saved || 'light');
+  })();
+</script>
+</body>
+</html>
