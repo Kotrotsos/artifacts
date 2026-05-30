@@ -307,3 +307,4 @@
 | 2026-05-30 | content | images | [hero.png](projects/content/images/hero.png) | Dynamic workflows Saturday Substack article: hero.png |
 | 2026-05-30 | content | images | [workflow-habits.png](projects/content/images/workflow-habits.png) | Dynamic workflows Saturday Substack article: workflow-habits.png |
 | 2026-05-30 | content | reports | [draft.md](projects/content/reports/draft.md) | Dynamic workflows Saturday article (updated, ForgeMCP + docs): draft.md |
+| 2026-05-30 | content | reports | [draft.html](projects/content/reports/draft.html) | Dynamic workflows Saturday article (updated, ForgeMCP + docs): draft.html |
