@@ -302,3 +302,4 @@
 | 2026-05-29 | kyssbook-kdp | reports | [kdp-submission-playbook.html](projects/kyssbook-kdp/reports/kdp-submission-playbook.html) | KDP submission playbook for Kill Your SaaS Stack (book04), hardcover wrap corrected to 14.622x10.417 |
 | 2026-05-29 | docscan | reports | [table.html](projects/docscan/reports/table.html) | Light/dark HTML page rendering a reconstructed 4-column data table |
 | 2026-05-29 | docscan | reports | [table2.html](projects/docscan/reports/table2.html) | Light/dark stock-quotes table, two 52-week panels with color-coded change |
+| 2026-05-30 | content | reports | [draft.md](projects/content/reports/draft.md) | Dynamic workflows Saturday Substack article: draft.md |

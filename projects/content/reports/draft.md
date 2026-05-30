@@ -1,135 +1,99 @@
-# Becoming AI-Native Is an Act of Subtraction: What to Let Go, What to Trust
+# I Spent a Saturday Letting Claude Code Build Whatever It Wanted
 
-*Most teams trying to become AI-native start by adding. More tools, more agents, more dashboards. The teams that actually get there start by removing. They let go of the processes they built to protect a resource that stopped being scarce, and they trust verification and human judgment to hold the line instead. Here is the full map, drawn from how Anthropic runs the Claude Code and Co-work teams.*
+*Dynamic workflows are the first feature that makes "go build the whole thing and tell me when it's done" a real instruction. Here is what I learned getting the most out of them.*
 
-![On the left a tall tower of process blocks tilting and dissolving, on the right a flat stable platform, a hand releasing a block between them](hero.png)
+![A workbench seen from above on a quiet morning, one coral seed splitting into many parallel tracks that fan across the surface, two darker shapes leaning in to inspect the work, a finished object sitting at the far end](hero.png)
 
-**Three key takeaways:**
+Last Saturday I did something I would not do on a workday. I opened Claude Code, turned on the new dynamic workflows feature, and gave it a deliberately loose instruction: build a small SaaS with actual monetization wired in, pick the idea yourself, finish it. Then I made coffee and let it run.
 
-- AI-native is not a tooling upgrade. It is a control change. For two decades, engineering organizations built planning, reviews, ownership tracking, and documentation rituals to protect scarce engineering bandwidth. That bandwidth is no longer the bottleneck. The processes that protected it are now the tax.
-- The hard part is not adopting AI. The hard part is letting go. You have to give up heavy upfront planning, gatekept reviews, design-doc culture, and the instinct to ask "who touched this," and trust verification, automation, and code-as-source-of-truth to do the job instead. Only after you let go do you get the speed.
-- Some things you keep, and keeping them is what makes the letting-go safe: taste, risk and trust boundaries, deep system expertise, and product sense. AI augments where you are weak. It does not replace the judgment that decides what "correct" means.
+I came back to a working app. Not a scaffold, not a README full of next steps. A landing page, a sign-up flow, a Stripe integration in test mode, a database schema, and a deploy config. The thing ran. The idea it picked was not one I would have chosen, and a few decisions were wrong, but the shape of a finished product was sitting there, built end to end while I was not watching.
 
----
+That is the part worth paying attention to. For two years the rule with coding agents has been "do not walk away." You paired, you watched, you corrected, you committed. Walking away for an hour got you a mess. Dynamic workflows are the first feature Anthropic has shipped that is designed for you to walk away on purpose, and the design is good enough that walking away is now the point.
 
-## The bottleneck moved, and your process did not notice
+This issue is about how to actually get the most out of that. Not the marketing version. The version where you understand what it is good at, what it wastes money on, and the specific habits that separate a Saturday that produces a working app from a Saturday that produces an expensive pile of half-finished agents.
 
-Fiona Fun leads engineering and product for Claude Code and Co-work at Anthropic. Before that she built and led teams at Meta and Microsoft. Her framing for the whole shift is one line she keeps coming back to: what served you before may no longer serve you.
+Hit reply and tell me what you would point it at first. I am collecting the tasks people reach for, because the early list is going to tell us a lot about what this feature is really for.
 
-For many years, engineering bandwidth was the expensive thing. Think about how software got built around that fact. Heavy planning, because you wanted high confidence before you spent precious engineering hours. Careful reviews, because rework was costly. Ownership tracking, because the person who knew the code was a scarce resource you had to route around. Every one of those rituals existed to protect engineering time.
+**Three things to hold onto:**
 
-This is not the first time the bottleneck has moved. Fun takes you back to Microsoft in the early 2000s, building Visual Studio with no cloud, one server room, a build queue that could merge six PRs at a time. When a test failed you had to work out which of the six broke it. That was a real bottleneck. Cloud and continuous build dissolved it. Nobody mourns the six-PR queue now.
+- A dynamic workflow is Claude writing a real orchestration script for your task, then running tens to hundreds of subagents against it in the background while your session stays free. The plan lives in code, not in the chat. Only the final answer comes back.
+- The feature rewards one skill above all others: specifying the bar. There is nobody in the loop to correct vagueness mid-run, so the quality of your "definition of done" is the quality of your result.
+- The biggest wins are tasks that split cleanly into parallel pieces and have an objective way to check each piece. Migrations, audits, bug sweeps, research. The biggest waste is pointing it at work that is sequential or taste-based.
 
-This is the same kind of shift. On the Claude Code team, coding is no longer the slow part. Writing code, writing tests, refactoring: the work that used to define the constraint is now cheap. And when the expensive thing becomes cheap, every process built around protecting it quietly stops working.
+## What it actually is, in plain words
 
-![Split screen showing coding as the bottleneck before, verification as the bottleneck now](diagram-2-bottleneck-moved.png)
+When you put the word "workflow" in your prompt, or turn on a setting called ultracode, Claude stops working through your task turn by turn and instead writes a JavaScript script that orchestrates the work. The script partitions the task, decides which pieces can run in parallel, sequences the ones that depend on each other, and defines what counts as success. A runtime then executes that script in the background.
 
-That phrase, quietly stops working, is the whole problem. A process rarely fails loudly. It just keeps running, consuming time, long after the reason for it is gone. Somebody set it up to solve a real problem. Nobody scheduled the meeting to ask whether the problem still exists.
+The detail that makes this different from "spawn a bunch of subagents" is where the work lives. With ordinary subagents, every result lands back in Claude's context window, so you are limited by how much one conversation can hold. A workflow keeps the intermediate results in script variables, outside your context entirely. That is the structural change that lets a single run use dozens or hundreds of agents without drowning. Your conversation holds the final answer. The runtime holds everything else.
 
-## What to let go
+The script can also do something a single pass cannot: build in its own quality gate. The pattern Anthropic keeps demonstrating is independent agents that adversarially review each other's findings before anything gets reported. One agent does the work, another tries to refute it, and the run keeps going until the answers stop changing. That convergence is what makes it reasonable to trust a result you did not watch get produced.
 
-Becoming AI-native starts with subtraction. Here is what comes off the table.
+![A Claude Code session: the user types a request with the word workflow highlighted, and a phase table shows planner, parallel build agents, and review agents with token counts](workflow-run.png)
 
-**Heavy upfront planning.** When coding was expensive, you planned hard to avoid building the wrong thing. When coding is cheap, you can build three versions and look at them. Fun tells a story about a refactoring debate with Boris, a colleague. In the old days they would have booked a room and whiteboarded the approaches. Instead she generated three different versions of the PRs. The debate got better, because they were arguing about real implementations and real impact on callers, not about diagrams of implementations.
+The guardrails are simple. Up to 16 agents run at once, fewer on a machine with few CPU cores. A single run is capped at 1,000 agents total, which exists to stop a runaway loop from spending your month. It runs on every paid plan now, including Pro, where you flip it on in the Dynamic workflows row of `/config`. It is a research preview, so the details will move.
 
-**Design docs as the main artifact.** The Claude Code team reduced in-depth design docs. Most discussion now happens in PRs or prototypes. The doc was a proxy for the expensive thing you were about to build. When building is cheap, the proxy costs more than the real thing.
+## The example that explains the ceiling
 
-**Gatekept code review as the only safety net.** Review still matters, but it is no longer a single human funnel that everything waits behind. Claude handles the style, the lint, the obvious bugs, and spec drift. That frees the human review for the parts that actually need a human.
+If you want to understand what this feature can really do, look at how Jarred Sumner used it to port Bun, the JavaScript runtime, from Zig to Rust. Roughly 750,000 lines of Rust. 99.8% of the existing test suite passing. Eleven days from first commit to merge.
 
-**The instinct to ask "who made this change."** This used to be the reflex question: who is the code owner, who touched this last. Fun's advice is to interrogate the question itself. What are you actually trying to answer? Are you hunting a regression? Looking for context? Trying to learn the area? In most of those cases, Claude can answer faster than a person, and you are not interrupting a busy engineer to do it.
+The interesting part is not the size, it is the shape. He did not run one giant workflow. He chained several. One workflow mapped the correct Rust lifetime for every struct field. A second wrote behavior-identical Rust files in parallel, with two reviewers on each file. A fix loop then drove the build and the test suite to green. After the port landed, an overnight workflow went looking for unnecessary data copies and opened a pull request for each one.
 
-**Documentation as the source of truth.** When coding bandwidth was limited, documentation drifting out of date was annoying but survivable. Now that throughput is high, anything outside the update loop goes stale fast. Documentation that lives apart from the code is a liability.
+That is the template. The win was not "ask for the whole thing and hope." It was breaking a massive job into a sequence of workflows, each one partitionable, each one with a hard bar (the lifetime is correct, the file behaves identically, the tests pass), and letting the parallelism do the grinding. Work you would normally plan in quarters finished in days because the tedious middle got fanned out across hundreds of agents instead of done by hand.
 
-**Whiteboard-first technical debate.** On this team, code wins. Building is cheap, argument is expensive. When you can generate the alternatives in the time it would take to schedule the debate, you generate the alternatives.
+My Saturday SaaS was a toy version of the same idea. The reason it worked at all is that "build a working app" decomposes into pieces that can run in parallel: the schema, the auth flow, the payment integration, the landing page, the deploy config. The reason a few decisions were wrong is that "pick a good business idea" is not partitionable and not verifiable, so the workflow had nothing to check itself against on that part. Which is the whole lesson.
 
-None of this is reckless. Each thing you let go of is replaced by something you trust instead.
+## How to actually get the most out of it
 
-## What to trust
+Here is what I changed between the first Saturday run that produced junk and the later ones that produced something I would keep.
 
-![Three columns: let go, trust, keep](diagram-1-let-go-trust-keep.png)
+**Specify the bar like you mean it.** This is the entire skill. A workflow has no human in the loop to correct a vague instruction halfway through, so whatever you wrote at the start is the only quality standard the run has. "Build a SaaS" gives the verifiers nothing to check. "Build a SaaS where a user can sign up, create a subscription in Stripe test mode, cancel it, and the existing tests pass" gives every agent and every reviewer a target. The more your prompt reads like an acceptance test, the better the run. Spend your effort here, not on watching.
 
-Letting go without a replacement is just chaos. The reason a team can drop heavy planning and gatekept review is that it moves its weight onto a different set of supports.
+**Pick your trigger on purpose.** There are two ways in, and they are not interchangeable. Putting the word "workflow" in a single prompt runs that one task as a workflow and leaves the rest of your session normal. Running `/effort ultracode` flips the whole session into a mode where Claude decides for itself when a task deserves a workflow, and a single request can spin off several in a row. Ultracode is the Saturday setting: you want it deciding when to fan out because you are doing a session of big things. The keyword is the weekday setting: you want one specific job run at scale and everything else left alone. Do not leave ultracode on when you go back to routine work, because every small task starts costing like a big one. Drop back with `/effort high`.
 
-**Trust verification, and shift it left.** This is the new center of gravity. When bandwidth increases and more people are checking in changes, the question that matters is whether the change is correct. Fun's framing: what is better than you running into the bug first? Having automation catch it closer to the source. The investment that used to go into protecting code-writing time now goes into verification and automation. You move the catch as early in the pipeline as you can.
+**Allowlist the tools before you walk away.** This is the unglamorous tip that saves a run. The subagents always run in accept-edits mode, so file writes are automatic, but shell commands, web fetches, and MCP tools that are not on your allowlist will still pause and wait for you to click approve. If you have wandered off, the whole run stalls on a permission prompt. Before a long workflow, add the commands the agents will need to your allowlist. The walk-away only works if nothing is waiting on you.
 
-**Trust the code as the source of truth.** When Fun onboarded to Claude Code, the code was the source of truth, and her first technical deep-dive was with Claude, not a human. She asked Claude to teach her the surface area around a bug before she fixed it. Her advice for teams: whatever your source of truth is, get it into the codebase. If it is a spec, turn it into a skill and check it in. Things in the codebase stay in the update loop. Things outside it rot.
+**Scope a sample, read the bill, then scale.** Dynamic workflows can burn through meaningfully more tokens than a normal session, and the cost depends entirely on the shape of your task. Do not point it at 500 files first. Point it at five. Watch what the planner partitions, see how often the reviewers dispute a result, and read the actual usage. Then multiply by the size of the real job. That number is your budget, and you got it for the price of a small run instead of a surprise.
 
-**Trust generation over argument.** Instead of debating which approach is right, generate the candidates and look at them. The model makes the alternatives cheap enough that producing them beats arguing about them.
+**Route the cheap stages to a cheaper model.** Every agent in a workflow uses your session's model unless the script sends a stage somewhere else. A lot of the work in a big run is bounded and mechanical, the kind of thing a smaller or faster model handles fine. When you describe the task, tell Claude to use a smaller model for the stages that do not need the strongest one and save the top model for planning and consolidation. Check `/model` before you start. With Opus 4.8's fast mode now three times cheaper than before, the partitionable grunt work is exactly where it pays off.
 
-**Trust prototypes, then scale them.** The old worry about prototyping was that you would get attached to throwaway code and ship something that was not built to scale. With Claude, you prototype to learn, then scale the prototype to production far faster than before. The prototype stops being a trap.
+**Watch with `/workflows`, and use the controls.** The run is in the background, but you are not blind. Run `/workflows`, arrow to your run, and press Enter to see every phase with its agent count, token total, and elapsed time. Drill into any agent to read its prompt and what it found. You can pause with `p`, stop a single misbehaving agent with `x`, restart one with `r`. You do not have to babysit, but when a run feels wrong, this is how you find the agent that went sideways before it poisons the rest.
 
-**Trust Claude to fill the cross-functional gaps.** This one applies to every role, not just engineering. Designers on the Claude Code team make their own polish and UX fixes with Claude instead of red-lining and handing off to an engineering queue. That closes the iteration loop. On the flip side, Fun, an engineer who tends to write too verbosely, uses Claude as a content-design partner to tighten copy. Claude augments the area where each person is weak.
+**Save the runs that work.** When a workflow does what you wanted, press `s` in the `/workflows` view and save its script as a command. Now it is a `/yourcommand` you can run every week. The review you run on every branch, the audit you do every release, the research sweep you do for every issue of a newsletter. The orchestration becomes reusable, which is the part that turns a clever Saturday into a standing part of your toolkit.
 
-## What to keep, because keeping it makes the rest safe
+![A four-step ladder of habits: name the bar, allowlist the tools, sample then scale, save the run. Each rung labeled with a short phrase and a coral marker](workflow-habits.png)
 
-Subtraction has a floor. Some things do not move to the model, and protecting them is exactly what lets you trust everything else.
+## What it is genuinely good for
 
-**Keep human judgment on risk and trust boundaries.** Legal reviews. Anything that comes down to risk tolerance. Anywhere a decision crosses a trust boundary. This is trust-but-verify territory, and the verify is human.
+The clean test is two words: partitionable and verifiable.
 
-**Keep taste and product sense.** Fun's example is perfect because it is small and real. Last December she wanted to give Claude a holiday theme in the CLI and turn it into a snowman. She coded it up and asked a designer to review. The feedback: that looks nothing like a snowman, you turned Claude into Mr. Peanut. She looked again, and it was unmistakably a peanut. That is the kind of call a model will not make for you. Taste is a human input.
+A task is partitionable when it splits into pieces that can run at the same time without each piece needing the others. A migration across hundreds of files. A bug sweep over a whole service. A security pass checking auth on every endpoint. A research question attacked from several angles at once. A courseware site where each module, each lesson, each quiz is its own buildable unit. These are the jobs where 16 agents at once actually buys you wall-clock time.
 
-**Keep two engineering profiles.** As roles blur and Claude augments, Fun focuses hiring on two types. Creative builders with product sense, and people with deep system expertise. The hard parts still need humans who can hold the whole system in their head and who know what good looks like.
+A task is verifiable when there is an objective way to know each piece is right. Tests passing is the strongest form. Adversarial reviewers refuting each other is the form built into the feature. If there is no way to check the answer, the review loop has nothing to do and you are just spinning up agents you have to trust on faith.
 
-**Build the product-sense muscle deliberately.** When she gave this talk in San Francisco, engineers asked how to build product sense. Her answer: dogfood relentlessly. Use the product you build. Anthropic calls it ant food. She joins a team and immediately starts using the product, because that is how you feel it in your bones and remember the problem you were trying to solve. Then iterate, ship, and talk to actual customers. Her passion project is small businesses; she onboarded restaurant-owner friends onto Co-work and got humbling feedback about an onboarding flow she thought was fine. The alternative is making product decisions off metrics, dashboards, and slide decks, which is how you slowly lose touch with what your product does.
+The Saturday "build something with monetization" experiment sits right at the edge of this. The building is partitionable and the running-or-not is verifiable, so the construction works. The "is this a good idea" part is neither, so that is the part you still have to own. Use the workflow for the build. Keep the judgment for yourself.
 
-## The org shape that makes this work
+## Where it falls down
 
-A few structural choices made the rest possible.
+The inverse of the test tells you what to keep out of it. Anything purely sequential, where every step depends on the last, gets nothing from the fan-out and just pays for the overhead. Anything where correctness is a matter of taste gets nothing from the reviewers, because there is no fact for them to converge on. Most writing is in this bucket. So is most product strategy. So is nearly any "should we do X or Y" conversation. For those you still want one Claude in a normal conversation, applying judgment with you, iterating in the loop.
 
-The org stays flat and agile. And every manager on Claude Code starts as an IC first. Fun is direct about why this works: before a manager takes on the responsibility of supporting people, they roll up their sleeves and learn what it is like to be an engineer on the team. There is a bonus here for managers specifically. This is the moment to get maker hours back, because onboarding is far less daunting than it used to be. When Fun onboarded to Claude, she did her first tech deep-dive with Claude and shipped a bug fix using test-driven development, which she had previously treated like eating broccoli. With Claude writing the test scaffolding, the broccoli tax came off, and TDD became something she actually enjoyed.
+The rough heuristic I have landed on: if a senior engineer would hand this to someone with the words "report back when the tests pass," it is a workflow. If they would say "let's sit down and work through this together," it is not.
 
-The point underneath the org shape: keep the people who make decisions close to the work. A manager who cannot get into the codebase makes decisions off proxies. A manager who can is making them off the real thing.
+## The skill this is quietly training
 
-## How to actually roll it out
+By Sunday the workflow had changed what I spend my attention on. The conversation is no longer where the work happens. It is where you design the work. You spend more time being precise about what done means, because there is no chance to correct vagueness once the run starts. You spend more time choosing the verification bar, because the reviewers are the only quality gate between the agents and you. You spend a lot less time watching a screen, because the screen is not where anything is happening.
 
-![Forcing functions from the top meeting bottoms-up adaptation from the bottom](diagram-3-rollout.png)
+That is a genuinely different way to work, and it is harder than learning to prompt well. The skill is specifying a task and a bar precisely enough that you trust the answer without having watched it get made. Dynamic workflows are not the last tool that will reward that skill. They are the first one shipped at this scale, with a real cost ceiling and verification built in. If you have been waiting for the moment when "go build the whole thing and tell me when it is done" became a real instruction instead of a fantasy, this is closer to it than anything before.
 
-The rollout has two halves, and you need both.
+So here is the Saturday challenge. Pick one task you have been avoiding because it is too tedious to do by hand and has an objective bar for done. A dependency upgrade. A rename across a hundred files. A courseware site you keep meaning to build. A small SaaS you have been describing to people for a year. Scope a slice, write the bar like an acceptance test, allowlist the tools, and let it run while you do something else. Come back and read what it made.
 
-**Align top-down on a few forcing functions.** These are the non-negotiables that set the culture. On the Claude Code team they are short. Every teammate uses Claude Code and Co-work, every day. Claudify everything you can: any time you are about to do something, ask whether Claude could do it instead, because every task it takes frees your bandwidth for harder problems. And, the one that does the heavy lifting, explicit permission to kill old processes. Even the team's own principles get revisited when they stop serving their purpose.
+Then hit reply and tell me what it built. I want to compare the first wave of these, because the tasks people reach for in the first month are going to define what this feature actually becomes.
 
-**Leave room for bottoms-up adaptation.** How Claude shows up in a team's triage, its standups, its planning rituals, which workflow gets claudified first: all of that is left to each pod. Different teams have different toolchains and different pain. The forcing functions set the floor. The pods choose how to build on it.
+Until next week,
 
-The reason the "permission to kill processes" forcing function matters so much: people do not delete processes on their own. They pile up. Fun was once on a team with so many SLAs, one for P0 bugs, one for incident response, on and on, that engineers came to her asking which SLA they were even supposed to satisfy in a 24-hour day. Nobody had ever scheduled the audit. Processes accrete unless removing them is somebody's explicit, blessed job.
-
-There is a second reason to keep revisiting: the models keep improving. Something Claude was not good at three months ago may be solid after a model update. A growth-mindset audit cadence is not just good hygiene, it is how you catch the capabilities that quietly became available.
-
-## How to know it is working
-
-Fun shared the signals the team watches.
-
-**Onboarding ramp-up time goes down.** The span from a new engineer joining to landing their first PR shrinks. So does the cost to existing team members, because new joiners ask Claude the questions they used to ask a busy colleague.
-
-**PR cycle time goes down, but measure it in pieces.** This one has a trap. If your PR cycle time is not dropping, it does not necessarily mean you are failing to adopt AI. It might mean a different part of the queue is jammed, your build or CI cannot keep up with the new throughput. Break PR cycle time into its funnel stages and find which stage is the actual constraint now.
-
-**Claude-assisted commits go up.** On the Claude Code team, nearly every commit in recent months has been Claude-assisted.
-
-And the signal that matters more than any throughput number: whatever your product or problem actually is, find a way to measure that. Throughput going up is meaningless if the product is not getting better. Measure the thing you are actually trying to improve.
-
-## The honest open questions
-
-Fun was transparent that this is unfinished. The questions the Claude Code team is still working out:
-
-Do you still need separate iOS and Android orgs, when Claude lets engineers flex across mobile platforms? How far do you push fully automated reviews before you lose something important? As roles blur, how do you make sure everyone stays productive and confident that their changes are correct?
-
-These are not signs that the approach is shaky. They are what the frontier looks like when you are actually on it.
-
-## Where to start on Monday
-
-The takeaway exercise Fun leaves with audiences is small enough to do this week. Pick your noisiest workflow. The one with the highest tax on the team, or the meeting nobody enjoys, the one where everyone is on their laptop except when they pop up to give status. Count the people in that room and the cost becomes obvious.
-
-For that one workflow, ask the only two questions that matter. Is it still serving its purpose? And if it is expensive, could Claude help with it instead?
-
-Then do the next one. One workflow at a time.
-
-That is the whole method. Becoming AI-native is not a tool you install. It is a sequence of small acts of letting go, each one backed by something you have decided to trust, with a short list of things you refuse to give up. The teams that get there are not the ones who added the most. They are the ones who were willing to remove what stopped working, and trust what replaced it.
+Marco
 
 ---
 
-*Marco Kotrotsos, specializing in practical AI implementation for organizations ready to close the gap between AI hype and AI value. With 30 years of IT experience now focused purely on AI deployment, he works hands-on with companies to turn AI potential into measurable business outcomes.*
+*Marco Kotrotsos writes Autocomplete, a free newsletter on practical AI for people actually shipping it.*
 
-*This article is published in [Autocomplete](https://medium.com/autocomplete-real-world-ai), a Medium publication about real-world AI for practitioners and decision-makers.*
-
-*My free Substack newsletter, also called Autocomplete, can be found here: https://acdigest.substack.com.*
-
-*Source talk: Running an AI-Native Engineering Org by Fiona Fun at Code with Claude. https://www.youtube.com/watch?v=IA5LWIGqnyM*
+*My books on Amazon: [Claude Code for Everyone Else](https://www.amazon.com/dp/B0H35YY851) and [From Vibe to Production](https://www.amazon.com/dp/B0H34GK9VW).*
