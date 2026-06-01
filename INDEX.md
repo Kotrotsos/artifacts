@@ -318,3 +318,4 @@
 | 2026-05-31 | mailplus | images | [feed-scroll.gif](projects/mailplus/images/feed-scroll.gif) | MailPlus TikTok email client - feed-scroll.gif |
 | 2026-05-31 | mailplus | images | [like-burst.gif](projects/mailplus/images/like-burst.gif) | MailPlus TikTok email client - like-burst.gif |
 | 2026-05-31 | mailplus | images | [01-feed-mobile.png](projects/mailplus/images/01-feed-mobile.png) | MailPlus TikTok email client - 01-feed-mobile.png |
+| 2026-06-01 | elastofirm-profiler | reports | [lassfom_things_to_add.html](projects/elastofirm-profiler/reports/lassfom_things_to_add.html) | Phase 3 task list with per-task code analysis, implementation steps, challenges, and Mermaid diagrams |
