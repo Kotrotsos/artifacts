@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Per-tenant system-prompt template switch</title>
+  <style>
+    :root {
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+      --bg: #f6f7f9; --surface: #fff; --surface2: #eef1f5; --border: #e1e5ec; --border2: #cdd4de;
+      --text: #1b2027; --dim: #586073; --faint: #8b93a2;
+      --accent: #3a5bd9; --accent-soft: #e9eefc; --accent-text: #2942a6;
+      --red: #c2362f; --red-soft: #fbecea; --amber: #b06a17; --amber-soft: #f8efe2; --green: #2f8f5b; --green-soft: #e8f5ee;
+      --lf: #6c4cd6; --lf-soft: #efeafc; /* langfuse purple */
+      --shadow: 0 1px 2px rgba(20,26,40,.06), 0 6px 22px rgba(20,26,40,.06);
+      --maxw: 940px;
+    }
+    html[data-theme="dark"] {
+      --bg: #0f1318; --surface: #161b22; --surface2: #1e242d; --border: #29313b; --border2: #3a444f;
+      --text: #e6eaf0; --dim: #a3adba; --faint: #717d8a;
+      --accent: #7d96f0; --accent-soft: #1d2740; --accent-text: #aebef7;
+      --red: #ef6f68; --red-soft: #2c1a19; --amber: #e0a35a; --amber-soft: #2a2114; --green: #5bc78c; --green-soft: #16271d;
+      --lf: #a78bfa; --lf-soft: #241b3d;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 22px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:var(--font); background:var(--bg); color:var(--text); line-height:1.6; -webkit-font-smoothing:antialiased; }
+    .bar { position:sticky; top:0; z-index:10; background:color-mix(in srgb,var(--surface) 90%,transparent); backdrop-filter:blur(8px); border-bottom:1px solid var(--border); }
+    .bar-in { max-width:var(--maxw); margin:0 auto; padding:12px 22px; display:flex; align-items:center; gap:14px; }
+    .bar .tag { font-size:12px; font-weight:700; letter-spacing:.04em; color:var(--faint); text-transform:uppercase; }
+    .toggle { margin-left:auto; display:flex; gap:2px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:3px; }
+    .toggle button { border:0; background:transparent; color:var(--dim); font:inherit; font-size:12px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; }
+    .toggle button.on { background:var(--surface); color:var(--text); box-shadow:var(--shadow); }
+    main { max-width:var(--maxw); margin:0 auto; padding:34px 22px 90px; }
+    h1 { font-size:29px; line-height:1.2; letter-spacing:-.02em; margin:0 0 10px; }
+    h2 { font-size:20px; letter-spacing:-.01em; margin:42px 0 14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+    h3 { font-size:15px; margin:22px 0 8px; }
+    p { margin:12px 0; }
+    .lead { font-size:18px; color:var(--dim); margin:0 0 8px; }
+    .eyebrow { font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--accent-text); margin-bottom:10px; }
+    code { font-family:var(--mono); font-size:.88em; background:var(--surface2); padding:1px 6px; border-radius:5px; }
+    pre { font-family:var(--mono); font-size:12.5px; line-height:1.5; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:14px; overflow:auto; white-space:pre; margin:0; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:20px 22px; margin:16px 0; }
+    .tldr { border-left:4px solid var(--accent); }
+    .callout { border-radius:10px; padding:13px 18px; margin:16px 0; border:1px solid; }
+    .callout.green { background:var(--green-soft); border-color:color-mix(in srgb,var(--green) 35%,transparent); }
+    .callout.amber { background:var(--amber-soft); border-color:color-mix(in srgb,var(--amber) 35%,transparent); }
+    .callout.red { background:var(--red-soft); border-color:color-mix(in srgb,var(--red) 35%,transparent); }
+    .callout h3 { margin:0 0 6px; font-size:14.5px; }
+    table { width:100%; border-collapse:collapse; font-size:13.5px; margin:12px 0; }
+    th { text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--faint); padding:9px 10px; border-bottom:1px solid var(--border2); }
+    td { padding:10px; border-bottom:1px solid var(--border); vertical-align:top; }
+    td code { white-space:nowrap; }
+    .badge { display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:999px; }
+    .b-old { background:var(--surface2); color:var(--dim); }
+    .b-new { background:var(--green-soft); color:var(--green); }
+    .b-fix { background:var(--amber-soft); color:var(--amber); }
+    .muted { color:var(--dim); }
+    .foot { margin-top:50px; padding-top:18px; border-top:1px solid var(--border); color:var(--faint); font-size:12.5px; }
+    /* diagram */
+    .flow { display:flex; flex-direction:column; gap:0; align-items:stretch; margin:6px 0; }
+    .node { border:1.5px solid var(--border2); border-radius:9px; padding:10px 14px; background:var(--surface); font-size:13px; }
+    .node .t { font-weight:700; }
+    .node .s { font-size:11.5px; color:var(--faint); font-family:var(--mono); margin-top:2px; }
+    .node.lf { border-color:color-mix(in srgb,var(--lf) 55%,transparent); background:var(--lf-soft); }
+    .node.db { border-color:color-mix(in srgb,var(--accent) 45%,transparent); background:var(--accent-soft); }
+    .node.dim { opacity:.85; }
+    .arrow { align-self:center; color:var(--faint); font-size:18px; line-height:1; margin:5px 0; }
+    .branch { display:flex; gap:12px; }
+    .branch > div { flex:1; }
+    .lbl { font-size:11px; font-weight:700; color:var(--faint); text-transform:uppercase; letter-spacing:.04em; text-align:center; margin:4px 0; }
+    .cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+    @media (max-width:760px){ .cols { grid-template-columns:1fr; } }
+    .panel { background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow); padding:16px 18px; }
+    .panel h3 { margin-top:0; }
+    .pill { display:inline-block; font-family:var(--mono); font-size:11px; padding:1px 7px; border-radius:5px; background:var(--lf-soft); color:var(--lf); border:1px solid color-mix(in srgb,var(--lf) 30%,transparent); }
+    @media print { .bar,.toggle{display:none} body{background:#fff;color:#000} .card,.panel,pre{box-shadow:none} h2{break-after:avoid} }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div class="bar-in">
+      <span class="tag">Virtuele Assistent · prompt_hygiene</span>
+      <div class="toggle" role="group" aria-label="Theme">
+        <button data-m="light" onclick="setTheme('light')">Light</button>
+        <button data-m="dark" onclick="setTheme('dark')">Dark</button>
+        <button data-m="system" onclick="setTheme('system')">Auto</button>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="eyebrow">Change description</div>
+    <h1>Per-tenant system-prompt template switch</h1>
+    <p class="lead">A single tenant can be moved onto a different system-prompt template (the refactored <code>refactor/system-prompt-main</code>) from the admin, without changing the default for everyone else.</p>
+
+    <div class="card tldr">
+      <h3 style="margin-top:0">In one paragraph</h3>
+      <p style="margin:0">The backend used to fetch one hardcoded template (<code>generic_system_prompt_v3</code>) for every tenant. Now each tenant can carry an optional <code>systemPromptTemplate</code> override, set from the admin. If set (and on the allow-list), the assembler fetches that template first and falls back to v3 if anything goes wrong. The default is unchanged, so this is safe to merge: nothing changes until a tenant is explicitly switched. A latent bug was also fixed: slash-namespaced prompt names (like <code>refactor/system-prompt-main</code>) were unfetchable because the name was not fully URL-encoded.</p>
+    </div>
+
+    <h2>Old vs new flow</h2>
+    <div class="cols">
+      <div class="panel">
+        <h3><span class="badge b-old">Before</span> one template for all</h3>
+        <div class="flow">
+          <div class="node"><div class="t">Chat request</div><div class="s">/ai/stream/chat/{tenant}/chat</div></div>
+          <div class="arrow">&darr;</div>
+          <div class="node db"><div class="t">TenantPromptVariables</div><div class="s">from DB (per tenant)</div></div>
+          <div class="arrow">&darr;</div>
+          <div class="node"><div class="t">PromptAssemblyService</div><div class="s">loadGenericTemplate(label)</div></div>
+          <div class="arrow">&darr;</div>
+          <div class="node lf"><div class="t">Langfuse: generic_system_prompt_v3</div><div class="s">hardcoded name (v2 fallback)</div></div>
+          <div class="arrow">&darr;</div>
+          <div class="node"><div class="t">substitute {{variables}}</div><div class="s">writing_style, response_format, …</div></div>
+          <div class="arrow">&darr;</div>
+          <div class="node"><div class="t">System prompt → agent</div></div>
+        </div>
+        <p class="muted" style="margin:12px 0 0">Every tenant gets the same template. Switching meant editing code or flipping everyone at once.</p>
+      </div>
+
+      <div class="panel">
+        <h3><span class="badge b-new">After</span> per-tenant choice</h3>
+        <div class="flow">
+          <div class="node"><div class="t">Chat request</div><div class="s">/ai/stream/chat/{tenant}/chat</div></div>
+          <div class="arrow">&darr;</div>
+          <div class="node db"><div class="t">TenantPromptVariables</div><div class="s">+ systemPromptTemplate (override)</div></div>
+          <div class="arrow">&darr;</div>
+          <div class="node"><div class="t">PromptAssemblyService</div><div class="s">loadGenericTemplate(label, override)</div></div>
+          <div class="lbl">override set &amp; allow-listed?</div>
+          <div class="branch">
+            <div>
+              <div class="lbl">yes</div>
+              <div class="node lf"><div class="t">refactor/system-prompt-main</div><div class="s">+ bot_name, taalniveau,<br>extra_topic_rules</div></div>
+            </div>
+            <div>
+              <div class="lbl">no / fails</div>
+              <div class="node lf dim"><div class="t">generic_system_prompt_v3</div><div class="s">default chain (v2 fallback)</div></div>
+            </div>
+          </div>
+          <div class="arrow">&darr;</div>
+          <div class="node"><div class="t">substitute {{variables}}</div><div class="s">full contract for the chosen template</div></div>
+          <div class="arrow">&darr;</div>
+          <div class="node"><div class="t">System prompt → agent</div></div>
+        </div>
+        <p class="muted" style="margin:12px 0 0">The tenant's choice wins when present; otherwise everything behaves exactly as before.</p>
+      </div>
+    </div>
+
+    <div class="callout green">
+      <h3>Fail-safe</h3>
+      <p style="margin:0">The override is only honoured if the name is on the <code>SELECTABLE_TEMPLATES</code> allow-list, and the chosen template is tried <em>first</em> with the standard chain (<code>v3 → v2</code>) still behind it. A missing, mistyped, or unreachable template can never break assembly — it silently falls back to v3. This was confirmed during testing.</p>
+    </div>
+
+    <h2>How it's wired in Langfuse</h2>
+    <p>Templates live in Langfuse as managed prompts. The app fetches them by name at request time (cached 5 min). Nothing about prompt <em>storage</em> changed; only <em>which</em> name the backend asks for.</p>
+    <div class="flow" style="max-width:640px">
+      <div class="node lf"><div class="t"><span class="pill">prompt</span> generic_system_prompt_v3</div><div class="s">labels: latest, production · the default for all tenants</div></div>
+      <div class="arrow">+</div>
+      <div class="node lf"><div class="t"><span class="pill">prompt</span> refactor/system-prompt-main</div><div class="s">labels: latest, production · opt-in per tenant</div></div>
+    </div>
+    <div class="callout amber" style="margin-top:14px">
+      <h3>Two Langfuse details that matter</h3>
+      <p style="margin:0 0 6px"><strong>1. Slash in the name.</strong> <code>refactor/system-prompt-main</code> contains a <code>/</code>. The app now URL-encodes the full name as one path segment (<code>encodeURLPathPart</code>), so the fetch resolves. Before this fix, the whole <code>refactor/</code> namespace was unfetchable (404) and silently fell back to v3.</p>
+      <p style="margin:0"><strong>2. No <code>test</code> label.</strong> <code>refactor/system-prompt-main</code> is on <code>latest</code> + <code>production</code> only. In dev/staging the app requests the <code>test</code> label and falls back to <code>production</code>, so it resolves — but an edit made only on <code>latest</code> will not appear until it is also promoted to <code>production</code>.</p>
+    </div>
+
+    <h2>What changed in the code</h2>
+    <table>
+      <thead><tr><th>File</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td><code>PromptVariableModels.kt</code></td><td>+ <code>systemPromptTemplate</code> (override, null=default), + <code>taalniveau</code> (B1/A2), + <code>extraTopicRules</code></td></tr>
+        <tr><td><code>PromptAssemblyService.kt</code></td><td><code>SELECTABLE_TEMPLATES</code> allow-list; <code>loadGenericTemplate(label, preferred)</code> tries the override first then the standard chain; + mappings for <code>bot_name</code>, <code>email</code>, <code>org_short</code>, <code>taalniveau</code>, <code>extra_topic_rules</code></td></tr>
+        <tr><td><code>LangfusePromptService.kt</code> <span class="badge b-fix">bug fix</span></td><td><code>encodeURLPath</code> → <code>encodeURLPathPart</code> so a <code>/</code> in the prompt name is encoded as one segment instead of a path separator</td></tr>
+        <tr><td><code>lib/api.ts</code> (admin)</td><td>Type fields for the three new variables</td></tr>
+        <tr><td><code>PromptVariablesEditor.tsx</code> (admin)</td><td>"Systeemprompt-sjabloon" dropdown (Standaard v3 / Nieuw refactor) + conditional Taalniveau (B1/A2)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>The variable contract the new template adds</h3>
+    <pre>refactor/system-prompt-main uses 5 vars the old contract didn't expose:
+
+  {{bot_name}}           ← appName (or orgName if unnamed)     [mapping only]
+  {{email}}              ← vars.email                          [mapping only]
+  {{org_short}}          ← "de gemeente" / orgName             [derived]
+  {{taalniveau}}         ← new field, default "B1" (B1 / A2)   [new field]
+  {{extra_topic_rules}}  ← new field, optional per-tenant text [new field]</pre>
+
+    <h2>Verification</h2>
+    <table>
+      <thead><tr><th>Tenant</th><th>Override</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>meppel</td><td><code>refactor/system-prompt-main</code></td><td>renders the refactor prompt; <code>bot_name</code>→"Mia", taalniveau line present; <strong>0 unresolved placeholders</strong></td></tr>
+        <tr><td>montferland</td><td>none</td><td>stays on v3; <strong>0 unresolved placeholders</strong></td></tr>
+        <tr><td>(mistyped/missing)</td><td>bad value</td><td>falls back to v3 — no breakage</td></tr>
+      </tbody>
+    </table>
+    <p class="muted">Verified via the admin preview endpoint (<code>/api/admin/{tenant}/prompt-variables/preview</code>), which reports unresolved <code>{{...}}</code>. Test data was reset afterwards.</p>
+
+    <h2>Rollout</h2>
+    <div class="callout green">
+      <h3>Safe to merge to <code>test</code></h3>
+      <p style="margin:0">Default unchanged — every tenant stays on v3 until switched in admin. Flip one tenant, validate with the preview button, publish, then move to the next.</p>
+    </div>
+    <div class="callout red">
+      <h3>Do this before switching a live tenant</h3>
+      <p style="margin:0">Run an eval (answer_relevance_v2 / the groundedness evaluator) on the refactor prompt versus v3 for that tenant before exposing it to real traffic. The render being clean does not prove the prompt answers better.</p>
+    </div>
+
+    <div class="foot">
+      Branch: <code>prompt_hygiene</code> · commit <code>1fd2dd9</code>. Diagram reflects PromptAssemblyService assembly path; runtime date/time injection (PromptUtils.applyDateTime) happens after substitution and is unchanged.
+    </div>
+  </main>
+
+  <script>
+    function setTheme(m){ localStorage.setItem('ptpt-theme', m); apply(m); }
+    function apply(m){
+      var dark = m==='dark' || (m==='system' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+      document.querySelectorAll('.toggle button').forEach(function(b){ b.classList.toggle('on', b.dataset.m===m); });
+    }
+    apply(localStorage.getItem('ptpt-theme') || 'light');
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(){ if((localStorage.getItem('ptpt-theme')||'light')==='system') apply('system'); });
+  </script>
+</body>
+</html>
