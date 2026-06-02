@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elastofirm Profile Match — Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f9fafb;
+    --surface: #ffffff;
+    --surface-2: #f3f4f6;
+    --thumb: #eef1f4;
+    --border: #e5e7eb;
+    --border-strong: #d1d5db;
+    --ink: #18181b;
+    --ink-2: #3f3f46;
+    --muted: #71717a;
+    --muted-2: #a1a1aa;
+    --rubber: #27272a;
+    --rubber-2: #3f3f46;
+    --skin: #b91c1c;
+    --accent: #2563eb;
+    --good: #059669;
+    --mid: #d97706;
+    --low: #9ca3af;
+    --radius: 14px;
+    --shadow-sm: 0 1px 2px rgba(16,24,40,0.05);
+    --shadow: 0 4px 16px rgba(16,24,40,0.08);
+    --shadow-lg: 0 24px 60px rgba(16,24,40,0.16);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Geist', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .mono { font-family: 'Geist Mono', ui-monospace, monospace; }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px;
+    background: rgba(249,250,251,0.82);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 11px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand .logo {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--ink); color: #fff;
+    display: grid; place-items: center;
+    font-family: 'Geist Mono', monospace; font-weight: 600; font-size: 14px;
+  }
+  .brand small {
+    font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--muted);
+    background: var(--surface-2); border: 1px solid var(--border);
+    padding: 2px 7px; border-radius: 999px; letter-spacing: 0.02em; font-weight: 500;
+  }
+  .topnav { display: flex; gap: 4px; }
+  .topnav a {
+    font-size: 13px; color: var(--muted); text-decoration: none;
+    padding: 7px 12px; border-radius: 8px; transition: all 0.15s ease;
+  }
+  .topnav a:hover { color: var(--ink); background: var(--surface-2); }
+
+  /* ---------- Layout ---------- */
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px; }
+  section { padding: 0 0 32px; }
+
+  /* ---------- Reveal animation ---------- */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 64px 0 28px; text-align: center; position: relative; }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--accent);
+    background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.16);
+    padding: 5px 12px; border-radius: 999px; margin-bottom: 22px;
+  }
+  .hero .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .hero h1 {
+    font-size: 52px; line-height: 1.04; font-weight: 600; letter-spacing: -0.03em;
+    max-width: 760px; margin: 0 auto 18px;
+  }
+  .hero h1 .grad {
+    background: linear-gradient(95deg, #2563eb, #7c3aed 60%, #db2777);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p.sub {
+    font-size: 18px; color: var(--ink-2); max-width: 580px; margin: 0 auto 8px; line-height: 1.55;
+  }
+
+  .hero-stats { display: flex; justify-content: center; gap: 40px; margin-top: 38px; flex-wrap: wrap; }
+  .hero-stats .stat { text-align: center; }
+  .hero-stats .num { font-family: 'Geist Mono', monospace; font-size: 30px; font-weight: 600; letter-spacing: -0.02em; }
+  .hero-stats .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+
+  /* floating background shapes */
+  .floaters { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: -1; }
+  .floaters svg { position: absolute; opacity: 0.05; color: var(--ink); animation: float 14s ease-in-out infinite; }
+
+  @keyframes float { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-24px) rotate(8deg); } }
+
+  /* ---------- Demo console ---------- */
+  .console {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 20px; box-shadow: var(--shadow); overflow: hidden;
+    margin-top: 8px;
+  }
+  .console-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 18px; border-bottom: 1px solid var(--border); background: var(--surface);
+  }
+  .console-head .tl { display: flex; gap: 6px; }
+  .console-head .tl i { width: 11px; height: 11px; border-radius: 50%; background: var(--border-strong); display: block; }
+  .console-head .title { font-size: 13px; color: var(--muted); font-family: 'Geist Mono', monospace; margin-left: 6px; }
+  .console-head .step-tag { margin-left: auto; font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); }
+
+  .console-body { padding: 32px; min-height: 440px; }
+
+  /* ---- Upload stage ---- */
+  .uploader { text-align: center; max-width: 620px; margin: 0 auto; }
+  .dropzone {
+    border: 2px dashed var(--border-strong); border-radius: 16px;
+    padding: 40px 28px; background: var(--surface-2);
+    transition: all 0.25s ease; cursor: pointer;
+  }
+  .dropzone:hover { border-color: var(--accent); background: rgba(37,99,235,0.04); }
+  .dropzone .icon {
+    width: 56px; height: 56px; border-radius: 14px; margin: 0 auto 16px;
+    background: var(--surface); border: 1px solid var(--border); display: grid; place-items: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .dropzone h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; }
+  .dropzone p { font-size: 14px; color: var(--muted); }
+  .formats { margin-top: 14px; display: flex; gap: 6px; justify-content: center; }
+  .formats span { font-family: 'Geist Mono', monospace; font-size: 10px; color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; background: var(--surface); }
+
+  .samples { margin-top: 26px; }
+  .samples .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px; }
+  .sample-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .sample {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px; width: 132px; cursor: pointer; transition: all 0.18s ease;
+  }
+  .sample:hover { border-color: var(--ink); transform: translateY(-3px); box-shadow: var(--shadow); }
+  .sample .thumb { width: 78px; height: 78px; border-radius: 10px; background: var(--thumb); display: grid; place-items: center; }
+  .sample .nm { font-size: 12.5px; font-weight: 500; }
+  .sample .mono { font-size: 10px; color: var(--muted); }
+
+  /* ---- Analyze stage ---- */
+  .analyze { display: grid; grid-template-columns: 220px 1fr; gap: 36px; align-items: center; max-width: 760px; margin: 10px auto; }
+  .analyze .preview {
+    background: var(--thumb); border-radius: 16px; aspect-ratio: 1; display: grid; place-items: center; position: relative; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .analyze .preview .scanline {
+    position: absolute; left: 0; right: 0; height: 36%;
+    background: linear-gradient(180deg, transparent, rgba(37,99,235,0.18), transparent);
+    animation: scan 1.8s ease-in-out infinite;
+  }
+  @keyframes scan { 0%{ transform: translateY(-120%);} 100%{ transform: translateY(320%);} }
+  .steps { display: flex; flex-direction: column; gap: 2px; }
+  .pstep { display: flex; align-items: center; gap: 14px; padding: 11px 0; opacity: 0.4; transition: opacity 0.3s ease; }
+  .pstep.active { opacity: 1; }
+  .pstep.done { opacity: 1; }
+  .pstep .bullet {
+    width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border-strong);
+    display: grid; place-items: center; flex-shrink: 0; transition: all 0.3s ease;
+    font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted);
+  }
+  .pstep.active .bullet { border-color: var(--accent); color: var(--accent); }
+  .pstep.done .bullet { border-color: var(--good); background: var(--good); color: #fff; }
+  .pstep .ptxt { font-size: 14.5px; font-weight: 500; }
+  .pstep .psub { font-size: 12px; color: var(--muted); font-family: 'Geist Mono', monospace; }
+  .pstep.active .ptxt::after { content: ''; display: inline-block; width: 14px; }
+  .spinner { width: 13px; height: 13px; border: 2px solid rgba(37,99,235,0.25); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- Results stage ---- */
+  .results-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+  .results-head .lead h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+  .results-head .lead p { font-size: 14px; color: var(--muted); margin-top: 3px; }
+  .results-head .query-chip {
+    display: flex; align-items: center; gap: 10px; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 12px; padding: 8px 8px 8px 12px;
+  }
+  .results-head .query-chip .qt { font-size: 12px; color: var(--muted); }
+  .results-head .query-chip .qthumb { width: 38px; height: 38px; border-radius: 8px; background: var(--thumb); display: grid; place-items: center; }
+  .btn-reset {
+    font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--border-strong); border-radius: 9px;
+    padding: 8px 14px; cursor: pointer; transition: all 0.15s ease;
+  }
+  .btn-reset:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    opacity: 0; transform: translateY(16px) scale(0.98);
+  }
+  .card.in { opacity: 1; transform: none; }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: var(--border-strong); }
+  .card .card-top { display: flex; gap: 14px; padding: 16px; }
+  .card .cthumb { width: 84px; height: 84px; border-radius: 10px; background: var(--thumb); display: grid; place-items: center; flex-shrink: 0; }
+  .card .cmeta { flex: 1; min-width: 0; }
+  .card .cmeta .art { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); }
+  .card .cmeta .nm { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; margin: 2px 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .badges { display: flex; gap: 5px; flex-wrap: wrap; }
+  .badge { font-family: 'Geist Mono', monospace; font-size: 10px; padding: 2px 7px; border-radius: 6px; font-weight: 500; }
+  .badge.proc-lcm { background: rgba(37,99,235,0.1); color: #1d4ed8; }
+  .badge.proc-auto { background: rgba(124,58,237,0.1); color: #6d28d9; }
+  .badge.neutral { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
+
+  .sim-row { padding: 0 16px 16px; }
+  .sim-bar-track { height: 7px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+  .sim-bar-fill { height: 100%; width: 0; border-radius: 999px; transition: width 1.1s cubic-bezier(0.16,1,0.3,1); }
+  .sim-meta { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
+  .sim-meta .pct { font-family: 'Geist Mono', monospace; font-weight: 600; font-size: 15px; }
+  .sim-meta .pct small { font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 4px; }
+  .sim-meta .price { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--ink-2); }
+
+  /* ---------- Detail drawer ---------- */
+  .scrim { position: fixed; inset: 0; background: rgba(16,24,40,0.4); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 90; }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100vh; width: 480px; max-width: 92vw;
+    background: var(--surface); z-index: 100; box-shadow: var(--shadow-lg);
+    transform: translateX(100%); transition: transform 0.36s cubic-bezier(0.16,1,0.3,1);
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: none; }
+  .drawer-head { padding: 22px 26px 0; }
+  .drawer-head .close {
+    position: absolute; top: 18px; right: 20px; width: 32px; height: 32px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface); cursor: pointer; color: var(--muted);
+    display: grid; place-items: center; transition: all 0.15s ease;
+  }
+  .drawer-head .close:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .drawer-hero { display: flex; gap: 18px; align-items: center; padding-right: 36px; }
+  .drawer-hero .dthumb { width: 96px; height: 96px; border-radius: 14px; background: var(--thumb); display: grid; place-items: center; flex-shrink: 0; }
+  .drawer-hero .art { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--muted); }
+  .drawer-hero h3 { font-size: 21px; font-weight: 600; letter-spacing: -0.02em; margin: 3px 0 9px; }
+
+  .tabs { display: flex; gap: 2px; padding: 18px 26px 0; border-bottom: 1px solid var(--border); }
+  .tab { font-size: 13px; font-weight: 500; color: var(--muted); padding: 9px 14px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s ease; }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+  .drawer-body { flex: 1; overflow-y: auto; padding: 22px 26px 40px; }
+  .tabpane { display: none; animation: fadein 0.3s ease; }
+  .tabpane.active { display: block; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .spec { background: var(--surface); padding: 13px 15px; }
+  .spec .k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .spec .v { font-family: 'Geist Mono', monospace; font-size: 15px; font-weight: 500; margin-top: 3px; }
+  .spec .v small { color: var(--muted); font-weight: 400; }
+
+  /* pricing */
+  .price-card { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .price-calc { padding: 18px 20px; background: var(--surface-2); }
+  .price-line { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: 14px; }
+  .price-line .k { color: var(--ink-2); }
+  .price-line .v { font-family: 'Geist Mono', monospace; font-weight: 500; }
+  .price-line.sub .k, .price-line.sub .v { color: var(--muted); font-size: 12.5px; }
+  .price-op { text-align: center; color: var(--muted-2); font-family: 'Geist Mono', monospace; font-size: 12px; }
+
+  .tier-row { display: flex; gap: 8px; margin: 14px 0 4px; }
+  .tier {
+    flex: 1; text-align: center; border: 1px solid var(--border-strong); border-radius: 10px; padding: 9px 4px;
+    cursor: pointer; transition: all 0.15s ease; background: var(--surface);
+  }
+  .tier:hover { border-color: var(--ink-2); }
+  .tier.active { border-color: var(--ink); background: var(--ink); color: #fff; }
+  .tier .tn { font-weight: 600; font-size: 14px; }
+  .tier .tp { font-size: 11px; color: var(--muted); }
+  .tier.active .tp { color: rgba(255,255,255,0.7); }
+
+  .price-final { padding: 20px; display: flex; align-items: center; justify-content: space-between; }
+  .price-final .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .price-final .amt { font-family: 'Geist Mono', monospace; font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
+  .price-final .amt small { font-size: 15px; font-weight: 500; color: var(--muted); }
+  .indic {
+    display: inline-flex; align-items: center; gap: 6px; font-family: 'Geist Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--mid);
+    background: rgba(217,119,6,0.1); border: 1px solid rgba(217,119,6,0.22); padding: 3px 9px; border-radius: 999px;
+  }
+  .price-note { font-size: 12px; color: var(--muted); margin-top: 14px; line-height: 1.5; }
+
+  .actions { display: flex; gap: 10px; margin-top: 22px; }
+  .btn { flex: 1; text-align: center; font-size: 13.5px; font-weight: 500; padding: 11px; border-radius: 10px; cursor: pointer; transition: all 0.15s ease; border: 1px solid var(--border-strong); background: var(--surface); color: var(--ink); }
+  .btn:hover { border-color: var(--ink-2); }
+  .btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn.primary:hover { background: #000; }
+
+  /* ---------- Feature strip ---------- */
+  .features { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 14px; }
+  .feature { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+  .feature .fi { width: 40px; height: 40px; border-radius: 11px; background: var(--surface-2); display: grid; place-items: center; margin-bottom: 14px; color: var(--ink); }
+  .feature h4 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; }
+  .feature p { font-size: 13.5px; color: var(--muted); line-height: 1.55; }
+
+  .section-label { text-align: center; margin-bottom: 26px; }
+  .section-label .kicker { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .section-label h2 { font-size: 30px; font-weight: 600; letter-spacing: -0.025em; margin-top: 8px; }
+
+  footer { text-align: center; padding: 50px 0 60px; color: var(--muted); font-size: 13px; }
+  footer .mono { font-size: 11px; opacity: 0.7; }
+
+  @media (max-width: 920px) {
+    .grid { grid-template-columns: repeat(2,1fr); }
+    .features { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 38px; }
+  }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .analyze { grid-template-columns: 1fr; }
+    .console-body { padding: 20px; }
+    .wrap { padding: 0 16px; }
+    .topnav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="logo">E</span>
+    Elastofirm Profile Match
+    <small class="mono">v0.4 · demo</small>
+  </div>
+  <nav class="topnav">
+    <a href="#demo">Zoeken</a>
+    <a href="#features">Functies</a>
+    <a href="#demo">Database</a>
+  </nav>
+</div>
+
+<div class="hero wrap">
+  <div class="floaters" id="floaters"></div>
+  <span class="eyebrow"><span class="dot"></span> Vorm-gebaseerd zoeken</span>
+  <h1>Vind het profiel dat je <span class="grad">al eens gemaakt hebt</span>.</h1>
+  <p class="sub">Upload een doorsnede en de tool doorzoekt de volledige matrijzen-historie op geometrisch vergelijkbare profielen. Inclusief proces, compound en indicatieve prijs.</p>
+  <div class="hero-stats">
+    <div class="stat reveal"><div class="num mono" data-count="2847">0</div><div class="lbl">Profielen geïndexeerd</div></div>
+    <div class="stat reveal"><div class="num mono" data-count="96" data-suffix="%">0</div><div class="lbl">Hoogste match</div></div>
+    <div class="stat reveal"><div class="num mono" data-count="180" data-suffix="ms">0</div><div class="lbl">Zoektijd</div></div>
+  </div>
+</div>
+
+<section id="demo" class="wrap">
+  <div class="console reveal">
+    <div class="console-head">
+      <div class="tl"><i></i><i></i><i></i></div>
+      <span class="title mono">profile-match / zoeken</span>
+      <span class="step-tag mono" id="stepTag">STAP 1 — UPLOAD</span>
+    </div>
+    <div class="console-body" id="consoleBody"></div>
+  </div>
+</section>
+
+<section id="features" class="wrap reveal" style="padding-top:40px;">
+  <div class="section-label">
+    <div class="kicker">Waarom het werkt</div>
+    <h2>Geometrie, niet trefwoorden</h2>
+  </div>
+  <div class="features">
+    <div class="feature">
+      <div class="fi">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      </div>
+      <h4>Vorm-similarity</h4>
+      <p>HOG-features plus PCA vergelijken de werkelijke doorsnede. Twee profielen die op silhouet lijken komen bovenaan, ongeacht artikelnummer of klant.</p>
+    </div>
+    <div class="feature">
+      <div class="fi">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+      </div>
+      <h4>Sorteer op oppervlakte</h4>
+      <p>Oppervlakte is de geometrie-echte maat. Filter op proces, compound en hardheid om onzin-matches (147 gram naast 12 kilo) meteen weg te zeven.</p>
+    </div>
+    <div class="feature">
+      <div class="fi">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <h4>Indicatieve prijs</h4>
+      <p>Materiaalkost uit oppervlakte maal dichtheid maal actuele compoundprijs, met marge per klantklasse. Direct een richtprijs bij een beursgesprek.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p>Elastofirm Profile Match — interactieve demo</p>
+  <p class="mono" style="margin-top:6px;">Gesimuleerde data · geen verbinding met de productie-database</p>
+</footer>
+
+<!-- Drawer -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <button class="close" id="drawerClose" aria-label="Sluiten">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+  </button>
+  <div class="drawer-head">
+    <div class="drawer-hero">
+      <div class="dthumb" id="dThumb"></div>
+      <div>
+        <div class="art mono" id="dArt"></div>
+        <h3 id="dName"></h3>
+        <div class="badges" id="dBadges"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tabs" id="dTabs">
+    <div class="tab active" data-pane="stam">Stamkaart</div>
+    <div class="tab" data-pane="compound">Compound</div>
+    <div class="tab" data-pane="prijs">Prijs</div>
+  </div>
+  <div class="drawer-body" id="dBody"></div>
+</aside>
+
+<script>
+/* ---------------- Shape library ---------------- */
+const HOLE = 'var(--thumb)';
+function svg(inner, scale) {
+  return '<svg width="100%" height="100%" viewBox="0 0 120 120" preserveAspectRatio="xMidYMid meet" style="display:block">' +
+    '<g fill="var(--rubber)">' + inner + '</g></svg>';
+}
+const SHAPES = {
+  dseal_hollow: '<path d="M26 94 L26 60 Q26 30 60 30 Q94 30 94 60 L94 94 Z"/>' +
+    '<path fill="'+HOLE+'" d="M44 86 L44 62 Q44 46 60 46 Q76 46 76 62 L76 86 Z"/>',
+  dseal_solid: '<path d="M32 92 L32 58 Q32 32 60 32 Q88 32 88 58 L88 92 Z"/>',
+  pbulb_hollow: '<circle cx="64" cy="44" r="30"/>' +
+    '<rect x="22" y="60" width="17" height="52" rx="5" transform="rotate(-9 30 86)"/>' +
+    '<circle fill="'+HOLE+'" cx="64" cy="44" r="14"/>',
+  pbulb_large: '<circle cx="62" cy="46" r="34"/>' +
+    '<rect x="20" y="64" width="19" height="48" rx="5" transform="rotate(-6 29 88)"/>' +
+    '<circle fill="'+HOLE+'" cx="62" cy="46" r="17"/>',
+  eprofile: '<path d="M22 30 H98 V46 H46 V58 H86 V74 H46 V86 H98 V102 H22 Z"/>',
+  uchannel: '<path d="M24 26 H96 V102 H74 V48 H46 V102 H24 Z"/>' +
+    '<rect x="46" y="74" width="28" height="10" />',
+  coex_bulb: '<circle cx="62" cy="46" r="31"/>' +
+    '<path fill="var(--skin)" d="M62 15 A31 31 0 0 1 93 46 L78 46 A16 16 0 0 0 62 30 Z"/>' +
+    '<rect x="22" y="62" width="17" height="50" rx="5" transform="rotate(-9 30 87)"/>' +
+    '<circle fill="'+HOLE+'" cx="62" cy="46" r="14"/>',
+  cord_hollow: '<circle cx="60" cy="60" r="38"/>' +
+    '<circle fill="'+HOLE+'" cx="60" cy="60" r="18"/>',
+  wedge_lip: '<path d="M24 86 L92 40 Q100 35 100 46 L100 58 L52 90 Q44 95 36 92 Z"/>' +
+    '<path d="M30 88 L30 64 Q30 58 38 58 L48 58 L48 84 Z"/>',
+  rect_grooved: '<path d="M28 40 H92 V80 H28 Z"/>' +
+    '<rect fill="'+HOLE+'" x="40" y="40" width="7" height="14"/>' +
+    '<rect fill="'+HOLE+'" x="58" y="40" width="7" height="14"/>' +
+    '<rect fill="'+HOLE+'" x="76" y="40" width="7" height="14"/>',
+  q_dseal: '<path d="M28 93 L28 59 Q28 31 60 31 Q92 31 92 59 L92 93 Z"/>' +
+    '<path fill="'+HOLE+'" d="M45 85 L45 61 Q45 47 60 47 Q75 47 75 61 L75 85 Z"/>',
+  q_pbulb: '<circle cx="63" cy="45" r="31"/>' +
+    '<rect x="21" y="61" width="18" height="51" rx="5" transform="rotate(-8 30 86)"/>' +
+    '<circle fill="'+HOLE+'" cx="63" cy="45" r="15"/>',
+  q_uchannel: '<path d="M23 27 H97 V101 H73 V49 H47 V101 H23 Z"/><rect x="47" y="73" width="26" height="10"/>'
+};
+
+/* ---------------- Catalog ---------------- */
+// feature vector f = [round, hollow, aspect, lips] in 0..1
+const CATALOG = [
+  { art:'RP-14207', name:'D-profiel 14mm', shape:'dseal_hollow', f:[0.70,0.80,0.42,0.10], proc:'LCM', compound:'EPDM 65', cprice:2.85, sg:1.42, area:1.18, hard:65, customer:'Reynaers', lastProd:'2026-04-18' },
+  { art:'RP-09833', name:'D-rubber massief', shape:'dseal_solid', f:[0.65,0.10,0.45,0.10], proc:'Autoclaaf', compound:'EPDM 70', cprice:2.95, sg:1.45, area:1.62, hard:70, customer:'Kawneer', lastProd:'2026-02-02' },
+  { art:'RP-22510', name:'P-bulb dichting', shape:'pbulb_hollow', f:[0.90,0.70,0.55,0.20], proc:'LCM', compound:'EPDM 60', cprice:2.70, sg:1.38, area:0.94, hard:60, customer:'Schüco', lastProd:'2026-05-09' },
+  { art:'RP-22871', name:'P-bulb XL raamprofiel', shape:'pbulb_large', f:[0.92,0.75,0.60,0.15], proc:'LCM', compound:'EPDM 55', cprice:2.62, sg:1.36, area:1.44, hard:55, customer:'Reynaers', lastProd:'2026-03-21' },
+  { art:'RP-31004', name:'E-profiel afdichting', shape:'eprofile', f:[0.20,0.30,0.70,0.60], proc:'Autoclaaf', compound:'NBR 70', cprice:3.40, sg:1.50, area:1.05, hard:70, customer:'Hörmann', lastProd:'2025-11-30' },
+  { art:'RP-40219', name:'U-glaslat profiel', shape:'uchannel', f:[0.15,0.60,0.50,0.80], proc:'LCM', compound:'EPDM 65', cprice:2.85, sg:1.42, area:0.88, hard:65, customer:'Aliplast', lastProd:'2026-04-02' },
+  { art:'RP-22999', name:'Co-extrusie bulb', shape:'coex_bulb', f:[0.85,0.65,0.52,0.30], proc:'LCM', compound:'EPDM 60 / kleurhuid', cprice:3.10, sg:1.40, area:1.02, hard:60, customer:'Condor', lastProd:'2026-05-22' },
+  { art:'RP-55120', name:'Rondsnoer hol', shape:'cord_hollow', f:[1.00,0.70,0.00,0.00], proc:'Autoclaaf', compound:'Silicone 60', cprice:5.80, sg:1.25, area:0.71, hard:60, customer:'Intern', lastProd:'2025-09-14' },
+  { art:'RP-61847', name:'Wig-liprubber', shape:'wedge_lip', f:[0.30,0.20,0.62,0.90], proc:'Autoclaaf', compound:'EPDM 70', cprice:2.95, sg:1.45, area:1.30, hard:70, customer:'Hörmann', lastProd:'2026-01-19' },
+  { art:'RP-70233', name:'Rechthoek gegroefd', shape:'rect_grooved', f:[0.10,0.15,0.80,0.40], proc:'LCM', compound:'EPDM 65', cprice:2.85, sg:1.42, area:1.55, hard:65, customer:'Kawneer', lastProd:'2025-12-08' }
+];
+
+/* ---------------- Query samples ---------------- */
+const QUERIES = [
+  { id:'qd', name:'D-profiel 14mm', shape:'q_dseal',   f:[0.70,0.75,0.42,0.10] },
+  { id:'qp', name:'P-bulb dichting', shape:'q_pbulb',   f:[0.90,0.70,0.55,0.20] },
+  { id:'qu', name:'U-glaslat',       shape:'q_uchannel', f:[0.16,0.62,0.52,0.78] }
+];
+
+/* ---------------- Helpers ---------------- */
+function dist(a,b){ let s=0; for(let i=0;i<a.length;i++) s+=(a[i]-b[i])**2; return Math.sqrt(s); }
+function similarity(q,p){ const d=dist(q,p); const sim=Math.max(0, 1 - d/2); return Math.round(sim*100); }
+function simColor(p){ return p>=85?'var(--good)':p>=68?'var(--mid)':'var(--low)'; }
+function fmtEur(n){ return '€' + n.toFixed(2).replace('.', ','); }
+function meterWeight(p){ return p.area * p.sg * 100; } // g/m
+function matCost(p){ return meterWeight(p)/1000 * p.cprice; } // eur/m
+const TIERS = { A:0.50, B:0.60, C:0.70 };
+
+/* ---------------- State / render ---------------- */
+const body = document.getElementById('consoleBody');
+const stepTag = document.getElementById('stepTag');
+let currentMatches = [];
+
+function renderUpload(){
+  stepTag.textContent = 'STAP 1 — UPLOAD';
+  body.innerHTML = `
+    <div class="uploader">
+      <div class="dropzone" id="dz">
+        <div class="icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="1.8">
+            <path d="M12 16V4M12 4 7 9M12 4l5 5"/><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/></svg>
+        </div>
+        <h3>Sleep een profiel-doorsnede hierheen</h3>
+        <p>of kies hieronder een voorbeeldprofiel om de zoekopdracht te starten</p>
+        <div class="formats"><span>.SVG</span><span>.DXF</span><span>.PNG</span><span>.DWG</span></div>
+      </div>
+      <div class="samples">
+        <div class="lbl">Voorbeeldprofielen</div>
+        <div class="sample-row" id="sampleRow"></div>
+      </div>
+    </div>`;
+  const row = document.getElementById('sampleRow');
+  QUERIES.forEach(q => {
+    const el = document.createElement('div');
+    el.className = 'sample';
+    el.innerHTML = `<div class="thumb">${svg(SHAPES[q.shape])}</div><div class="nm">${q.name}</div><div class="mono">upload</div>`;
+    el.addEventListener('click', () => startAnalyze(q));
+    row.appendChild(el);
+  });
+  document.getElementById('dz').addEventListener('click', () => startAnalyze(QUERIES[0]));
+}
+
+const STEPS = [
+  { t:'Contour-extractie', s:'cv2.findContours' },
+  { t:'HOG-features berekenen', s:'9 orientations · 128px' },
+  { t:'PCA-projectie', s:'128 → 64 dim' },
+  { t:'Vergelijken met 2.847 profielen', s:'cosine similarity' }
+];
+
+function startAnalyze(query){
+  stepTag.textContent = 'STAP 2 — ANALYSE';
+  body.innerHTML = `
+    <div class="analyze">
+      <div class="preview">${svg(SHAPES[query.shape])}<div class="scanline"></div></div>
+      <div class="steps" id="steps">
+        ${STEPS.map((s,i)=>`<div class="pstep" data-i="${i}">
+            <div class="bullet">${i+1}</div>
+            <div><div class="ptxt">${s.t}</div><div class="psub">${s.s}</div></div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  const stepEls = [...document.querySelectorAll('.pstep')];
+  let i = 0;
+  function run(){
+    if(i>0){ const prev=stepEls[i-1]; prev.classList.remove('active'); prev.classList.add('done'); prev.querySelector('.bullet').innerHTML='&#10003;'; }
+    if(i>=stepEls.length){ setTimeout(()=>renderResults(query), 360); return; }
+    const el=stepEls[i]; el.classList.add('active'); el.querySelector('.bullet').innerHTML='<div class="spinner"></div>';
+    i++; setTimeout(run, 620);
+  }
+  setTimeout(run, 380);
+}
+
+function renderResults(query){
+  stepTag.textContent = 'STAP 3 — RESULTATEN';
+  const matches = CATALOG.map(p => ({...p, sim: similarity(query.f, p.f)}))
+    .sort((a,b)=>b.sim-a.sim).slice(0,6);
+  currentMatches = matches;
+  const top = matches[0].sim;
+  body.innerHTML = `
+    <div class="results-head">
+      <div class="lead">
+        <h2>${matches.length} vergelijkbare profielen gevonden</h2>
+        <p>Gesorteerd op vorm-similarity · hoogste match ${top}% · klik voor stamkaart en prijs</p>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="query-chip"><span class="qt mono">QUERY</span><div class="qthumb">${svg(SHAPES[query.shape])}</div></div>
+        <button class="btn-reset" id="resetBtn">Nieuw zoeken</button>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>`;
+  document.getElementById('resetBtn').addEventListener('click', renderUpload);
+  const grid = document.getElementById('grid');
+  matches.forEach((p, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.transitionDelay = (idx*80)+'ms';
+    const procClass = p.proc==='LCM' ? 'proc-lcm' : 'proc-auto';
+    const price = matCost(p)*(1+TIERS.B);
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="cthumb">${svg(SHAPES[p.shape])}</div>
+        <div class="cmeta">
+          <div class="art mono">${p.art}</div>
+          <div class="nm">${p.name}</div>
+          <div class="badges">
+            <span class="badge ${procClass}">${p.proc}</span>
+            <span class="badge neutral">${p.compound.split(' /')[0]}</span>
+            <span class="badge neutral">${p.area.toFixed(2)} cm²</span>
+          </div>
+        </div>
+      </div>
+      <div class="sim-row">
+        <div class="sim-meta">
+          <div class="pct" style="color:${simColor(p.sim)}">${p.sim}%<small>match</small></div>
+          <div class="price">~ ${fmtEur(price)}/m</div>
+        </div>
+        <div class="sim-bar-track"><div class="sim-bar-fill" style="background:${simColor(p.sim)}"></div></div>
+      </div>`;
+    card.addEventListener('click', ()=>openDrawer(p));
+    grid.appendChild(card);
+    requestAnimationFrame(()=> setTimeout(()=>{
+      card.classList.add('in');
+      card.querySelector('.sim-bar-fill').style.width = p.sim+'%';
+    }, idx*80));
+  });
+}
+
+/* ---------------- Drawer ---------------- */
+const scrim = document.getElementById('scrim');
+const drawer = document.getElementById('drawer');
+let activeTier = 'B';
+let activeProfile = null;
+
+function openDrawer(p){
+  activeProfile = p; activeTier = 'B';
+  document.getElementById('dThumb').innerHTML = svg(SHAPES[p.shape]);
+  document.getElementById('dArt').textContent = p.art;
+  document.getElementById('dName').textContent = p.name;
+  const procClass = p.proc==='LCM' ? 'proc-lcm' : 'proc-auto';
+  document.getElementById('dBadges').innerHTML =
+    `<span class="badge ${procClass}">${p.proc}</span>
+     <span class="badge neutral">${p.sim}% match</span>
+     <span class="badge neutral">Shore ${p.hard}A</span>`;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active', i===0));
+  renderPanes(p);
+  scrim.classList.add('open'); drawer.classList.add('open');
+}
+function closeDrawer(){ scrim.classList.remove('open'); drawer.classList.remove('open'); }
+scrim.addEventListener('click', closeDrawer);
+document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeDrawer(); });
+
+document.querySelectorAll('#dTabs .tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('#dTabs .tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.tabpane').forEach(pn=>pn.classList.toggle('active', pn.dataset.pane===tab.dataset.pane));
+  });
+});
+
+function spec(k,v,sub){ return `<div class="spec"><div class="k">${k}</div><div class="v">${v}${sub?` <small>${sub}</small>`:''}</div></div>`; }
+
+function renderPanes(p){
+  const mw = meterWeight(p);
+  const dbody = document.getElementById('dBody');
+  dbody.innerHTML = `
+    <div class="tabpane active" data-pane="stam">
+      <div class="specs">
+        ${spec('Oppervlakte', p.area.toFixed(2), 'cm²')}
+        ${spec('Metergewicht', Math.round(mw), 'g/m')}
+        ${spec('Hardheid', p.hard, 'Shore A')}
+        ${spec('Dichtheid', p.sg.toFixed(2), 'g/cm³')}
+        ${spec('Proces', p.proc)}
+        ${spec('Klant', p.customer)}
+        ${spec('Laatste productie', p.lastProd)}
+        ${spec('Artikelnr.', p.art)}
+      </div>
+      <div class="actions">
+        <div class="btn">Bekijk tekening</div>
+        <div class="btn primary">Download DXF</div>
+      </div>
+    </div>
+    <div class="tabpane" data-pane="compound">
+      <div class="specs">
+        ${spec('Compound 1', p.compound.split(' /')[0])}
+        ${spec('Compound 2', p.compound.includes('/')? 'kleurhuid' : '—')}
+        ${spec('Dichtheid', p.sg.toFixed(2), 'g/cm³')}
+        ${spec('Compoundprijs', fmtEur(p.cprice), '/kg')}
+      </div>
+      <p class="price-note">Compoundprijs wordt maandelijks geactualiseerd vanuit de BI-laag. Lagere dichtheid bespaart materiaal bij gelijke geometrie.</p>
+    </div>
+    <div class="tabpane" data-pane="prijs">
+      <div class="price-card">
+        <div class="price-calc">
+          <div class="price-line"><span class="k">Oppervlakte</span><span class="v">${p.area.toFixed(2)} cm²</span></div>
+          <div class="price-line sub"><span class="k">× dichtheid ${p.sg.toFixed(2)} g/cm³</span><span class="v">${Math.round(mw)} g/m</span></div>
+          <div class="price-line sub"><span class="k">× compoundprijs ${fmtEur(p.cprice)}/kg</span><span class="v">${fmtEur(matCost(p))}/m</span></div>
+          <div class="price-line" style="border-top:1px solid var(--border);margin-top:6px;padding-top:11px;"><span class="k">Materiaalkost</span><span class="v" id="matCostVal">${fmtEur(matCost(p))}/m</span></div>
+          <div class="tier-row" id="tierRow">
+            ${Object.entries(TIERS).map(([k,v])=>`<div class="tier ${k==='B'?'active':''}" data-tier="${k}"><div class="tn">${k}-klant</div><div class="tp">${Math.round(v*100)}% marge</div></div>`).join('')}
+          </div>
+        </div>
+        <div class="price-final">
+          <div>
+            <div class="lbl">Indicatieve prijs</div>
+            <div class="amt"><span id="priceVal">${fmtEur(matCost(p)*(1+TIERS.B))}</span><small>/m</small></div>
+          </div>
+          <span class="indic"><span class="dot" style="width:6px;height:6px;border-radius:50%;background:var(--mid);display:inline-block"></span> Indicatief</span>
+        </div>
+      </div>
+      <p class="price-note">Richtprijs op basis van materiaalkost en marge per klantklasse. Geen offerte: bedoeld voor een snelle indicatie bij een klantgesprek of beurs.</p>
+    </div>`;
+  dbody.querySelectorAll('#tierRow .tier').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      dbody.querySelectorAll('#tierRow .tier').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active'); activeTier = t.dataset.tier;
+      const newPrice = matCost(p)*(1+TIERS[activeTier]);
+      animatePrice(document.getElementById('priceVal'), newPrice);
+    });
+  });
+}
+
+function animatePrice(el, target){
+  const start = parseFloat((el.textContent||'0').replace('€','').replace(',','.'))||0;
+  const dur = 420; const t0 = performance.now();
+  function tick(now){
+    const k = Math.min(1, (now-t0)/dur);
+    const ease = 1-Math.pow(1-k,3);
+    el.textContent = fmtEur(start + (target-start)*ease);
+    if(k<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+/* ---------------- Scroll reveal + count-up + floaters ---------------- */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);
+    if(e.target.dataset && e.target.querySelector){ const n=e.target.querySelector('[data-count]'); if(n) countUp(n); }
+    if(e.target.hasAttribute && e.target.hasAttribute('data-count')) countUp(e.target);
+  }});
+},{ threshold: 0.18 });
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+function countUp(el){
+  const target = +el.dataset.count; const suffix = el.dataset.suffix||''; const dur=1100; const t0=performance.now();
+  function tick(now){
+    const k=Math.min(1,(now-t0)/dur); const ease=1-Math.pow(1-k,3);
+    let val = Math.round(target*ease);
+    el.textContent = (target>=1000? val.toLocaleString('nl-NL') : val) + suffix;
+    if(k<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// floating background profile silhouettes
+(function(){
+  const f = document.getElementById('floaters');
+  const shapes = ['dseal_hollow','pbulb_hollow','uchannel','cord_hollow','eprofile'];
+  const pos = [[6,14],[80,8],[12,68],[88,60],[46,82]];
+  shapes.forEach((s,i)=>{
+    const d=document.createElement('div');
+    const size = 90 + i*16;
+    d.innerHTML = `<svg width="${size}" height="${size}" viewBox="0 0 120 120" style="left:${pos[i][0]}%;top:${pos[i][1]}%;animation-delay:${i*1.6}s">${SHAPES[s].replace(/var\(--thumb\)/g,'#fff')}</svg>`;
+    f.appendChild(d.firstChild);
+  });
+})();
+
+/* init */
+renderUpload();
+</script>
+</body>
+</html>
