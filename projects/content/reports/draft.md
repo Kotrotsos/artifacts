@@ -1,84 +1,84 @@
-# Plan Mode Is the Feature: How to Stop Claude Code From Solving the Wrong Problem
+# The Polish Trap: What Anthropic's AI Fluency Index Says About How We Actually Use AI
 
-![An isometric drafting table seen from above, a coral blueprint laid out and pinned, a small teal build rising from it on one side, parallel guide lines running from the plan into the structure](hero.png)
+![An isometric scene: a person-shaped abstract form and a glowing teal AI form working over a shared document, a coral magnifying glass resting unused to one side as the document gets more polished](hero.png)
 
-The most expensive thing Claude Code does is build the wrong thing quickly. It reads your prompt, decides it understands, and sprints. Ten minutes later you have two hundred lines of clean, well-tested code that solves a problem next to the one you actually had. Now you are not editing a sentence, you are unwinding a decision.
+Anthropic just published something more useful than another benchmark. The AI Fluency Index looked at how nearly ten thousand real conversations actually go, and its most important finding is also its most uncomfortable: the better the AI's output looks, the less we check it.
 
-Everyone who has used a coding agent for real has watched this happen. The reflex is to blame the prompt, so people write longer prompts. That is not where the fix is. The teams I see getting reliable work out of Claude Code are not better at phrasing requests. They are disciplined about one thing: they refuse to let the agent write a line of code until the problem is pinned down. The mechanism for that refusal is plan mode, and it is the most underused feature in the tool.
+That is not a hypothesis. They measured it. When Claude produced a polished artifact, a document, a piece of code, an interactive tool, people got noticeably better at directing the work and noticeably worse at questioning it. The polish and the scrutiny moved in opposite directions. I have spent two years watching teams deploy AI, and this single result explains more failed rollouts than any model limitation I can name.
 
-One widely shared writeup put the success rate of unguided Claude Code runs at about a third. I would not treat that number as gospel, but it matches what I see. The gap between a third and reliable is almost never model quality. It is whether there was a plan before there was code.
+Here is what the index found, what the framework underneath it is, and what it means if you are the one responsible for AI work that has to be right.
 
 **Three things to take away:**
 
-- Plan mode exists to separate deciding what to build from building it. Those are different jobs, and letting them blur is the single biggest cause of fast, confident, wrong output.
-- The official workflow is four phases in order: explore, plan, implement, commit. Most people skip the first two because skipping them feels faster. It is not. It just moves the cost to the end, where it is more expensive.
-- The thing that makes a plan trustworthy is a check the agent can run without you: a test, a build, a screenshot diff. A plan tells Claude what to build. A check tells it when it is wrong. You want both.
+- Iteration is the keystone. Conversations where people went back and forth carried twice as many good collaboration behaviors as one-shot exchanges. Staying in the conversation is the highest-leverage habit, and most of the rest follow from it.
+- Polish suppresses scrutiny. When the output looked finished, people directed it better but fact-checked, questioned, and gap-spotted it less. The moment the work looks most done is the moment people stop guarding it, which is exactly backwards.
+- The cheapest fix is the most ignored. Only about a third of conversations set any explicit terms for how the AI should behave. One sentence telling Claude to push back is nearly free and almost nobody spends it.
 
-## The failure mode, named
+## What the index actually measured
 
-Claude stops when the work looks done. That sounds fine until you sit with it. "Looks done" is the only signal the agent has unless you give it another one. If the thing it built looks complete, it stops, regardless of whether complete and correct are the same thing here. You become the verification loop. Every wrong assumption waits for you to notice it, and you notice it after the code exists, which is the worst time.
+The credibility of a finding depends on how it was produced, so it is worth being precise. Anthropic analyzed 9,830 anonymized Claude.ai conversations from a single week in January 2026, filtered to real multi-turn exchanges rather than greetings or one-word replies. Classification was done by Claude Sonnet 4, with Claude Haiku 3.5 handling language detection, and no personally identifiable information was collected.
 
-This is why longer prompts do not save you. A longer prompt is still a description of a destination written by someone who has not seen the terrain. Claude has not read your files yet. You are both guessing. The fix is not to guess more precisely. It is to look before you commit to a route.
+The behaviors they looked for come from the 4D AI Fluency Framework, developed by professors Rick Dakan and Joseph Feller with Anthropic. It defines four competencies for working with AI well: Delegation, Description, Discernment, and Diligence. The framework lists 24 specific behaviors. Only 11 of those are visible inside a conversation, the other 13 happen in your head or on your machine, so the index measures a real but partial slice. The results held steady across all seven days of the week and across six languages, with most behaviors shifting only one to five percentage points between them. That consistency is what makes the headline findings hard to dismiss as noise.
 
-## The four phases, in order
+![The 4D AI Fluency Framework: four labeled quadrants. Delegation, deciding what the AI should handle. Description, communicating the goal clearly. Discernment, evaluating the output critically. Diligence, owning the result and verifying it.](framework-4d.png)
 
-The official Claude Code guidance is a sequence, and the order is the whole point: explore, then plan, then implement, then commit. Skipping the first two is the default mistake.
+The four competencies split cleanly into two halves. Delegation and Description are about directing the work: deciding what to hand over and explaining it well. Discernment and Diligence are about guarding the work: judging whether the output is actually good and taking responsibility for verifying it. Keep that split in mind, because the central finding is about what happens to the two halves when the output gets polished.
 
-**Explore.** Enter plan mode first. In plan mode Claude can read files and answer questions but cannot make changes. Cycle into it with Shift+Tab before you ask for anything. Then point it at the actual code: "read /src/auth and explain how we handle sessions and login. Look at how we manage environment variables for secrets." No edits. You are getting the agent and yourself onto the same map before anyone decides where to go.
+## Iteration is the behavior that pulls the others up
 
-**Plan.** Now ask for the plan, while still in plan mode. "I want to add Google OAuth. What files need to change? What is the session flow? Write a plan." Claude produces an actual plan, grounded in the files it just read instead of the files it imagined. Press Ctrl+G to open that plan in your editor and change it directly. This is the highest-leverage minute in the whole session. You are editing a decision while it is still cheap, before a single line of code has been written against it.
+The most common fluency behavior by a wide margin was iteration and refinement, present in 85.7% of conversations. People treat a first answer as a starting point and push on it. That is the good news, and it matches the report's framing that the most common form of fluency is augmentative: people use Claude as a thought partner rather than handing off the work and walking away.
 
-**Implement.** Switch out of plan mode and let it build, against the plan it just made. "Implement the OAuth flow from your plan. Write tests for the callback handler, run the suite, fix any failures." The agent now has a route and a way to know it arrived.
+What makes iteration matter is not its frequency but its pull on everything else. Conversations with iteration carried 2.67 fluency behaviors on average. Conversations without it carried 1.33. That is roughly double. Iteration is not one habit among many, it is the habit that drags the others into the room. When people stayed in the conversation, they were 5.6 times more likely to question the model's reasoning and 4 times more likely to notice missing context.
 
-**Commit.** When the check passes, "commit with a descriptive message and open a PR." The boring phase, and the one that goes smoothly precisely because the first three were not skipped.
+![A comparison chart: conversations without iteration average 1.33 fluency behaviors, conversations with iteration average 2.67, with two callouts showing iteration makes users 5.6x more likely to question reasoning and 4x more likely to spot missing context](chart-iteration.png)
 
-![A four-phase flow: Explore reads the code, Plan writes the route, Implement builds against it, Commit ships, with a coral loop from Implement back to a verification check](four-phases.png)
+The practical reading is simple. If you only change one thing about how your team uses AI, make it this: do not accept the first answer. The back-and-forth is where the judgment lives. A one-shot prompt that returns a finished-looking answer is the lowest-fluency interaction there is, and it is also the most tempting, because it feels efficient. It is not. It is just fast.
 
-Phases one and two look like this in practice. The agent reads your actual files, then hands back a plan grounded in them, with the plan-mode indicator showing it has not touched a thing yet.
+## The polish trap, in the numbers
 
-![A Claude Code session in plan mode: the user asks it to read src/auth, Claude reports reading four files and explains the session flow, then produces a numbered Add Google OAuth plan, with a plan-mode bar showing ctrl+g to edit and shift+tab to implement](cc-s1.png)
+Now the finding that should change how you work. About 12.3% of the conversations produced an artifact: code, a document, an interactive tool, something concrete and finished-looking. Anthropic compared the behavior in those conversations against the rest, and the split is stark.
 
-## "Don't implement yet" is a real instruction
+When an artifact was in play, the directing behaviors jumped. People clarified their goals 14.7 percentage points more often. They specified the format 14.5 points more. They provided examples 13.4 points more, and they iterated 9.7 points more. In other words, when people knew they were building something real, they put visibly more care into describing what they wanted.
 
-The single phrase that changes the most is the one that tells Claude not to start. Without something like "don't implement yet" or "write a plan first, do not change any code," the agent treats your description as a green light and begins. Plan mode enforces this structurally, but the habit matters even outside it. You are explicitly buying yourself a checkpoint between intent and action.
+And at the same time, the guarding behaviors fell. People were 5.2 points less likely to identify missing context, 3.7 points less likely to check facts, and 3.1 points less likely to question the model's reasoning. The better the output looked, the less people interrogated it.
 
-For anything larger than a small change, go further and let Claude interview you before it writes anything. Start with a minimal prompt and hand it the questions: "I want to build [short description]. Interview me in detail. Ask about technical implementation, edge cases, and tradeoffs. Do not ask obvious questions, dig into the hard parts I might not have considered. When we are done, write a complete spec to SPEC.md." It will surface decisions you had not made yet, which is the entire value. The decisions you have not made are the ones the agent will otherwise make for you, silently, in code.
+![A diverging bar chart titled The Polish Trap. Top half in teal shows behaviors that rise with polished artifacts: clarify goals +14.7, specify format +14.5, provide examples +13.4, iterate +9.7. Bottom half in coral shows behaviors that fall: identify missing context -5.2, check facts -3.7, question reasoning -3.1.](chart-polish-trap.png)
 
-Then start a fresh session to execute the spec. The new session has clean context aimed entirely at building, and you have a written artifact to check the result against. The official guidance puts it plainly: time spent making the spec precise pays off more than time spent watching the implementation. One circulating account described two hours on a twelve-step spec returning six to ten hours of implementation time. Treat the exact ratio as anecdote, but the direction is right and it is the direction that matters.
+Anthropic states it plainly: "Polished outputs coincide with lower rates of critical evaluation, even though users go to greater lengths to direct Claude's work at the outset." Read that twice. The effort goes up and the verification goes down, at the same time, in the same conversations. Polish is doing something to our judgment. A clean, well-formatted, confident-looking artifact reads as trustworthy, and that surface signal quietly stands in for the work of actually checking whether it is right.
 
-![A Claude Code session where the user asks it to interview them and write a spec instead of coding; Claude asks two decision questions about billing states and proration, then reports writing SPEC.md with 12 steps and 3 items out of scope](cc-s2.png)
+This is the whole ballgame for anyone shipping AI work to production. The output that most needs scrutiny, the finished artifact you are about to commit or send or deploy, is precisely the output your instincts will wave through. The failure is not that the model is wrong sometimes. Every tool is wrong sometimes. The failure is that the form of the output is actively suppressing the human check that would have caught it.
 
-## A plan without a check is half the system
+## The one-sentence fix almost nobody uses
 
-A plan tells Claude what to build. It does not tell Claude when it has gone wrong. For that you need something the agent can run and read without you in the loop: a test suite, a build exit code, a linter, a script that diffs output against a fixture, a browser screenshot compared to a design. Give it one and the loop closes on its own. Claude builds, runs the check, reads the result, and iterates until it passes, instead of stopping at "looks done" and handing the verifying back to you.
+The index found that only about 30% of conversations set any explicit terms for the collaboration. Seventy percent of the time, people just start asking, with no instruction about how they want the AI to behave. No "push back if my assumptions are wrong," no "tell me what you are unsure about," no "flag anything you are inferring rather than reading."
 
-The difference shows up in the prompt. "Implement a function that validates email addresses" leaves the agent to decide what correct means. "Write a validateEmail function. user@example.com is true, invalid is false, user@.com is false. Run the tests after implementing" gives it a fact to satisfy. The second one can fail honestly and fix itself. The first one can only look done.
+That is a remarkably cheap lever sitting unused. Telling Claude up front to challenge you, to surface its uncertainty, to separate what it knows from what it is guessing, costs one sentence and measurably changes the interaction. It is the closest thing to a free upgrade in the whole report, and it is left on the table in two out of three conversations.
 
-![A Claude Code session running the test suite after implementing: two tests fail, Claude identifies the root cause as the unverified state param, fixes the handler, reruns, and all 24 tests pass](cc-s3.png)
+## The polish trap scales with the whole team
 
-For work you walk away from, harden the check. A `/goal` condition gets re-evaluated by a separate model after every turn, so the session keeps going until the condition holds. A Stop hook runs your check as a script and blocks the turn from ending until it passes. A verification subagent reviews the diff in a fresh context, seeing only the result and your criteria, not the reasoning that produced it, so the agent grading the work is not the one that wrote it. Each of these trades a little setup for a lot less of your attention. The plain prompt version works on any task today.
+Most coverage of a report like this will land on individual advice: be more careful, check your work. Useful, but it misses the organizational shape of the problem. The polish trap is not a personal failing you can will away. It is a predictable response to a surface signal, and it scales.
 
-## Show it a real reference, not a description
+When a team adopts AI, the artifacts get more polished over time as people get better at the directing behaviors, clarifying goals, specifying formats, giving examples. The index shows people genuinely improve at those. But the same data shows the guarding behaviors do not improve alongside them, they decay under polish. So the natural trajectory of an AI-adopting team is toward output that looks more and more professional while being checked less and less. That gap is invisible right up until something polished and wrong ships.
 
-The other habit that separates clean output from a guessing match is pointing Claude at an example instead of describing one. "Add a calendar widget" makes the agent invent your conventions. "Look at how existing widgets are implemented on the home page, HotDogWidget.php is a good example, follow that pattern to build a calendar widget" makes it match what you already have. Claude works better from a real reference than an abstract description, every time. Reference files with `@` so it reads them first, paste a screenshot when the target is visual, and when you report a bug, give the symptom, the likely location, and what fixed looks like: "login fails after session timeout, check token refresh in src/auth/, write a failing test that reproduces it, then fix it."
+This maps exactly onto what separates teams that scale AI from teams that stall. The ones that succeed build the verification in as a process, not a personal virtue: a test the artifact has to pass, a second person who reviews in fresh context, an explicit "what did you infer here" step before anything ships. They do not rely on individual diligence holding firm against the pull of polish, because the data says it will not. They make the check structural so it fires whether or not anyone feels suspicious that day.
 
-All of this is the same move as plan mode. You are replacing the agent's guess about your world with the actual contents of your world, before it acts on the guess.
+## The honest limitations
 
-## When not to plan
+A good reading of this report includes its caveats, and Anthropic lists them. The sample is early adopters during one week, so it does not represent the general population. Only 11 of the 24 framework behaviors are observable in conversation, so a lot of real diligence, the fact-checking you do in your head, the code you test on your own machine, the colleague you ask, simply is not captured. The classification is binary, present or absent, which misses degree. And the findings are correlational, not causal: iteration is associated with more fluency behaviors, but the report cannot prove iteration causes them.
 
-Planning has a cost, and pretending it does not is its own mistake. For a typo, a log line, a variable rename, a one-file change you could describe in a single sentence, skip it and just ask. The official rule of thumb is clean: if you could describe the diff in one sentence, you do not need a plan. Planning earns its overhead when you are unsure of the approach, when the change spans several files, or when you do not know the code you are about to touch. Forcing a ceremony onto a trivial fix is how people decide planning is a waste and stop doing it for the cases that need it.
+None of that undoes the core result. The artifact comparison is a within-dataset contrast, the same population behaving differently when polish enters the picture, and it held across languages and days. You can argue about the absolute numbers. The direction is solid, and the direction is the part that should change your behavior.
 
-## The real constraint underneath all of this
+## What to actually do with this
 
-Every one of these habits is downstream of a single fact: Claude's context window fills fast, and performance degrades as it fills. Every file read, every command output, every failed attempt sits in that window. When it gets crowded, the agent starts forgetting your earlier instructions and making more mistakes. Plan mode helps here too, because exploring and deciding up front means the implementation phase runs on a clean, focused context instead of one already polluted by trial and error.
+Three things, in order of leverage.
 
-The corollary is that you should manage context aggressively. Run `/clear` between unrelated tasks. If you have corrected Claude twice on the same point, stop correcting, the context is now full of failed approaches that are dragging the next attempt down. Clear it and start fresh with a sharper prompt that bakes in what you just learned. A clean session with a better prompt beats a long session with accumulated corrections almost every time. Delegate big investigations to subagents so reading two hundred files happens in their context, not yours.
+Stay in the conversation. Treat the first answer as a draft no matter how good it looks. The single behavior most associated with everything else going right is refusing to accept one-shot output. This is mostly a matter of resisting the efficiency illusion, the finished-looking answer that invites you to stop thinking.
 
-## The skill is restraint
+Distrust polish specifically. Build a habit, or better a process, that triggers harder scrutiny exactly when the output looks most finished. When you are about to accept a clean artifact, that is the cue to slow down, not speed up. Ask what it inferred, what it skipped, what it is confident about that it should not be. The polish is the warning sign, not the all-clear.
 
-None of this is about prompting harder. It is about resisting the pull to let a capable, eager agent start building before anyone has decided what to build. Plan mode is the tool that makes the restraint structural, but the underlying skill is older than the tool: look first, decide on paper, give yourself a way to know when you are wrong, then build.
+Set the terms up front. Spend the one sentence. Tell the AI to push back, to flag uncertainty, to mark what it is inferring. Two-thirds of people never do this, which means doing it puts you in a small minority for the price of a single instruction.
 
-The agent got very good at the building. The part that is still yours is making sure it is building the right thing. Plan mode is where you do that, and it is the difference between a third of your runs working and most of them working. The minute you spend in plan mode is the cheapest minute in the session. Spend it.
+The deeper lesson of the index is that fluency is not about getting better answers out of the model. It is about not letting the model's growing polish erode your judgment. The skill that matters most is the one that gets harder to practice exactly as the output gets better, and the only reliable defense is to stop trusting how finished something looks and start checking whether it is true.
 
 ---
 

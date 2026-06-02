@@ -329,3 +329,4 @@
 | 2026-06-02 | content | images | [cc-s3.png](projects/content/images/cc-s3.png) | Plan mode article + fake CC screenshots: cc-s3.png |
 | 2026-06-02 | content | reports | [draft.md](projects/content/reports/draft.md) | Plan mode article + fake CC screenshots: draft.md |
 | 2026-06-02 | content | reports | [draft.html](projects/content/reports/draft.html) | Plan mode article + fake CC screenshots: draft.html |
+| 2026-06-02 | content | reports | [draft.md](projects/content/reports/draft.md) | AI Fluency Index analysis (The Polish Trap) with charts: draft.md |
