@@ -325,3 +325,4 @@
 | 2026-06-02 | content | images | [hero.png](projects/content/images/hero.png) | Plan mode is the feature article (Claude Code planning discipline): hero.png |
 | 2026-06-02 | content | images | [four-phases.png](projects/content/images/four-phases.png) | Plan mode is the feature article (Claude Code planning discipline): four-phases.png |
 | 2026-06-02 | content | images | [cc-s1.png](projects/content/images/cc-s1.png) | Plan mode article + fake CC screenshots: cc-s1.png |
+| 2026-06-02 | content | images | [cc-s2.png](projects/content/images/cc-s2.png) | Plan mode article + fake CC screenshots: cc-s2.png |
