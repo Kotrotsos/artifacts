@@ -142,3 +142,4 @@
 | 2026-06-02 | reports | [draft.html](reports/draft.html) | Plan mode is the feature article (Claude Code planning discipline): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/draft.html |
 | 2026-06-02 | images | [hero.png](images/hero.png) | Plan mode is the feature article (Claude Code planning discipline): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/hero.png |
 | 2026-06-02 | images | [four-phases.png](images/four-phases.png) | Plan mode is the feature article (Claude Code planning discipline): four-phases.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/four-phases.png |
+| 2026-06-02 | images | [cc-s1.png](images/cc-s1.png) | Plan mode article + fake CC screenshots: cc-s1.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/cc-s1.png |
