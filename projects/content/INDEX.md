@@ -138,3 +138,4 @@
 | 2026-05-30 | reports | [draft.html](reports/draft.html) | Five ambitious builds with ultracode article: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/ultracode-five-builds/draft.html |
 | 2026-05-30 | images | [hero.png](images/hero.png) | Five ambitious builds with ultracode article: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ultracode-five-builds/hero.png |
 | 2026-05-30 | images | [idea-grid.png](images/idea-grid.png) | Five ambitious builds with ultracode article: idea-grid.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ultracode-five-builds/idea-grid.png |
+| 2026-06-02 | reports | [draft.md](reports/draft.md) | Plan mode is the feature article (Claude Code planning discipline): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/draft.md |
