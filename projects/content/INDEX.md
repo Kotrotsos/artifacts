@@ -156,3 +156,4 @@
 | 2026-06-02 | reports | [draft.html](reports/draft.html) | Harness Engineering HTML + diagrams: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/harness-engineering/draft.html |
 | 2026-06-02 | images | [diagram-formula.png](images/diagram-formula.png) | Harness Engineering HTML + diagrams: diagram-formula.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/harness-engineering/diagram-formula.png |
 | 2026-06-02 | images | [diagram-anatomy.png](images/diagram-anatomy.png) | Harness Engineering HTML + diagrams: diagram-anatomy.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/harness-engineering/diagram-anatomy.png |
+| 2026-06-02 | images | [diagram-stats.png](images/diagram-stats.png) | Harness Engineering HTML + diagrams: diagram-stats.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/harness-engineering/diagram-stats.png |

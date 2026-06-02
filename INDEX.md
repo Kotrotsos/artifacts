@@ -343,3 +343,4 @@
 | 2026-06-02 | content | reports | [draft.html](projects/content/reports/draft.html) | Harness Engineering HTML + diagrams: draft.html |
 | 2026-06-02 | content | images | [diagram-formula.png](projects/content/images/diagram-formula.png) | Harness Engineering HTML + diagrams: diagram-formula.png |
 | 2026-06-02 | content | images | [diagram-anatomy.png](projects/content/images/diagram-anatomy.png) | Harness Engineering HTML + diagrams: diagram-anatomy.png |
+| 2026-06-02 | content | images | [diagram-stats.png](projects/content/images/diagram-stats.png) | Harness Engineering HTML + diagrams: diagram-stats.png |
