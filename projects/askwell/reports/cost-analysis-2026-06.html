@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AskWell — Running cost analysis (June 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #DCE5DC;
+    --bg-soft: #E6ECE5;
+    --card: #FFFFFF;
+    --card-2: #F4F6F2;
+    --ink: #0F1112;
+    --ink-soft: #4B5258;
+    --ink-faint: #7A8389;
+    --mint: #97F0A8;
+    --mint-deep: #2BB05A;
+    --lavender: #A99CF2;
+    --lavender-deep: #6E5DD8;
+    --hairline: rgba(15,17,18,0.10);
+    --good: #2BB05A;
+    --warn: #C68A0F;
+    --bad: #C2403D;
+    --font: 'Manrope', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root.auto {
+      --bg: #0F1112;
+      --bg-soft: #14171A;
+      --card: #1A1E22;
+      --card-2: #23282E;
+      --ink: #F1F3F2;
+      --ink-soft: #B9C0C5;
+      --ink-faint: #7A8389;
+      --hairline: rgba(255,255,255,0.10);
+    }
+  }
+  html { background: var(--bg); }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 60px 28px 96px; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 36px; }
+  .brand { font-weight: 800; letter-spacing: -0.02em; font-size: 18px; }
+  .brand span { color: var(--mint-deep); }
+  .theme {
+    background: var(--card);
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .theme:hover { background: var(--card-2); }
+
+  h1 { font-size: clamp(34px, 5vw, 52px); font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; margin: 0; }
+  .lede { font-size: 17px; color: var(--ink-soft); margin: 18px 0 0; max-width: 60ch; }
+  .meta { margin-top: 10px; font-size: 12.5px; color: var(--ink-faint); letter-spacing: 0.04em; text-transform: uppercase; font-weight: 700; }
+
+  section { margin-top: 56px; }
+  h2 { font-size: 26px; font-weight: 800; letter-spacing: -0.025em; margin: 0 0 6px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lavender-deep); }
+  .sub { color: var(--ink-soft); margin: 4px 0 22px; max-width: 70ch; font-size: 15px; }
+
+  .card { background: var(--card); border-radius: 22px; padding: 22px 26px; box-shadow: 0 2px 6px rgba(15,17,18,0.04); border: 1px solid var(--hairline); }
+
+  .grid { display: grid; gap: 14px; }
+  .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @media (max-width: 720px) {
+    .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+
+  .stat { padding: 18px 20px; }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; color: var(--ink-faint); }
+  .stat-value { font-size: 28px; font-weight: 800; margin-top: 4px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .stat-foot { font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--hairline); }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); font-weight: 700; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: none; }
+  tr.total td { background: var(--card-2); font-weight: 800; }
+
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+  .pill.good { background: rgba(43,176,90,0.18); color: var(--good); }
+  .pill.warn { background: rgba(198,138,15,0.18); color: var(--warn); }
+  .pill.bad { background: rgba(194,64,61,0.18); color: var(--bad); }
+  .pill.mint { background: var(--mint); color: var(--ink); }
+  .pill.lav { background: rgba(169,156,242,0.30); color: var(--lavender-deep); }
+
+  details { background: var(--card); border-radius: 18px; padding: 16px 20px; border: 1px solid var(--hairline); margin-top: 12px; }
+  details summary { font-weight: 700; cursor: pointer; font-size: 14px; }
+  details[open] summary { margin-bottom: 8px; }
+  details p, details ul { font-size: 14px; color: var(--ink-soft); margin: 6px 0; }
+  details code { background: var(--card-2); padding: 1px 6px; border-radius: 6px; font-size: 12.5px; }
+
+  .ribbon { height: 5px; border-radius: 999px; background: linear-gradient(90deg, var(--mint), var(--lavender)); margin: 8px 0 36px; }
+  .callout { border-left: 4px solid var(--mint-deep); padding: 14px 18px; background: var(--card-2); border-radius: 12px; margin-top: 18px; font-size: 14.5px; color: var(--ink); }
+  .callout.warn { border-color: var(--warn); }
+  .callout.bad { border-color: var(--bad); }
+
+  footer { margin-top: 80px; color: var(--ink-faint); font-size: 12.5px; text-align: center; }
+
+  @media print {
+    .topbar .theme { display: none; }
+    body { background: white; }
+    .wrap { padding: 20px; }
+    section { page-break-inside: avoid; margin-top: 28px; }
+    .card { box-shadow: none; border: 1px solid #ddd; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">askwell<span>.</span> &nbsp;Cost analysis</div>
+      <button class="theme" type="button" onclick="document.documentElement.classList.toggle('auto')">Toggle light, dark</button>
+    </div>
+
+    <h1>Running cost analysis</h1>
+    <p class="lede">What it actually costs to run AskWell at four scales, where the money goes, and where the unit economics break or hold. Light napkin math, not an accounting close.</p>
+    <div class="meta">As of June 2, 2026 &middot; figures rounded</div>
+    <div class="ribbon"></div>
+
+    <section>
+      <div class="eyebrow">At a glance</div>
+      <h2>Headline numbers</h2>
+      <p class="sub">The four scenarios used throughout the doc: 25 paying users (beta), 250 (growth), 2,500 (scale), 25,000 (big). Each row is total monthly cost including a 10x free-tier funnel.</p>
+
+      <div class="grid grid-4">
+        <div class="card stat">
+          <div class="stat-label">25 paying users</div>
+          <div class="stat-value">$430</div>
+          <div class="stat-foot">Revenue $500. Margin 14%.</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">250 paying users</div>
+          <div class="stat-value">$3,725</div>
+          <div class="stat-foot">Revenue $5,000. Margin 25%.</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">2,500 paying users</div>
+          <div class="stat-value">$33,800</div>
+          <div class="stat-foot">Revenue $50,000. Margin 32%.</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">25,000 paying users</div>
+          <div class="stat-value">$331,000</div>
+          <div class="stat-foot">Revenue $500,000. Margin 34%.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="eyebrow">Where money goes</div>
+      <h2>Per-response unit cost</h2>
+      <p class="sub">A "response" is one stakeholder completing one interview. Average 10 conversation turns, system prompt cached after turn 1, plus the end-of-response extraction pass that lands the structured fields.</p>
+
+      <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>Model</th>
+            <th class="num">Input tokens</th>
+            <th class="num">Output tokens</th>
+            <th class="num">Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Turn 1, write system prompt to cache</td>
+            <td>Sonnet</td>
+            <td class="num">2,000 (cache write)</td>
+            <td class="num">150</td>
+            <td class="num">$0.0098</td>
+          </tr>
+          <tr>
+            <td>Turns 2 to 10, cached system + new context</td>
+            <td>Sonnet</td>
+            <td class="num">9 &times; (2k cached + 1k new)</td>
+            <td class="num">9 &times; 150</td>
+            <td class="num">$0.0526</td>
+          </tr>
+          <tr>
+            <td>Follow-up question check, all 10 turns</td>
+            <td>Haiku 4.5</td>
+            <td class="num">10 &times; 400</td>
+            <td class="num">10 &times; 50</td>
+            <td class="num">$0.0065</td>
+          </tr>
+          <tr>
+            <td>End-of-response field extraction</td>
+            <td>Sonnet</td>
+            <td class="num">4,000</td>
+            <td class="num">1,000</td>
+            <td class="num">$0.0270</td>
+          </tr>
+          <tr class="total">
+            <td colspan="4">Per response, all in</td>
+            <td class="num">$0.096</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout">Working number used for projections, <strong>$0.10 per completed response</strong>, with a few cents of slack for retries, abandoned half-responses we still partially pay for, and prompt drift over time.</div>
+    </section>
+
+    <section>
+      <div class="eyebrow">Where money goes</div>
+      <h2>Per-synthesis unit cost</h2>
+      <p class="sub">A synthesis run feeds every response of one interview into Opus and gets back alignment, conflicts, and gaps. Cost scales with respondent count. Assumes 25 responses fed in at 800 tokens each plus a 5k orchestration prompt.</p>
+
+      <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>Model</th>
+            <th class="num">Input tokens</th>
+            <th class="num">Output tokens</th>
+            <th class="num">Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Full synthesis pass</td>
+            <td>Opus 4</td>
+            <td class="num">25,000</td>
+            <td class="num">4,000</td>
+            <td class="num">$0.675</td>
+          </tr>
+          <tr class="total">
+            <td colspan="4">Per synthesis run, all in</td>
+            <td class="num">$0.68</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="callout">Synthesis is the chunky line item. Users typically re-run it 2 to 3 times as new responses land, so <strong>$1.50 per interview lifetime</strong> is a fair planning number at this respondent count.</div>
+    </section>
+
+    <section>
+      <div class="eyebrow">Fixed monthly</div>
+      <h2>Infrastructure baseline</h2>
+      <p class="sub">What we pay regardless of how many interviews run. Mostly Railway, plus the obvious extras.</p>
+
+      <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>Line</th>
+            <th>Today (beta)</th>
+            <th>Growth (~250 paying)</th>
+            <th>Scale (~2,500 paying)</th>
+            <th>Big (~25,000 paying)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Railway, web + worker + Postgres + Redis</td>
+            <td class="num">$35</td>
+            <td class="num">$120</td>
+            <td class="num">$650</td>
+            <td class="num">$5,400</td>
+          </tr>
+          <tr>
+            <td>Resend, email invites</td>
+            <td class="num">$0</td>
+            <td class="num">$20</td>
+            <td class="num">$120</td>
+            <td class="num">$900</td>
+          </tr>
+          <tr>
+            <td>Clerk, auth and billing UI</td>
+            <td class="num">$0</td>
+            <td class="num">$0</td>
+            <td class="num">$300</td>
+            <td class="num">$3,500</td>
+          </tr>
+          <tr>
+            <td>Cloudflare, DNS plus domain amortized</td>
+            <td class="num">$1</td>
+            <td class="num">$1</td>
+            <td class="num">$20</td>
+            <td class="num">$200</td>
+          </tr>
+          <tr class="total">
+            <td>Fixed total</td>
+            <td class="num">$36</td>
+            <td class="num">$141</td>
+            <td class="num">$1,090</td>
+            <td class="num">$10,000</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+      <p class="sub" style="margin-top: 14px;">Clerk is free up to 10,000 monthly active users. Resend is free up to 3,000 emails per month. Railway billing is metered on container hours plus database and bandwidth.</p>
+    </section>
+
+    <section>
+      <div class="eyebrow">Projections</div>
+      <h2>Variable cost per scenario</h2>
+      <p class="sub">Plays out the typical Pro user as 4 interviews per month, 25 respondents per interview, 2 synthesis runs per interview, so 100 responses and 8 synthesis runs each.</p>
+
+      <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th class="num">Paid users</th>
+            <th class="num">Free signups</th>
+            <th class="num">Responses (paid)</th>
+            <th class="num">Anthropic, paid</th>
+            <th class="num">Anthropic, free</th>
+            <th class="num">Fixed</th>
+            <th class="num">Total cost</th>
+            <th class="num">Revenue</th>
+            <th class="num">Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Beta</td>
+            <td class="num">25</td>
+            <td class="num">250</td>
+            <td class="num">2,500</td>
+            <td class="num">$330</td>
+            <td class="num">$75</td>
+            <td class="num">$36</td>
+            <td class="num">$441</td>
+            <td class="num">$500</td>
+            <td class="num"><span class="pill warn">12%</span></td>
+          </tr>
+          <tr>
+            <td>Growth</td>
+            <td class="num">250</td>
+            <td class="num">2,500</td>
+            <td class="num">25,000</td>
+            <td class="num">$3,300</td>
+            <td class="num">$750</td>
+            <td class="num">$141</td>
+            <td class="num">$4,191</td>
+            <td class="num">$5,000</td>
+            <td class="num"><span class="pill warn">16%</span></td>
+          </tr>
+          <tr>
+            <td>Scale</td>
+            <td class="num">2,500</td>
+            <td class="num">25,000</td>
+            <td class="num">250,000</td>
+            <td class="num">$33,000</td>
+            <td class="num">$7,500</td>
+            <td class="num">$1,090</td>
+            <td class="num">$41,590</td>
+            <td class="num">$50,000</td>
+            <td class="num"><span class="pill good">17%</span></td>
+          </tr>
+          <tr>
+            <td>Big</td>
+            <td class="num">25,000</td>
+            <td class="num">250,000</td>
+            <td class="num">2,500,000</td>
+            <td class="num">$330,000</td>
+            <td class="num">$75,000</td>
+            <td class="num">$10,000</td>
+            <td class="num">$415,000</td>
+            <td class="num">$500,000</td>
+            <td class="num"><span class="pill good">17%</span></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="callout warn">
+        These numbers assume a <strong>10x free-to-paid funnel</strong>, with the average free signup costing 30 cents in Anthropic spend, because some don't complete their one allowed interview. Tighten the free tier or kill abandoned drafts to bring that line down.
+      </div>
+    </section>
+
+    <section>
+      <div class="eyebrow">Sensitivity</div>
+      <h2>What moves the margin</h2>
+      <p class="sub">Same Scale row (2,500 paying), pulled in different directions. The point of this table is to show which knob actually changes the answer.</p>
+
+      <div class="card" style="padding: 0; overflow: hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>Change</th>
+            <th class="num">Total cost</th>
+            <th class="num">Margin</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Baseline (2,500 paying)</td>
+            <td class="num">$41,590</td>
+            <td class="num">17%</td>
+            <td>Reference row from table above</td>
+          </tr>
+          <tr>
+            <td>Anthropic prices drop 30%</td>
+            <td class="num">$29,440</td>
+            <td class="num"><span class="pill good">41%</span></td>
+            <td>Most likely upside, historically prices drop yearly</td>
+          </tr>
+          <tr>
+            <td>Heavy users double response count</td>
+            <td class="num">$74,090</td>
+            <td class="num"><span class="pill bad">negative</span></td>
+            <td>Why the overage slider exists, must be billable eventually</td>
+          </tr>
+          <tr>
+            <td>Free funnel doubles to 20x</td>
+            <td class="num">$49,090</td>
+            <td class="num"><span class="pill warn">2%</span></td>
+            <td>Free tier is the soft underbelly, watch it</td>
+          </tr>
+          <tr>
+            <td>Switch synthesis from Opus to Sonnet</td>
+            <td class="num">$32,950</td>
+            <td class="num"><span class="pill good">34%</span></td>
+            <td>Possible at lower quality, A/B before flipping the default</td>
+          </tr>
+          <tr>
+            <td>Pro price raised to $29</td>
+            <td class="num">$41,590</td>
+            <td class="num"><span class="pill good">43%</span></td>
+            <td>Same product, healthier business, lose some signups</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="eyebrow">Free tier exposure</div>
+      <h2>What an abusive free user can do</h2>
+      <p class="sub">Worst case for one free signup who maxes the tier: 1 interview, 15 respondents, 1 synthesis run.</p>
+
+      <div class="grid grid-3">
+        <div class="card stat">
+          <div class="stat-label">Max response spend</div>
+          <div class="stat-value">$1.50</div>
+          <div class="stat-foot">15 responses &times; $0.10</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">Max synthesis spend</div>
+          <div class="stat-value">$0.68</div>
+          <div class="stat-foot">1 Opus pass on 15 responses</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">Max per free user</div>
+          <div class="stat-value">$2.18</div>
+          <div class="stat-foot">Capped by plan limits, not by rate limits</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        That ceiling is the answer to "what if someone signs up with 100 emails and runs the free tier dry on every one." 100 abusive accounts = $218. Not nothing, not a fire. The bigger leak is still the long tail of half-finished free interviews.
+      </div>
+    </section>
+
+    <section>
+      <div class="eyebrow">Pricing math</div>
+      <h2>Where the Pro tier needs to land</h2>
+      <p class="sub">Backed into from "I want a 50% gross margin and the typical Pro user costs me $13 per month all-in."</p>
+
+      <div class="grid grid-3">
+        <div class="card stat">
+          <div class="stat-label">Typical Pro variable cost</div>
+          <div class="stat-value">$13.4</div>
+          <div class="stat-foot">100 responses + 8 syntheses</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">Current price</div>
+          <div class="stat-value">$19.99</div>
+          <div class="stat-foot">Margin 33%, before fixed allocation</div>
+        </div>
+        <div class="card stat">
+          <div class="stat-label">Margin-50 target price</div>
+          <div class="stat-value">$26.80</div>
+          <div class="stat-foot">Or hold price and drop synthesis to Sonnet</div>
+        </div>
+      </div>
+
+      <div class="callout">
+        Sticking at $19.99 is fine for the introduction offer window, both because it brings signups and because the overage slider is currently free. Once intro ends and overage starts billing at $1 per extra interview per month, that maps to roughly $0.10 a response, which is exactly cost recovery. No margin, no markup. That's a knob to revisit.
+      </div>
+    </section>
+
+    <section>
+      <div class="eyebrow">Reading these numbers</div>
+      <h2>What I'd actually do</h2>
+      <ul>
+        <li><strong>Hold the price</strong> through the introduction offer. Volume and signup velocity matter more than margin in the next 90 days.</li>
+        <li><strong>Tighten abandoned-draft cleanup</strong>. The free funnel is the only line that scales linearly with signups without revenue. Even a small reduction in cost per free signup compounds.</li>
+        <li><strong>Plan the Sonnet synthesis A/B</strong>. If Sonnet 4 holds quality, switching the default reclaims 8 to 10 margin points without raising the price.</li>
+        <li><strong>Wire the overage at $1 only once Pro hits 50 paying users</strong>. Below that the friction is more expensive than the recovered cost.</li>
+        <li><strong>Forecast assuming a 20% annual API price drop</strong>. Anthropic's curve has been steeply down. Build the model so that's upside, not a load-bearing assumption.</li>
+      </ul>
+    </section>
+
+    <details>
+      <summary>Assumptions in one place</summary>
+      <ul>
+        <li>Pricing, Anthropic, June 2026: Sonnet 4 at $3 input, $15 output, cache read $0.30, cache write $3.75. Opus 4 at $15 input, $75 output. Haiku 4.5 at $1 input, $5 output.</li>
+        <li>Per response: 10 turns, 2k cached system, 1k new context per turn, 150 token output. End-of-response extraction at 4k input, 1k output.</li>
+        <li>Per synthesis: 25 responses fed in at 800 tokens each, 5k orchestration prompt, 4k output.</li>
+        <li>Typical Pro user: 4 interviews per month, 25 respondents per interview, 2 synthesis runs per interview.</li>
+        <li>Free funnel: 10x of paying users, average $0.30 per free signup in Anthropic spend.</li>
+        <li>Railway cost scales near linearly with paid users above the $20 baseline.</li>
+        <li>Clerk free up to 10k MAU, Resend free up to 3k emails per month.</li>
+        <li>USD throughout, no FX, no tax, no Stripe fees.</li>
+      </ul>
+    </details>
+
+    <footer>
+      Generated June 2, 2026, with the project at PR #61 (snap-deck marketing landing) merged on main.
+    </footer>
+  </div>
+</body>
+</html>

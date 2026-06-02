@@ -337,3 +337,4 @@
 | 2026-06-02 | content | images | [chart-polish-trap.png](projects/content/images/chart-polish-trap.png) | AI Fluency Index analysis (The Polish Trap) with charts: chart-polish-trap.png |
 | 2026-06-02 | nxtphase | reports | [nxtphase-redteam-report.html](projects/nxtphase/reports/nxtphase-redteam-report.html) | Red team security, privacy and WCAG assessment of nxtphase.ai (HTML report) |
 | 2026-06-02 | nxtphase | reports | [nxtphase-redteam-report.md](projects/nxtphase/reports/nxtphase-redteam-report.md) | Red team security assessment of nxtphase.ai (markdown source) |
+| 2026-06-02 | askwell | reports | [cost-analysis-2026-06.html](projects/askwell/reports/cost-analysis-2026-06.html) | Running cost analysis with per-response unit math and four-scale projections |
