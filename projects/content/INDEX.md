@@ -148,3 +148,4 @@
 | 2026-06-02 | reports | [draft.md](reports/draft.md) | Plan mode article + fake CC screenshots: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/draft.md |
 | 2026-06-02 | reports | [draft.html](reports/draft.html) | Plan mode article + fake CC screenshots: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/draft.html |
 | 2026-06-02 | reports | [draft.md](reports/draft.md) | AI Fluency Index analysis (The Polish Trap) with charts: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-fluency-polish-trap/draft.md |
+| 2026-06-02 | reports | [draft.html](reports/draft.html) | AI Fluency Index analysis (The Polish Trap) with charts: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-fluency-polish-trap/draft.html |
