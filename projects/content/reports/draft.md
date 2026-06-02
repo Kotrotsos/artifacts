@@ -34,6 +34,10 @@ The official Claude Code guidance is a sequence, and the order is the whole poin
 
 ![A four-phase flow: Explore reads the code, Plan writes the route, Implement builds against it, Commit ships, with a coral loop from Implement back to a verification check](four-phases.png)
 
+Phases one and two look like this in practice. The agent reads your actual files, then hands back a plan grounded in them, with the plan-mode indicator showing it has not touched a thing yet.
+
+![A Claude Code session in plan mode: the user asks it to read src/auth, Claude reports reading four files and explains the session flow, then produces a numbered Add Google OAuth plan, with a plan-mode bar showing ctrl+g to edit and shift+tab to implement](cc-s1.png)
+
 ## "Don't implement yet" is a real instruction
 
 The single phrase that changes the most is the one that tells Claude not to start. Without something like "don't implement yet" or "write a plan first, do not change any code," the agent treats your description as a green light and begins. Plan mode enforces this structurally, but the habit matters even outside it. You are explicitly buying yourself a checkpoint between intent and action.
@@ -42,11 +46,15 @@ For anything larger than a small change, go further and let Claude interview you
 
 Then start a fresh session to execute the spec. The new session has clean context aimed entirely at building, and you have a written artifact to check the result against. The official guidance puts it plainly: time spent making the spec precise pays off more than time spent watching the implementation. One circulating account described two hours on a twelve-step spec returning six to ten hours of implementation time. Treat the exact ratio as anecdote, but the direction is right and it is the direction that matters.
 
+![A Claude Code session where the user asks it to interview them and write a spec instead of coding; Claude asks two decision questions about billing states and proration, then reports writing SPEC.md with 12 steps and 3 items out of scope](cc-s2.png)
+
 ## A plan without a check is half the system
 
 A plan tells Claude what to build. It does not tell Claude when it has gone wrong. For that you need something the agent can run and read without you in the loop: a test suite, a build exit code, a linter, a script that diffs output against a fixture, a browser screenshot compared to a design. Give it one and the loop closes on its own. Claude builds, runs the check, reads the result, and iterates until it passes, instead of stopping at "looks done" and handing the verifying back to you.
 
 The difference shows up in the prompt. "Implement a function that validates email addresses" leaves the agent to decide what correct means. "Write a validateEmail function. user@example.com is true, invalid is false, user@.com is false. Run the tests after implementing" gives it a fact to satisfy. The second one can fail honestly and fix itself. The first one can only look done.
+
+![A Claude Code session running the test suite after implementing: two tests fail, Claude identifies the root cause as the unverified state param, fixes the handler, reruns, and all 24 tests pass](cc-s3.png)
 
 For work you walk away from, harden the check. A `/goal` condition gets re-evaluated by a separate model after every turn, so the session keeps going until the condition holds. A Stop hook runs your check as a script and blocks the turn from ending until it passes. A verification subagent reviews the diff in a fresh context, seeing only the result and your criteria, not the reasoning that produced it, so the agent grading the work is not the one that wrote it. Each of these trades a little setup for a lot less of your attention. The plain prompt version works on any task today.
 

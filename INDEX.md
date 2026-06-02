@@ -327,3 +327,4 @@
 | 2026-06-02 | content | images | [cc-s1.png](projects/content/images/cc-s1.png) | Plan mode article + fake CC screenshots: cc-s1.png |
 | 2026-06-02 | content | images | [cc-s2.png](projects/content/images/cc-s2.png) | Plan mode article + fake CC screenshots: cc-s2.png |
 | 2026-06-02 | content | images | [cc-s3.png](projects/content/images/cc-s3.png) | Plan mode article + fake CC screenshots: cc-s3.png |
+| 2026-06-02 | content | reports | [draft.md](projects/content/reports/draft.md) | Plan mode article + fake CC screenshots: draft.md |
