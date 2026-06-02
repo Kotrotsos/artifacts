@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WCAG 2.1 AA audit — embed-widget (virtuele assistent)</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #545454;
+    --card: #f7f9fb;
+    --border: #d9dee3;
+    --accent: #01689b;
+    --accent-soft: #e6f0f7;
+    --fail: #a90000;
+    --warn: #8a5a00;
+    --warn-soft: #fff6e0;
+    --pass: #1d6b2f;
+    --pass-soft: #e6f4ea;
+    --fail-soft: #fdeaea;
+    --stripe: #ffb612;
+    --font: "RO Sans", "Source Sans Pro", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  [data-theme="dark"] {
+    --bg: #14181d;
+    --fg: #e7ebf0;
+    --muted: #9aa4af;
+    --card: #1c2128;
+    --border: #2d343c;
+    --accent: #5db0e0;
+    --accent-soft: #1a2730;
+    --fail: #ff7b7b;
+    --warn: #e0b25a;
+    --warn-soft: #2a2310;
+    --pass: #7bd494;
+    --pass-soft: #15251a;
+    --fail-soft: #2a1414;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 56rem; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+  header.page {
+    border-bottom: 4px solid var(--stripe);
+    padding-bottom: 1.25rem;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  h1 { font-size: 1.85rem; line-height: 1.2; margin: 0 0 .35rem; letter-spacing: .01em; }
+  h2 { font-size: 1.3rem; margin: 2.5rem 0 .75rem; padding-top: .5rem; }
+  h3 { font-size: 1.05rem; margin: 1.5rem 0 .4rem; }
+  p { margin: .5rem 0; }
+  .sub { color: var(--muted); font-size: .95rem; margin: 0; }
+  .meta { color: var(--muted); font-size: .85rem; }
+  code { font-family: var(--mono); font-size: .86em; background: var(--card); padding: .1em .4em; border-radius: 4px; border: 1px solid var(--border); }
+  a { color: var(--accent); }
+
+  .verdict {
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.1rem 1.25rem;
+    margin: 1.5rem 0 2rem;
+  }
+  .verdict strong { font-weight: 700; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); gap: .75rem; margin: 1rem 0 1.5rem; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: .85rem 1rem; }
+  .stat .n { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+  .stat .l { color: var(--muted); font-size: .8rem; margin-top: .35rem; }
+  .stat.fail .n { color: var(--fail); }
+  .stat.warn .n { color: var(--warn); }
+  .stat.pass .n { color: var(--pass); }
+
+  table { border-collapse: collapse; width: 100%; margin: .75rem 0 1.5rem; font-size: .92rem; }
+  th, td { text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { font-weight: 700; border-bottom: 2px solid var(--border); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .tag { display: inline-block; font-size: .72rem; font-weight: 700; padding: .12rem .5rem; border-radius: 999px; white-space: nowrap; }
+  .tag.fail { background: var(--fail-soft); color: var(--fail); }
+  .tag.warn { background: var(--warn-soft); color: var(--warn); }
+  .tag.pass { background: var(--pass-soft); color: var(--pass); }
+  .tag.lvl { background: var(--card); color: var(--muted); border: 1px solid var(--border); }
+
+  .finding { border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.15rem; margin: 1rem 0; }
+  .finding.fail { border-left: 5px solid var(--fail); }
+  .finding.warn { border-left: 5px solid var(--warn); }
+  .finding h3 { margin-top: 0; display: flex; gap: .5rem; align-items: baseline; flex-wrap: wrap; }
+  .finding .where { color: var(--muted); font-size: .85rem; }
+  .finding .fix { margin-top: .5rem; }
+  .finding .fix b { color: var(--accent); }
+
+  ul.clean { margin: .5rem 0; padding-left: 1.2rem; }
+  ul.clean li { margin: .3rem 0; }
+
+  .toggle {
+    background: var(--card); color: var(--fg); border: 1px solid var(--border);
+    border-radius: 999px; padding: .4rem .85rem; font-size: .82rem; cursor: pointer;
+    font-family: inherit; white-space: nowrap;
+  }
+  .toggle:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .82rem; }
+
+  @media print {
+    .toggle { display: none; }
+    body { background: #fff; color: #000; }
+    .wrap { max-width: none; padding: 0; }
+    .finding, .stat, table { break-inside: avoid; }
+    a { color: #000; text-decoration: underline; }
+    header.page { border-bottom: 3px solid #000; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <div>
+      <h1>WCAG 2.1 AA audit</h1>
+      <p class="sub">Embed-widget van de virtuele assistent &middot; route <code>/embed/[city]</code></p>
+    </div>
+    <button class="toggle" id="themeBtn" type="button" aria-label="Wissel tussen licht en donker thema">Donker thema</button>
+  </header>
+
+  <p class="meta">Branch <code>feature/modal-widget-embed</code> &middot; commit <code>8df2c7a</code> &middot; getest tegen WCAG 2.1 niveau A en AA &middot; methode: axe-core 4.10 (geautomatiseerd) plus handmatige broncode- en contrastreview.</p>
+
+  <div class="verdict">
+    <strong>Samenvatting.</strong> De geautomatiseerde scan is schoon: nul overtredingen op zowel het welkomstscherm als een live gesprek. Contrast, focus-indicatie en toetsenbordbediening zijn goed op orde. Er zijn drie tekortkomingen die een geautomatiseerde tool structureel niet ziet en die voor volledige AA-conformiteit gefixt moeten worden: paginataal, paginatitel en het ontbreken van een live-region voor streamende antwoorden. Daarnaast een paar kleinere verbeterpunten.
+  </div>
+
+  <div class="grid">
+    <div class="stat pass"><div class="n">0</div><div class="l">axe-overtredingen</div></div>
+    <div class="stat pass"><div class="n">27</div><div class="l">axe-checks geslaagd</div></div>
+    <div class="stat fail"><div class="n">3</div><div class="l">te fixen (A/AA)</div></div>
+    <div class="stat warn"><div class="n">3</div><div class="l">verbeterpunten</div></div>
+  </div>
+
+  <h2>Moet gefixt worden voor AA-conformiteit</h2>
+
+  <div class="finding fail">
+    <h3>1. Taal van de pagina <span class="tag fail">Fail</span> <span class="tag lvl">3.1.1 &middot; Niveau A</span></h3>
+    <p class="where"><code>agent-frontend/app/layout.tsx:26</code></p>
+    <p>Het <code>&lt;html&gt;</code>-element draagt <code>lang="en"</code>, terwijl de hele interface Nederlands is. Screenreaders kiezen daardoor de verkeerde uitspraakregels. De embed-wrapper zet wel <code>lang="nl"</code> op een <code>&lt;div&gt;</code>, maar 3.1.1 vereist het op het document.</p>
+    <p class="fix"><b>Fix:</b> zet <code>&lt;html lang="nl"&gt;</code> in de root-layout, of override per embed-route.</p>
+  </div>
+
+  <div class="finding fail">
+    <h3>2. Paginatitel <span class="tag fail">Fail</span> <span class="tag lvl">2.4.2 &middot; Niveau AA</span></h3>
+    <p class="where"><code>agent-frontend/app/layout.tsx:16</code></p>
+    <p>De <code>&lt;title&gt;</code> is nog de standaard <code>"assistant-ui Starter App"</code>. Een iframe-document hoort een beschrijvende, taalspecifieke titel te hebben.</p>
+    <p class="fix"><b>Fix:</b> beschrijvende titel, bijvoorbeeld <code>"Virtuele assistent &ndash; Gemeente Montferland"</code>. Bij voorkeur per tenant via <code>generateMetadata</code> in de embed-route, zodat de displayName meekomt.</p>
+  </div>
+
+  <div class="finding fail">
+    <h3>3. Statusberichten bij streamende antwoorden <span class="tag fail">Fail</span> <span class="tag lvl">4.1.3 &middot; Niveau AA</span></h3>
+    <p class="where"><code>components/assistant-ui/thread.tsx</code> (AssistantMessage / Messages-viewport)</p>
+    <p>Er zit geen <code>aria-live</code> of <code>role="log"</code> rond de berichtenlijst. Screenreadergebruikers krijgen geen melding dat er een antwoord wordt gegenereerd of dat het antwoord binnen is; de tekst verschijnt stil in de DOM.</p>
+    <p class="fix"><b>Fix:</b> wikkel de berichten in een <code>role="log" aria-live="polite"</code>-container, of voeg een polite status-region toe die "Bezig met antwoorden&hellip;" en daarna het voltooide antwoord aankondigt.</p>
+  </div>
+
+  <h2>Verbeterpunten (geen harde AA-fail, wel aanbevolen)</h2>
+
+  <div class="finding warn">
+    <h3>4. Sprekeridentificatie en koppenstructuur <span class="tag warn">Verbeteren</span> <span class="tag lvl">1.1.1 / 1.3.1 &middot; Niveau A</span></h3>
+    <p>Het assistent-avatar (<code>StarIcon</code>) heeft geen <code>aria-hidden</code>, en er is geen visueel verborgen "Assistent:" / "U:" label, waardoor screenreadergebruikers beurten niet uit elkaar kunnen houden. Daarnaast heeft de modal een <code>&lt;h2&gt;</code> zonder bovenliggende <code>&lt;h1&gt;</code>, en is "Welkom" een <code>&lt;strong&gt;</code> in plaats van een kop. NB: de civai-refactor die sprekerlabels toevoegt staat op een andere branch en is hier niet gemerged.</p>
+    <p class="fix"><b>Fix:</b> <code>aria-hidden="true"</code> op decoratieve iconen, een <code>sr-only</code> sprekerlabel per bericht, en "Welkom" als heading opnemen.</p>
+  </div>
+
+  <div class="finding warn">
+    <h3>5. Beweging bij prefers-reduced-motion <span class="tag warn">Verbeteren</span> <span class="tag lvl">2.3.3 &middot; Niveau AAA</span></h3>
+    <p>De CSS <code>@media (prefers-reduced-motion: reduce)</code>-regel dekt CSS-transities, maar de entree-animaties draaien via framer-motion (JS, inline transforms) en worden daardoor niet onderdrukt. Het <code>va:reduced-motion</code> postMessage-type is gedefinieerd in het protocol maar wordt nergens geconsumeerd. Dit is AAA, dus geen AA-fail, maar de intentie is half geimplementeerd.</p>
+    <p class="fix"><b>Fix:</b> gate framer-motion met de <code>useReducedMotion()</code>-hook, of consumeer het <code>va:reduced-motion</code>-bericht.</p>
+  </div>
+
+  <div class="finding warn">
+    <h3>6. Focus terugzetten bij sluiten <span class="tag warn">Integratie</span> <span class="tag lvl">2.4.3 &middot; Niveau A</span></h3>
+    <p>Binnen het iframe is focus goed geregeld: de invoer krijgt <code>autoFocus</code> bij openen. Bij sluiten stuurt het iframe alleen <code>va:close-requested</code> naar de host. Het terugzetten van de focus naar de launcher-knop is daarmee de verantwoordelijkheid van de host-pagina.</p>
+    <p class="fix"><b>Fix:</b> documenteer voor embedders dat zij bij het verbergen van het iframe de focus terug moeten zetten op de openknop.</p>
+  </div>
+
+  <h2>Wat goed is</h2>
+  <table>
+    <thead><tr><th>Criterium</th><th>Bevinding</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag lvl">1.4.3 / 1.4.11</span> Contrast</td><td>Alle tekstcombinaties halen AA. Bodytekst <code>#1a1a1a</code> op wit circa 16:1, muted <code>#545454</code> circa 7,6:1, primary <code>#01689b</code> op wit circa 6,1:1, destructive <code>#a90000</code> circa 7,8:1. Rand <code>#919191</code> circa 3,15:1, net boven de 3:1-drempel voor niet-tekst. axe meldde nul contrastproblemen.</td></tr>
+      <tr><td><span class="tag lvl">2.4.7 / 1.4.11</span> Focus zichtbaar</td><td>Sterke indicatie: 3px outline met offset, plus witte outline en 6px ring op knoppen en links.</td></tr>
+      <tr><td><span class="tag lvl">2.1.1</span> Toetsenbord</td><td>Alle bedieningselementen zijn native <code>button</code>, <code>a</code> of <code>textarea</code>; suggesties en vervolgvragen zijn echte knoppen.</td></tr>
+      <tr><td><span class="tag lvl">3.3.2 / 4.1.2</span> Labels en namen</td><td>Invoerveld, verzend- en stopknop, opnieuw- en sluitknop, suggesties, vervolgvragen en feedbackduimen hebben <code>aria-label</code>s; groepen hebben <code>role="group"</code> met label.</td></tr>
+      <tr><td><span class="tag lvl">2.4.1</span> Blokken overslaan</td><td>Skip-link naar het invoerveld aanwezig (<code>va-skip-link</code>).</td></tr>
+      <tr><td><span class="tag lvl">2.5.8</span> Grootte van het doel</td><td>Header-knoppen 40px, verzendknop 28px; voldoet aan de 24px-minimum van WCAG 2.2.</td></tr>
+      <tr><td><span class="tag lvl">1.4.4</span> Tekst schalen</td><td>Basisgrootte in rem op <code>&lt;html&gt;</code>; de host kan de fontgrootte live aanpassen via het style-bridge bericht.</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Methode</h2>
+  <ul class="clean">
+    <li>Geautomatiseerd: axe-core 4.10.2 tegen tags <code>wcag2a</code>, <code>wcag2aa</code>, <code>wcag21a</code>, <code>wcag21aa</code>, op het welkomstscherm en op een live gesprek (paspoortvraag, met antwoord, links en feedbackbalk in de DOM). Resultaat: 0 overtredingen, 0 onbeslist, 27 geslaagde checks.</li>
+    <li>Handmatig: review van <code>embed.css</code> (kleuren, focus, reduced-motion, sr-only), <code>modal-thread.tsx</code>, <code>thread.tsx</code>, <code>answer-steps.tsx</code>, <code>followups.tsx</code>, <code>resolution-check.tsx</code>, <code>embed-style-bridge.tsx</code> en de root-layout. Contrastratio's met de hand berekend uit de design-tokens.</li>
+  </ul>
+
+  <footer>
+    Opgesteld als momentopname voor de embed-widget op branch <code>feature/modal-widget-embed</code>. axe-core dekt naar schatting 30 tot 50 procent van de WCAG-succescriteria; de overige criteria zijn handmatig beoordeeld. Dit rapport beoordeelt de widget zelf, niet de host-pagina waarop het iframe wordt geplaatst.
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var btn = document.getElementById('themeBtn');
+    var root = document.documentElement;
+    function set(mode) {
+      if (mode === 'dark') { root.setAttribute('data-theme', 'dark'); btn.textContent = 'Licht thema'; }
+      else { root.removeAttribute('data-theme'); btn.textContent = 'Donker thema'; }
+    }
+    btn.addEventListener('click', function () {
+      set(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+  })();
+</script>
+</body>
+</html>

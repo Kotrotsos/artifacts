@@ -338,3 +338,4 @@
 | 2026-06-02 | nxtphase | reports | [nxtphase-redteam-report.html](projects/nxtphase/reports/nxtphase-redteam-report.html) | Red team security, privacy and WCAG assessment of nxtphase.ai (HTML report) |
 | 2026-06-02 | nxtphase | reports | [nxtphase-redteam-report.md](projects/nxtphase/reports/nxtphase-redteam-report.md) | Red team security assessment of nxtphase.ai (markdown source) |
 | 2026-06-02 | askwell | reports | [cost-analysis-2026-06.html](projects/askwell/reports/cost-analysis-2026-06.html) | Running cost analysis with per-response unit math and four-scale projections |
+| 2026-06-02 | virtuele-assistent | reports | [wcag-audit-embed-widget.html](projects/virtuele-assistent/reports/wcag-audit-embed-widget.html) | WCAG 2.1 AA audit of the embed chat widget (feature/modal-widget-embed) |
