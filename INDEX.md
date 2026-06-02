@@ -322,3 +322,4 @@
 | 2026-06-01 | virtuele-assistent | reports | [per-tenant-prompt-template.html](projects/virtuele-assistent/reports/per-tenant-prompt-template.html) | Per-tenant system-prompt template switch: old vs new flow, Langfuse setup, rollout |
 | 2026-06-02 | content | reports | [draft.md](projects/content/reports/draft.md) | Plan mode is the feature article (Claude Code planning discipline): draft.md |
 | 2026-06-02 | content | reports | [draft.html](projects/content/reports/draft.html) | Plan mode is the feature article (Claude Code planning discipline): draft.html |
+| 2026-06-02 | content | images | [hero.png](projects/content/images/hero.png) | Plan mode is the feature article (Claude Code planning discipline): hero.png |
