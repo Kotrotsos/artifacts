@@ -341,3 +341,4 @@
 | 2026-06-02 | virtuele-assistent | reports | [wcag-audit-embed-widget.html](projects/virtuele-assistent/reports/wcag-audit-embed-widget.html) | WCAG 2.1 AA audit of the embed chat widget (feature/modal-widget-embed) |
 | 2026-06-02 | elastofirm-profiler | reports | [elastofirm-demo.html](projects/elastofirm-profiler/reports/elastofirm-demo.html) | Interactive HTML demo of profile upload, shape similarity matching, and indicative pricing |
 | 2026-06-02 | content | reports | [draft.html](projects/content/reports/draft.html) | Harness Engineering HTML + diagrams: draft.html |
+| 2026-06-02 | content | images | [diagram-formula.png](projects/content/images/diagram-formula.png) | Harness Engineering HTML + diagrams: diagram-formula.png |

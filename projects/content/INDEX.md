@@ -154,3 +154,4 @@
 | 2026-06-02 | images | [chart-iteration.png](images/chart-iteration.png) | AI Fluency Index analysis (The Polish Trap) with charts: chart-iteration.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-fluency-polish-trap/chart-iteration.png |
 | 2026-06-02 | images | [chart-polish-trap.png](images/chart-polish-trap.png) | AI Fluency Index analysis (The Polish Trap) with charts: chart-polish-trap.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-fluency-polish-trap/chart-polish-trap.png |
 | 2026-06-02 | reports | [draft.html](reports/draft.html) | Harness Engineering HTML + diagrams: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/harness-engineering/draft.html |
+| 2026-06-02 | images | [diagram-formula.png](images/diagram-formula.png) | Harness Engineering HTML + diagrams: diagram-formula.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/harness-engineering/diagram-formula.png |
