@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Red Team & Security Assessment - nxtphase.ai</title>
+<style>
+  :root{
+    --bg:#f7f7f5; --surface:#ffffff; --surface-2:#f0f0ec; --border:#e2e2dc;
+    --text:#1c1c1a; --text-soft:#55554f; --text-faint:#86867e;
+    --accent:#1f6f8b; --accent-soft:#e6f0f3;
+    --crit:#9b1c1c; --crit-bg:#fbe9e9; --high:#b4480a; --high-bg:#fdeee2;
+    --med:#8a6d00; --med-bg:#fbf3d6; --low:#2563a8; --low-bg:#e8f0fb;
+    --ok:#1e6e3c; --ok-bg:#e6f4ea;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --maxw:980px;
+  }
+  [data-theme="dark"]{
+    --bg:#16171a; --surface:#1e2024; --surface-2:#26282d; --border:#33363c;
+    --text:#e9e9e6; --text-soft:#b6b6b0; --text-faint:#8a8a84;
+    --accent:#5cb5d1; --accent-soft:#1c2e35;
+    --crit:#f08b8b; --crit-bg:#3a1e1e; --high:#f0a766; --high-bg:#3a2a18;
+    --med:#e6cf6a; --med-bg:#332d14; --low:#7fb0e6; --low-bg:#1b2738;
+    --ok:#7fce9b; --ok-bg:#16291d;
+  }
+  @media (prefers-color-scheme:dark){
+    [data-theme="system"]{
+      --bg:#16171a; --surface:#1e2024; --surface-2:#26282d; --border:#33363c;
+      --text:#e9e9e6; --text-soft:#b6b6b0; --text-faint:#8a8a84;
+      --accent:#5cb5d1; --accent-soft:#1c2e35;
+      --crit:#f08b8b; --crit-bg:#3a1e1e; --high:#f0a766; --high-bg:#3a2a18;
+      --med:#e6cf6a; --med-bg:#332d14; --low:#7fb0e6; --low-bg:#1b2738;
+      --ok:#7fce9b; --ok-bg:#16291d;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);
+    line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  header.masthead{padding:56px 0 28px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 10px}
+  h1{font-size:34px;line-height:1.15;margin:0 0 14px;font-weight:750;letter-spacing:-.01em}
+  .sub{color:var(--text-soft);font-size:16.5px;max-width:62ch;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:22px;font-size:13.5px;color:var(--text-soft)}
+  .meta b{color:var(--text);font-weight:650}
+  h2{font-size:23px;margin:48px 0 8px;font-weight:720;letter-spacing:-.01em;scroll-margin-top:20px}
+  h2 .num{color:var(--text-faint);font-weight:600;margin-right:10px}
+  h3{font-size:17.5px;margin:26px 0 6px;font-weight:680}
+  p{margin:10px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:10px 0;padding-left:22px}
+  li{margin:5px 0}
+  code{font-family:var(--mono);font-size:13px;background:var(--surface-2);padding:1.5px 5px;border-radius:4px;
+    border:1px solid var(--border);word-break:break-word}
+  pre{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;
+    overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.5;margin:12px 0}
+  pre code{background:none;border:none;padding:0}
+  section{padding-top:2px}
+  .lead{font-size:17px;color:var(--text-soft)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin:16px 0}
+  /* severity badges */
+  .badge{display:inline-block;font-size:11.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;
+    padding:3px 9px;border-radius:999px;border:1px solid transparent;white-space:nowrap;vertical-align:middle}
+  .b-crit{color:var(--crit);background:var(--crit-bg);border-color:var(--crit)}
+  .b-high{color:var(--high);background:var(--high-bg);border-color:var(--high)}
+  .b-med{color:var(--med);background:var(--med-bg);border-color:var(--med)}
+  .b-low{color:var(--low);background:var(--low-bg);border-color:var(--low)}
+  .b-ok{color:var(--ok);background:var(--ok-bg);border-color:var(--ok)}
+  .b-info{color:var(--text-soft);background:var(--surface-2);border-color:var(--border)}
+  /* finding */
+  .finding{border:1px solid var(--border);border-radius:12px;margin:18px 0;overflow:hidden;background:var(--surface)}
+  .finding>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:12px;align-items:baseline;
+    flex-wrap:wrap;background:var(--surface)}
+  .finding>summary::-webkit-details-marker{display:none}
+  .finding>summary:hover{background:var(--surface-2)}
+  .finding .fid{font-family:var(--mono);font-size:13px;color:var(--text-faint);font-weight:700}
+  .finding .ftitle{font-weight:670;font-size:16.5px;flex:1;min-width:240px}
+  .finding .fbody{padding:4px 20px 20px;border-top:1px solid var(--border)}
+  .finding .fbody h4{margin:16px 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint)}
+  .kv{font-size:13.5px;color:var(--text-soft);margin-top:6px}
+  /* tables */
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);font-weight:700}
+  tbody tr:hover{background:var(--surface-2)}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono)}
+  /* score grid */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .stat .n{font-size:30px;font-weight:760;line-height:1}
+  .stat .l{font-size:12.5px;color:var(--text-soft);margin-top:6px}
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  hr{border:none;border-top:1px solid var(--border);margin:34px 0}
+  .note{font-size:13.5px;color:var(--text-faint)}
+  .toc{columns:2;column-gap:34px;font-size:14.5px}
+  .toc a{text-decoration:none;color:var(--text-soft)}
+  .toc a:hover{color:var(--accent)}
+  .toc li{margin:4px 0}
+  .tag{font-family:var(--mono);font-size:12px;color:var(--text-soft);background:var(--surface-2);
+    border:1px solid var(--border);border-radius:6px;padding:2px 7px}
+  /* theme toggle */
+  .toggle{position:fixed;top:14px;right:14px;display:flex;gap:0;border:1px solid var(--border);
+    border-radius:999px;overflow:hidden;background:var(--surface);z-index:50;font-size:12.5px}
+  .toggle button{border:none;background:none;color:var(--text-soft);padding:7px 12px;cursor:pointer;font-family:var(--sans)}
+  .toggle button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:650}
+  footer.foot{margin:48px 0 60px;padding-top:20px;border-top:1px solid var(--border);
+    color:var(--text-faint);font-size:13px}
+  .check{color:var(--ok);font-weight:700}
+  .cross{color:var(--crit);font-weight:700}
+  @media (max-width:640px){h1{font-size:27px}.toc{columns:1}.toggle{position:static;margin:16px auto 0;width:max-content}}
+  @media print{
+    :root{--bg:#fff;--surface:#fff;--surface-2:#f4f4f4;--border:#bbb;--text:#000;--text-soft:#222;--text-faint:#555}
+    .toggle{display:none}body{font-size:11.5pt}
+    .finding{break-inside:avoid}.finding .fbody{display:block!important}
+    .finding>summary{background:none}h2{break-after:avoid}.card,.stat{break-inside:avoid}
+    a{color:#000;text-decoration:underline}pre{white-space:pre-wrap}
+  }
+</style>
+</head>
+<body>
+<div class="toggle" role="group" aria-label="Color theme">
+  <button data-set="light" aria-pressed="true">Light</button>
+  <button data-set="dark" aria-pressed="false">Dark</button>
+  <button data-set="system" aria-pressed="false">System</button>
+</div>
+
+<header class="masthead"><div class="wrap">
+  <p class="eyebrow">Red Team &amp; Security Assessment</p>
+  <h1>Security, Privacy and Accessibility Review of nxtphase.ai</h1>
+  <p class="sub">A non-destructive red team exercise covering the public attack surface: transport security, HTTP and email hardening, third-party scripts and supply chain, a reverse engineering pass of the custom code, GDPR and cookie handling, and WCAG accessibility.</p>
+  <div class="meta">
+    <span><b>Target</b> https://nxtphase.ai</span>
+    <span><b>Date</b> 2 June 2026</span>
+    <span><b>Authorization</b> Owner-requested (self-assessment)</span>
+    <span><b>Method</b> Passive analysis, no exploitation</span>
+    <span><b>Platform</b> Webflow + Cloudflare + Microsoft 365</span>
+  </div>
+</div></header>
+
+<main class="wrap">
+
+<section>
+  <h2 id="summary"><span class="num">01</span>Executive summary</h2>
+  <p class="lead">The site is a well built, lightweight Webflow marketing site behind Cloudflare. Transport security is strong, no secrets or trackers are exposed, and the single piece of custom JavaScript is clean. The meaningful gaps are not in exploitable code, they are in <b>hardening and compliance</b>: the site ships no Content Security Policy, the domain can be spoofed in email because DMARC and DKIM are absent, and there is no working privacy or cookie policy even though a contact form collects personal data.</p>
+
+  <div class="grid">
+    <div class="stat"><div class="n" style="color:var(--high)">3</div><div class="l">High severity</div></div>
+    <div class="stat"><div class="n" style="color:var(--med)">5</div><div class="l">Medium severity</div></div>
+    <div class="stat"><div class="n" style="color:var(--low)">7</div><div class="l">Low severity</div></div>
+    <div class="stat"><div class="n" style="color:var(--ok)">0</div><div class="l">Critical / exploited</div></div>
+  </div>
+
+  <p>No critical, directly exploitable vulnerability was found. There is no exposed API key, no injectable input that reaches a dangerous sink, no server-side code to attack (the site is fully managed by Webflow), and no information leak of note. The risk profile is therefore <b>moderate</b> and dominated by clickable, low-effort fixes that mostly live in the Cloudflare and Microsoft 365 dashboards rather than in code.</p>
+
+  <h3>The five things to fix first</h3>
+  <ol>
+    <li><b>Publish a DMARC record and enable DKIM</b> so the nxtphase.ai domain cannot be used to send convincing phishing as your brand. (<a href="#h2">H2</a>)</li>
+    <li><b>Create and wire up a privacy policy and cookie statement.</b> Both footer links currently point to <code>#</code> and are hidden, while the contact form asks visitors to agree to data processing. (<a href="#h3">H3</a>)</li>
+    <li><b>Add a Content Security Policy and security headers</b> at Cloudflare to contain any future script compromise and stop clickjacking. (<a href="#h1">H1</a>, <a href="#m1">M1</a>)</li>
+    <li><b>Add anti-automation to the contact form</b> and make the consent a real, logged checkbox that links to the privacy policy. (<a href="#m3">M3</a>, <a href="#l5">L5</a>)</li>
+    <li><b>Fix accessibility:</b> restore visible keyboard focus and stop using the light brand green for normal text (it fails WCAG contrast). (<a href="#m4">M4</a>, <a href="#m5">M5</a>)</li>
+  </ol>
+</section>
+
+<section>
+  <h2 id="toc"><span class="num">02</span>Contents</h2>
+  <ul class="toc">
+    <li><a href="#stack">03 Target profile &amp; technology</a></li>
+    <li><a href="#register">04 Findings register</a></li>
+    <li><a href="#h1">H1 No Content Security Policy</a></li>
+    <li><a href="#h2">H2 Email spoofing: no DMARC / DKIM</a></li>
+    <li><a href="#h3">H3 Missing privacy &amp; cookie policy</a></li>
+    <li><a href="#m1">M1 Clickjacking exposure</a></li>
+    <li><a href="#m2">M2 No SRI on GSAP / Slater</a></li>
+    <li><a href="#m3">M3 Contact form lacks anti-automation</a></li>
+    <li><a href="#m4">M4 Focus indicators suppressed</a></li>
+    <li><a href="#m5">M5 Brand green fails contrast</a></li>
+    <li><a href="#low">L1 to L7 Low severity</a></li>
+    <li><a href="#cookies">05 Cookie &amp; tracking analysis</a></li>
+    <li><a href="#reveng">06 Custom code reverse engineering</a></li>
+    <li><a href="#wcag">07 Accessibility (WCAG) summary</a></li>
+    <li><a href="#good">08 What is done well</a></li>
+    <li><a href="#roadmap">09 Remediation roadmap</a></li>
+    <li><a href="#appendix">10 Appendix: evidence</a></li>
+  </ul>
+</section>
+
+<section>
+  <h2 id="stack"><span class="num">03</span>Target profile and technology</h2>
+  <p>Fingerprinting from response headers, DNS and asset URLs gives a clear and consistent picture of the stack.</p>
+  <table>
+    <thead><tr><th>Layer</th><th>Technology</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>CDN / WAF / DNS</td><td>Cloudflare</td><td><code>server: cloudflare</code>, <code>cf-ray</code>, <code>cf-cache-status: HIT</code>, nameservers <code>*.ns.cloudflare.com</code></td></tr>
+      <tr><td>CMS / hosting</td><td>Webflow</td><td><code>www</code> is <code>CNAME cdn.webflow.com</code>, <code>x-wf-region: us-east-1</code>, <code>surrogate-key: pageId:...</code>, assets on <code>cdn.prod.website-files.com</code></td></tr>
+      <tr><td>Custom JS</td><td>Slater.app</td><td><code>assets.slater.app/slater/20269/61392.js</code> (developer-authored, hosted on Amazon S3)</td></tr>
+      <tr><td>Animation libs</td><td>GSAP 3.15.0, jQuery 3.5.1</td><td>loaded from Webflow CDN and CloudFront</td></tr>
+      <tr><td>Email</td><td>Microsoft 365 (Exchange Online)</td><td><code>MX nxtphase-ai.mail.protection.outlook.com</code>, SPF <code>include:spf.protection.outlook.com</code></td></tr>
+      <tr><td>TLS</td><td>TLS 1.3, Google Trust Services cert</td><td>cert <code>CN=nxtphase.ai</code>, issuer <code>Google Trust Services WE1</code>, valid Jun to Aug 2026</td></tr>
+    </tbody>
+  </table>
+  <p class="note">The site is 20 pages (home, cases, over-ons, contact, eleven case studies and five "aanpak" service pages). Because it is fully managed by Webflow there is no application server, database or custom backend to attack. The realistic attack surface is the contact form, the third-party scripts, the DNS and email configuration, and the client-side hardening posture.</p>
+</section>
+
+<section>
+  <h2 id="register"><span class="num">04</span>Findings register</h2>
+  <p class="note">Click any row to expand the full detail, impact and fix. Findings are also expanded automatically when printed.</p>
+  <table>
+    <thead><tr><th>ID</th><th>Finding</th><th>Severity</th><th>Category</th></tr></thead>
+    <tbody>
+      <tr><td><a href="#h1">H1</a></td><td>No Content Security Policy</td><td><span class="badge b-high">High</span></td><td>Hardening</td></tr>
+      <tr><td><a href="#h2">H2</a></td><td>Email spoofing possible: no DMARC, no DKIM</td><td><span class="badge b-high">High</span></td><td>Email</td></tr>
+      <tr><td><a href="#h3">H3</a></td><td>No working privacy or cookie policy (GDPR)</td><td><span class="badge b-high">High</span></td><td>Compliance</td></tr>
+      <tr><td><a href="#m1">M1</a></td><td>Clickjacking: no X-Frame-Options or frame-ancestors</td><td><span class="badge b-med">Medium</span></td><td>Hardening</td></tr>
+      <tr><td><a href="#m2">M2</a></td><td>No Subresource Integrity on GSAP and Slater scripts</td><td><span class="badge b-med">Medium</span></td><td>Supply chain</td></tr>
+      <tr><td><a href="#m3">M3</a></td><td>Contact form has no CAPTCHA or rate limiting</td><td><span class="badge b-med">Medium</span></td><td>Abuse</td></tr>
+      <tr><td><a href="#m4">M4</a></td><td>Keyboard focus indicators removed</td><td><span class="badge b-med">Medium</span></td><td>WCAG 2.4.7</td></tr>
+      <tr><td><a href="#m5">M5</a></td><td>Brand green text fails colour contrast (3.22:1)</td><td><span class="badge b-med">Medium</span></td><td>WCAG 1.4.3</td></tr>
+      <tr><td><a href="#l1">L1</a></td><td>HSTS without includeSubDomains or preload</td><td><span class="badge b-low">Low</span></td><td>Hardening</td></tr>
+      <tr><td><a href="#l2">L2</a></td><td>Missing nosniff, Referrer-Policy, Permissions-Policy</td><td><span class="badge b-low">Low</span></td><td>Hardening</td></tr>
+      <tr><td><a href="#l3">L3</a></td><td>No CAA DNS record</td><td><span class="badge b-low">Low</span></td><td>DNS</td></tr>
+      <tr><td><a href="#l4">L4</a></td><td>Contact form declared method="get" (PII in URL fallback)</td><td><span class="badge b-low">Low</span></td><td>Privacy</td></tr>
+      <tr><td><a href="#l5">L5</a></td><td>Consent text is not a recorded checkbox and links nowhere</td><td><span class="badge b-low">Low</span></td><td>Compliance</td></tr>
+      <tr><td><a href="#l6">L6</a></td><td>lang="nl-NL" with English homepage content</td><td><span class="badge b-low">Low</span></td><td>WCAG 3.1</td></tr>
+      <tr><td><a href="#l7">L7</a></td><td>Aging front-end libraries (jQuery 3.5.1, GSAP)</td><td><span class="badge b-low">Low</span></td><td>Hygiene</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">05a</span>High severity findings</h2>
+
+  <details class="finding" id="h1" open>
+    <summary><span class="fid">H1</span><span class="ftitle">No Content Security Policy</span><span class="badge b-high">High</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>No <code>Content-Security-Policy</code> header is returned on any page (confirmed on the home, contact and case-study pages, on both HEAD and GET requests, and there is no CSP <code>&lt;meta&gt;</code> tag). The browser will therefore execute scripts from any origin the markup references, with no allowlist.</p>
+      <h4>Why it matters</h4>
+      <p>The site pulls executable JavaScript from four external origins (Webflow CDN, CloudFront, the GSAP path, and <code>assets.slater.app</code>). Without a CSP, if any one of those origins is compromised, or if a stored cross-site-scripting payload ever reaches the page through Webflow CMS content, the attacker's script runs unconstrained: it can read the contact form, rewrite links, exfiltrate data, or inject a fake login. CSP is the single most effective containment control for a content-driven site.</p>
+      <h4>Recommendation</h4>
+      <p>Add a CSP at Cloudflare (Rules, Transform Rules, Modify Response Header) so it applies to every page without touching Webflow. Start in report-only mode, confirm nothing breaks, then enforce. A pragmatic starting policy for this stack:</p>
+      <pre><code>Content-Security-Policy-Report-Only:
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://cdn.prod.website-files.com
+    https://d3e54v103j8qbb.cloudfront.net https://assets.slater.app;
+  style-src 'self' 'unsafe-inline' https://cdn.prod.website-files.com;
+  img-src 'self' data: https://cdn.prod.website-files.com;
+  font-src 'self' https://cdn.prod.website-files.com;
+  connect-src 'self' https://*.webflow.com;
+  frame-ancestors 'none';
+  base-uri 'self';
+  form-action 'self' https://*.webflow.com;
+  upgrade-insecure-requests;</code></pre>
+      <p class="note">Webflow injects inline scripts and styles, so <code>'unsafe-inline'</code> is required unless you move to nonces (Webflow does not support nonces today). Even an inline-permitting CSP still blocks unknown external script origins and framing, which is most of the value.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="h2" open>
+    <summary><span class="fid">H2</span><span class="ftitle">Domain can be spoofed in email: no DMARC and no DKIM</span><span class="badge b-high">High</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>SPF is correctly set with a hard fail (<code>v=spf1 include:spf.protection.outlook.com -all</code>), which is good. However:</p>
+      <ul>
+        <li><b>No DMARC record.</b> <code>_dmarc.nxtphase.ai</code> returns nothing.</li>
+        <li><b>No DKIM.</b> The standard Microsoft 365 selectors <code>selector1._domainkey</code> and <code>selector2._domainkey</code> are not published.</li>
+      </ul>
+      <h4>Why it matters</h4>
+      <p>SPF alone does not protect the visible From address and does not survive forwarding. Without DMARC, receiving mail servers have no instruction to reject mail that fails authentication, and you get no reporting. For an AI consultancy that emails clients, this is a brand and social-engineering risk: an attacker can send invoices or "from the founder" phishing that appears to come from nxtphase.ai. This is the most realistic real-world attack against the organisation.</p>
+      <h4>Recommendation</h4>
+      <ol>
+        <li>Enable DKIM for the domain in the Microsoft 365 Defender portal, then publish the two CNAME records it gives you in Cloudflare DNS.</li>
+        <li>Publish a DMARC record, starting in monitor mode and tightening once reports are clean:
+        <pre><code>_dmarc.nxtphase.ai  TXT
+  "v=DMARC1; p=none; rua=mailto:dmarc@nxtphase.ai; fo=1; adkim=s; aspf=s"</code></pre>
+        Move <code>p=none</code> to <code>p=quarantine</code> and then <code>p=reject</code> over a few weeks.</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="finding" id="h3" open>
+    <summary><span class="fid">H3</span><span class="ftitle">No working privacy or cookie policy while collecting personal data</span><span class="badge b-high">High</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>The footer on every page contains placeholder legal links that are both non-functional and hidden:</p>
+      <pre><code>&lt;a href="#" class="footer_legal-link hide"&gt;Privacy&lt;/a&gt;
+&lt;a href="#" class="footer_legal-link hide"&gt;Cookies&lt;/a&gt;</code></pre>
+      <p>Probing the obvious URLs (<code>/privacy</code>, <code>/privacybeleid</code>, <code>/privacyverklaring</code>, <code>/cookies</code>, <code>/cookiebeleid</code>, <code>/voorwaarden</code>, <code>/disclaimer</code> and more) all returned <code>404</code>. Meanwhile the contact form collects name, company, email and a free-text message, and the form itself states "Ik ga akkoord met de verwerking van mijn gegevens" (I agree to the processing of my data).</p>
+      <h4>Why it matters</h4>
+      <p>Under the GDPR a Dutch company that processes personal data through a website must provide an accessible privacy statement describing what is collected, why, the legal basis, retention and data-subject rights. Asking the visitor to "agree to the processing of my data" with no policy to point to, and with the privacy link disabled, is a clear compliance gap and would not survive an Autoriteit Persoonsgegevens complaint. It is also a trust signal problem for a company that sells data and AI services.</p>
+      <h4>Recommendation</h4>
+      <ul>
+        <li>Publish a privacy statement (privacyverklaring) and a short cookie statement. Both can be normal Webflow CMS pages.</li>
+        <li>Point the footer links at them and remove the <code>hide</code> class.</li>
+        <li>Link the privacy statement directly from the consent text under the contact form.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<section>
+  <h2><span class="num">05b</span>Medium severity findings</h2>
+
+  <details class="finding" id="m1">
+    <summary><span class="fid">M1</span><span class="ftitle">Clickjacking: no X-Frame-Options or frame-ancestors</span><span class="badge b-med">Medium</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>No <code>X-Frame-Options</code> header and no CSP <code>frame-ancestors</code> directive are present, so the site can be embedded in an <code>&lt;iframe&gt;</code> on any domain.</p>
+      <h4>Why it matters</h4>
+      <p>An attacker can frame nxtphase.ai inside a malicious page and overlay it to trick a visitor into clicking the contact submit or other controls (clickjacking / UI redress). Impact is limited because the site has no authenticated actions, but it also enables convincing brand-impersonation pages.</p>
+      <h4>Recommendation</h4>
+      <p>Add at Cloudflare: <code>X-Frame-Options: DENY</code> and <code>frame-ancestors 'none'</code> in the CSP from H1.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="m2">
+    <summary><span class="fid">M2</span><span class="ftitle">No Subresource Integrity on the GSAP and Slater scripts</span><span class="badge b-med">Medium</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>jQuery and the Webflow chunks are loaded with correct <code>integrity</code> (SRI) hashes. However the five GSAP scripts and the custom Slater script are loaded with <b>no integrity attribute</b>:</p>
+      <pre><code>&lt;script src="https://assets.slater.app/slater/20269/61392.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.prod.website-files.com/gsap/3.15.0/gsap.min.js"&gt;&lt;/script&gt;
+... (ScrollTrigger, SplitText, DrawSVGPlugin, CustomEase)</code></pre>
+      <h4>Why it matters</h4>
+      <p>The Slater file is hosted on a third-party S3 bucket outside your control. If Slater's account or bucket is compromised, attacker-controlled JavaScript executes on every page of nxtphase.ai with full access to the DOM and the contact form. With no SRI and no CSP (H1), there is nothing to stop it. This is the most likely client-side compromise path.</p>
+      <h4>Recommendation</h4>
+      <ul>
+        <li>Preferred: move the Slater code into Webflow's site-wide custom code (footer) so it is served from your own first-party origin and covered by Webflow's SRI, removing the external dependency entirely.</li>
+        <li>Otherwise: pin each external script with an <code>integrity</code> hash, and constrain script origins with the CSP from H1.</li>
+      </ul>
+    </div>
+  </details>
+
+  <details class="finding" id="m3">
+    <summary><span class="fid">M3</span><span class="ftitle">Contact form has no CAPTCHA or anti-automation</span><span class="badge b-med">Medium</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>The contact form has no reCAPTCHA, Turnstile or hCaptcha, and no honeypot field. The only protection is Webflow's per-site form submission quota.</p>
+      <h4>Why it matters</h4>
+      <p>The form is trivially scriptable, so it is open to spam and automated abuse. Sustained automated submissions can exhaust your Webflow plan's monthly form limit, after which legitimate enquiries are silently dropped, a low-effort denial of a real business function.</p>
+      <h4>Recommendation</h4>
+      <p>Enable Cloudflare Turnstile or Webflow's built-in reCAPTCHA on the form. Cloudflare Turnstile is privacy-friendly and does not require a cookie banner.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="m4">
+    <summary><span class="fid">M4</span><span class="ftitle">Keyboard focus indicators are suppressed</span><span class="badge b-med">Medium</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>The stylesheet contains eight <code>outline: 0</code> rules plus an <code>outline: none</code>, and <b>no <code>:focus-visible</code> rules at all</b>. Only a single <code>outline: 2px solid #2895f7</code> exists (a Webflow default that covers some form fields). Interactive elements such as buttons, links and the custom "AI journey" tabs appear to have their focus ring removed without a visible replacement.</p>
+      <h4>Why it matters</h4>
+      <p>This fails WCAG 2.1 success criterion 2.4.7 Focus Visible (Level AA). Keyboard-only and switch users cannot see where they are on the page, which makes the navigation and the contact form hard or impossible to operate.</p>
+      <h4>Recommendation</h4>
+      <p>Add a global visible focus style, for example:</p>
+      <pre><code>a:focus-visible, button:focus-visible, .w-button:focus-visible,
+input:focus-visible, textarea:focus-visible, [data-journey="tab"]:focus-visible{
+  outline: 3px solid #2D6F44; outline-offset: 2px;
+}</code></pre>
+      <p class="note">Verify on the live site with keyboard tabbing. This finding is high-confidence from the CSS but the exact per-element behaviour is best confirmed in the browser.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="m5">
+    <summary><span class="fid">M5</span><span class="ftitle">Brand green text fails colour contrast</span><span class="badge b-med">Medium</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>The brand palette taken from the hero shader code is background <code>#F9F6F1</code> (cream), primary green <code>#3E9B5D</code> and dark green <code>#2D6F44</code>. Computed WCAG contrast ratios:</p>
+      <table>
+        <thead><tr><th>Foreground on background</th><th class="num">Ratio</th><th>Normal text (4.5)</th><th>Large text (3.0)</th></tr></thead>
+        <tbody>
+          <tr><td>Green #3E9B5D on cream #F9F6F1</td><td class="num">3.22:1</td><td><span class="cross">Fail</span></td><td><span class="check">Pass</span></td></tr>
+          <tr><td>White on green #3E9B5D</td><td class="num">3.47:1</td><td><span class="cross">Fail</span></td><td><span class="check">Pass</span></td></tr>
+          <tr><td>Dark green #2D6F44 on cream</td><td class="num">5.62:1</td><td><span class="check">Pass</span></td><td><span class="check">Pass</span></td></tr>
+          <tr><td>White on dark green #2D6F44</td><td class="num">6.05:1</td><td><span class="check">Pass</span></td><td><span class="check">Pass</span></td></tr>
+        </tbody>
+      </table>
+      <h4>Why it matters</h4>
+      <p>Wherever the lighter green <code>#3E9B5D</code> is used for normal-size text, links or small UI labels on the cream background, or as a button fill with white text at normal size, it fails WCAG 1.4.3 Contrast (Minimum, AA). It is acceptable only for large headings (24px+ or 19px+ bold) and purely decorative elements.</p>
+      <h4>Recommendation</h4>
+      <p>Use the darker <code>#2D6F44</code> (which passes comfortably) for any normal-size green text, links and button labels. Reserve <code>#3E9B5D</code> for large display text and decoration. Confirm final values against the live rendered components.</p>
+    </div>
+  </details>
+</section>
+
+<section>
+  <h2 id="low"><span class="num">05c</span>Low severity findings</h2>
+
+  <details class="finding" id="l1">
+    <summary><span class="fid">L1</span><span class="ftitle">HSTS without includeSubDomains or preload</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>HSTS is present (<code>strict-transport-security: max-age=31536000</code>) but omits <code>includeSubDomains</code> and <code>preload</code>, so subdomains are not protected and the very first visit is not pinned. After confirming every subdomain serves HTTPS, upgrade to <code>max-age=63072000; includeSubDomains; preload</code> and submit to the preload list.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="l2">
+    <summary><span class="fid">L2</span><span class="ftitle">Missing hardening headers</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>Absent: <code>X-Content-Type-Options: nosniff</code> (stops MIME sniffing), <code>Referrer-Policy</code> (recommend <code>strict-origin-when-cross-origin</code>), and <code>Permissions-Policy</code> (recommend disabling unused features, for example <code>camera=(), microphone=(), geolocation=()</code>). Add all three at Cloudflare alongside the CSP.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="l3">
+    <summary><span class="fid">L3</span><span class="ftitle">No CAA DNS record</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>No CAA record exists, so any certificate authority may issue a certificate for the domain. Add a CAA record allowing only the CAs you use, for example <code>0 issue "pki.goog"</code> for Google Trust Services (and your Cloudflare-managed CAs) to reduce mis-issuance risk.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="l4">
+    <summary><span class="fid">L4</span><span class="ftitle">Contact form declared method="get"</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>The form markup is <code>method="get"</code> with no <code>action</code>. In normal use Webflow's JavaScript intercepts submission and sends it as an AJAX request, so this is usually harmless. But if JavaScript fails or is disabled, the browser falls back to a native GET, placing the visitor's name, company, email and message into the URL query string, where it is logged by the CDN and stored in browser history. Set the form method to POST in Webflow to remove the fallback risk.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="l5">
+    <summary><span class="fid">L5</span><span class="ftitle">Consent text is not a recorded checkbox and links nowhere</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>The contact form shows "Ik ga akkoord met de verwerking van mijn gegevens..." as a static text line. There is no checkbox input (confirmed: zero checkboxes on the page) and no link to a privacy policy. If you rely on consent as the legal basis you cannot demonstrate it (GDPR Art. 7). For a contact form, legitimate interest is usually the cleaner basis, in which case the wording should be a clear notice plus a link to the privacy statement rather than an "I agree" with no mechanism. Pair this fix with H3.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="l6">
+    <summary><span class="fid">L6</span><span class="ftitle">Language attribute does not match content</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>The document declares <code>lang="nl-NL"</code> but the homepage hero and meta description are in English, while other pages are Dutch. Screen readers will pronounce the English homepage with Dutch phonetics. Set <code>lang</code> per page to match its primary language, and mark inline language switches with <code>lang</code> on the element (WCAG 3.1.1 / 3.1.2).</p>
+    </div>
+  </details>
+
+  <details class="finding" id="l7">
+    <summary><span class="fid">L7</span><span class="ftitle">Aging front-end libraries</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>jQuery 3.5.1 (2020) is loaded. It is not known to carry an unpatched critical issue in this static, non-user-input context (the 3.5.0 XSS fixes are included), but it is well behind current. These versions are dictated by Webflow, so the action is to keep the Webflow project on a current export and re-check when Webflow updates its bundled libraries. Tracked as hygiene, not an active vulnerability.</p>
+    </div>
+  </details>
+</section>
+
+<section>
+  <h2 id="cookies"><span class="num">06</span>Cookie and tracking analysis</h2>
+  <p>This was a focus area of the request, so it is treated separately. The result is, perhaps surprisingly, <b>good on privacy and weak on documentation</b>.</p>
+  <table>
+    <thead><tr><th>Cookie</th><th>Set by</th><th>Flags</th><th>Purpose</th><th>Consent needed?</th></tr></thead>
+    <tbody>
+      <tr><td><code>_cfuvid</code></td><td>Cloudflare (server)</td><td>HttpOnly; Secure; SameSite=None; session (no Expires)</td><td>Supports Cloudflare rate limiting / bot management</td><td>Generally classed strictly necessary</td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li><b>No analytics, tag manager or marketing pixels were found anywhere.</b> No Google Analytics, no Google Tag Manager, no Meta or LinkedIn pixel, no Hotjar, no HubSpot. Confirmed across the home, contact and case-study pages and inside the only custom script.</li>
+    <li><b>No consent platform</b> (no Cookiebot, OneTrust, CookieYes, Osano, Usercentrics) is present, and none is needed at the current cookie level.</li>
+    <li>The only cookie is Cloudflare's <code>_cfuvid</code>, which Cloudflare documents as strictly necessary and not used for cross-site tracking. On that basis a consent banner is arguably not required today.</li>
+  </ul>
+  <p><b>The actual mistake is documentation, not over-tracking.</b> Even with only a strictly-necessary cookie, the ePrivacy and GDPR expectation is a short cookie statement that discloses <code>_cfuvid</code>. Today the cookie statement link is dead and hidden (see H3 and L5). Recommendation: keep the privacy-friendly posture, add the cookie statement page, and if you later add any analytics, use a cookieless option (Cloudflare Web Analytics or Plausible) to avoid needing a consent banner.</p>
+</section>
+
+<section>
+  <h2 id="reveng"><span class="num">07</span>Custom code reverse engineering</h2>
+  <p>The only developer-authored JavaScript is the Slater file (<code>61392.js</code>, 22 KB). It was fully decompiled and read line by line. It is a set of decorative animation routines:</p>
+  <ul>
+    <li><code>initHeroGlow()</code> renders a WebGL fragment-shader "glow" on hero canvases, reacting to mouse and scroll.</li>
+    <li><code>initSpineAnimation()</code>, <code>initAIJourney()</code>, <code>initWhyIcons()</code>, <code>initSolutionIllustrations()</code> drive GSAP scroll animations, tabbed cards and SVG illustrations.</li>
+  </ul>
+  <h3>Security assessment of the custom code</h3>
+  <table>
+    <thead><tr><th>Check</th><th>Result</th></tr></thead>
+    <tbody>
+      <tr><td>Dangerous sinks (<code>eval</code>, <code>Function()</code>, <code>innerHTML</code>, <code>document.write</code>)</td><td><span class="check">None</span></td></tr>
+      <tr><td>Network calls (<code>fetch</code>, <code>XMLHttpRequest</code>, beacons)</td><td><span class="check">None</span></td></tr>
+      <tr><td>Cookies, storage or fingerprinting</td><td><span class="check">None</span></td></tr>
+      <tr><td>Hard-coded secrets, keys or tokens</td><td><span class="check">None</span></td></tr>
+      <tr><td>Untrusted input (reads only developer-set <code>data-*</code> attributes)</td><td><span class="check">Safe</span></td></tr>
+      <tr><td>Accessibility behaviour</td><td><span class="check">Respects <code>prefers-reduced-motion</code>; sets <code>aria-selected</code>; arrow-key tab nav</span></td></tr>
+    </tbody>
+  </table>
+  <p>The code is clean and even thoughtfully built for accessibility. The only residual risk is not in the code but in <b>where it is hosted</b>: the third-party Slater S3 origin with no SRI and no CSP (see M2 and H1).</p>
+  <p class="note">A wider check of the whole site found no exposed API keys, no <code>.env</code> or source-map leakage, no admin or staging endpoints in the sitemap, and consistent behaviour across all page types. There is no server-side application to assess because hosting is fully managed by Webflow.</p>
+</section>
+
+<section>
+  <h2 id="wcag"><span class="num">08</span>Accessibility (WCAG 2.1 AA) summary</h2>
+  <table>
+    <thead><tr><th>Area</th><th>Status</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Page language present</td><td><span class="badge b-ok">Pass</span></td><td><code>lang</code> set, but value vs content mismatch on home (L6)</td></tr>
+      <tr><td>Heading structure</td><td><span class="badge b-ok">Pass</span></td><td>Single <code>h1</code>, logical <code>h2</code>/<code>h3</code> nesting</td></tr>
+      <tr><td>Image text alternatives</td><td><span class="badge b-ok">Pass</span></td><td>16 of 16 images carry an <code>alt</code> attribute</td></tr>
+      <tr><td>Form labels</td><td><span class="badge b-ok">Pass</span></td><td>Every field has an associated <code>&lt;label for&gt;</code></td></tr>
+      <tr><td>Reduced motion</td><td><span class="badge b-ok">Pass</span></td><td>Animations gate on <code>prefers-reduced-motion</code></td></tr>
+      <tr><td>Focus visible (2.4.7)</td><td><span class="badge b-med">Fail</span></td><td>Outlines removed, no <code>:focus-visible</code> (M4)</td></tr>
+      <tr><td>Contrast (1.4.3)</td><td><span class="badge b-med">Fail</span></td><td>Light brand green at 3.22:1 for normal text (M5)</td></tr>
+      <tr><td>Language of parts (3.1)</td><td><span class="badge b-low">Minor</span></td><td>Mixed NL/EN not marked up (L6)</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Structural accessibility is solid. The two real failures are focus visibility and contrast, both of which are quick CSS fixes. A full audit should also verify rendered contrast on real components, focus order through the sticky journey tabs, and screen-reader labelling of the animated SVG illustrations (decorative SVGs should be <code>aria-hidden</code>).</p>
+</section>
+
+<section>
+  <h2 id="good"><span class="num">09</span>What is done well</h2>
+  <div class="pill-row">
+    <span class="badge b-ok">TLS 1.3, strong cert</span>
+    <span class="badge b-ok">HTTP to HTTPS 301</span>
+    <span class="badge b-ok">HSTS enabled</span>
+    <span class="badge b-ok">SPF hard fail</span>
+    <span class="badge b-ok">SRI on jQuery + Webflow</span>
+    <span class="badge b-ok">No exposed secrets</span>
+    <span class="badge b-ok">No third-party trackers</span>
+    <span class="badge b-ok">Clean custom code</span>
+    <span class="badge b-ok">Cloudflare WAF in front</span>
+    <span class="badge b-ok">Good heading + alt structure</span>
+    <span class="badge b-ok">Reduced-motion aware</span>
+  </div>
+  <p>The privacy-by-default posture (zero analytics, zero marketing cookies) is genuinely above average and worth preserving. The engineering of the custom animation code is careful and considerate of accessibility.</p>
+</section>
+
+<section>
+  <h2 id="roadmap"><span class="num">10</span>Remediation roadmap</h2>
+  <h3>Quick wins (dashboard only, hours)</h3>
+  <ul>
+    <li>Enable DKIM in Microsoft 365 and publish DMARC in Cloudflare DNS (H2).</li>
+    <li>Create privacy and cookie statements, wire up the footer links, remove <code>hide</code> (H3, L5).</li>
+    <li>Turn on Cloudflare Turnstile for the contact form (M3).</li>
+    <li>Add a CAA record (L3).</li>
+  </ul>
+  <h3>Short term (Cloudflare header rules, days)</h3>
+  <ul>
+    <li>Add CSP in report-only, then enforce; add <code>X-Frame-Options</code>, <code>nosniff</code>, <code>Referrer-Policy</code>, <code>Permissions-Policy</code>; strengthen HSTS (H1, M1, L1, L2).</li>
+    <li>Fix focus styles and switch normal-size green text to <code>#2D6F44</code> in the Webflow Designer (M4, M5).</li>
+    <li>Set the contact form to POST and link the privacy statement from the consent line (L4, L5).</li>
+  </ul>
+  <h3>Hardening (project decisions)</h3>
+  <ul>
+    <li>Move the Slater script in-house or pin it with SRI, then tighten the CSP <code>script-src</code> (M2).</li>
+    <li>Re-check bundled library versions whenever Webflow updates (L7).</li>
+    <li>Per-page <code>lang</code> and inline language marking (L6).</li>
+  </ul>
+</section>
+
+<section>
+  <h2 id="appendix"><span class="num">11</span>Appendix: evidence</h2>
+
+  <h3>Response headers (home, GET)</h3>
+  <pre><code>HTTP/2 200
+strict-transport-security: max-age=31536000        (no includeSubDomains / preload)
+set-cookie: _cfuvid=...; HttpOnly; SameSite=None; Secure; Path=/; Domain=nxtphase.ai
+server: cloudflare
+# absent: content-security-policy, x-frame-options, x-content-type-options,
+#         referrer-policy, permissions-policy</code></pre>
+
+  <h3>DNS and email</h3>
+  <pre><code>A        198.202.211.1            (Cloudflare proxied)
+AAAA     (none)
+NS       marlowe / jose .ns.cloudflare.com
+MX       0 nxtphase-ai.mail.protection.outlook.com
+SPF      v=spf1 include:spf.protection.outlook.com -all      OK
+DMARC    _dmarc.nxtphase.ai  -> (empty)                       MISSING
+DKIM     selector1/2._domainkey -> (empty)                    MISSING
+CAA      (none)                                               MISSING</code></pre>
+
+  <h3>External script origins</h3>
+  <pre><code>cdn.prod.website-files.com        Webflow chunks (SRI present), GSAP 3.15.0 (no SRI)
+d3e54v103j8qbb.cloudfront.net     jQuery 3.5.1 (SRI present)
+assets.slater.app                 custom code 61392.js (no SRI, third-party S3)</code></pre>
+
+  <h3>WCAG contrast computation (sRGB, WCAG 2.x formula)</h3>
+  <pre><code>#3E9B5D on #F9F6F1 = 3.22:1   fail AA normal, pass AA large
+#FFFFFF on #3E9B5D = 3.47:1   fail AA normal, pass AA large
+#2D6F44 on #F9F6F1 = 5.62:1   pass
+#FFFFFF on #2D6F44 = 6.05:1   pass</code></pre>
+
+  <h3>Scope, method and tools</h3>
+  <p class="note">Passive, non-destructive assessment of publicly served content only. No exploitation, fuzzing, brute forcing, denial of service or active intrusion was performed, in line with assessing a live production site you own. Techniques: HTTP header and TLS inspection (<code>curl</code>, <code>openssl</code>), DNS enumeration (<code>dig</code>), retrieval and static analysis of HTML, CSS and JavaScript, reverse engineering of the custom script, deterministic WCAG contrast calculation, and well-known-path probing. Raw artifacts are stored under <code>nxtphase-redteam/raw/</code>.</p>
+  <p class="note">Two Medium items (M4 focus, M5 contrast) are high-confidence from source analysis and should be confirmed against the live rendered page during the fix. All other findings are confirmed from collected evidence.</p>
+</section>
+
+<footer class="foot"><div>
+  Red team and security assessment of nxtphase.ai, prepared 2 June 2026. Passive, owner-authorized review. This document records the posture observed on the assessment date; re-test after remediation.
+</div></footer>
+</main>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var btns=document.querySelectorAll('.toggle button');
+  function apply(mode){
+    root.setAttribute('data-theme',mode);
+    btns.forEach(function(b){b.setAttribute('aria-pressed', b.dataset.set===mode ? 'true':'false');});
+    try{localStorage.setItem('nxt-theme',mode);}catch(e){}
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){apply(b.dataset.set);});});
+  var saved;try{saved=localStorage.getItem('nxt-theme');}catch(e){}
+  apply(saved||'light');
+})();
+</script>
+</body>
+</html>
