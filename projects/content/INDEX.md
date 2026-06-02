@@ -146,3 +146,4 @@
 | 2026-06-02 | images | [cc-s2.png](images/cc-s2.png) | Plan mode article + fake CC screenshots: cc-s2.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/cc-s2.png |
 | 2026-06-02 | images | [cc-s3.png](images/cc-s3.png) | Plan mode article + fake CC screenshots: cc-s3.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/cc-s3.png |
 | 2026-06-02 | reports | [draft.md](reports/draft.md) | Plan mode article + fake CC screenshots: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/draft.md |
+| 2026-06-02 | reports | [draft.html](reports/draft.html) | Plan mode article + fake CC screenshots: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/plan-mode-is-the-feature/draft.html |
