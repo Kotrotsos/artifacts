@@ -342,3 +342,4 @@
 | 2026-06-02 | elastofirm-profiler | reports | [elastofirm-demo.html](projects/elastofirm-profiler/reports/elastofirm-demo.html) | Interactive HTML demo of profile upload, shape similarity matching, and indicative pricing |
 | 2026-06-02 | content | reports | [draft.html](projects/content/reports/draft.html) | Harness Engineering HTML + diagrams: draft.html |
 | 2026-06-02 | content | images | [diagram-formula.png](projects/content/images/diagram-formula.png) | Harness Engineering HTML + diagrams: diagram-formula.png |
+| 2026-06-02 | content | images | [diagram-anatomy.png](projects/content/images/diagram-anatomy.png) | Harness Engineering HTML + diagrams: diagram-anatomy.png |
