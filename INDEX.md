@@ -332,3 +332,4 @@
 | 2026-06-02 | content | reports | [draft.md](projects/content/reports/draft.md) | AI Fluency Index analysis (The Polish Trap) with charts: draft.md |
 | 2026-06-02 | content | reports | [draft.html](projects/content/reports/draft.html) | AI Fluency Index analysis (The Polish Trap) with charts: draft.html |
 | 2026-06-02 | content | images | [hero.png](projects/content/images/hero.png) | AI Fluency Index analysis (The Polish Trap) with charts: hero.png |
+| 2026-06-02 | content | images | [framework-4d.png](projects/content/images/framework-4d.png) | AI Fluency Index analysis (The Polish Trap) with charts: framework-4d.png |

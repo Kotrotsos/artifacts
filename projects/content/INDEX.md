@@ -150,3 +150,4 @@
 | 2026-06-02 | reports | [draft.md](reports/draft.md) | AI Fluency Index analysis (The Polish Trap) with charts: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-fluency-polish-trap/draft.md |
 | 2026-06-02 | reports | [draft.html](reports/draft.html) | AI Fluency Index analysis (The Polish Trap) with charts: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-fluency-polish-trap/draft.html |
 | 2026-06-02 | images | [hero.png](images/hero.png) | AI Fluency Index analysis (The Polish Trap) with charts: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-fluency-polish-trap/hero.png |
+| 2026-06-02 | images | [framework-4d.png](images/framework-4d.png) | AI Fluency Index analysis (The Polish Trap) with charts: framework-4d.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-fluency-polish-trap/framework-4d.png |
