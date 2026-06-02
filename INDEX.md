@@ -340,3 +340,4 @@
 | 2026-06-02 | askwell | reports | [cost-analysis-2026-06.html](projects/askwell/reports/cost-analysis-2026-06.html) | Running cost analysis with per-response unit math and four-scale projections |
 | 2026-06-02 | virtuele-assistent | reports | [wcag-audit-embed-widget.html](projects/virtuele-assistent/reports/wcag-audit-embed-widget.html) | WCAG 2.1 AA audit of the embed chat widget (feature/modal-widget-embed) |
 | 2026-06-02 | elastofirm-profiler | reports | [elastofirm-demo.html](projects/elastofirm-profiler/reports/elastofirm-demo.html) | Interactive HTML demo of profile upload, shape similarity matching, and indicative pricing |
+| 2026-06-02 | content | reports | [draft.html](projects/content/reports/draft.html) | Harness Engineering HTML + diagrams: draft.html |
