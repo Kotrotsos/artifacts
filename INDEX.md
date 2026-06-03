@@ -360,3 +360,4 @@
 | 2026-06-03 | 10x | reports | [REPORT.md](projects/10x/reports/REPORT.md) | 10x productivity audit: REPORT.md |
 | 2026-06-03 | 10x | reports | [skills.md](projects/10x/reports/skills.md) | 10x productivity audit: skills.md |
 | 2026-06-03 | 10x | reports | [automations.md](projects/10x/reports/automations.md) | 10x productivity audit: automations.md |
+| 2026-06-03 | 10x | reports | [quick-wins.md](projects/10x/reports/quick-wins.md) | 10x productivity audit: quick-wins.md |

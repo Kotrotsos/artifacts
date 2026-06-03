@@ -8,3 +8,4 @@
 | 2026-06-03 | reports | [REPORT.md](reports/REPORT.md) | 10x productivity audit: REPORT.md | /Users/marcokotrotsos/PERSONAL/10x/REPORT.md |
 | 2026-06-03 | reports | [skills.md](reports/skills.md) | 10x productivity audit: skills.md | /Users/marcokotrotsos/PERSONAL/10x/skills.md |
 | 2026-06-03 | reports | [automations.md](reports/automations.md) | 10x productivity audit: automations.md | /Users/marcokotrotsos/PERSONAL/10x/automations.md |
+| 2026-06-03 | reports | [quick-wins.md](reports/quick-wins.md) | 10x productivity audit: quick-wins.md | /Users/marcokotrotsos/PERSONAL/10x/quick-wins.md |
