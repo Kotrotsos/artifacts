@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The 10x Report</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f7f7f5;
+    --surface-2: #efefea;
+    --border: #e2e2dc;
+    --text: #1a1a18;
+    --muted: #6b6b66;
+    --accent: #2f6f4f;
+    --accent-soft: #e6f0ea;
+    --warn: #8a5a00;
+    --warn-soft: #f6ecd6;
+    --hi: #1f5fa8;
+    --hi-soft: #e4eef9;
+    --rule: #d7d7d0;
+    --maxw: 860px;
+  }
+  html[data-theme="dark"] {
+    --bg: #14140f;
+    --surface: #1d1d18;
+    --surface-2: #24241e;
+    --border: #33332b;
+    --text: #ececdf;
+    --muted: #9a9a8f;
+    --accent: #6fd29c;
+    --accent-soft: #1c3328;
+    --warn: #e0b765;
+    --warn-soft: #352c16;
+    --hi: #7db4ec;
+    --hi-soft: #16283c;
+    --rule: #33332b;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Helvetica Neue", sans-serif;
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 64px 28px 120px; }
+  header.doc { border-bottom: 1px solid var(--rule); padding-bottom: 28px; margin-bottom: 8px; }
+  h1 { font-size: 2.6rem; line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 10px; font-weight: 700; }
+  .sub { font-size: 1.2rem; color: var(--muted); font-weight: 500; margin: 0 0 18px; }
+  .scope { font-size: 0.92rem; color: var(--muted); margin: 0; }
+  h2 { font-size: 1.55rem; letter-spacing: -0.01em; margin: 64px 0 6px; font-weight: 700; }
+  h2 + .lede { color: var(--muted); margin: 0 0 18px; font-size: 1rem; }
+  h3 { font-size: 1.12rem; margin: 30px 0 6px; font-weight: 650; }
+  p { margin: 0 0 16px; }
+  a { color: var(--hi); text-decoration: none; border-bottom: 1px solid transparent; }
+  a:hover { border-bottom-color: var(--hi); }
+  strong { font-weight: 650; }
+  code { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; font-size: 0.86em; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+  ul, ol { margin: 0 0 16px; padding-left: 1.3em; }
+  li { margin: 0 0 8px; }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
+
+  .thesis {
+    background: var(--accent-soft);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin: 8px 0 8px;
+  }
+  .thesis .kicker { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 700; margin: 0 0 8px; }
+  .thesis p:last-child { margin-bottom: 0; }
+
+  .metrics { display: grid; grid-template-columns: 1fr; gap: 0; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .metric { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; gap: 16px; align-items: baseline; }
+  .metric:last-child { border-bottom: 0; }
+  .metric .num { font-weight: 700; color: var(--accent); white-space: nowrap; min-width: 78px; font-variant-numeric: tabular-nums; }
+  .metric .txt { color: var(--text); font-size: 0.96rem; }
+
+  .pattern { border-top: 1px solid var(--rule); padding-top: 18px; margin-top: 24px; }
+  .pattern .imp { color: var(--text); }
+  .pattern .imp::before { content: "So what: "; color: var(--accent); font-weight: 650; }
+
+  .card { border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; margin: 18px 0; background: var(--surface); }
+  .card .top { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .rank { font-weight: 700; font-size: 1.05rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .card h3 { margin: 0; flex: 1 1 320px; }
+  .badges { display: flex; gap: 6px; }
+  .badge { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .b-10x { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+  .b-high { background: var(--hi-soft); color: var(--hi); border: 1px solid var(--hi); }
+  .b-med { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border); }
+  .b-eff { background: transparent; color: var(--muted); border: 1px solid var(--rule); }
+  .card .meta { margin-top: 10px; font-size: 0.93rem; }
+  .card .meta div { margin: 4px 0; }
+  .card .meta .lab { color: var(--muted); font-weight: 650; }
+
+  .roadmap { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .phase { border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; background: var(--surface); }
+  .phase h3 { margin-top: 0; }
+  .phase h3 span { color: var(--muted); font-weight: 500; }
+
+  .twocol { columns: 2; column-gap: 36px; }
+  .twocol li { break-inside: avoid; }
+
+  /* theme toggle */
+  .toggle { position: fixed; top: 16px; right: 16px; display: flex; gap: 2px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 3px; z-index: 50; }
+  .toggle button { font: inherit; font-size: 0.78rem; font-weight: 600; color: var(--muted); background: transparent; border: 0; padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+  .toggle button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  html[data-theme="dark"] .toggle button[aria-pressed="true"] { color: #14140f; }
+
+  footer.doc { margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.9rem; }
+
+  @media (max-width: 620px) {
+    body { font-size: 16px; }
+    h1 { font-size: 2rem; }
+    .wrap { padding: 56px 18px 90px; }
+    .twocol { columns: 1; }
+    .metric .num { min-width: 64px; }
+  }
+
+  @media print {
+    .toggle { display: none; }
+    body { background: #fff; color: #000; font-size: 11.5pt; }
+    .wrap { max-width: none; padding: 0; }
+    .card, .phase, .thesis, .metrics { break-inside: avoid; border-color: #bbb; background: #fff; }
+    h2 { break-after: avoid; }
+    a { color: #000; border: 0; }
+    .badge { border: 1px solid #999; color: #000; background: #fff; }
+    .metric .num, .pattern .imp::before, .thesis .kicker { color: #000; }
+  }
+</style>
+</head>
+<body>
+<div class="toggle" role="group" aria-label="Color theme">
+  <button data-set="light" aria-pressed="true">Light</button>
+  <button data-set="dark" aria-pressed="false">Dark</button>
+  <button data-set="system" aria-pressed="false">System</button>
+</div>
+
+<div class="wrap">
+<header class="doc">
+  <h1>The 10x Report</h1>
+  <p class="sub">How to get an order of magnitude more out of the way you already work</p>
+  <p class="scope">Prepared 2026-06-03. Scope: 879 Claude Code session transcripts (641 MB, distilled to 41 prompt-only digests) and 352 project folders across PERSONAL, projects, and NXTPHASE. Method and limits are at the end.</p>
+</header>
+
+<h2>The one thing to take away</h2>
+<div class="thesis">
+  <p class="kicker">The core finding</p>
+  <p><strong>You have already built the machine. You drive it by hand.</strong></p>
+  <p>The single strongest finding, verified on disk, is that most of the right automation already exists in your setup and simply is not wired to fire. Your agent-eval harness has produced an <code>eval.html</code> in 30 projects, yet only 2 projects carry a <code>.claude/settings.json</code> and the global settings file contains zero references to the eval runner. So the GREEN/AMBER/RED reviewer block, the single most repeated piece of text in your entire corpus, gets pasted by hand 300-plus times instead of firing automatically. Your Memento hooks run on every session but only print "search Memento" and "did you store?"; they never call recall or store, so your memory is a write-mostly journal. There is not a single <code>STATUS.md</code> anywhere, which is why "what was the url again" recurs in every cluster.</p>
+  <p>The 10x is therefore not new capability. It is conversion. Wire the hooks you own, commit the scripts you keep retyping, turn your standing pipelines into skills you invoke instead of re-explain, and add four or five load-bearing assets so velocity stops producing seven copies of the same app. Almost everything below is a settings merge, a committed script, or a one-time extraction, not a research project.</p>
+</div>
+
+<h2>Who the data says you are</h2>
+<p class="lede">A high-velocity solo builder and consultant running five tracks at once over roughly 15 months.</p>
+<ul>
+  <li><strong>AI and agent tooling, CLIs, skills, MCP</strong> (~28% of folders): craft-agents-oss, open-cowork, memento, agentboard, symphony, whatsapp-mcp.</li>
+  <li><strong>Claude and LLM reverse-engineering and introspection</strong> (~12%): reverse-engineer (1,500 files), claude-reverse, codex-reveng, agentspy, claudespy. A genuinely distinctive specialty.</li>
+  <li><strong>Client and consulting delivery</strong> (~16%): NXTPHASE plus named companies (KLAFS, Maxeda, Keesing, Triferto, NHA, ANP, Azure POCs). The paid work.</li>
+  <li><strong>Content and publishing engine</strong> (~12%): Content (2,800+ files), gloss, Content-Marketing, kyssbook-kdp, hyperframes video.</li>
+  <li><strong>Web and SaaS product attempts</strong> (~16%): remembered, specbridge, openscreen, breakaway, timeweaver, stitchboy, many Next.js / React / Tauri builds.</li>
+  <li><strong>Data, scraping, OSINT, profiling</strong> (~10%) and a <strong>creative, generative, retro-computing</strong> hobby track (~6%).</li>
+</ul>
+<p>You are not primarily a coder. You are a product owner and orchestrator who delegates execution to Claude and audits hard, with screenshots, an eval gate, and explicit "did you actually check it" verification.</p>
+
+<h2>The numbers</h2>
+<p class="lede">Every figure below is drawn from the session corpus or verified on disk.</p>
+<div class="metrics">
+  <div class="metric"><span class="num">352</span><span class="txt">project folders across three roots. Roughly 55 to 60% are graveyard; only about 120 to 140 are distinct real attempts.</span></div>
+  <div class="metric"><span class="num">300+</span><span class="txt">verbatim pastes of the eval grader, the single most repeated literal text in the corpus (~140 of 182 prompts in <code>aside</code>, 49 of 49 <code>Rechtzaak-go</code> sessions, 45+27 in <code>project7</code>).</span></div>
+  <div class="metric"><span class="num">30 vs 2</span><span class="txt">projects with <code>eval.html</code> versus projects with a <code>.claude/settings.json</code>. Global settings has zero eval-run references. The trigger is manual in ~28 projects.</span></div>
+  <div class="metric"><span class="num">0</span><span class="txt"><code>STATUS.md</code> files across all roots. The project state-card pattern does not exist, which is why cold-starts recur everywhere.</span></div>
+  <div class="metric"><span class="num">2</span><span class="txt">MCP servers wired (whatsapp, ria). Notion, Linear, GitLab, Gmail, Drive, ms365 are available and disconnected.</span></div>
+  <div class="metric"><span class="num">~32 GB</span><span class="txt">duplicated binary data: a 20 GB profiler tree plus two near-identical 5.8 GB rubbermoulds trees plus a 489 MB images folder.</span></div>
+  <div class="metric"><span class="num">7x</span><span class="txt">archer rebuilt from scratch (byte-identical READMEs). Plus document-ingest 4x, RAG stack 5-6x, <code>~/.claude</code> readers 6x.</span></div>
+  <div class="metric"><span class="num">1,539</span><span class="txt">prompts in the <code>print</code> scraper, dominated by one hand-typed poll retyped all night.</span></div>
+  <div class="metric"><span class="num">408</span><span class="txt">prompts in <code>Content</code>, with the source-to-trifecta loop re-specified by hand 15+ times.</span></div>
+  <div class="metric"><span class="num">151</span><span class="txt">skills you already own, plus a full gstack SDLC, a ~40-agent pentest swarm, skillify, agent-eval, benchmark. New hooks are realistic for you, not aspirational.</span></div>
+</div>
+
+<h2>The seven patterns that cost you the most</h2>
+
+<div class="pattern">
+<h3>1. Built it, but drive it by hand</h3>
+<p>You own the automation but never wire the trigger. 30 <code>eval.html</code> vs 2 <code>settings.json</code> vs 0 eval-run references. Memento hooks print reminders instead of executing recall and store. Remote control and push notifications are on, but no cron, monitor, or background loop is configured.</p>
+<p class="imp">the highest-ROI work is wiring, not building. Every loop you already automated by hand is one settings merge from being free.</p>
+</div>
+
+<div class="pattern">
+<h3>2. Standing pipelines re-specified verbatim instead of invoked</h3>
+<p>The trifecta is requested 15+ times as "the usual trifecta with all the anonymization and deep-detection and images." The new-SaaS arc is retyped prompt by prompt (TS / Next / Drizzle / Clerk / Railway). The ultracode kickoff, including "make maildmz@gmail.com pro," is reused every time.</p>
+<p class="imp">each pipeline collapsed into one parameterized skill removes a 5 to 20 prompt re-specification per run, and kills the recurring afterthoughts (Substack hero, author footer, white-background images).</p>
+</div>
+
+<div class="pattern">
+<h3>3. Manual orchestration of correctly chosen parallelism</h3>
+<p>The <code>print</code> project's 1,539 prompts are almost entirely the same poll, retyped. <code>ecoscrape</code> fans out ~37 subagents hand-batched with "create a team and go," each re-deriving the 9-column rubric. You ask "are you still running" and retro-estimate token cost for 16k companies after the fact.</p>
+<p class="imp">the strategy is right, the packaging is missing. A resumable job harness plus a fixed-schema enrich-and-score skill turns an all-night babysitting session into one launch and one ping.</p>
+</div>
+
+<div class="pattern">
+<h3>4. No durable per-project state, so every session cold-starts</h3>
+<p>Zero <code>STATUS.md</code> files. "What was the url again for montferland," "how did I get to admin again," "what is the url" (Rechtzaak, six times), "where were we" across 47 <code>aside</code> sessions and 39 <code>subradar</code> sessions, two <code>project7</code> context overflows. Tuning thresholds live only in chat history.</p>
+<p class="imp">a deploy-written <code>STATUS.md</code> surfaced at session start plus active Memento recall kills 5 to 15 minutes of re-grounding on every cold or compacted session across 80+ multi-session projects.</p>
+</div>
+
+<div class="pattern">
+<h3>5. House rules enforced by memory, not by the harness</h3>
+<p>"Looks offbrand, no emojis" after a reskin. Mid-stream global rules bolted on (em-dash, light-mode, white background). Rechtzaak Dutch-locale defects re-reported ("August instead of augustus," "date can never be in the future"). Your own CLAUDE.md even documents the heredoc-git-commit ANSI footgun.</p>
+<p class="imp">a PostToolUse brand and locale linter plus golden-file fixtures convert recurring correction rounds into deterministic gates. The model stops being asked to remember, and the harness guarantees it.</p>
+</div>
+
+<div class="pattern">
+<h3>6. Distrust and recheck, audited by hand</h3>
+<p>You do not trust unverified "done" claims. "Ouch, do better please, do check your work." "What do you mean verified live, did you check it?" The hallucinated red-team system prompt ending in your fix: "double check the finding using a subagent before writing to file." 28 numbered screenshots in <code>project7</code>, ~24 in <code>aside</code>.</p>
+<p class="imp">auto visual-QA chained after deploy (browse + emil-design-eng gating any "verified live" claim) and a verification subagent gate in /redteam convert your manual audit into a harness-run gate.</p>
+</div>
+
+<div class="pattern">
+<h3>7. Folder sprawl with one structural root cause</h3>
+<p>A fresh repo per attempt. ~32 GB duplicate datasets. archer rebuilt 7x with byte-identical READMEs. Exact filesystem copies (<code>ai-insights</code> vs <code>ai insights</code>, <code>galaga</code> vs <code>galaga 2</code>). ~25 empty stubs.</p>
+<p class="imp">a small set of load-bearing assets (one SaaS scaffold, four internal packages, a pre-create guard) absorbs whole future classes of restarts. This is the only durable fix, and it compounds: each asset prevents the next five reinventions.</p>
+</div>
+
+<h2>The 10x backlog, ranked by leverage</h2>
+<p class="lede">Leverage = impact times how often it bites, divided by effort. The "10x" badge is reserved for genuine step-changes.</p>
+
+<div class="card">
+  <div class="top"><span class="rank">1</span><h3>Install the agent-eval hooks user-wide</h3><span class="badges"><span class="badge b-10x">10x</span><span class="badge b-eff">Effort S</span></span></div>
+  <p>Run the agent-eval installer at user scope so the PreToolUse capture and Stop run hooks land in the global <code>~/.claude/settings.json</code> and every project auto-grades the last turn with zero pasted prompt. Add self-healing guards to the top of <code>eval-run.sh</code> so it can never exit 127 on a fresh repo.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the most repeated text in the corpus (300+ pastes) plus the cross-session breakage you reported.</div>
+    <div><span class="lab">Saves:</span> thousands of round-trips, daily.</div>
+    <div><span class="lab">First step:</span> <code>bash /Users/marcokotrotsos/.claude/plugins/cache/nxtphaseai/agent-eval/0.3.0/install.sh --user</code>, confirm the Stop hook appears, finish one task in project7 and watch a card auto-append.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">2</span><h3>Turn the Memento hooks into a real recall and store loop, backed by STATUS.md</h3><span class="badges"><span class="badge b-high">High</span><span class="badge b-eff">Effort M</span></span></div>
+  <p>Edit <code>session-start-memento.sh</code> to actually call <code>memory_recall</code> for the project namespace and inject the top hits plus <code>STATUS.md</code>. Edit <code>stop-memento.sh</code> to store a structured card (what shipped, decisions, file paths, live url, tuning thresholds). Have the deploy step write <code>STATUS.md</code> per project.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> status anxiety and re-orientation in every cluster.</div>
+    <div><span class="lab">Saves:</span> 2 to 4 hours a week.</div>
+    <div><span class="lab">First step:</span> make the start hook run a recall and cat <code>STATUS.md</code> instead of only printing the instruction.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">3</span><h3>Commit a per-project verify-deploy script chained into /ship</h3><span class="badges"><span class="badge b-high">High</span><span class="badge b-eff">Effort M</span></span></div>
+  <p>Extract the hand-pasted Railway smoke test into a committed <code>scripts/verify-deploy.sh</code> that reads the expected version from <code>git describe</code>, parses the full semver with a correct regex so the "grep stops at the first hyphen" bug disappears, polls until live, and prints one-line PASS/FAIL plus the url. Chain it onto /ship and /land-and-deploy.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> Rechtzaak's six near-identical verify pastes and a recurring bug you annotated by hand instead of fixing.</div>
+    <div><span class="lab">Saves:</span> 5 to 8 minutes per deploy, 20+ deploys per active build week.</div>
+    <div><span class="lab">First step:</span> build the script from the prompt-157 incantation, fix the regex to <code>v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.-]+)?</code>, add a Deploy and verify section to a new Rechtzaak CLAUDE.md.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">4</span><h3>Build a resumable enrich-and-score harness plus a self-driving stage runner</h3><span class="badges"><span class="badge b-10x">10x</span><span class="badge b-eff">Effort L</span></span></div>
+  <p>An enrich-and-score skill that takes a list, auto-chunks into parallel subagents, runs website-find then multi-page scrape then deterministic email harvest then the fixed 9-column rubric as a schema in the skill, backed by a SQLite job table with a status command. Plus a generic state-machine stage runner launched once in the background that notifies only on completion or error.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the 1,539-prompt poll loop and the hand-batched ecoscrape swarm.</div>
+    <div><span class="lab">Saves:</span> an all-night session collapses to one launch and one ping; unlocks the 16k-company scale.</div>
+    <div><span class="lab">First step:</span> write the SQLite job-table schema and a <code>status</code> command first, then wrap <code>build_xlsx.py</code> and the men/women/kids advance logic into one runner.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">5</span><h3>Build the /trifecta content-pipeline skill</h3><span class="badges"><span class="badge b-high">High</span><span class="badge b-eff">Effort M</span></span></div>
+  <p>One orchestrator: input a source, output Medium + Substack + LinkedIn drafts into <code>/drafts/&lt;slug&gt;/</code>, auto-run Humanizer and deep-detect, generate hero plus a default Substack hero plus diagrams via nanobanana with your image defaults baked in as a fixed preset (pure white background, infographic style not watercolour, per-channel sizing, no duplicate heroes), and append the author footer.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the 15+ trifecta re-specifications and the image-redo loop in your 408-prompt Content repo.</div>
+    <div><span class="lab">Saves:</span> 20 to 40 minutes per article trio, multiple trios a week.</div>
+    <div><span class="lab">First step:</span> run /skillify on a recent complete trifecta transcript, then author the SKILL.md with the image preset stored in assets.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">6</span><h3>Wire Notion, Linear, and GitLab MCP plus two reconciliation subagents</h3><span class="badges"><span class="badge b-high">High</span><span class="badge b-eff">Effort M</span></span></div>
+  <p>Add the connectors to <code>mcpServers</code> (only whatsapp and ria are wired today). Build a Notion-to-spec reconciliation subagent that diffs board items against implemented features and deploy tags, and a /mr GitLab subagent wrapping <code>glab</code> for the recurring Montferland flow (list open MRs, open by number, summarize and reply, resolve conflicts, push, return merge url).</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the hand-driven "go through the notion board" and 10+ manual glab actions, including from-scratch glab onboarding.</div>
+    <div><span class="lab">Saves:</span> 15 to 30 minutes per client review session, several a week.</div>
+    <div><span class="lab">First step:</span> add the connectors to settings, then write <code>notion-spec-reconcile.md</code>.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">7</span><h3>One starter-kit SaaS scaffold (a /new-saas skill)</h3><span class="badges"><span class="badge b-high">High</span><span class="badge b-eff">Effort M</span></span></div>
+  <p>A cookiecutter encoding your standard stack: E2E TypeScript, Next.js, Drizzle, Clerk, Railway config, GitHub repo on kotrotsos with main + feature-branch convention, light-mode-default UI, a pre-filled project CLAUDE.md, the Memento namespace, and an auto-seed of maildmz@gmail.com as the pro account. It scaffolds inside a chosen workspace and registers in a projects index so it cannot quietly become folder 353.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the greenfield bootstrap loop retyped every few weeks.</div>
+    <div><span class="lab">Saves:</span> 2 to 4 hours of setup per new product, and it feeds STATUS.md, the verify script, and the eval hook into every new project for free.</div>
+    <div><span class="lab">First step:</span> extract project7 / AskWell scaffolding into a template, save as <code>PERSONAL/starter-saas</code>, wire the skill.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">8</span><h3>Auto visual-QA gate after deploy plus a verification gate in /redteam</h3><span class="badges"><span class="badge b-high">High</span><span class="badge b-eff">Effort M</span></span></div>
+  <p>Extend /ship so after deploy it drives the changed page with browse, screenshots at your breakpoints, self-checks against emil-design-eng heuristics, and refuses "verified live" without an attached capture. Add a rule to /redteam so any claimed secret is re-probed by an independent verification subagent and only written to the report with the confirming curl attached.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the screenshot ping-pong (28 images in project7) and false-positive findings.</div>
+    <div><span class="lab">Saves:</span> 5 to 15 round-trips per UI change, 10 to 20 minutes per red-team engagement.</div>
+    <div><span class="lab">First step:</span> add a visual-gate step to /ship; edit the redteam skill so report-writing must call a verification subagent first.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">9</span><h3>Move ~32 GB of duplicate datasets out of git</h3><span class="badges"><span class="badge b-high">High</span><span class="badge b-eff">Effort S</span></span></div>
+  <p>Hash-compare the two 5.8 GB rubbermoulds trees, delete the confirmed copy, <code>git rm --cached</code> the DWG/DXF/PNG dirs from the canonical profiler repo, push the datasets to one Azure Blob container, add a tiny <code>fetch-data.sh</code>. Keep only the matcher code versioned.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the largest single disk and git weight in the corpus.</div>
+    <div><span class="lab">Saves:</span> ~26 GB immediately, plus minutes per future git op.</div>
+    <div><span class="lab">First step:</span> hash-compare the two rubbermoulds trees, delete the copy, then extract datasets.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">10</span><h3>Extract four internal packages from your reinvention clusters</h3><span class="badges"><span class="badge b-high">High</span><span class="badge b-eff">Effort L</span></span></div>
+  <p>Publish four small versioned packages via your existing pip_release skill so the next instance is <code>pip install</code>, not a new repo: archer-core, doc-ingest, rag-core, claude-session-reader. Each existing folder becomes a thin consumer or branch.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the four largest reinvention clusters (archer 7x, doc-ingest 4x, RAG 5-6x, session readers 6x).</div>
+    <div><span class="lab">Saves:</span> each new variant drops from 1 to 2 days to about an hour; ends graveyard growth at the source.</div>
+    <div><span class="lab">First step:</span> start with archer-core: diff archer-code vs archer-research, extract the shared core, pip_release it, make the others import it.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">11</span><h3>Enforce house style and domain invariants with a linter hook plus golden fixtures</h3><span class="badges"><span class="badge b-med">Med</span><span class="badge b-eff">Effort M</span></span></div>
+  <p>A Write/Edit linter that deterministically rejects em-dashes in prose, emojis, serif fonts, dark-default CSS, and guards the heredoc-git ANSI footgun, and auto-runs <code>archive-artifact.sh</code> after any artifact write. Pair with golden-file tests: Rechtzaak Dutch-legal invariants and a subradar subscription-detection regression suite locking the bank CSVs.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the recurring brand and locale correction rounds.</div>
+    <div><span class="lab">Saves:</span> 2 to 5 minutes per affected diff plus avoided rework.</div>
+    <div><span class="lab">First step:</span> write <code>~/.claude/hooks/brand-lint.sh</code> and register it as a PreToolUse Write|Edit hook.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="top"><span class="rank">12</span><h3>A one-time triage sweep plus a pre-create guard</h3><span class="badges"><span class="badge b-med">Med</span><span class="badge b-eff">Effort S</span></span></div>
+  <p>Hash folder trees and fold <code>&lt;name&gt; copy</code> / <code>&lt;name&gt; 2</code> / <code>name with space</code> into the canonical repo as a branch, delete the ~25 empty stubs, archive the ~40 one-shots into a single <code>archive/</code>. Bake a pre-create guard into <code>mk new</code> that checks a projects index and warns "archer already exists 7x, branch it?" Result: 352 folders to ~120, and it stays there.</p>
+  <div class="meta">
+    <div><span class="lab">Kills:</span> the navigation tax and the structural cause of sprawl.</div>
+    <div><span class="lab">Saves:</span> a one-time half day, then near-zero; this is what makes the package consolidation durable.</div>
+    <div><span class="lab">First step:</span> run a content-hash sweep, delete the empty stubs and the rubbermoulds copy first (zero risk), add a no-copy-fork rule to global CLAUDE.md.</div>
+  </div>
+</div>
+
+<h2>Quick wins</h2>
+<p class="lede">Each is under an hour. Do them today.</p>
+<ol>
+  <li>Install agent-eval at user scope. One command kills the most repeated text in the corpus.</li>
+  <li>Add the self-healing guard to <code>eval-run.sh</code> so the eval never dies on a fresh project.</li>
+  <li>Wire Notion, Linear, and gitlab into <code>mcpServers</code> so the next board or MR action does not start from scratch.</li>
+  <li>Make <code>session-start-memento.sh</code> actually call <code>memory_recall</code> and cat <code>STATUS.md</code> instead of printing a reminder.</li>
+  <li>Write <code>brand-lint.sh</code> (em-dash, emoji, serif, dark-default) and register it as a PreToolUse hook.</li>
+  <li>Hash-compare and delete the rubbermoulds copy for an immediate 5.8 GB reclaim at zero risk.</li>
+  <li>Delete the ~25 empty stub folders to cut navigation noise.</li>
+  <li>Add a Deploy and verify section to a new <code>Rechtzaak/CLAUDE.md</code>.</li>
+</ol>
+
+<h2>The 30 / 60 / 90 day roadmap</h2>
+<div class="roadmap">
+  <div class="phase">
+    <h3>Day 30 <span>wire what you own</span></h3>
+    <p>Install agent-eval user-wide, upgrade Memento to recall and store, add the brand and locale linter. Commit <code>verify-deploy.sh</code> into Rechtzaak chained to /ship and emit STATUS.md on success; backfill STATUS.md into montferland and project7 once. Wire Notion + Linear + GitLab MCP and the two reconciliation subagents. Delete the rubbermoulds copy and the empty stubs. Stand up the first /trifecta from a /skillify capture.</p>
+  </div>
+  <div class="phase">
+    <h3>Day 60 <span>package the standing pipelines</span></h3>
+    <p>Ship the resumable enrich-and-score harness and stage runner, proven by re-running the next ecoscrape batch as config not rebuild. Finalize /trifecta and add the visual-QA gate to /ship plus the verification gate to /redteam. Build the starter-saas scaffold and /new-saas so every new project inherits the eval hook, STATUS.md, verify script, and your conventions. Add golden fixtures for Rechtzaak and subradar.</p>
+  </div>
+  <div class="phase">
+    <h3>Day 90 <span>fix the structure</span></h3>
+    <p>Extract and publish archer-core, then doc-ingest, rag-core, claude-session-reader, converting the duplicate folders into thin consumers. Complete the dataset-to-object-store migration. Run the triage sweep and add the pre-create guard, taking 352 folders to ~120. Set up scheduled remote agents (you have remote control and push on, but zero crons): a weekly red-team delta for recurring targets, a Polymarket-to-article snapshot-and-diff, and uptime monitors on your live apps that page you.</p>
+  </div>
+</div>
+
+<h2>Stop doing these</h2>
+<ul>
+  <li>Stop pasting the GREEN/AMBER/RED reviewer block by hand. It runs in 30 projects but triggers in 2.</li>
+  <li>Stop hand-typing the Railway smoke test per deploy, and stop annotating the grep bug instead of fixing it.</li>
+  <li>Stop re-specifying the trifecta, the new-SaaS stack, and the ultracode mandate every time. Templatize them.</li>
+  <li>Stop driving long scrapes by retyping the same poll all night. Use a state-machine runner with completion-only notifications.</li>
+  <li>Stop hand-batching subagent swarms and re-deriving the rubric per batch. Put the rubric in a skill schema.</li>
+  <li>Stop relying on the model to remember house rules. Enforce them with a linter.</li>
+  <li>Stop pasting live secrets into the chat stream (Clerk keys, Google OAuth secret, X tokens, passwords). Use a secrets-sync skill.</li>
+  <li>Stop creating copy / 2 / with-space folders for the same idea. Branch or install the package.</li>
+  <li>Stop committing multi-gigabyte datasets into git. Code in git, datasets in object storage.</li>
+  <li>Stop treating Memento as write-only. The recall loop your own CLAUDE.md mandates is not running.</li>
+</ul>
+
+<h2>Worth resurrecting or harvesting</h2>
+<p class="lede">Substantial builds that went cold but have real plumbing. Flagged on completeness and product framing, not on whether the market still matters.</p>
+<ul class="twocol">
+  <li><strong>stitchboy</strong>: 61 TS files, full app + server, Dockerfile, railway.toml, requirements, mockups, even a video. Mid-build.</li>
+  <li><strong>linkforge</strong>: full PRD, spec, designs, Drizzle, Next.js, railway.json, file-upload work in the last commit.</li>
+  <li><strong>remembered</strong>: 160-file Next.js app with a real schema, 63 commits. A memory product, aligns with your Memento focus.</li>
+  <li><strong>breakaway / breakloop</strong>: habit-breaking app with a pitch deck and an Expo/RN build, 22 commits.</li>
+  <li><strong>inkwell</strong>: 108-file Next.js writing editor, on-brand for your content focus.</li>
+  <li><strong>timeweaver</strong>: 152-file scheduling visualization app with heavy real data.</li>
+  <li><strong>voiced</strong>: a complete Outlook text-to-speech add-in with deploy plumbing.</li>
+  <li><strong>gemcut</strong>: Tauri desktop app (Rust + TSX), a real cross-platform scaffold.</li>
+  <li><strong>Claude_Prophet</strong>: a Go trading engine with real config data, self-contained.</li>
+  <li><strong>complia / qual / PE</strong>: substantial B2B product UIs under the nxtphaseai org.</li>
+</ul>
+
+<h2>Method and honest limits</h2>
+<p>This is a prompt-and-filesystem analysis run as a 16-agent workflow: 879 transcripts distilled to 41 prompt-only digests, 352 folders inventoried, and your existing tooling catalogued, then analyzed across session clusters, folder lifecycle and reinvention, and tooling gaps, recommended through three independent lenses, and curated adversarially.</p>
+<ul>
+  <li>It is not an execution trace. Prompt counts conflate text you typed with content the harness auto-fired. The eval block in particular inflates apparent counts, because some of the "300+ pastes" are the agent-eval hook surfacing as prompts. The fix is identical either way, but read the per-paste time-saved figures as upper bounds.</li>
+  <li>Time-saved estimates are order-of-magnitude judgments from loop frequency, meant for ranking, not forecasting.</li>
+  <li>The load-bearing claims were verified directly on disk: only whatsapp and ria MCP wired, zero eval-run references, reminder-only Memento hooks, 30 eval.html vs 2 settings.json, zero STATUS.md, ~32 GB profiler datasets with the 5.8 GB copy, Rechtzaak with no CLAUDE.md or verify script, 352 folders. Individual per-prompt citations come from the lens analyses and are taken as reported.</li>
+  <li>The graveyard classification cannot see commercial reality. A cold folder may be a finished client deliverable, a parked bet, or live elsewhere.</li>
+  <li>Reinvention clusters assume the folders share intent. archer and the profiler were spot-confirmed; doc-ingest, RAG, and session readers rely on byte-identical-README evidence. Confirmed false positives (project / project7 / projectultra are distinct products) are excluded.</li>
+  <li>Code quality, test coverage, security posture, and actual API spend were not assessed. The tooling gaps are inferred from missing skills, not observed failures.</li>
+  <li>Some recommendations assume your stack stays Railway + Next/Drizzle/Clerk and your content stack stays Humanizer/deep-detect/nanobanana. A migration would shorten the shelf life of the verify-deploy and new-saas scaffolds, though the patterns transfer.</li>
+</ul>
+
+<footer class="doc">
+  <p>The 10x Report. Generated from your own Claude Code session history and project folders. Source markdown alongside this file at <code>10x/10x-productivity-report.md</code>.</p>
+</footer>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var buttons = Array.prototype.slice.call(document.querySelectorAll('.toggle button'));
+  var mql = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode) {
+    var theme = mode === 'system' ? (mql.matches ? 'dark' : 'light') : mode;
+    root.setAttribute('data-theme', theme);
+    buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === mode)); });
+  }
+  var saved = null;
+  try { saved = localStorage.getItem('tenx-theme'); } catch (e) {}
+  var mode = saved || 'light';
+  apply(mode);
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      mode = b.dataset.set;
+      try { localStorage.setItem('tenx-theme', mode); } catch (e) {}
+      apply(mode);
+    });
+  });
+  mql.addEventListener('change', function () { if (mode === 'system') apply('system'); });
+})();
+</script>
+</body>
+</html>
