@@ -353,3 +353,4 @@
 | 2026-06-03 | content | images | [cc-verify.png](projects/content/images/cc-verify.png) | Dynamic workflows non-obvious uses article: cc-verify.png |
 | 2026-06-03 | content | images | [cc-redteam.png](projects/content/images/cc-redteam.png) | Dynamic workflows non-obvious uses article: cc-redteam.png |
 | 2026-06-03 | content | images | [cc-investigate.png](projects/content/images/cc-investigate.png) | Dynamic workflows non-obvious uses article: cc-investigate.png |
+| 2026-06-03 | content | images | [cc-quarantine.png](projects/content/images/cc-quarantine.png) | Dynamic workflows non-obvious uses article: cc-quarantine.png |
