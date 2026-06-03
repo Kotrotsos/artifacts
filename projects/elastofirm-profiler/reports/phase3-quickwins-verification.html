@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 Quick Wins — Verification Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f9fafb; --surface: #ffffff; --surface-2: #f3f4f6;
+    --border: #e5e7eb; --border-strong: #d1d5db;
+    --ink: #18181b; --ink-2: #3f3f46; --muted: #71717a;
+    --accent: #2563eb; --good: #059669; --good-bg: #ecfdf5; --good-bd: #a7f3d0;
+    --amber: #d97706; --amber-bg: #fffbeb; --amber-bd: #fde68a;
+    --code-bg: #f3f4f6;
+  }
+  [data-theme="dark"] {
+    --bg: #0f1115; --surface: #16181d; --surface-2: #1d2026;
+    --border: #2a2e37; --border-strong: #3a3f4b;
+    --ink: #f4f4f5; --ink-2: #d4d4d8; --muted: #9ca3af;
+    --accent: #60a5fa; --good: #34d399; --good-bg: #06281f; --good-bd: #0f5132;
+    --amber: #fbbf24; --amber-bg: #2a2010; --amber-bd: #5c4310;
+    --code-bg: #1d2026;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Geist', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.55; font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .mono { font-family: 'Geist Mono', ui-monospace, monospace; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 44px 28px 90px; }
+
+  header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+  .eyebrow { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-size: 30px; font-weight: 600; letter-spacing: -0.025em; margin: 8px 0 14px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--ink-2); }
+  .meta b { color: var(--ink); font-weight: 600; }
+
+  .theme-toggle { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+  .theme-toggle button {
+    font-family: 'Geist Mono', monospace; font-size: 11px; background: var(--surface); color: var(--muted);
+    border: none; padding: 6px 10px; cursor: pointer; border-right: 1px solid var(--border);
+  }
+  .theme-toggle button:last-child { border-right: none; }
+  .theme-toggle button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+  .banner {
+    display: flex; align-items: center; gap: 12px; margin: 22px 0 8px;
+    background: var(--good-bg); border: 1px solid var(--good-bd); color: var(--ink);
+    border-radius: 12px; padding: 14px 18px; font-size: 14px;
+  }
+  .banner .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--good); flex-shrink: 0; }
+  .banner b { font-weight: 600; }
+
+  .note {
+    background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 10px; padding: 14px 18px; margin: 18px 0 30px; font-size: 14px; color: var(--ink-2);
+  }
+  .note b { color: var(--ink); }
+
+  h2.section { font-size: 13px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 36px 0 14px; }
+
+  .item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; margin-bottom: 18px; }
+  .item-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .badge { font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+  .badge.id { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border); }
+  .badge.status { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+  .badge.fixed { background: var(--good-bg); color: var(--good); border: 1px solid var(--good-bd); }
+  .item h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; flex: 1; min-width: 220px; }
+  .item .what { margin: 14px 0 4px; color: var(--ink-2); }
+  .files { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .files code { background: var(--code-bg); padding: 1px 6px; border-radius: 5px; color: var(--ink-2); }
+
+  .verify-label { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin: 18px 0 8px; }
+  ol.steps { list-style: none; counter-reset: s; }
+  ol.steps li { counter-increment: s; position: relative; padding: 7px 0 7px 34px; border-bottom: 1px dashed var(--border); font-size: 14px; }
+  ol.steps li:last-child { border-bottom: none; }
+  ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 7px; width: 22px; height: 22px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
+  .expect { display: inline-flex; align-items: baseline; gap: 6px; margin-top: 4px; color: var(--good); font-size: 13px; }
+  .expect b { font-weight: 600; }
+  kbd { font-family: 'Geist Mono', monospace; font-size: 12px; background: var(--code-bg); border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; }
+
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-family: 'Geist Mono', monospace; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
+  pre .ok { color: var(--good); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 6px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { font-family: 'Geist Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  td.pass { color: var(--good); font-family: 'Geist Mono', monospace; }
+
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+
+  @media (max-width: 600px) { .wrap { padding: 28px 16px 60px; } h1 { font-size: 24px; } header { flex-direction: column; } }
+  @media print {
+    body { background: #fff; color: #000; font-size: 12px; }
+    .theme-toggle { display: none; }
+    .item, .note, .banner { break-inside: avoid; border-color: #ccc; }
+    .wrap { max-width: 100%; padding: 0; }
+    a { color: #000; text-decoration: underline; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow">Elastofirm Profiler · Verification Report</div>
+      <h1>Phase 3 Quick Wins — done &amp; how to verify</h1>
+      <div class="meta">
+        <span><b>Branch</b> <span class="mono">inc-88-98-99-quickwins</span></span>
+        <span><b>Commit</b> <span class="mono">b11aa5e6</span></span>
+        <span><b>Version</b> <span class="mono">0.22.33</span></span>
+        <span><b>Date</b> 2026-06-03</span>
+      </div>
+    </div>
+    <div class="theme-toggle" role="group" aria-label="Theme">
+      <button data-set="light" aria-pressed="true">Light</button>
+      <button data-set="dark" aria-pressed="false">Dark</button>
+      <button data-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <div class="banner"><span class="dot"></span><span><b>Regression suite: 8 / 8 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
+
+  <div class="note">
+    <b>This is the flow.</b> Every batch of work ships the same way: implement on a branch → reproduce/validate live in the running app → add or extend the pytest regression suite and run it after each change → produce <i>this</i> verification report with visual steps → move the Linear issues to In Review with a comment. Use this document as the template for future batches.
+  </div>
+
+  <h2 class="section">Before you start — run the app</h2>
+  <div class="item">
+    <p class="what">All three items are verified in the browser against the locally running app. API on <span class="mono">:3000</span>, frontend on <span class="mono">:3001</span> (auth bypassed via <span class="mono">LOCAL_DEVELOPMENT=true</span>).</p>
+    <pre># from the project root
+npm run dev:hot          <span style="color:var(--muted)"># FastAPI :3000  +  Next dev :3001</span>
+# then open:
+open http://localhost:3001</pre>
+  </div>
+
+  <h2 class="section">Items delivered</h2>
+
+  <div class="item">
+    <div class="item-head">
+      <span class="badge id">INC-88</span>
+      <span class="badge status">In Review</span>
+      <h3>Weight &amp; surface shown in the result list</h3>
+    </div>
+    <p class="what">Result cards (grid and list) now show meter weight in <span class="mono">g/m</span> and surface in <span class="mono">mm²</span>, so a 147&nbsp;g profile is visually distinct from a 12&nbsp;kg one. Data was already fetched; it just wasn't surfaced.</p>
+    <p class="files">Touched: <code>app/page.tsx</code> (grid + list cards, <code>Scale</code> icon)</p>
+    <div class="verify-label">Verify visually</div>
+    <ol class="steps">
+      <li>Open <span class="mono">http://localhost:3001</span>.</li>
+      <li>Click <kbd>Search Profiles</kbd> (no filters needed) to list profiles.</li>
+      <li>Look at any result card in grid view, then toggle to list view.</li>
+      <li><span class="expect"><b>Expected:</b> each card shows a weight value like <span class="mono">168 g/m</span> and a surface like <span class="mono">1.18 mm²</span> (a dash <span class="mono">—</span> when the value is missing). Heavy vs light profiles are now obvious at a glance.</span></li>
+    </ol>
+  </div>
+
+  <div class="item">
+    <div class="item-head">
+      <span class="badge id">INC-98</span>
+      <span class="badge status">In Review</span>
+      <h3>Searching on industry alone now returns results</h3>
+    </div>
+    <p class="what">Previously, selecting only an industry as your first action showed nothing. Root cause was the frontend search trigger (not the backend — the API always returned the rows). A filter change now drives a debounced search that runs with the current filter state.</p>
+    <p class="files">Touched: <code>app/page.tsx</code> (<code>triggerDebouncedSearch</code> + filter-keyed effect)</p>
+    <div class="verify-label">Verify visually</div>
+    <ol class="steps">
+      <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span> (it should read "Please perform a search first…").</li>
+      <li>In the <b>Industry</b> filter, type <span class="mono">Agri</span> and pick it — and do nothing else (do not click Search).</li>
+      <li>Wait about a second for the auto-search.</li>
+      <li><span class="expect"><b>Expected:</b> the header reads <span class="mono">159 profiles found</span> and the grid fills — without clicking the Search button.</span></li>
+    </ol>
+  </div>
+
+  <div class="item">
+    <div class="item-head">
+      <span class="badge id">INC-99</span>
+      <span class="badge fixed">Already fixed + hardened</span>
+      <h3>No "no products found" before the first search</h3>
+    </div>
+    <p class="what">The not-searched vs no-results distinction already existed in the current code. Added a guard so the "No profiles found" message can't flash while a search is in flight.</p>
+    <p class="files">Touched: <code>app/page.tsx</code> (no-results block gated on <code>!isLoadingProfiles</code>)</p>
+    <div class="verify-label">Verify visually</div>
+    <ol class="steps">
+      <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span> (or hard-refresh).</li>
+      <li>Do not search yet — just look at the results panel.</li>
+      <li><span class="expect"><b>Expected:</b> it shows "Please perform a search first…", <b>never</b> "No profiles found". The no-results message only appears after a search that genuinely returns zero rows.</span></li>
+    </ol>
+  </div>
+
+  <h2 class="section">Regression suite</h2>
+  <div class="item">
+    <p class="what">Guards the API contracts behind these fixes. Run after every change to this area:</p>
+    <pre>API_BASE=http://localhost:3000 pytest scripts/test/test_phase3_quickwins.py -q
+<span class="ok">........                                          [100%]
+8 passed in 0.33s</span></pre>
+    <table>
+      <thead><tr><th>Test</th><th>Guards</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>filters list includes industry</td><td>dropdown source</td><td class="pass">pass</td></tr>
+        <tr><td>industry only returns rows</td><td>INC-98</td><td class="pass">pass</td></tr>
+        <tr><td>industry only narrows result set</td><td>INC-98</td><td class="pass">pass</td></tr>
+        <tr><td>industry only baseline count (159)</td><td>INC-98</td><td class="pass">pass</td></tr>
+        <tr><td>industry filter case-insensitive</td><td>INC-98</td><td class="pass">pass</td></tr>
+        <tr><td>industry list matches count &amp; industry</td><td>INC-98</td><td class="pass">pass</td></tr>
+        <tr><td>profiles expose weight &amp; surface</td><td>INC-88</td><td class="pass">pass</td></tr>
+        <tr><td>some profiles have weight/surface values</td><td>INC-88</td><td class="pass">pass</td></tr>
+      </tbody>
+    </table>
+    <p class="files" style="margin-top:12px">Note: no JS test runner is wired up, so the suite covers API contracts; the UI behaviors above are verified in the browser. INC-99 is pure client-side and is checked manually (step list above).</p>
+  </div>
+
+  <footer>
+    Elastofirm Profiler · Phase 3 quick-wins verification · generated 2026-06-03 · status of all three: In Review on Linear (project "Elastofirm Profiler — Phase 3").
+  </footer>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const btns = [...document.querySelectorAll('.theme-toggle button')];
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode) {
+    if (mode === 'system') {
+      root.setAttribute('data-theme', mq.matches ? 'dark' : 'light');
+    } else {
+      root.setAttribute('data-theme', mode);
+    }
+    btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.set === mode)));
+  }
+  btns.forEach(b => b.addEventListener('click', () => apply(b.dataset.set)));
+  mq.addEventListener('change', () => {
+    const active = btns.find(b => b.getAttribute('aria-pressed') === 'true');
+    if (active && active.dataset.set === 'system') apply('system');
+  });
+  // default: light
+  apply('light');
+</script>
+</body>
+</html>
