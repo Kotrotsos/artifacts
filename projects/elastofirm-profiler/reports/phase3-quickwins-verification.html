@@ -113,7 +113,7 @@
     </div>
   </header>
 
-  <div class="banner"><span class="dot"></span><span><b>Regression suite: 12 / 12 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
+  <div class="banner"><span class="dot"></span><span><b>Regression suite: 10 / 10 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
 
   <div class="note">
     <b>This is the living board and the flow.</b> Every batch: implement on a branch → validate live in the running app → extend the pytest suite and run it after each change → record the item here → deploy the board to Railway → sync Linear. <b>Verified items collapse; items in development stay expanded.</b> Click any header to toggle.
@@ -137,7 +137,22 @@ open http://localhost:3001</pre>
   <div class="card empty">Nothing in development right now. When the next item is picked up it appears here, expanded.</div>
 
   <h2 class="section">Next up — picked, not started</h2>
-  <div class="card empty">Queue is empty. The last picks (INC-93, INC-89, INC-85) are done and moved to Verified below.</div>
+  <div class="card empty">Queue is empty.</div>
+
+  <h2 class="section">Flagged — requirements under review</h2>
+  <details class="item" open>
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-85</span>
+      <h3>Filter button "incomplete data records"</h3>
+      <span class="badge effort">M</span>
+      <span class="badge review">Reverted · needs requirements</span>
+    </summary>
+    <div class="item-body">
+      <p class="what"><b>Reverted on 2026-06-03.</b> The implementation worked (toggle → 8,479 of 19,696 records), but the <b>definition of "incomplete" is a product decision that needs confirming</b> before we ship it: which fields are mandatory, and whether sentinels like <span class="mono">-</span>, <span class="mono">not found</span> and <span class="mono">csv_record</span> should all count as missing.</p>
+      <p class="files">Code removed from <code>api/main.py</code> + <code>app/page.tsx</code>, 2 tests dropped. Linear INC-85 moved back to Backlog with a flag comment, awaiting requirements sign-off.</p>
+    </div>
+  </details>
 
   <h2 class="section">Verified &amp; in review</h2>
 
@@ -182,27 +197,6 @@ open http://localhost:3001</pre>
         <li><span class="expect"><b>Expected:</b> results reorder so those closest in surface to the top match rise; toggling weight off when area is on (mutually exclusive).</span></li>
       </ol>
       <p class="caveat">Note: image-search only. Verified by compile + logic-mirror of the proven weight rerank; full reorder needs a real image upload to confirm (not covered by the API suite).</p>
-    </div>
-  </details>
-
-  <details class="item">
-    <summary>
-      <span class="chev">&#9654;</span>
-      <span class="badge id">INC-85</span>
-      <h3>Filter button "incomplete data records"</h3>
-      <span class="badge effort">M</span>
-      <span class="badge verified">Verified</span>
-      <span class="badge review">In Review</span>
-    </summary>
-    <div class="item-body">
-      <p class="what">A single "Incomplete data only" toggle selects every record missing a required field (Area, meter weight, compound, hardness, SG, or process), ready to export to engineering. Replaces the manual lists the PO sends to Simon.</p>
-      <p class="files">Touched: <code>api/main.py</code> (incomplete_data param + condition), <code>app/page.tsx</code> (toggle + wiring)</p>
-      <div class="verify-label">Verify visually</div>
-      <ol class="steps">
-        <li>Open <span class="mono">http://localhost:3001</span>.</li>
-        <li>In the filter panel, flip the amber <b>Incomplete data only</b> switch.</li>
-        <li><span class="expect"><b>Expected:</b> ~<span class="mono">8,479</span> results, every row missing at least one required field. Turning it off restores the full set.</span></li>
-      </ol>
     </div>
   </details>
 
@@ -273,15 +267,14 @@ open http://localhost:3001</pre>
   <div class="card">
     <p class="what">Guards the API contracts behind these fixes. Run after every change to this area:</p>
     <pre>API_BASE=http://localhost:3000 pytest scripts/test/test_phase3_quickwins.py -q
-<span class="ok">............                                      [100%]
-12 passed in 1.67s</span></pre>
+<span class="ok">..........                                        [100%]
+10 passed in 0.45s</span></pre>
     <table>
       <thead><tr><th>Area</th><th>Guards</th><th>Tests</th><th>Result</th></tr></thead>
       <tbody>
         <tr><td>Industry-only search</td><td>INC-98</td><td>5</td><td class="pass">pass</td></tr>
         <tr><td>Weight/surface exposed</td><td>INC-88</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Process multi-select + dedupe</td><td>INC-93</td><td>2</td><td class="pass">pass</td></tr>
-        <tr><td>Incomplete-data filter</td><td>INC-85</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Filters list sanity</td><td>shared</td><td>1</td><td class="pass">pass</td></tr>
       </tbody>
     </table>
