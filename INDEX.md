@@ -363,3 +363,4 @@
 | 2026-06-03 | 10x | reports | [quick-wins.md](projects/10x/reports/quick-wins.md) | 10x productivity audit: quick-wins.md |
 | 2026-06-03 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 quick-wins verification report with visual steps for INC-88/98/99 |
 | 2026-06-03 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 verification board (collapsible living report) for INC-88/98/99 |
+| 2026-06-03 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 verification board incl Next up picks INC-93/89/85 |

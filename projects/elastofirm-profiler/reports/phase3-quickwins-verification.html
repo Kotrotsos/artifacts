@@ -71,6 +71,10 @@
   .badge.review { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
   .badge.verified { background: var(--good-bg); color: var(--good); border: 1px solid var(--good-bd); }
   .badge.active { background: rgba(37,99,235,0.12); color: var(--accent); border: 1px solid rgba(37,99,235,0.3); }
+  .badge.planned { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border-strong); }
+  .badge.effort { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border); }
+  .finding { margin: 10px 0 4px; font-size: 13.5px; color: var(--ink-2); }
+  .finding b { color: var(--ink); }
   .item-body { padding: 0 20px 20px; border-top: 1px solid var(--border); }
   .item-body .what { margin: 14px 0 4px; color: var(--ink-2); }
   .files { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 6px; }
@@ -135,6 +139,7 @@
     <span><span class="pip" style="background:var(--good)"></span> Verified — collapsed</span>
     <span><span class="pip" style="background:var(--accent)"></span> In development — expanded</span>
     <span><span class="pip" style="background:var(--amber)"></span> In Review on Linear</span>
+    <span><span class="pip" style="background:var(--muted-2,#a1a1aa)"></span> Planned / next up — not started</span>
   </div>
 
   <h2 class="section">Before you start — run the app</h2>
@@ -149,6 +154,50 @@ open http://localhost:3001</pre>
   <div class="card" id="active-empty" style="color:var(--muted);font-size:13.5px">
     Nothing in development right now. When the next item is picked up it appears here, expanded, in the same format as below.
   </div>
+
+  <h2 class="section">Next up — picked, not started</h2>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-93</span>
+      <h3>Filter on process (LCM / autoclaaf)</h3>
+      <span class="badge effort">S</span>
+      <span class="badge planned">Planned</span>
+    </summary>
+    <div class="item-body">
+      <p class="finding"><b>Validated finding:</b> every other filter (compound, industry, customer, mold, department, primary&nbsp;line) comma-splits for multi-select, but <span class="mono">process_type</span> is a single exact match (<span class="mono">api/main.py:950</span> and <span class="mono">:1200</span>) — so selecting LCM <i>and</i> autoclaaf matches neither.</p>
+      <p class="what"><b>Planned approach:</b> add the same comma-split OR logic to <span class="mono">process_type</span> in both <span class="mono">/api/profiles</span> and <span class="mono">/api/profiles/count</span>, and dedupe the case variants (<span class="mono">AUTOCLAAF</span> vs <span class="mono">autoclaaf</span>) in <span class="mono">/api/filters</span>.</p>
+    </div>
+  </details>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-89</span>
+      <h3>Sort similarity by surface instead of weight</h3>
+      <span class="badge effort">M</span>
+      <span class="badge planned">Planned</span>
+    </summary>
+    <div class="item-body">
+      <p class="finding"><b>Validated finding:</b> a <span class="mono">prioritizeWeight</span> rerank already exists as a working template (<span class="mono">app/page.tsx:759</span>, <span class="mono">:1622</span>), but there is no area equivalent. Surface is the geometry-true measure (weight shifts with compound density).</p>
+      <p class="what"><b>Planned approach:</b> add a <span class="mono">prioritizeArea</span> toggle and <span class="mono">parseArea</span> helper that re-sorts results by absolute distance to the top result's surface; mutually exclusive with the weight toggle.</p>
+    </div>
+  </details>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-85</span>
+      <h3>Filter button "incomplete data records"</h3>
+      <span class="badge effort">M</span>
+      <span class="badge planned">Planned</span>
+    </summary>
+    <div class="item-body">
+      <p class="finding"><b>Validated finding:</b> no incomplete-data filter exists yet, and the runtime schema already exposes the fields needed (<span class="mono">Area</span>, <span class="mono">[Metergewicht tekening]</span>, <span class="mono">Compoundcode</span>, hardness, SG, <span class="mono">image_extension</span>).</p>
+      <p class="what"><b>Planned approach:</b> add an <span class="mono">incomplete_data</span> param to <span class="mono">/api/profiles</span> + count that selects rows with any required field NULL/empty/sentinel, a toggle in the filter panel, and wire it into the Excel export. Replaces the manual lists the PO sends to Simon.</p>
+    </div>
+  </details>
 
   <h2 class="section">Verified &amp; in review</h2>
 
