@@ -4,3 +4,4 @@
 |------|------|------|-------------|--------|
 | 2026-06-03 | reports | [10x-productivity-report.html](reports/10x-productivity-report.html) | Evidence-backed 10x productivity report from session-history and project-folder audit | /Users/marcokotrotsos/PERSONAL/10x/10x-productivity-report.html |
 | 2026-06-03 | reports | [10x-productivity-report.md](reports/10x-productivity-report.md) | Markdown source of the 10x productivity report | /Users/marcokotrotsos/PERSONAL/10x/10x-productivity-report.md |
+| 2026-06-03 | reports | [10x-report.html](reports/10x-report.html) | 10x productivity audit: 10x-report.html | /Users/marcokotrotsos/PERSONAL/10x/artifacts/10x-report.html |

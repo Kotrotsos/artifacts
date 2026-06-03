@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>10x Report: Marco Kotrotsos</title>
+<style>
+  :root{
+    --bg:#fafaf9; --panel:#ffffff; --ink:#1c1c1a; --muted:#6b6b66; --line:#e7e7e2;
+    --accent:#3b5bdb; --accent-soft:#eef1fd; --good:#2f7a4f; --warn:#9a6b1a; --soft:#f4f4f1;
+    --grounded:#2f7a4f; --partial:#9a6b1a; --est:#6b6b66;
+  }
+  html[data-theme="dark"]{
+    --bg:#16161a; --panel:#1e1e24; --ink:#ececea; --muted:#9b9ba0; --line:#2c2c34;
+    --accent:#8ea2ff; --accent-soft:#23263a; --good:#7bd0a0; --warn:#e0b566; --soft:#23232a;
+    --grounded:#7bd0a0; --partial:#e0b566; --est:#9b9ba0;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55; font-size:16px;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:48px 24px 96px}
+  header.top{display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:8px}
+  h1{font-size:30px; line-height:1.2; margin:0 0 6px}
+  h2{font-size:21px; margin:44px 0 14px; padding-bottom:7px; border-bottom:2px solid var(--line)}
+  h3{font-size:16px; margin:0 0 6px}
+  p,li{color:var(--ink)}
+  .sub{color:var(--muted); font-size:14px; margin:0}
+  .lede{font-size:18px; background:var(--accent-soft); border:1px solid var(--line); border-left:3px solid var(--accent); padding:16px 18px; border-radius:8px; margin:20px 0}
+  .grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:18px 0}
+  .stat{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px}
+  .stat .n{font-size:24px; font-weight:650}
+  .stat .l{font-size:12px; color:var(--muted); margin-top:2px}
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:14px}
+  th,td{text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{font-size:12px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted)}
+  td.r,th.r{text-align:right}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin:12px 0}
+  .card .ev{color:var(--muted); font-size:14px; margin:8px 0}
+  .quote{border-left:2px solid var(--line); padding-left:12px; color:var(--muted); font-style:italic; margin:8px 0; font-size:14px}
+  .tag{display:inline-block; font-size:11px; padding:2px 8px; border-radius:20px; border:1px solid var(--line); margin-right:6px}
+  .g{color:var(--grounded); border-color:var(--grounded)}
+  .pa{color:var(--partial); border-color:var(--partial)}
+  .es{color:var(--est)}
+  .pill{font-weight:600}
+  .toggle{cursor:pointer; background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:7px 14px; font-size:13px; color:var(--ink)}
+  .note{font-size:13px; color:var(--muted)}
+  ol.steps{margin:6px 0 0 18px; padding:0}
+  ol.steps li{margin:3px 0; font-size:14px}
+  .caveat{background:var(--soft); border:1px solid var(--line); border-radius:8px; padding:12px 16px; font-size:14px; color:var(--muted)}
+  @media (max-width:680px){ .grid{grid-template-columns:repeat(2,1fr)} header.top{flex-direction:column} }
+  @media print{
+    .toggle{display:none} body{background:#fff; color:#000; font-size:12px}
+    .card,.stat,.lede,.caveat{break-inside:avoid} a{color:#000; text-decoration:none}
+    .wrap{max-width:none; padding:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>10x Report</h1>
+      <p class="sub">An evidence-based plan to multiply output and keep it enjoyable. Marco Kotrotsos, 2026-06-03.</p>
+    </div>
+    <button class="toggle" onclick="t()">Toggle theme</button>
+  </header>
+
+  <div class="lede"><strong>You have already built the machine. You drive it by hand.</strong> The leverage is wiring, defaults, and focus, not new capability. Almost every fix is "connect two things you already own."</div>
+
+  <div class="grid">
+    <div class="stat"><div class="n">880</div><div class="l">sessions analyzed</div></div>
+    <div class="stat"><div class="n">168 h</div><div class="l">active hands-on time</div></div>
+    <div class="stat"><div class="n">38</div><div class="l">projects, 7 weeks</div></div>
+    <div class="stat"><div class="n">71%</div><div class="l">of time in top 7 projects</div></div>
+  </div>
+
+  <h2>How this was mined</h2>
+  <p>Distilled from the real record in <code>~/.claude/projects/</code>: 880 session transcripts (481 MB) from 2026-04-15 to 2026-06-03. A deterministic extractor produced per-project digests (timing, tool and shell-command histograms, every message typed, every correction). A multi-agent workflow then produced 66 findings, merged them to 23, and an adversarial verifier re-checked each against the evidence and deflated the optimistic estimates.</p>
+  <div class="caveat"><strong>Honest caveats.</strong> "Active hours" (gaps under 5 min) is the real time figure; ignore "wall hours." The friction percentage is noisy because your own review subagents send prompts containing words like "broken" and "wrong," so it is inflated in build projects; verbatim quotes are used instead. PERSONAL-print's 1,539 "messages" are mostly automated poll-loop notifications, not hand typing. Per-command timing was not available, so hours are estimates: trust the ranking order more than the absolute numbers.</p>
+
+  <h2>Where the 168 hours went</h2>
+  <table>
+    <tr><th>Project</th><th>What it is</th><th class="r">Active h</th><th>Real signal</th></tr>
+    <tr><td>PERSONAL-Content</td><td>Blog, Substack, books, the content factory</td><td class="r">30.9</td><td>Multi-step pipeline run by hand</td></tr>
+    <tr><td>project7 ("askwell")</td><td>AI-interview SaaS, TS, Railway/Postgres</td><td class="r">18.2</td><td>605 cd; deploy + launch-kit by hand</td></tr>
+    <tr><td>PERSONAL-print</td><td>Shoeprint-match app + scraper</td><td class="r">17.6</td><td>Poll-loop babysitting</td></tr>
+    <tr><td>montferland</td><td>Client: municipality assistant</td><td class="r">16.9</td><td>Context rebuilt on return</td></tr>
+    <tr><td>Rechtzaak (+ go)</td><td>Legal-case document processing</td><td class="r">16.6</td><td>104 manual Linear issues</td></tr>
+    <tr><td>subradar</td><td>Subscription Radar, Electron</td><td class="r">10.9</td><td>Design-after-build; secret in chat</td></tr>
+    <tr><td>pool</td><td>"pool" project</td><td class="r">9.2</td><td>Smooth, low friction</td></tr>
+    <tr><td>Prism (projectultra) + sound</td><td>Local-first brand studio</td><td class="r">8.6</td><td>Crash recovery; review churn</td></tr>
+  </table>
+
+  <h2>The ranked 10x plan</h2>
+  <p class="note">Ranked by realistic monthly payback, verifier corrections applied. <span class="tag g">grounded</span> direct evidence &middot; <span class="tag pa">partial</span> real pattern, estimated hours &middot; <span class="tag es">est.</span> estimated, no verifier pass.</p>
+  <table>
+    <tr><th>#</th><th>Change</th><th>Effort</th><th class="r">h/mo</th><th>Conf.</th><th>Week 1</th></tr>
+    <tr><td>1</td><td>Wire Memento recall+store hooks (+ STATUS.md)</td><td>S</td><td class="r">6-8</td><td><span class="pill" style="color:var(--est)">est.</span></td><td>yes</td></tr>
+    <tr><td>2</td><td>Design-first default for all front-end work</td><td>M</td><td class="r">5-7</td><td><span class="pill" style="color:var(--grounded)">grounded</span></td><td>yes</td></tr>
+    <tr><td>3</td><td>Agent-eval hook + pre-commit/CI review gate</td><td>S/M</td><td class="r">4-6</td><td><span class="pill" style="color:var(--grounded)">grounded</span></td><td>yes</td></tr>
+    <tr><td>4</td><td>3-tier model router (Haiku/Sonnet/Opus)</td><td>M</td><td class="r">3-5</td><td><span class="pill" style="color:var(--grounded)">grounded</span></td><td>partial</td></tr>
+    <tr><td>5</td><td>3-project WIP limit + graveyard prune</td><td>S</td><td class="r">3-5</td><td><span class="pill" style="color:var(--partial)">partial</span></td><td>no</td></tr>
+    <tr><td>6</td><td>Fire-and-notify instead of poll loops</td><td>S</td><td class="r">4</td><td><span class="pill" style="color:var(--partial)">partial</span></td><td>yes</td></tr>
+    <tr><td>7</td><td>shared-core monorepo (rag, doc-ingest, session-reader)</td><td>M</td><td class="r">4</td><td><span class="pill" style="color:var(--partial)">partial</span></td><td>no</td></tr>
+    <tr><td>8</td><td>STATUS.md + session-wrap on SessionEnd</td><td>S</td><td class="r">3-4</td><td><span class="pill" style="color:var(--partial)">partial</span></td><td>yes</td></tr>
+    <tr><td>9</td><td>/launch-kit + /ship-it deploy skills</td><td>M</td><td class="r">4-5</td><td><span class="pill" style="color:var(--grounded)">grounded</span></td><td>no</td></tr>
+    <tr><td>10</td><td>/edit-chain content pipeline</td><td>M</td><td class="r">2-3</td><td><span class="pill" style="color:var(--grounded)">grounded</span></td><td>no</td></tr>
+  </table>
+  <p class="note">Concentrated payback of the top 8 is roughly 30 to 45 hours per month against about 100 hours of monthly active Claude time. The honest read on "10x": not 10x on everything, but a real 10x on specific high-repetition chores (poll loops, the reviewer block, context rebuild) and a throughput multiplier on the work that matters from design-first plus focus.</p>
+
+  <h2>The findings that matter most</h2>
+
+  <div class="card">
+    <h3>A. You rebuild context every session because memory is mandated but not wired <span class="tag g">grounded</span></h3>
+    <div class="ev">SessionStart hook only prints a reminder; Memento search used in under 1% of sessions; Read is your top tool at 4,032 calls re-establishing context; you re-run /init and re-paste logins; zero STATUS.md files across 38 projects.</div>
+    <div><strong>Fix.</strong> SessionStart hook that actually recalls, SessionEnd hook that stores a closure record and writes STATUS.md. The backbone every other fix rides on.</div>
+  </div>
+
+  <div class="card">
+    <h3>B. You design after you build, then pay for the rework <span class="tag g">grounded</span></h3>
+    <div class="quote">"implement it. We will be creating the design later on." then "this looks offbrand, redo the design." (subradar)</div>
+    <div class="quote">"make it native looking, it looks bad now. look at how tiktok looks, make it look like that." (mailplus, after the build was done)</div>
+    <div class="ev">Figma MCP and your design-review skills were available and unused. askwell designed first and barely reworked.</div>
+    <div><strong>Fix.</strong> Mockups and locked Tailwind tokens before any component. Gate the first build on design-review.</div>
+  </div>
+
+  <div class="card">
+    <h3>C. You run your review and eval machinery by hand, hundreds of times <span class="tag g">grounded</span></h3>
+    <div class="ev">Build timelines saturated with repeated "Review this change for security vulnerabilities" and "impartial code reviewer" prompts. The GREEN/AMBER/RED reviewer block ran in 30 projects, pasted by hand 300+ times. A real XSS reached manual review in mailplus.</div>
+    <div><strong>Fix.</strong> Install the agent-eval reviewer as a user-wide hook, add husky + lint-staged + CI so basic gates run automatically.</div>
+  </div>
+
+  <div class="card">
+    <h3>D. Opus runs everything, including work a faster model should do <span class="tag g">grounded</span></h3>
+    <div class="ev">Opus is 77.9% of model calls; Sonnet 1.6%, Haiku 1.0%. Opus runs the browse skill's web extraction (2,607 calls), the poll loops, and the review subagents, all latency-sensitive or low-complexity.</div>
+    <div><strong>Fix.</strong> Haiku for search and triage, Sonnet for mid-size review, Opus for real reasoning. Start by routing browse extraction to Haiku.</div>
+  </div>
+
+  <div class="card">
+    <h3>F. Secrets keep landing in the chat <span class="tag g">grounded</span></h3>
+    <div class="ev">A live Google OAuth client secret (subradar), the Anthropic key, and a user password (ppry...) in askwell, all sitting in saved transcripts on disk.</div>
+    <div><strong>Fix.</strong> Rotate the three now. Add a secret-scan hook. Reference .env keys by name, never paste the value.</div>
+  </div>
+
+  <div class="card">
+    <h3>G. Every new product repeats the same two rituals <span class="tag g">grounded</span></h3>
+    <div class="quote">"create media, blurbs, taglines, positioning statement, pitch" then pitch deck, demo, viability research. (askwell)</div>
+    <div class="quote">"can you connect github yourself?" then "create the github skill please" then "wire up the postgresql database." (askwell)</div>
+    <div><strong>Fix.</strong> A /launch-kit skill for naming, positioning, pitch and demo, and a /ship-it skill for GitHub plus Railway plus Postgres plus env.</div>
+  </div>
+
+  <div class="card">
+    <h3>H. Sprawl and reinvention drain time and momentum <span class="tag pa">partial</span></h3>
+    <div class="ev">38 projects in 7 weeks, 100+ folders, 55 to 60% graveyard. archer rebuilt 7x, RAG 5-6x, session-readers 6x. cd is your most common shell command at 3,026 calls. ~32 GB of datasets committed to git.</div>
+    <div><strong>Fix.</strong> A 3-project WIP limit, a monthly graveyard prune, a shared-core monorepo, and datasets out of git.</div>
+  </div>
+
+  <h2>This week (top 5)</h2>
+  <ol class="steps">
+    <li><strong>Wire the memory backbone</strong> (SessionStart recall + SessionEnd store + STATUS.md). 6 to 8 h/mo.</li>
+    <li><strong>Install the agent-eval reviewer hook</strong>. Stops 300+ manual pastes. 4 to 6 h/mo.</li>
+    <li><strong>Make design-first the default</strong>. One CLAUDE.md line plus a habit. 5 to 7 h/mo of rework avoided.</li>
+    <li><strong>Stop burning Opus on waiting</strong>: fire-and-notify for long jobs, route browse extraction to Haiku. ~4 h/mo plus latency.</li>
+    <li><strong>Get secrets out of transcripts</strong>: rotate the three leaked credentials, add a secret-scan hook.</li>
+  </ol>
+
+  <h2>What already works (do not touch)</h2>
+  <p>The /ultracode dynamic-workflow habit for building apps is strong (the gap is design timing and review wiring around it). browse as a QA loop is excellent. The content pipeline ships real output and needs chaining, not redesign. You already adopted Memento and Linear; the gap is automation, not adoption.</p>
+
+  <p class="note" style="margin-top:40px">Full detail in 10x/REPORT.md. Skill specs in 10x/skills.md. Build order in 10x/automations.md. First week in 10x/quick-wins.md. Evidence digests in 10x/_data/.</p>
+</div>
+<script>
+  function t(){var h=document.documentElement;h.setAttribute('data-theme',h.getAttribute('data-theme')==='light'?'dark':'light')}
+  if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){/* respect system but default light per house style */}
+</script>
+</body>
+</html>
