@@ -162,3 +162,4 @@
 | 2026-06-03 | images | [hero.png](images/hero.png) | Dynamic workflows non-obvious uses article: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/hero.png |
 | 2026-06-03 | images | [diagram-failure-modes.png](images/diagram-failure-modes.png) | Dynamic workflows non-obvious uses article: diagram-failure-modes.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/diagram-failure-modes.png |
 | 2026-06-03 | images | [diagram-patterns.png](images/diagram-patterns.png) | Dynamic workflows non-obvious uses article: diagram-patterns.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/diagram-patterns.png |
+| 2026-06-03 | images | [diagram-when.png](images/diagram-when.png) | Dynamic workflows non-obvious uses article: diagram-when.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/diagram-when.png |

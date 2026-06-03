@@ -349,3 +349,4 @@
 | 2026-06-03 | content | images | [hero.png](projects/content/images/hero.png) | Dynamic workflows non-obvious uses article: hero.png |
 | 2026-06-03 | content | images | [diagram-failure-modes.png](projects/content/images/diagram-failure-modes.png) | Dynamic workflows non-obvious uses article: diagram-failure-modes.png |
 | 2026-06-03 | content | images | [diagram-patterns.png](projects/content/images/diagram-patterns.png) | Dynamic workflows non-obvious uses article: diagram-patterns.png |
+| 2026-06-03 | content | images | [diagram-when.png](projects/content/images/diagram-when.png) | Dynamic workflows non-obvious uses article: diagram-when.png |
