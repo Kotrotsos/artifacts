@@ -347,3 +347,4 @@
 | 2026-06-02 | content | images | [diagram-skeleton.png](projects/content/images/diagram-skeleton.png) | Harness Engineering HTML + diagrams: diagram-skeleton.png |
 | 2026-06-03 | content | reports | [draft.html](projects/content/reports/draft.html) | Dynamic workflows non-obvious uses article: draft.html |
 | 2026-06-03 | content | images | [hero.png](projects/content/images/hero.png) | Dynamic workflows non-obvious uses article: hero.png |
+| 2026-06-03 | content | images | [diagram-failure-modes.png](projects/content/images/diagram-failure-modes.png) | Dynamic workflows non-obvious uses article: diagram-failure-modes.png |

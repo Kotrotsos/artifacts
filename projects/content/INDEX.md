@@ -160,3 +160,4 @@
 | 2026-06-02 | images | [diagram-skeleton.png](images/diagram-skeleton.png) | Harness Engineering HTML + diagrams: diagram-skeleton.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/harness-engineering/diagram-skeleton.png |
 | 2026-06-03 | reports | [draft.html](reports/draft.html) | Dynamic workflows non-obvious uses article: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/draft.html |
 | 2026-06-03 | images | [hero.png](images/hero.png) | Dynamic workflows non-obvious uses article: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/hero.png |
+| 2026-06-03 | images | [diagram-failure-modes.png](images/diagram-failure-modes.png) | Dynamic workflows non-obvious uses article: diagram-failure-modes.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/diagram-failure-modes.png |
