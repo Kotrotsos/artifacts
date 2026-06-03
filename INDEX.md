@@ -357,3 +357,4 @@
 | 2026-06-03 | 10x | reports | [10x-productivity-report.html](projects/10x/reports/10x-productivity-report.html) | Evidence-backed 10x productivity report from session-history and project-folder audit |
 | 2026-06-03 | 10x | reports | [10x-productivity-report.md](projects/10x/reports/10x-productivity-report.md) | Markdown source of the 10x productivity report |
 | 2026-06-03 | 10x | reports | [10x-report.html](projects/10x/reports/10x-report.html) | 10x productivity audit: 10x-report.html |
+| 2026-06-03 | 10x | reports | [REPORT.md](projects/10x/reports/REPORT.md) | 10x productivity audit: REPORT.md |
