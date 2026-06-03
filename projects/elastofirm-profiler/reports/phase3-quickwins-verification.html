@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phase 3 Quick Wins — Verification Report</title>
+<title>Elastofirm Profiler — Verification Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -28,8 +28,7 @@
   body {
     font-family: 'Geist', system-ui, -apple-system, sans-serif;
     background: var(--bg); color: var(--ink); line-height: 1.55; font-size: 15px;
-    -webkit-font-smoothing: antialiased;
-    transition: background 0.2s ease, color 0.2s ease;
+    -webkit-font-smoothing: antialiased; transition: background 0.2s ease, color 0.2s ease;
   }
   .mono { font-family: 'Geist Mono', ui-monospace, monospace; }
   .wrap { max-width: 860px; margin: 0 auto; padding: 44px 28px 90px; }
@@ -41,37 +40,39 @@
   .meta b { color: var(--ink); font-weight: 600; }
 
   .theme-toggle { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
-  .theme-toggle button {
-    font-family: 'Geist Mono', monospace; font-size: 11px; background: var(--surface); color: var(--muted);
-    border: none; padding: 6px 10px; cursor: pointer; border-right: 1px solid var(--border);
-  }
+  .theme-toggle button { font-family: 'Geist Mono', monospace; font-size: 11px; background: var(--surface); color: var(--muted); border: none; padding: 6px 10px; cursor: pointer; border-right: 1px solid var(--border); }
   .theme-toggle button:last-child { border-right: none; }
   .theme-toggle button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 
-  .banner {
-    display: flex; align-items: center; gap: 12px; margin: 22px 0 8px;
-    background: var(--good-bg); border: 1px solid var(--good-bd); color: var(--ink);
-    border-radius: 12px; padding: 14px 18px; font-size: 14px;
-  }
+  .banner { display: flex; align-items: center; gap: 12px; margin: 22px 0 8px; background: var(--good-bg); border: 1px solid var(--good-bd); color: var(--ink); border-radius: 12px; padding: 14px 18px; font-size: 14px; }
   .banner .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--good); flex-shrink: 0; }
   .banner b { font-weight: 600; }
 
-  .note {
-    background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
-    border-radius: 10px; padding: 14px 18px; margin: 18px 0 30px; font-size: 14px; color: var(--ink-2);
-  }
+  .note { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 10px; padding: 14px 18px; margin: 18px 0 14px; font-size: 14px; color: var(--ink-2); }
   .note b { color: var(--ink); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 30px; font-size: 12.5px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .pip { width: 10px; height: 10px; border-radius: 3px; }
 
-  h2.section { font-size: 13px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 36px 0 14px; }
+  h2.section { font-size: 13px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 34px 0 14px; }
 
-  .item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; margin-bottom: 18px; }
-  .item-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; margin-bottom: 18px; }
+
+  /* collapsible task items */
+  details.item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 14px; overflow: hidden; }
+  details.item[open] { border-color: var(--border-strong); }
+  details.item > summary { list-style: none; cursor: pointer; padding: 16px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  details.item > summary::-webkit-details-marker { display: none; }
+  .chev { width: 16px; flex-shrink: 0; color: var(--muted); transition: transform 0.2s ease; font-family: 'Geist Mono', monospace; }
+  details.item[open] .chev { transform: rotate(90deg); }
+  details.item > summary h3 { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; flex: 1; min-width: 200px; }
   .badge { font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
   .badge.id { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border); }
-  .badge.status { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
-  .badge.fixed { background: var(--good-bg); color: var(--good); border: 1px solid var(--good-bd); }
-  .item h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; flex: 1; min-width: 220px; }
-  .item .what { margin: 14px 0 4px; color: var(--ink-2); }
+  .badge.review { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
+  .badge.verified { background: var(--good-bg); color: var(--good); border: 1px solid var(--good-bd); }
+  .badge.active { background: rgba(37,99,235,0.12); color: var(--accent); border: 1px solid rgba(37,99,235,0.3); }
+  .item-body { padding: 0 20px 20px; border-top: 1px solid var(--border); }
+  .item-body .what { margin: 14px 0 4px; color: var(--ink-2); }
   .files { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 6px; }
   .files code { background: var(--code-bg); padding: 1px 6px; border-radius: 5px; color: var(--ink-2); }
 
@@ -86,6 +87,7 @@
 
   pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-family: 'Geist Mono', monospace; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
   pre .ok { color: var(--good); }
+  pre .dim { color: var(--muted); }
 
   table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 6px; }
   th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
@@ -98,7 +100,8 @@
   @media print {
     body { background: #fff; color: #000; font-size: 12px; }
     .theme-toggle { display: none; }
-    .item, .note, .banner { break-inside: avoid; border-color: #ccc; }
+    details.item, .note, .banner, .card { break-inside: avoid; border-color: #ccc; }
+    details.item > .item-body { display: block !important; }  /* expand all when printing */
     .wrap { max-width: 100%; padding: 0; }
     a { color: #000; text-decoration: underline; }
   }
@@ -108,13 +111,12 @@
 <div class="wrap">
   <header>
     <div>
-      <div class="eyebrow">Elastofirm Profiler · Verification Report</div>
-      <h1>Phase 3 Quick Wins — done &amp; how to verify</h1>
+      <div class="eyebrow">Elastofirm Profiler · Verification Board</div>
+      <h1>Phase 3 — work &amp; how to verify</h1>
       <div class="meta">
+        <span><b>Project</b> Elastofirm Profiler — Phase 3</span>
         <span><b>Branch</b> <span class="mono">inc-88-98-99-quickwins</span></span>
-        <span><b>Commit</b> <span class="mono">b11aa5e6</span></span>
-        <span><b>Version</b> <span class="mono">0.22.33</span></span>
-        <span><b>Date</b> 2026-06-03</span>
+        <span><b>Last update</b> 2026-06-03</span>
       </div>
     </div>
     <div class="theme-toggle" role="group" aria-label="Theme">
@@ -127,72 +129,93 @@
   <div class="banner"><span class="dot"></span><span><b>Regression suite: 8 / 8 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
 
   <div class="note">
-    <b>This is the flow.</b> Every batch of work ships the same way: implement on a branch → reproduce/validate live in the running app → add or extend the pytest regression suite and run it after each change → produce <i>this</i> verification report with visual steps → move the Linear issues to In Review with a comment. Use this document as the template for future batches.
+    <b>This is the living board and the flow.</b> Every batch follows the same path: implement on a branch → validate live in the running app → extend the pytest suite and run it after each change → record the item here → sync status to Linear. <b>Verified items collapse; items currently in development stay expanded.</b> Click any header to toggle.
+  </div>
+  <div class="legend">
+    <span><span class="pip" style="background:var(--good)"></span> Verified — collapsed</span>
+    <span><span class="pip" style="background:var(--accent)"></span> In development — expanded</span>
+    <span><span class="pip" style="background:var(--amber)"></span> In Review on Linear</span>
   </div>
 
   <h2 class="section">Before you start — run the app</h2>
-  <div class="item">
-    <p class="what">All three items are verified in the browser against the locally running app. API on <span class="mono">:3000</span>, frontend on <span class="mono">:3001</span> (auth bypassed via <span class="mono">LOCAL_DEVELOPMENT=true</span>).</p>
+  <div class="card">
+    <p class="what">Items are verified in the browser against the locally running app. API on <span class="mono">:3000</span>, frontend on <span class="mono">:3001</span> (auth bypassed via <span class="mono">LOCAL_DEVELOPMENT=true</span>).</p>
     <pre># from the project root
-npm run dev:hot          <span style="color:var(--muted)"># FastAPI :3000  +  Next dev :3001</span>
-# then open:
+npm run dev:hot          <span class="dim"># FastAPI :3000  +  Next dev :3001</span>
 open http://localhost:3001</pre>
   </div>
 
-  <h2 class="section">Items delivered</h2>
+  <h2 class="section">In development</h2>
+  <div class="card" id="active-empty" style="color:var(--muted);font-size:13.5px">
+    Nothing in development right now. When the next item is picked up it appears here, expanded, in the same format as below.
+  </div>
 
-  <div class="item">
-    <div class="item-head">
+  <h2 class="section">Verified &amp; in review</h2>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
       <span class="badge id">INC-88</span>
-      <span class="badge status">In Review</span>
       <h3>Weight &amp; surface shown in the result list</h3>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">Result cards (grid and list) now show meter weight in <span class="mono">g/m</span> and surface in <span class="mono">mm²</span>, so a 147&nbsp;g profile is visually distinct from a 12&nbsp;kg one. Data was already fetched; it just wasn't surfaced.</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (grid + list cards, <code>Scale</code> icon)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open <span class="mono">http://localhost:3001</span>.</li>
+        <li>Click <kbd>Search Profiles</kbd> (no filters needed) to list profiles.</li>
+        <li>Look at any result card in grid view, then toggle to list view.</li>
+        <li><span class="expect"><b>Expected:</b> each card shows a weight like <span class="mono">168 g/m</span> and a surface like <span class="mono">1.18 mm²</span> (a dash <span class="mono">—</span> when missing). Heavy vs light profiles are obvious at a glance.</span></li>
+      </ol>
     </div>
-    <p class="what">Result cards (grid and list) now show meter weight in <span class="mono">g/m</span> and surface in <span class="mono">mm²</span>, so a 147&nbsp;g profile is visually distinct from a 12&nbsp;kg one. Data was already fetched; it just wasn't surfaced.</p>
-    <p class="files">Touched: <code>app/page.tsx</code> (grid + list cards, <code>Scale</code> icon)</p>
-    <div class="verify-label">Verify visually</div>
-    <ol class="steps">
-      <li>Open <span class="mono">http://localhost:3001</span>.</li>
-      <li>Click <kbd>Search Profiles</kbd> (no filters needed) to list profiles.</li>
-      <li>Look at any result card in grid view, then toggle to list view.</li>
-      <li><span class="expect"><b>Expected:</b> each card shows a weight value like <span class="mono">168 g/m</span> and a surface like <span class="mono">1.18 mm²</span> (a dash <span class="mono">—</span> when the value is missing). Heavy vs light profiles are now obvious at a glance.</span></li>
-    </ol>
-  </div>
+  </details>
 
-  <div class="item">
-    <div class="item-head">
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
       <span class="badge id">INC-98</span>
-      <span class="badge status">In Review</span>
       <h3>Searching on industry alone now returns results</h3>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">Previously, selecting only an industry as your first action showed nothing. Root cause was the frontend search trigger (not the backend — the API always returned the rows). A filter change now drives a debounced search that runs with the current filter state.</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (<code>triggerDebouncedSearch</code> + filter-keyed effect)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span> (reads "Please perform a search first…").</li>
+        <li>In the <b>Industry</b> filter, type <span class="mono">Agri</span> and pick it — do nothing else (do not click Search).</li>
+        <li>Wait about a second for the auto-search.</li>
+        <li><span class="expect"><b>Expected:</b> the header reads <span class="mono">159 profiles found</span> and the grid fills — without clicking Search.</span></li>
+      </ol>
     </div>
-    <p class="what">Previously, selecting only an industry as your first action showed nothing. Root cause was the frontend search trigger (not the backend — the API always returned the rows). A filter change now drives a debounced search that runs with the current filter state.</p>
-    <p class="files">Touched: <code>app/page.tsx</code> (<code>triggerDebouncedSearch</code> + filter-keyed effect)</p>
-    <div class="verify-label">Verify visually</div>
-    <ol class="steps">
-      <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span> (it should read "Please perform a search first…").</li>
-      <li>In the <b>Industry</b> filter, type <span class="mono">Agri</span> and pick it — and do nothing else (do not click Search).</li>
-      <li>Wait about a second for the auto-search.</li>
-      <li><span class="expect"><b>Expected:</b> the header reads <span class="mono">159 profiles found</span> and the grid fills — without clicking the Search button.</span></li>
-    </ol>
-  </div>
+  </details>
 
-  <div class="item">
-    <div class="item-head">
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
       <span class="badge id">INC-99</span>
-      <span class="badge fixed">Already fixed + hardened</span>
       <h3>No "no products found" before the first search</h3>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">The not-searched vs no-results distinction already existed in the current code. Added a guard so the "No profiles found" message can't flash while a search is in flight.</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (no-results block gated on <code>!isLoadingProfiles</code>)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span> (or hard-refresh).</li>
+        <li>Do not search yet — just look at the results panel.</li>
+        <li><span class="expect"><b>Expected:</b> it shows "Please perform a search first…", <b>never</b> "No profiles found". The no-results message only appears after a search that genuinely returns zero rows.</span></li>
+      </ol>
     </div>
-    <p class="what">The not-searched vs no-results distinction already existed in the current code. Added a guard so the "No profiles found" message can't flash while a search is in flight.</p>
-    <p class="files">Touched: <code>app/page.tsx</code> (no-results block gated on <code>!isLoadingProfiles</code>)</p>
-    <div class="verify-label">Verify visually</div>
-    <ol class="steps">
-      <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span> (or hard-refresh).</li>
-      <li>Do not search yet — just look at the results panel.</li>
-      <li><span class="expect"><b>Expected:</b> it shows "Please perform a search first…", <b>never</b> "No profiles found". The no-results message only appears after a search that genuinely returns zero rows.</span></li>
-    </ol>
-  </div>
+  </details>
 
   <h2 class="section">Regression suite</h2>
-  <div class="item">
+  <div class="card">
     <p class="what">Guards the API contracts behind these fixes. Run after every change to this area:</p>
     <pre>API_BASE=http://localhost:3000 pytest scripts/test/test_phase3_quickwins.py -q
 <span class="ok">........                                          [100%]
@@ -210,11 +233,11 @@ open http://localhost:3001</pre>
         <tr><td>some profiles have weight/surface values</td><td>INC-88</td><td class="pass">pass</td></tr>
       </tbody>
     </table>
-    <p class="files" style="margin-top:12px">Note: no JS test runner is wired up, so the suite covers API contracts; the UI behaviors above are verified in the browser. INC-99 is pure client-side and is checked manually (step list above).</p>
+    <p class="files" style="margin-top:12px">No JS test runner is wired up, so the suite covers API contracts; UI behaviors are verified in the browser. INC-99 is pure client-side and is checked manually (steps above).</p>
   </div>
 
   <footer>
-    Elastofirm Profiler · Phase 3 quick-wins verification · generated 2026-06-03 · status of all three: In Review on Linear (project "Elastofirm Profiler — Phase 3").
+    Elastofirm Profiler · Phase 3 verification board · Linear project "Elastofirm Profiler — Phase 3" · convention: verified collapses, in-development stays open.
   </footer>
 </div>
 
@@ -223,11 +246,8 @@ open http://localhost:3001</pre>
   const btns = [...document.querySelectorAll('.theme-toggle button')];
   const mq = window.matchMedia('(prefers-color-scheme: dark)');
   function apply(mode) {
-    if (mode === 'system') {
-      root.setAttribute('data-theme', mq.matches ? 'dark' : 'light');
-    } else {
-      root.setAttribute('data-theme', mode);
-    }
+    if (mode === 'system') root.setAttribute('data-theme', mq.matches ? 'dark' : 'light');
+    else root.setAttribute('data-theme', mode);
     btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.set === mode)));
   }
   btns.forEach(b => b.addEventListener('click', () => apply(b.dataset.set)));
@@ -235,8 +255,7 @@ open http://localhost:3001</pre>
     const active = btns.find(b => b.getAttribute('aria-pressed') === 'true');
     if (active && active.dataset.set === 'system') apply('system');
   });
-  // default: light
-  apply('light');
+  apply('light'); // default light
 </script>
 </body>
 </html>
