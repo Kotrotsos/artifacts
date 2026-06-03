@@ -164,3 +164,4 @@
 | 2026-06-03 | images | [diagram-patterns.png](images/diagram-patterns.png) | Dynamic workflows non-obvious uses article: diagram-patterns.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/diagram-patterns.png |
 | 2026-06-03 | images | [diagram-when.png](images/diagram-when.png) | Dynamic workflows non-obvious uses article: diagram-when.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/diagram-when.png |
 | 2026-06-03 | images | [cc-verify.png](images/cc-verify.png) | Dynamic workflows non-obvious uses article: cc-verify.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/cc-verify.png |
+| 2026-06-03 | images | [cc-redteam.png](images/cc-redteam.png) | Dynamic workflows non-obvious uses article: cc-redteam.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/cc-redteam.png |

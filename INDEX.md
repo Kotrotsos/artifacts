@@ -351,3 +351,4 @@
 | 2026-06-03 | content | images | [diagram-patterns.png](projects/content/images/diagram-patterns.png) | Dynamic workflows non-obvious uses article: diagram-patterns.png |
 | 2026-06-03 | content | images | [diagram-when.png](projects/content/images/diagram-when.png) | Dynamic workflows non-obvious uses article: diagram-when.png |
 | 2026-06-03 | content | images | [cc-verify.png](projects/content/images/cc-verify.png) | Dynamic workflows non-obvious uses article: cc-verify.png |
+| 2026-06-03 | content | images | [cc-redteam.png](projects/content/images/cc-redteam.png) | Dynamic workflows non-obvious uses article: cc-redteam.png |
