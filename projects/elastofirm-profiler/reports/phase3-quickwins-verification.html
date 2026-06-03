@@ -11,7 +11,7 @@
   :root {
     --bg: #f9fafb; --surface: #ffffff; --surface-2: #f3f4f6;
     --border: #e5e7eb; --border-strong: #d1d5db;
-    --ink: #18181b; --ink-2: #3f3f46; --muted: #71717a;
+    --ink: #18181b; --ink-2: #3f3f46; --muted: #71717a; --muted-2:#a1a1aa;
     --accent: #2563eb; --good: #059669; --good-bg: #ecfdf5; --good-bd: #a7f3d0;
     --amber: #d97706; --amber-bg: #fffbeb; --amber-bd: #fde68a;
     --code-bg: #f3f4f6;
@@ -19,46 +19,35 @@
   [data-theme="dark"] {
     --bg: #0f1115; --surface: #16181d; --surface-2: #1d2026;
     --border: #2a2e37; --border-strong: #3a3f4b;
-    --ink: #f4f4f5; --ink-2: #d4d4d8; --muted: #9ca3af;
+    --ink: #f4f4f5; --ink-2: #d4d4d8; --muted: #9ca3af; --muted-2:#71717a;
     --accent: #60a5fa; --good: #34d399; --good-bg: #06281f; --good-bd: #0f5132;
     --amber: #fbbf24; --amber-bg: #2a2010; --amber-bd: #5c4310;
     --code-bg: #1d2026;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Geist', system-ui, -apple-system, sans-serif;
-    background: var(--bg); color: var(--ink); line-height: 1.55; font-size: 15px;
-    -webkit-font-smoothing: antialiased; transition: background 0.2s ease, color 0.2s ease;
-  }
+  body { font-family: 'Geist', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.55; font-size: 15px; -webkit-font-smoothing: antialiased; transition: background 0.2s ease, color 0.2s ease; }
   .mono { font-family: 'Geist Mono', ui-monospace, monospace; }
   .wrap { max-width: 860px; margin: 0 auto; padding: 44px 28px 90px; }
-
   header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
   .eyebrow { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
   h1 { font-size: 30px; font-weight: 600; letter-spacing: -0.025em; margin: 8px 0 14px; }
   .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--ink-2); }
   .meta b { color: var(--ink); font-weight: 600; }
-
   .theme-toggle { display: inline-flex; border: 1px solid var(--border-strong); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
   .theme-toggle button { font-family: 'Geist Mono', monospace; font-size: 11px; background: var(--surface); color: var(--muted); border: none; padding: 6px 10px; cursor: pointer; border-right: 1px solid var(--border); }
   .theme-toggle button:last-child { border-right: none; }
   .theme-toggle button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-
   .banner { display: flex; align-items: center; gap: 12px; margin: 22px 0 8px; background: var(--good-bg); border: 1px solid var(--good-bd); color: var(--ink); border-radius: 12px; padding: 14px 18px; font-size: 14px; }
   .banner .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--good); flex-shrink: 0; }
   .banner b { font-weight: 600; }
-
   .note { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 10px; padding: 14px 18px; margin: 18px 0 14px; font-size: 14px; color: var(--ink-2); }
   .note b { color: var(--ink); }
   .legend { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 30px; font-size: 12.5px; color: var(--muted); }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .legend .pip { width: 10px; height: 10px; border-radius: 3px; }
-
   h2.section { font-size: 13px; font-family: 'Geist Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin: 34px 0 14px; }
-
   .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 22px; margin-bottom: 18px; }
-
-  /* collapsible task items */
+  .empty { color: var(--muted); font-size: 13.5px; }
   details.item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 14px; overflow: hidden; }
   details.item[open] { border-color: var(--border-strong); }
   details.item > summary { list-style: none; cursor: pointer; padding: 16px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
@@ -70,16 +59,13 @@
   .badge.id { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border); }
   .badge.review { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bd); }
   .badge.verified { background: var(--good-bg); color: var(--good); border: 1px solid var(--good-bd); }
-  .badge.active { background: rgba(37,99,235,0.12); color: var(--accent); border: 1px solid rgba(37,99,235,0.3); }
-  .badge.planned { background: var(--surface-2); color: var(--muted); border: 1px solid var(--border-strong); }
   .badge.effort { background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border); }
-  .finding { margin: 10px 0 4px; font-size: 13.5px; color: var(--ink-2); }
-  .finding b { color: var(--ink); }
   .item-body { padding: 0 20px 20px; border-top: 1px solid var(--border); }
   .item-body .what { margin: 14px 0 4px; color: var(--ink-2); }
+  .finding { margin: 10px 0 4px; font-size: 13.5px; color: var(--ink-2); }
+  .finding b { color: var(--ink); }
   .files { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 6px; }
   .files code { background: var(--code-bg); padding: 1px 6px; border-radius: 5px; color: var(--ink-2); }
-
   .verify-label { font-family: 'Geist Mono', monospace; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); margin: 18px 0 8px; }
   ol.steps { list-style: none; counter-reset: s; }
   ol.steps li { counter-increment: s; position: relative; padding: 7px 0 7px 34px; border-bottom: 1px dashed var(--border); font-size: 14px; }
@@ -87,25 +73,22 @@
   ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 7px; width: 22px; height: 22px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); color: var(--muted); font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600; display: grid; place-items: center; }
   .expect { display: inline-flex; align-items: baseline; gap: 6px; margin-top: 4px; color: var(--good); font-size: 13px; }
   .expect b { font-weight: 600; }
+  .caveat { margin-top: 10px; font-size: 12.5px; color: var(--amber); }
   kbd { font-family: 'Geist Mono', monospace; font-size: 12px; background: var(--code-bg); border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; }
-
   pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; overflow-x: auto; font-family: 'Geist Mono', monospace; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
   pre .ok { color: var(--good); }
   pre .dim { color: var(--muted); }
-
   table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 6px; }
   th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
   th { font-family: 'Geist Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
   td.pass { color: var(--good); font-family: 'Geist Mono', monospace; }
-
   footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
-
   @media (max-width: 600px) { .wrap { padding: 28px 16px 60px; } h1 { font-size: 24px; } header { flex-direction: column; } }
   @media print {
     body { background: #fff; color: #000; font-size: 12px; }
     .theme-toggle { display: none; }
     details.item, .note, .banner, .card { break-inside: avoid; border-color: #ccc; }
-    details.item > .item-body { display: block !important; }  /* expand all when printing */
+    details.item > .item-body { display: block !important; }
     .wrap { max-width: 100%; padding: 0; }
     a { color: #000; text-decoration: underline; }
   }
@@ -119,7 +102,7 @@
       <h1>Phase 3 — work &amp; how to verify</h1>
       <div class="meta">
         <span><b>Project</b> Elastofirm Profiler — Phase 3</span>
-        <span><b>Branch</b> <span class="mono">inc-88-98-99-quickwins</span></span>
+        <span><b>Branch</b> <span class="mono">inc-93-89-85-quickwins</span></span>
         <span><b>Last update</b> 2026-06-03</span>
       </div>
     </div>
@@ -130,16 +113,16 @@
     </div>
   </header>
 
-  <div class="banner"><span class="dot"></span><span><b>Regression suite: 8 / 8 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
+  <div class="banner"><span class="dot"></span><span><b>Regression suite: 12 / 12 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
 
   <div class="note">
-    <b>This is the living board and the flow.</b> Every batch follows the same path: implement on a branch → validate live in the running app → extend the pytest suite and run it after each change → record the item here → sync status to Linear. <b>Verified items collapse; items currently in development stay expanded.</b> Click any header to toggle.
+    <b>This is the living board and the flow.</b> Every batch: implement on a branch → validate live in the running app → extend the pytest suite and run it after each change → record the item here → deploy the board to Railway → sync Linear. <b>Verified items collapse; items in development stay expanded.</b> Click any header to toggle.
   </div>
   <div class="legend">
     <span><span class="pip" style="background:var(--good)"></span> Verified — collapsed</span>
     <span><span class="pip" style="background:var(--accent)"></span> In development — expanded</span>
     <span><span class="pip" style="background:var(--amber)"></span> In Review on Linear</span>
-    <span><span class="pip" style="background:var(--muted-2,#a1a1aa)"></span> Planned / next up — not started</span>
+    <span><span class="pip" style="background:var(--muted-2)"></span> Planned / next up</span>
   </div>
 
   <h2 class="section">Before you start — run the app</h2>
@@ -151,23 +134,32 @@ open http://localhost:3001</pre>
   </div>
 
   <h2 class="section">In development</h2>
-  <div class="card" id="active-empty" style="color:var(--muted);font-size:13.5px">
-    Nothing in development right now. When the next item is picked up it appears here, expanded, in the same format as below.
-  </div>
+  <div class="card empty">Nothing in development right now. When the next item is picked up it appears here, expanded.</div>
 
   <h2 class="section">Next up — picked, not started</h2>
+  <div class="card empty">Queue is empty. The last picks (INC-93, INC-89, INC-85) are done and moved to Verified below.</div>
+
+  <h2 class="section">Verified &amp; in review</h2>
 
   <details class="item">
     <summary>
       <span class="chev">&#9654;</span>
       <span class="badge id">INC-93</span>
-      <h3>Filter on process (LCM / autoclaaf)</h3>
+      <h3>Filter on process — multi-select LCM + autoclaaf</h3>
       <span class="badge effort">S</span>
-      <span class="badge planned">Planned</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
     </summary>
     <div class="item-body">
-      <p class="finding"><b>Validated finding:</b> every other filter (compound, industry, customer, mold, department, primary&nbsp;line) comma-splits for multi-select, but <span class="mono">process_type</span> is a single exact match (<span class="mono">api/main.py:950</span> and <span class="mono">:1200</span>) — so selecting LCM <i>and</i> autoclaaf matches neither.</p>
-      <p class="what"><b>Planned approach:</b> add the same comma-split OR logic to <span class="mono">process_type</span> in both <span class="mono">/api/profiles</span> and <span class="mono">/api/profiles/count</span>, and dedupe the case variants (<span class="mono">AUTOCLAAF</span> vs <span class="mono">autoclaaf</span>) in <span class="mono">/api/filters</span>.</p>
+      <p class="what">Selecting more than one process now ORs the values (previously the literal "LCM,autoclaaf" was exact-matched and returned nothing). The dropdown also dedupes the <span class="mono">AUTOCLAAF</span>/<span class="mono">autoclaaf</span> case variants.</p>
+      <p class="files">Touched: <code>api/main.py</code> (process_type comma-split in both endpoints + filters dedupe)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open <span class="mono">http://localhost:3001</span>.</li>
+        <li>In the <b>Process</b> filter, select <span class="mono">LCM</span> and <span class="mono">AUTOCLAAF</span> (note it appears only once).</li>
+        <li>Wait for the auto-search.</li>
+        <li><span class="expect"><b>Expected:</b> ~<span class="mono">11,839</span> results = LCM (10,217) + autoclaaf (1,622). Selecting both widens, not zeroes, the set.</span></li>
+      </ol>
     </div>
   </details>
 
@@ -177,11 +169,19 @@ open http://localhost:3001</pre>
       <span class="badge id">INC-89</span>
       <h3>Sort similarity by surface instead of weight</h3>
       <span class="badge effort">M</span>
-      <span class="badge planned">Planned</span>
+      <span class="badge verified">Verified (logic)</span>
+      <span class="badge review">In Review</span>
     </summary>
     <div class="item-body">
-      <p class="finding"><b>Validated finding:</b> a <span class="mono">prioritizeWeight</span> rerank already exists as a working template (<span class="mono">app/page.tsx:759</span>, <span class="mono">:1622</span>), but there is no area equivalent. Surface is the geometry-true measure (weight shifts with compound density).</p>
-      <p class="what"><b>Planned approach:</b> add a <span class="mono">prioritizeArea</span> toggle and <span class="mono">parseArea</span> helper that re-sorts results by absolute distance to the top result's surface; mutually exclusive with the weight toggle.</p>
+      <p class="what">Adds a "Sort by surface (area) similarity" toggle on image-search results. Surface is the geometry-true measure (independent of compound density). Mirrors the existing weight rerank and is mutually exclusive with it.</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (prioritizeArea state, area rerank, toggle, deps/effect)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open <span class="mono">http://localhost:3001</span> and upload a profile image, then run the image search.</li>
+        <li>In the results header, flip <b>Sort by surface (area) similarity</b>.</li>
+        <li><span class="expect"><b>Expected:</b> results reorder so those closest in surface to the top match rise; toggling weight off when area is on (mutually exclusive).</span></li>
+      </ol>
+      <p class="caveat">Note: image-search only. Verified by compile + logic-mirror of the proven weight rerank; full reorder needs a real image upload to confirm (not covered by the API suite).</p>
     </div>
   </details>
 
@@ -191,33 +191,38 @@ open http://localhost:3001</pre>
       <span class="badge id">INC-85</span>
       <h3>Filter button "incomplete data records"</h3>
       <span class="badge effort">M</span>
-      <span class="badge planned">Planned</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
     </summary>
     <div class="item-body">
-      <p class="finding"><b>Validated finding:</b> no incomplete-data filter exists yet, and the runtime schema already exposes the fields needed (<span class="mono">Area</span>, <span class="mono">[Metergewicht tekening]</span>, <span class="mono">Compoundcode</span>, hardness, SG, <span class="mono">image_extension</span>).</p>
-      <p class="what"><b>Planned approach:</b> add an <span class="mono">incomplete_data</span> param to <span class="mono">/api/profiles</span> + count that selects rows with any required field NULL/empty/sentinel, a toggle in the filter panel, and wire it into the Excel export. Replaces the manual lists the PO sends to Simon.</p>
+      <p class="what">A single "Incomplete data only" toggle selects every record missing a required field (Area, meter weight, compound, hardness, SG, or process), ready to export to engineering. Replaces the manual lists the PO sends to Simon.</p>
+      <p class="files">Touched: <code>api/main.py</code> (incomplete_data param + condition), <code>app/page.tsx</code> (toggle + wiring)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open <span class="mono">http://localhost:3001</span>.</li>
+        <li>In the filter panel, flip the amber <b>Incomplete data only</b> switch.</li>
+        <li><span class="expect"><b>Expected:</b> ~<span class="mono">8,479</span> results, every row missing at least one required field. Turning it off restores the full set.</span></li>
+      </ol>
     </div>
   </details>
-
-  <h2 class="section">Verified &amp; in review</h2>
 
   <details class="item">
     <summary>
       <span class="chev">&#9654;</span>
       <span class="badge id">INC-88</span>
       <h3>Weight &amp; surface shown in the result list</h3>
+      <span class="badge effort">S</span>
       <span class="badge verified">Verified</span>
       <span class="badge review">In Review</span>
     </summary>
     <div class="item-body">
-      <p class="what">Result cards (grid and list) now show meter weight in <span class="mono">g/m</span> and surface in <span class="mono">mm²</span>, so a 147&nbsp;g profile is visually distinct from a 12&nbsp;kg one. Data was already fetched; it just wasn't surfaced.</p>
+      <p class="what">Result cards (grid and list) show meter weight in <span class="mono">g/m</span> and surface in <span class="mono">mm²</span>, so a 147&nbsp;g profile is visually distinct from a 12&nbsp;kg one.</p>
       <p class="files">Touched: <code>app/page.tsx</code> (grid + list cards, <code>Scale</code> icon)</p>
       <div class="verify-label">Verify visually</div>
       <ol class="steps">
-        <li>Open <span class="mono">http://localhost:3001</span>.</li>
-        <li>Click <kbd>Search Profiles</kbd> (no filters needed) to list profiles.</li>
-        <li>Look at any result card in grid view, then toggle to list view.</li>
-        <li><span class="expect"><b>Expected:</b> each card shows a weight like <span class="mono">168 g/m</span> and a surface like <span class="mono">1.18 mm²</span> (a dash <span class="mono">—</span> when missing). Heavy vs light profiles are obvious at a glance.</span></li>
+        <li>Open <span class="mono">http://localhost:3001</span>, click <kbd>Search Profiles</kbd>.</li>
+        <li>Look at any card in grid then list view.</li>
+        <li><span class="expect"><b>Expected:</b> each card shows a weight like <span class="mono">168 g/m</span> and a surface like <span class="mono">1.18 mm²</span> (dash when missing).</span></li>
       </ol>
     </div>
   </details>
@@ -226,19 +231,19 @@ open http://localhost:3001</pre>
     <summary>
       <span class="chev">&#9654;</span>
       <span class="badge id">INC-98</span>
-      <h3>Searching on industry alone now returns results</h3>
+      <h3>Searching on industry alone returns results</h3>
+      <span class="badge effort">S</span>
       <span class="badge verified">Verified</span>
       <span class="badge review">In Review</span>
     </summary>
     <div class="item-body">
-      <p class="what">Previously, selecting only an industry as your first action showed nothing. Root cause was the frontend search trigger (not the backend — the API always returned the rows). A filter change now drives a debounced search that runs with the current filter state.</p>
-      <p class="files">Touched: <code>app/page.tsx</code> (<code>triggerDebouncedSearch</code> + filter-keyed effect)</p>
+      <p class="what">Selecting only an industry as the first action now auto-searches (root cause was the frontend search trigger, not the backend).</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (filter-keyed debounced effect)</p>
       <div class="verify-label">Verify visually</div>
       <ol class="steps">
-        <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span> (reads "Please perform a search first…").</li>
-        <li>In the <b>Industry</b> filter, type <span class="mono">Agri</span> and pick it — do nothing else (do not click Search).</li>
-        <li>Wait about a second for the auto-search.</li>
-        <li><span class="expect"><b>Expected:</b> the header reads <span class="mono">159 profiles found</span> and the grid fills — without clicking Search.</span></li>
+        <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span>.</li>
+        <li>Pick only <span class="mono">Agri</span> in the Industry filter; do nothing else.</li>
+        <li><span class="expect"><b>Expected:</b> <span class="mono">159 profiles found</span> without clicking Search.</span></li>
       </ol>
     </div>
   </details>
@@ -248,17 +253,18 @@ open http://localhost:3001</pre>
       <span class="chev">&#9654;</span>
       <span class="badge id">INC-99</span>
       <h3>No "no products found" before the first search</h3>
+      <span class="badge effort">S</span>
       <span class="badge verified">Verified</span>
       <span class="badge review">In Review</span>
     </summary>
     <div class="item-body">
-      <p class="what">The not-searched vs no-results distinction already existed in the current code. Added a guard so the "No profiles found" message can't flash while a search is in flight.</p>
+      <p class="what">Already correct in current code; added a guard so the message can't flash while a search is in flight.</p>
       <p class="files">Touched: <code>app/page.tsx</code> (no-results block gated on <code>!isLoadingProfiles</code>)</p>
       <div class="verify-label">Verify visually</div>
       <ol class="steps">
-        <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span> (or hard-refresh).</li>
-        <li>Do not search yet — just look at the results panel.</li>
-        <li><span class="expect"><b>Expected:</b> it shows "Please perform a search first…", <b>never</b> "No profiles found". The no-results message only appears after a search that genuinely returns zero rows.</span></li>
+        <li>Open a <b>fresh</b> <span class="mono">http://localhost:3001</span>.</li>
+        <li>Don't search; look at the results panel.</li>
+        <li><span class="expect"><b>Expected:</b> "Please perform a search first…", never "No profiles found".</span></li>
       </ol>
     </div>
   </details>
@@ -267,26 +273,23 @@ open http://localhost:3001</pre>
   <div class="card">
     <p class="what">Guards the API contracts behind these fixes. Run after every change to this area:</p>
     <pre>API_BASE=http://localhost:3000 pytest scripts/test/test_phase3_quickwins.py -q
-<span class="ok">........                                          [100%]
-8 passed in 0.33s</span></pre>
+<span class="ok">............                                      [100%]
+12 passed in 1.67s</span></pre>
     <table>
-      <thead><tr><th>Test</th><th>Guards</th><th>Result</th></tr></thead>
+      <thead><tr><th>Area</th><th>Guards</th><th>Tests</th><th>Result</th></tr></thead>
       <tbody>
-        <tr><td>filters list includes industry</td><td>dropdown source</td><td class="pass">pass</td></tr>
-        <tr><td>industry only returns rows</td><td>INC-98</td><td class="pass">pass</td></tr>
-        <tr><td>industry only narrows result set</td><td>INC-98</td><td class="pass">pass</td></tr>
-        <tr><td>industry only baseline count (159)</td><td>INC-98</td><td class="pass">pass</td></tr>
-        <tr><td>industry filter case-insensitive</td><td>INC-98</td><td class="pass">pass</td></tr>
-        <tr><td>industry list matches count &amp; industry</td><td>INC-98</td><td class="pass">pass</td></tr>
-        <tr><td>profiles expose weight &amp; surface</td><td>INC-88</td><td class="pass">pass</td></tr>
-        <tr><td>some profiles have weight/surface values</td><td>INC-88</td><td class="pass">pass</td></tr>
+        <tr><td>Industry-only search</td><td>INC-98</td><td>5</td><td class="pass">pass</td></tr>
+        <tr><td>Weight/surface exposed</td><td>INC-88</td><td>2</td><td class="pass">pass</td></tr>
+        <tr><td>Process multi-select + dedupe</td><td>INC-93</td><td>2</td><td class="pass">pass</td></tr>
+        <tr><td>Incomplete-data filter</td><td>INC-85</td><td>2</td><td class="pass">pass</td></tr>
+        <tr><td>Filters list sanity</td><td>shared</td><td>1</td><td class="pass">pass</td></tr>
       </tbody>
     </table>
-    <p class="files" style="margin-top:12px">No JS test runner is wired up, so the suite covers API contracts; UI behaviors are verified in the browser. INC-99 is pure client-side and is checked manually (steps above).</p>
+    <p class="files" style="margin-top:12px">No JS test runner is wired up, so the suite covers API contracts; UI behaviors are verified in the browser. INC-89 (image-search rerank) and INC-99 (client empty-state) are verified manually per the steps above.</p>
   </div>
 
   <footer>
-    Elastofirm Profiler · Phase 3 verification board · Linear project "Elastofirm Profiler — Phase 3" · convention: verified collapses, in-development stays open.
+    Elastofirm Profiler · Phase 3 verification board · Linear project "Elastofirm Profiler — Phase 3" · verified collapses, in-development stays open.
   </footer>
 </div>
 
@@ -304,7 +307,7 @@ open http://localhost:3001</pre>
     const active = btns.find(b => b.getAttribute('aria-pressed') === 'true');
     if (active && active.dataset.set === 'system') apply('system');
   });
-  apply('light'); // default light
+  apply('light');
 </script>
 </body>
 </html>
