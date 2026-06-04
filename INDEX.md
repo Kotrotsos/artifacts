@@ -395,3 +395,4 @@
 | 2026-06-04 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: select+bulk-categorise verified, 8 items |
 | 2026-06-04 | content | reports | [draft.md](projects/content/reports/draft.md) | Generative UI three settings article (credits Saboo, Bar lens): draft.md |
 | 2026-06-04 | content | reports | [draft.html](projects/content/reports/draft.html) | Generative UI three settings article (credits Saboo, Bar lens): draft.html |
+| 2026-06-04 | content | images | [hero.png](projects/content/images/hero.png) | Generative UI three settings article (credits Saboo, Bar lens): hero.png |

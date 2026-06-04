@@ -186,3 +186,4 @@
 | 2026-06-04 | images | [cc-eval-run.png](images/cc-eval-run.png) | The Smallest Eval That Beats an Opinion (informative eval guide): cc-eval-run.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/smallest-eval/cc-eval-run.png |
 | 2026-06-04 | reports | [draft.md](reports/draft.md) | Generative UI three settings article (credits Saboo, Bar lens): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/generative-ui-three-settings/draft.md |
 | 2026-06-04 | reports | [draft.html](reports/draft.html) | Generative UI three settings article (credits Saboo, Bar lens): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/generative-ui-three-settings/draft.html |
+| 2026-06-04 | images | [hero.png](images/hero.png) | Generative UI three settings article (credits Saboo, Bar lens): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/generative-ui-three-settings/hero.png |
