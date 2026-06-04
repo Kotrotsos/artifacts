@@ -159,14 +159,14 @@ open http://localhost:3001</pre>
   <details class="item">
     <summary>
       <span class="chev">&#9654;</span>
-      <span class="badge id">INC-114/116/117</span>
+      <span class="badge id">INC-114/115/116/117</span>
       <h3>Select + bulk-categorise (toepassing / omschrijving)</h3>
       <span class="badge effort">M</span>
       <span class="badge verified">Verified</span>
       <span class="badge review">In Review</span>
     </summary>
     <div class="item-body">
-      <p class="what">Select records via the existing checkbox or "Selecteer alle (N)" (the whole result set, not just the page), then a bulk-apply panel writes <b>toepassing</b> + <b>omschrijving</b> to all selected at once (dropdown + free text). New classification columns + a categorize endpoint persist it; the values then appear in the filter dropdowns.</p>
+      <p class="what">Select records via the existing checkbox, <b>shift-click for a range</b>, or "Selecteer alle (N)" (the whole result set, not just the page), then a bulk-apply panel writes <b>toepassing</b> + <b>omschrijving</b> to all selected at once (dropdown + free text). New classification columns + a categorize endpoint persist it; the values then appear in the filter dropdowns.</p>
       <p class="files">Touched: <code>api/main.py</code> (toepassing/omschrijving columns, /api/profiles/categorize, filters lists), <code>app/page.tsx</code> (select-all, bulk-apply panel)</p>
       <div class="verify-label">Verify visually</div>
       <ol class="steps">
@@ -175,7 +175,7 @@ open http://localhost:3001</pre>
         <li>Set Toepassing + Omschrijving (type or pick), click <b>Toepassen</b>.</li>
         <li><span class="expect"><b>Expected:</b> toast "8 records gecategoriseerd"; the values persist (re-search shows them, and they appear in the filter dropdowns).</span></li>
       </ol>
-      <p class="caveat">Remaining in this cluster: INC-115 (shift-click range), INC-113 (English labels), INC-118 (edit only under beheer/data-management mode — currently ungated), INC-119 (SAP sync).</p>
+      <p class="caveat">Shift-click range (INC-115) included. Remaining in this cluster: INC-113 (English labels), INC-118 (edit only under beheer/data-management mode — currently ungated), INC-119 (SAP sync).</p>
     </div>
   </details>
 

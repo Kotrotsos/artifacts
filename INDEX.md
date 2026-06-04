@@ -399,3 +399,4 @@
 | 2026-06-04 | content | images | [diagram-spectrum.png](projects/content/images/diagram-spectrum.png) | Generative UI three settings article (credits Saboo, Bar lens): diagram-spectrum.png |
 | 2026-06-04 | content | images | [diagram-comparison.png](projects/content/images/diagram-comparison.png) | Generative UI three settings article (credits Saboo, Bar lens): diagram-comparison.png |
 | 2026-06-04 | content | images | [diagram-decision.png](projects/content/images/diagram-decision.png) | Generative UI three settings article (credits Saboo, Bar lens): diagram-decision.png |
+| 2026-06-04 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: shift-click range added to categorize cluster |
