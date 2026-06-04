@@ -396,3 +396,4 @@
 | 2026-06-04 | content | reports | [draft.md](projects/content/reports/draft.md) | Generative UI three settings article (credits Saboo, Bar lens): draft.md |
 | 2026-06-04 | content | reports | [draft.html](projects/content/reports/draft.html) | Generative UI three settings article (credits Saboo, Bar lens): draft.html |
 | 2026-06-04 | content | images | [hero.png](projects/content/images/hero.png) | Generative UI three settings article (credits Saboo, Bar lens): hero.png |
+| 2026-06-04 | content | images | [diagram-spectrum.png](projects/content/images/diagram-spectrum.png) | Generative UI three settings article (credits Saboo, Bar lens): diagram-spectrum.png |
