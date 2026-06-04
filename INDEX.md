@@ -370,3 +370,4 @@
 | 2026-06-04 | content | reports | [draft.html](projects/content/reports/draft.html) | The Bar Is the Work (framework cornerstone): draft.html |
 | 2026-06-04 | content | images | [hero.png](projects/content/images/hero.png) | The Bar Is the Work (framework cornerstone): hero.png |
 | 2026-06-04 | content | images | [diagram-bifurcation.png](projects/content/images/diagram-bifurcation.png) | The Bar Is the Work (framework cornerstone): diagram-bifurcation.png |
+| 2026-06-04 | content | images | [diagram-two-jobs.png](projects/content/images/diagram-two-jobs.png) | The Bar Is the Work (framework cornerstone): diagram-two-jobs.png |

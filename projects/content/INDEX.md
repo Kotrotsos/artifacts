@@ -171,3 +171,4 @@
 | 2026-06-04 | reports | [draft.html](reports/draft.html) | The Bar Is the Work (framework cornerstone): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/draft.html |
 | 2026-06-04 | images | [hero.png](images/hero.png) | The Bar Is the Work (framework cornerstone): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/hero.png |
 | 2026-06-04 | images | [diagram-bifurcation.png](images/diagram-bifurcation.png) | The Bar Is the Work (framework cornerstone): diagram-bifurcation.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/diagram-bifurcation.png |
+| 2026-06-04 | images | [diagram-two-jobs.png](images/diagram-two-jobs.png) | The Bar Is the Work (framework cornerstone): diagram-two-jobs.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/diagram-two-jobs.png |
