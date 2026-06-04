@@ -390,3 +390,4 @@
 | 2026-06-04 | pool | reports | [forecast-v6.html](projects/pool/reports/forecast-v6.html) | WC2026 v6.1 forecast: backtest with player Elo + WC bias signal |
 | 2026-06-04 | pool | reports | [forecast-v6.html](projects/pool/reports/forecast-v6.html) | WC2026 v6.2 final forecast: 9 signals + perfect-on-N-of-4 backtest |
 | 2026-06-04 | pool | reports | [forecast-v6.html](projects/pool/reports/forecast-v6.html) | WC2026 v6.2 dual-mode: calibrated production Spain 31.9% + aggressive backtest-fit |
+| 2026-06-04 | elastofirm-recepies | reports | [design-rubber-recipe-hypothesis-engine.html](projects/elastofirm-recepies/reports/design-rubber-recipe-hypothesis-engine.html) | Feasibility design doc: agentic rubber-recipe hypothesis engine for Elastofirm (HTML) |

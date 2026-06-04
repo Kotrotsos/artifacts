@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design: Agentic Rubber-Recipe Hypothesis Engine (Elastofirm)</title>
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --surface: #ffffff;
+    --text: #1c1d22;
+    --muted: #5d6068;
+    --faint: #8a8e97;
+    --border: #e4e3df;
+    --accent: #2f6f6a;
+    --accent-soft: #e7f0ef;
+    --ok: #2f7d4f;
+    --ok-soft: #e6f2ea;
+    --warn: #9a6a18;
+    --warn-soft: #f6eeda;
+    --defer: #6a6f78;
+    --defer-soft: #eceef0;
+    --code-bg: #f1f1ee;
+    --shadow: 0 1px 2px rgba(20,20,25,.05), 0 6px 20px rgba(20,20,25,.05);
+  }
+  html[data-theme="dark"] {
+    --bg: #16181c;
+    --surface: #1f2227;
+    --text: #e7e8ea;
+    --muted: #a6abb4;
+    --faint: #7e848e;
+    --border: #2e323a;
+    --accent: #6fbcb4;
+    --accent-soft: #1d2c2b;
+    --ok: #6fc28d;
+    --ok-soft: #18271d;
+    --warn: #d6ad5f;
+    --warn-soft: #2b2415;
+    --defer: #9aa0aa;
+    --defer-soft: #24272d;
+    --code-bg: #2a2e34;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 22px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Helvetica Neue", sans-serif;
+    line-height: 1.62;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 56px 28px 96px; }
+  h1 { font-size: 1.9rem; line-height: 1.2; letter-spacing: -.02em; margin: 0 0 6px; font-weight: 700; }
+  h2 {
+    font-size: 1.18rem; letter-spacing: -.01em; margin: 48px 0 14px; font-weight: 650;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 1.02rem; margin: 26px 0 8px; font-weight: 650; }
+  p { margin: 0 0 14px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 0 0 9px; }
+  li > ul, li > ol { margin-top: 9px; }
+  strong { font-weight: 650; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    font-size: .86em; background: var(--code-bg); padding: 1px 5px; border-radius: 5px;
+    border: 1px solid var(--border);
+  }
+  a { color: var(--accent); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+  a:hover { border-bottom-color: var(--accent); }
+  .muted { color: var(--muted); }
+
+  /* Header meta */
+  .lede { color: var(--muted); font-size: 1.02rem; margin: 6px 0 22px; }
+  .meta {
+    display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px 24px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 8px;
+  }
+  .meta div { font-size: .9rem; color: var(--muted); }
+  .meta b { color: var(--text); font-weight: 600; }
+  .badge {
+    display: inline-block; font-size: .74rem; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 999px; vertical-align: middle;
+  }
+  .badge.ok { background: var(--ok-soft); color: var(--ok); }
+
+  /* Cards for approaches */
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--defer);
+    border-radius: 10px; padding: 16px 18px; margin: 0 0 14px; box-shadow: var(--shadow);
+  }
+  .card.chosen { border-left-color: var(--accent); }
+  .card .ctag {
+    font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 999px; margin-left: 8px; vertical-align: middle;
+    background: var(--defer-soft); color: var(--defer);
+  }
+  .card.chosen .ctag { background: var(--accent-soft); color: var(--accent); }
+  .card h3 { margin-top: 0; }
+  .card .facts { font-size: .88rem; color: var(--muted); margin-top: 8px; }
+  .card .facts span { display: inline-block; margin-right: 16px; }
+
+  /* Callouts */
+  .callout {
+    background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
+    border-radius: 10px; padding: 16px 18px; margin: 14px 0;
+  }
+  .callout.warn { background: var(--warn-soft); border-color: color-mix(in srgb, var(--warn) 30%, var(--border)); }
+  .callout h3 { margin-top: 0; }
+
+  .eureka { font-weight: 600; }
+  .eureka::before { content: "EUREKA "; color: var(--accent); font-weight: 800; letter-spacing: .03em; }
+
+  /* Theme toggle */
+  .toggle {
+    position: fixed; top: 16px; right: 16px; display: flex; gap: 2px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+    padding: 3px; box-shadow: var(--shadow); z-index: 10;
+  }
+  .toggle button {
+    border: 0; background: transparent; color: var(--muted); cursor: pointer;
+    font: inherit; font-size: .8rem; padding: 5px 12px; border-radius: 999px; line-height: 1;
+  }
+  .toggle button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  html[data-theme="dark"] .toggle button[aria-pressed="true"] { color: #14211f; }
+
+  footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--faint); font-size: .82rem; }
+
+  @media (max-width: 560px) {
+    .meta { grid-template-columns: 1fr; }
+    .wrap { padding: 64px 18px 72px; }
+  }
+
+  @media print {
+    .toggle { display: none; }
+    :root { --bg:#fff; --surface:#fff; --text:#000; --muted:#333; --border:#bbb; --shadow:none; }
+    html[data-theme] { --bg:#fff; --surface:#fff; --text:#000; }
+    body { font-size: 11.5pt; line-height: 1.4; }
+    .wrap { max-width: none; padding: 0; }
+    h2 { page-break-after: avoid; }
+    .card, .callout { page-break-inside: avoid; box-shadow: none; }
+    a { color: #000; border: 0; }
+    a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .8em; color: #555; word-break: break-all; }
+  }
+</style>
+</head>
+<body>
+<div class="toggle" role="group" aria-label="Color theme">
+  <button data-set="light" aria-pressed="true">Light</button>
+  <button data-set="dark" aria-pressed="false">Dark</button>
+  <button data-set="system" aria-pressed="false">System</button>
+</div>
+
+<div class="wrap">
+  <h1>Agentic Rubber-Recipe Hypothesis Engine</h1>
+  <p class="lede">Feasibility design for an AI-agent system that generates novel rubber compounds for Elastofirm.</p>
+
+  <div class="meta">
+    <div>Generated by <b>/office-hours</b> on <b>2026-06-04</b></div>
+    <div>Status <span class="badge ok">Approved</span></div>
+    <div>Mode <b>Builder (research / feasibility)</b></div>
+    <div>Review <b>2 rounds adversarial, 12/12 resolved, 9/10</b></div>
+    <div>Repo <b>local — projects/elastofirm-recepies</b></div>
+    <div>Branch <b>unknown (not yet a git repo)</b></div>
+  </div>
+
+  <h2>Problem Statement</h2>
+  <p>Elastofirm develops rubber compounds (EPDM and others) the traditional way: a compounder's experience plus trial-and-error in the lab. Auke Philips scoped a data schema (<code>EPDM_Compound_Structuur.xlsx</code>) as a precondition for "compounding with AI." The goal of THIS project is narrower and more honest than "AI makes recipes": determine whether AI agents can usefully generate <strong>novel candidate rubber recipes</strong> toward a stated goal, attach <strong>honest confidence and evidence</strong>, and <strong>rank what is worth testing in the lab</strong>, including deliberately "out of bounds" ideas like using concrete as a filler.</p>
+  <p>This is a feasibility question, not a product commitment. The deliverable of the first build is evidence: are the generated candidates good enough that Auke would actually put them on the bench?</p>
+
+  <h2>What Makes This Cool</h2>
+  <ul>
+    <li><strong>Out-of-distribution by design.</strong> Every commercial materials-informatics tool (Citrine, Uncountable, Polymerize, Albert Invent, Matmerize) optimizes WITHIN a customer's existing dataset. They need clean data first and structurally cannot explore genuinely novel ingredients. An LLM-agent, literature-grounded prior + lab-in-the-loop can start cold AND go out of bounds. That is the wedge.</li>
+    <li><strong>Goal-driven.</strong> Set a property envelope ("Shore A 60-70, compression set &lt;20% at 100C, ozone-resistant, cost &lt; X") optionally with a hard constraint ("must use concrete filler"), and the system searches recipe space for candidates that hit it.</li>
+    <li><strong>Honest.</strong> It is a hypothesis engine, not an oracle. Output is a ranked shortlist with confidence, citations, and "test this first", not fake-precise property numbers.</li>
+    <li><strong>Demoable.</strong> The first version produces a single self-contained HTML dossier you can hand to Rene/Dave/Auke.</li>
+  </ul>
+
+  <h2>Constraints</h2>
+  <ul>
+    <li>First user is internal: Elastofirm's compounders (Auke first). Distribution is an internal tool / artifact, not a SaaS yet.</li>
+    <li>Little-to-no clean historical recipe&rarr;property dataset assumed available at start (to be confirmed, see Open Questions). Design must not depend on it.</li>
+    <li>Property predictions must never be presented as measured truth.</li>
+    <li>Built on agentic, multi-agent workflows (the user's stated architecture).</li>
+  </ul>
+
+  <h2>Premises <span class="muted" style="font-weight:400;font-size:.9rem">(all confirmed by user)</span></h2>
+  <ol>
+    <li>It is a hypothesis + experiment-prioritization engine, NOT a property simulator. Output is a ranked shortlist of recipes to test, each with confidence and rationale. It never claims the numbers are true.</li>
+    <li>The differentiated core is agentic, retrieval-grounded hypothesis generation over out-of-distribution ingredients. The optimization / active-learning math is REUSED from existing work (Bayesian optimization, active learning), not invented.</li>
+    <li>LLM parametric memory of exact phr values and property numbers is unreliable. The "deep research" must be grounded in retrieved evidence (papers, patents, supplier technical data sheets) with visible citations and uncertainty, or a compounder dismisses it instantly for confidently-wrong numbers.</li>
+    <li>Feasibility hinges on a real feedback signal. Auke's lab (or a seed of historical results) has to be in the loop, or it stays a brainstorm toy that cannot calibrate.</li>
+    <li>The unsexy core is representing rubber correctly (ingredient ontology, phr accounting, sulfur vs peroxide cure logic, process params). Bad schema = bad candidates regardless of agent quality. This builds on Auke's xlsx, corrected.</li>
+  </ol>
+
+  <h2>Landscape Findings</h2>
+  <ul>
+    <li>Mature commercial field: Citrine Informatics, Uncountable, Polymerize, Albert Invent, Matmerize (polymer-specific), NobleAI, Kebotix. ~$400M-by-2030 market, ~19% CAGR. A 2025 result showed AI designing rubber-like materials quickly; Rubber World published a practical piece on AI for rubber compound formulation.</li>
+    <li>Dominant research method = Bayesian optimization + active learning (data-efficient closed-loop experiment selection; up to ~10x fewer experiments in published cases). This MATCHES the chosen lab-in-the-loop framing.</li>
+  </ul>
+  <div class="callout">
+    <p class="eureka" style="margin:0">incumbents assume value lives in optimizing the customer's existing dataset, which makes them slow to onboard and useless for novelty. The opening is agentic, retrieval-grounded hypothesis generation over out-of-distribution space, with the lab as ground-truth oracle and active learning added later for data efficiency.</p>
+  </div>
+  <p class="muted" style="font-size:.9rem">Sources:
+    <a href="https://www.chemcopilot.com/blog/ai-formulation-software-top-7-platforms-compared-2026-1">ChemCopilot — Top 7 AI formulation platforms 2026</a> &middot;
+    <a href="https://phys.org/news/2025-09-ai-chemists-rubber-materials.html">phys.org — AI rubber-like materials</a> &middot;
+    <a href="https://rubberworld.com/utilization-of-ai-driven-solutions-for-rubber-compound-formulation-a-practical-approach/">Rubber World — AI for rubber compound formulation</a> &middot;
+    <a href="https://www.nature.com/articles/s41524-019-0153-8">npj Comp. Materials — active learning</a> &middot;
+    <a href="https://www.nature.com/articles/s41467-020-19597-w">Nature Comms — closed-loop Bayesian active learning</a>
+  </p>
+
+  <h2>Approaches Considered</h2>
+
+  <div class="card chosen">
+    <h3>Approach A: Single-shot research dossier <span class="ctag">Chosen core</span></h3>
+    <p>One workflow. Input a goal (property envelope + optional constraints). Multi-agent deep research (retrieval-grounded) proposes N candidate recipes on the corrected schema, full phr formulation, cure system, process params, predicted properties with qualitative confidence + citations + "test this first". Ranked by distance-to-target &times; confidence &times; novelty. Output = one self-contained HTML dossier. No DB, no UI, no feedback loop yet.</p>
+    <div class="facts"><span><b>Effort</b> S-M workflow + ~3-5d schema/corpus</span><span><b>Risk</b> Low</span><span><b>Reuses</b> corrected schema, Claude agents, retrieval</span></div>
+  </div>
+
+  <div class="card">
+    <h3>Approach B: Closed-loop active-learning workbench <span class="ctag">Deferred</span></h3>
+    <p>Ingredient/recipe ontology DB + generation agents + surrogate model seeded by the LLM/physics prior, refined as lab results flow back (Bayesian optimization / active learning selects next experiments). UI for goals, candidate review, lab-result logging. All three modes (target / novelty / beat-an-existing).</p>
+    <div class="facts"><span><b>Effort</b> L-XL (~2-4 mo)</span><span><b>Risk</b> Med</span><span><b>Reuses</b> BoTorch/Ax or scikit-optimize, schema, agent layer from A</span></div>
+  </div>
+
+  <div class="card">
+    <h3>Approach C: Constraint-validated agent hybrid <span class="ctag">Thin slice folded in</span></h3>
+    <p>Chemical validity as explicit constraints: phr accounting balances, sulfur cure REQUIRES ZnO + stearic acid, filler loading limits, cost ceiling, no-SVHC. Agent does creative ingredient choice + grounding; a rules layer rejects/repairs invalid recipes so the system can't emit nonsense. Valid-by-construction, then ranked.</p>
+    <div class="facts"><span><b>Effort</b> M (~1d for rules layer)</span><span><b>Risk</b> Med</span><span><b>Reuses</b> reusable in B later</span></div>
+  </div>
+
+  <h2>Recommended Approach</h2>
+  <p><strong>Approach A + a thin slice of C.</strong> Build the single-shot dossier and a lightweight chemical-validity check. Rationale: the whole go/no-go is "are the candidates good enough that Auke would test them?" A dossier answers that in days and yields a real artifact for the Elastofirm side. The validity check (ZnO / stearic-acid presence for sulfur cure, phr balance, sane loadings, cost ceiling, plus cure-poisoning / chemical-incompatibility checks) costs ~1 extra day and stops the credibility-killing impossible recipes. B is the destination, built only after A validates candidate quality.</p>
+
+  <div class="callout">
+    <h3>What A proves, and what it does NOT (reconciling Premise 4)</h3>
+    <p>Be honest about the staircase. Premise 4 says true feasibility hinges on a calibrated feedback signal. Approach A does NOT deliver calibration, it has no loop. A tests one strictly-necessary precondition: <strong>do the agents generate candidates a domain expert finds plausible and worth bench time?</strong> If A fails that, nothing downstream matters and you stop cheaply. If A passes, you have earned the right to build B, where lab results actually calibrate confidence. So the feasibility question splits in two: A answers "are the candidates plausible?" (precondition); B answers "are the predictions trustworthy enough to bet lab money?" (the real thing). The success criteria below test only the precondition.</p>
+  </div>
+
+  <h3>Recommended build shape <span class="muted" style="font-weight:400;font-size:.88rem">(for the eng/implementation phase, not built here)</span></h3>
+  <ul>
+    <li><strong>Goal spec object:</strong> target property envelope (ranges + hard/soft flags), constraints (required/forbidden ingredients, cost ceiling, regulatory), base polymer family.</li>
+    <li><strong>Generation workflow.</strong> Start with the SIMPLEST thing that can answer the gate: a single retrieval-grounded agent that proposes, self-validates, and scores. Only decompose into multiple agents (research / formulate / estimate) if the single agent visibly fails. The user's stated multi-agent architecture is the destination, not a v0 requirement, do not pay for orchestration the gate doesn't need. If decomposed:
+      <ul>
+        <li>Research agents (parallel, retrieval-grounded): evidence for ingredient choices, analogous compounds, filler/cure interactions.</li>
+        <li>Formulator agent(s): emit candidate recipes on the corrected schema.</li>
+        <li>Validity layer (slice of C): reject/repair recipes that fail phr accounting, cure-system requirements, loading limits, cost ceiling, OR chemical compatibility (e.g. an alkaline/hygroscopic filler like concrete poisoning a sulfur cure, stoichiometry alone will not catch this).</li>
+        <li>Property estimator: a <strong>qualitative confidence label (High/Med/Low)</strong> per property, NOT a statistical "band" (there is no data to support an interval, calling a subjective guess a "band" is the fake-precision Premise 1/3 warn against). Mark "unknown" where there is no basis.</li>
+      </ul>
+    </li>
+    <li><strong>Citation verification (non-negotiable for credibility):</strong> retrieve-then-quote. A cited claim must be backed by a quotable snippet from the retrieved source; claims whose source cannot be quoted are dropped or flagged "unsourced." An unverified-but-confident citation is worse than none to a skeptical chemist.</li>
+    <li><strong>Ranking:</strong> score = normalized distance-to-target (each property scaled to its own range so Shore A points, compression-set %, and cost are comparable; booleans as pass/fail gates) &times; confidence, with a <strong>novelty term</strong> so the pipeline does not just regurgitate the best-documented textbook EPDM (retrieval grounding pulls toward the known; novelty pulls back toward "out of bounds"). Output top N.</li>
+    <li><strong>Reproducibility:</strong> record the goal, seed/config, and retrieved sources so a re-run is explainable. Auke re-running and getting wildly different recipes with no explanation erodes trust.</li>
+    <li><strong>Output:</strong> self-contained HTML dossier (light-mode default + light/dark/system switch), one card per candidate: formulation table, process + cure params, predicted properties with qualitative confidence, verified citations, "what to test first."</li>
+  </ul>
+
+  <h2>Key Risks <span class="muted" style="font-weight:400;font-size:.9rem">(confront before/while building)</span></h2>
+  <ol>
+    <li><strong>Retrieval corpus access, the #1 feasibility risk.</strong> The entire "retrieval-grounded" premise collapses if the agents only see open web. Real rubber phr signal lives in patents, supplier TDS, and internal know-how, much of it paywalled or proprietary. Open-web rubber-formulation data is thin and noisy. Resolve corpus access EARLY; if it's open-web-only, grounding quality (and Premise 3) is at risk and the gate may fail for the wrong reason.</li>
+    <li><strong>Novelty vs. grounding tension.</strong> RAG converges on the well-documented; the product's wedge is "out of bounds." These pull opposite directions. The novelty term in ranking is the mitigation, but watch that out-of-bounds candidates actually survive the pipeline and aren't filtered out as "unsupported."</li>
+    <li><strong>Citation fabrication.</strong> LLMs invent plausible citations and misattribute phr values. Mitigated by the retrieve-then-quote verification step above; treat any unverified citation as a bug, not a stylistic nit.</li>
+    <li><strong>Self-rated confidence is the same unreliable source grading itself.</strong> Premise 3 says parametric numbers are untrustworthy; an agent's confidence in those numbers inherits that unreliability. Acceptable ONLY as coarse triage (High/Med/Low) in v0; it is not calibration. This is precisely why B (lab feedback) exists.</li>
+    <li><strong>Schema correction is real domain work, not a checkbox.</strong> Peroxide-cure path, Mooney, de-duplicating oil/plasticizer, activators, getting this right gates everything downstream. Estimated separately; do not bury it in the workflow estimate.</li>
+  </ol>
+
+  <h2>Open Questions</h2>
+  <ol>
+    <li><strong>Data reality:</strong> How many historical Elastofirm recipes WITH measured properties exist, and in what form (paper, Excel, LIMS)? Even 50-200 rows would meaningfully seed B's calibration loop. (Does not block A.)</li>
+    <li><strong>Schema correction sign-off:</strong> who signs off on the corrected schema (Auke)?</li>
+    <li><strong>What counts as a pass?</strong> The success bar below is a proposal, does Auke agree that "expert would bench-test &ge; K of N" with a baseline is the right gate, and on the N/K values?</li>
+  </ol>
+
+  <h2>Success Criteria <span class="muted" style="font-weight:400;font-size:.9rem">(feasibility gate, tests the PRECONDITION only)</span></h2>
+  <ul>
+    <li>Run &ge; 3 real goals: one ordinary EPDM target, one cost-down vs an existing Elastofirm compound, one "out of bounds" (e.g. concrete filler).</li>
+    <li>For each goal the system emits <strong>N = 5-8</strong> candidates; every emitted candidate passes the chemical-validity check (no impossible recipes survive) and every property prediction carries a qualitative confidence + a verified citation or an explicit "unknown."</li>
+    <li><strong>Baseline arm (to avoid a generous-evaluator false positive):</strong> for each goal, also generate candidates from a naive single-LLM prompt (no retrieval, no validity layer). Mix them with the system's candidates and present them to Auke <strong>blind</strong> (he doesn't know which is which).</li>
+    <li><strong>Primary gate:</strong> the expert (Auke) marks at least <strong>K &ge; 3 of N</strong> of the SYSTEM's candidates per goal as plausible and worth bench time, AND the system beats the blind baseline by a clear margin. Pass &rarr; green-light Approach B scoping. Fail &rarr; the generation core isn't good enough yet; iterate on retrieval/prompting/validity before building anything heavier.</li>
+    <li>Honest non-goal: this gate does NOT prove the predicted numbers are correct. That is B's job (lab calibration).</li>
+  </ul>
+
+  <h2>Distribution Plan</h2>
+  <ul>
+    <li>v0 (Approach A): internal artifact. The HTML dossier is the deliverable; runs on Marco's machine / NxtPhase via the workflow tooling. No deployment needed.</li>
+    <li>If B is greenlit: internal web tool for Elastofirm compounders (auth, persisted recipes + lab results). Deployment channel decided at B scoping. Deferred.</li>
+  </ul>
+
+  <h2>Next Steps <span class="muted" style="font-weight:400;font-size:.9rem">(concrete build order)</span></h2>
+  <ol>
+    <li><strong>Resolve corpus access (Key Risk 1) and schema correction in parallel, both gate everything.</strong>
+      <ul>
+        <li>Corpus: confirm what the agents can actually retrieve (open lit/patents only, or supplier TDS + internal know-how).</li>
+        <li>Schema: produce v1 ingredient/recipe ontology from the xlsx with fixes (drop aromatic-oil example, de-duplicate oil/plasticizer, add ZnO + stearic acid, add peroxide-cure path + coagent, add raw-polymer Mooney, restore Batchnummer + test conditions); get Auke's sign-off. Treat this as its own ~3-5 day domain task, NOT folded into the workflow estimate.</li>
+      </ul>
+    </li>
+    <li><strong>Encode the validity rules</strong> (slice of C):
+      <ul>
+        <li>phr accounting: rubber phr = 100 by definition; non-rubber ingredients are relative to that, check totals fall in a sane envelope, not that they sum to a fixed number.</li>
+        <li>cure-system requirements: sulfur &rArr; ZnO + stearic acid present; peroxide &rArr; coagent present and no sulfur/peroxide conflict.</li>
+        <li>loading limits, cost ceiling, SVHC blocklist.</li>
+        <li>chemical compatibility / cure-poisoning (alkalinity, moisture) for exotic fillers, the check that actually catches a bad concrete recipe.</li>
+        <li>(deferred but noted) reactivity-hazard screen beyond SVHC.</li>
+      </ul>
+    </li>
+    <li><strong>Build the generation workflow, single-agent first</strong> (Approach A): one retrieval-grounded agent that proposes &rarr; self-validates &rarr; estimates (qual. confidence) &rarr; verifies citations &rarr; ranks (distance &times; confidence &times; novelty). Decompose into multiple agents only if the single agent fails the gate.</li>
+    <li><strong>Render the HTML dossier</strong> (light-mode default + light/dark/system switch).</li>
+    <li><strong>Run the 3 feasibility goals with the blind baseline arm</strong> and sit with Auke for the primary-gate judgment.</li>
+  </ol>
+
+  <h2>What I Noticed About How You Think</h2>
+  <ul>
+    <li>You reached for "go out of bounds" as the headline instinct. That is exactly the part of the space the funded incumbents structurally can't touch, your instinct pointed straight at the wedge, not away from it.</li>
+    <li>When offered four "truth sources," you picked lab-in-the-loop over a trained model or a pure-LLM demo. That is the mature choice: you optimized for being believed by a chemist, not for looking magical in a demo.</li>
+    <li>You framed this as "can this even work?" rather than "build me the app." Naming the feasibility question first is why this took 30 minutes of design instead of a month of building the wrong thing.</li>
+  </ul>
+
+  <footer>
+    Elastofirm rubber-recipe project &middot; design doc rendered from <code>marcokotrotsos-unknown-design-20260604-191504.md</code> &middot; Status: Approved (9/10)
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btns = Array.prototype.slice.call(document.querySelectorAll('.toggle button'));
+    var mq = window.matchMedia('(prefers-color-scheme: dark)');
+    var KEY = 'rubber-design-theme';
+
+    function apply(pref) {
+      var effective = pref === 'system' ? (mq.matches ? 'dark' : 'light') : pref;
+      root.setAttribute('data-theme', effective);
+      btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.set === pref)); });
+    }
+    function setPref(pref) {
+      try { localStorage.setItem(KEY, pref); } catch (e) {}
+      apply(pref);
+    }
+    var saved = 'light';
+    try { saved = localStorage.getItem(KEY) || 'light'; } catch (e) {}
+    apply(saved);
+    btns.forEach(function (b) { b.addEventListener('click', function () { setPref(b.dataset.set); }); });
+    mq.addEventListener('change', function () {
+      var cur = 'light';
+      try { cur = localStorage.getItem(KEY) || 'light'; } catch (e) {}
+      if (cur === 'system') apply('system');
+    });
+  })();
+</script>
+</body>
+</html>
