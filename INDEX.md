@@ -404,3 +404,4 @@
 | 2026-06-04 | content | reports | [draft.html](projects/content/reports/draft.html) | AskWell launch article (askwell.cc, real product screenshots): draft.html |
 | 2026-06-04 | content | images | [shot-hero.png](projects/content/images/shot-hero.png) | AskWell launch article (askwell.cc, real product screenshots): shot-hero.png |
 | 2026-06-04 | content | images | [shot-how.png](projects/content/images/shot-how.png) | AskWell launch article (askwell.cc, real product screenshots): shot-how.png |
+| 2026-06-04 | content | images | [shot-conflict.png](projects/content/images/shot-conflict.png) | AskWell launch article (askwell.cc, real product screenshots): shot-conflict.png |
