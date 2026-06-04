@@ -1,123 +1,80 @@
-# When the Agent Draws the Screen: The Three Settings of Generative UI
+# AskWell Sends an Interviewer to Every Stakeholder, and Maps Where They Disagree
 
-*The agent can now render the interface instead of describing it. There are three ways to let it, on a spectrum from total control to none, and the choice is really a question of how tightly you set the bar on what it is allowed to draw.*
+*I built a tool that replaces the form you send with an assistant that holds a real conversation, then hands you back the alignment, the conflicts, and the question nobody thought to ask. It is live today at askwell.cc.*
 
-![An isometric scene: an abstract teal agent arm drawing a UI directly onto a screen in real time, three small framed panels beside it ranging from a tightly gridded layout on the left to a loose freeform sketch on the right, a coral control dial underneath with three notches](hero.png)
+![The AskWell landing page: a pale sage canvas with the headline "Send an assistant to interview your stakeholders. Get back answers, not transcripts," beside a live chat panel where the interviewer presses a respondent and an Extracted card shows a must-have and a dealbreaker](shot-hero.png)
 
-I have been building interfaces that the agent draws itself for a few months now. A small plugin that pops up a real form to ask me a visual question and reads my click back as structured data. Reports that ship as navigable sites instead of walls of text. I was doing it by feel, one pattern at a time, without a map of the space I was working in.
+Forms get you what people can be bothered to type. The richest answer is always the one the form could not think to ask for. So you either accept thin data, or you book a dozen calls you do not have time for, and most people pick the thin data and move on.
 
-Then Shubham Saboo published a clean framework for it, and the names did what good names do: they made the thing I had been fumbling toward obvious. His framing is that generative UI, letting the agent render the interface rather than write a paragraph about it, comes in exactly three patterns on a spectrum from control to freedom. Credit to him for the shape. This piece is my read on it from the building side, plus the lens that made the choice click for me, which is that the three patterns are three settings of how tightly you hold the bar on what the agent may draw.
+That trade-off has bothered me for years, and a few weeks ago the economics finally flipped. A conversational model is now good enough to interview a stranger, stay on track, press on a vague answer, and know when to stop. The thing that made an interview better than a form was never the human. It was the follow-up question. That part just stopped being scarce.
 
-Ask for a table, get a table, not a sentence describing one. That is the whole promise. The question is who decides what the table looks like.
+So I built AskWell. You brief it once, the way you would brief a teammate, and send it to everyone you want to hear from. It interviews each person in a real, adaptive conversation, then returns the results already synthesized: where people agree, where they directly clash, and what only one person flagged. It is live today at [askwell.cc](https://askwell.cc), and the free tier needs no credit card.
 
 **Three things to take away:**
 
-- Generative UI is not one technique, it is a spectrum with three points: Controlled (you pre-build, the agent picks), Declarative (the agent fills a schema you defined), and Open-ended (the agent writes raw HTML). Each breaks differently at scale, and most teams run one without ever choosing it.
-- The honest way to choose is to ask how much you are willing to let the agent decide. Each pattern is a different amount of bar set on the output. Tightest on the left, none on the right.
-- Token economics decide more than aesthetics. Controlled grows your context window linearly with every component you add. Declarative stays flat no matter how many UIs your catalog can produce. That difference is the wall most teams hit around twenty-five components.
+- AskWell replaces the survey with an assistant that actually converses. It adapts to every answer, digs into the vague ones, and quantifies the fuzzy ones, the way a good interviewer does, for one respondent or two hundred, identically and tirelessly.
+- The output is not a pile of transcripts. It is a synthesis: an alignment view, a conflict map that surfaces the moment two stakeholders contradict each other, and the lone-voice flags that are easy to miss and expensive to ignore.
+- The launch wedge is requirements and stakeholder discovery, because that is where forms fail most expensively and the buyer feels the pain by name. But anywhere you send a form and wish the answers were deeper, you can send an assistant instead.
 
-![A spectrum from total control on the left to total freedom on the right, with three points marked: Controlled (you pre-build, the agent picks, the tightest bar), Declarative (the agent fills a catalog you defined, the catalog is the bar), and Open-ended (the agent writes raw HTML, no bar), with the bar getting looser left to right](diagram-spectrum.png)
+## The problem, at both ends
 
-## The plumbing, in one paragraph
+Gathering honest answers from a group is broken on both sides, and everyone has quietly accepted it.
 
-A few protocols sit under all of this, and it is worth knowing which does what so the rest reads cleanly. MCP connects an agent to tools. A2A connects agents to each other. AG-UI connects the agent to the user: it is the streaming, bidirectional wire that carries UI events, tool calls, and state in both directions over a single connection, so a user edit reaches the agent and an agent change reaches the screen. A2UI is Google's spec for an agent emitting UI as a schema, and it rides on AG-UI. You do not write a parser for any of it. A client library, CopilotKit is the one Saboo uses and the one with reference code for all three patterns, decodes the stream for you. That is the entire stack you need to hold in your head.
+Forms are cheap and shallow. Multiple choice flattens the answer before it forms. Free text gets you one sentence, and you lose the why with no way to ask for it. People skim, skip, and abandon, and you end up with the bare minimum from the few who bothered.
 
-## Setting 1: Controlled, you hold the bar tightest
+Real interviews are rich and do not scale. A live conversation gets you the truth, but you cannot book thirty calls this week and you certainly cannot do a thousand. Twenty respondents and your week is gone to scheduling, notes, transcripts, and summaries. Worse, everyone hears a slightly different version of the question, so the answers are not even comparable.
 
-This is where most teams start, because most frameworks default here. You build a component by hand, bind it to a name, and the agent's only job is to decide when to render it and with what data. The agent never touches your markup. It picks from a menu you wrote.
+And then there is the part that hurts later. Even when you do the work, the alignment, the conflicts, and the missing voices live in a doc nobody re-reads. The contradiction between two stakeholders that should have been caught in week one surfaces in week six as rework, which is the most expensive kind of mistake there is.
 
-```tsx
-// You pre-build the component, then register it so the agent can choose it.
-registerComponent({
-  name: "expenseBreakdown",
-  // Describe it by the user's intent, not the visual. This matters later.
-  description: "Use when the user asks to compare spending across categories.",
-  props: { title: "string", rows: "{label: string, amount: number}[]" },
-  render: ({ title, rows }) => <ExpenseBreakdown title={title} rows={rows} />,
-});
-```
+## What AskWell does
 
-The bar here is as tight as it gets. The agent cannot draw anything you did not already build and approve. Your design system stays fully in charge, and the output is pixel-perfect every time because you drew every pixel.
+The loop is four steps: brief, share, converse, synthesize.
 
-That tightness has a price, and it is paid in tokens. Every component you register sits in the agent's context window on every turn, before the user has typed a word, because the agent has to know the menu to pick from it. A tool description with its schema runs a few hundred tokens. Twenty-five of them is several thousand tokens of overhead on every single request, whether or not any UI gets rendered. Your context cost grows linearly with your component count, and that line is the wall.
+You describe what you want to learn in plain language, the way you would brief an analyst. AskWell turns that into a set of objectives and an opening message you can edit. No prompt engineering, no script to write. You are describing a goal, not authoring a questionnaire.
 
-The other failure is subtler. Past fifteen or so components, two of them start to sound alike. A pie chart and a donut chart both "show proportions," so the agent guesses, and guesses wrong often enough to annoy. The fix is a discipline, not a feature: describe each component by the user intent that should trigger it, never by what it looks like. "Use when the user asks to compare proportions of a whole" beats "renders a pie chart," because the agent is matching the user's words, not yours.
+![The how-it-works section: step 01 Brief it, with a plain-language goal turned into lettered objectives; step 02 Share the link, showing per-recipient invites moving through Sent, Opened, Started, Completed; step 03 Get the synthesis, showing an alignment list building up](shot-how.png)
 
-Ship Controlled for your ten or fewer highest-value flows, the ones where precision is the point and you already know the exact UI. Do not ship it as the way you handle everything, because the token bill and the component sprawl both scale with you.
+Then you share. Send tokenized email invites to a list, each tied to one recipient and tracked through a Sent, Opened, Started, Completed funnel, or drop a single public link with rate limits so a viral share cannot run up your bill. Each respondent opens it in their own browser and talks to the assistant. No login, no account, no friction on the side that matters most.
 
-## Setting 2: Declarative, the catalog is the bar
+The conversation is where the product wins. The assistant works through its objectives in whatever order fits the person, presses for a concrete example when an answer goes vague, turns "slow" into a number and "often" into a frequency, reflects back to confirm it understood, and respects the time budget because a complete short interview beats an abandoned long one. It stays neutral. It captures, it does not lead the witness.
 
-This is the pattern most production apps end up needing, and the one I would default to. Instead of pre-building every screen, the agent emits a schema describing the UI it wants, and your app maps that schema to real components through a catalog. One tool on the agent side. Many possible UIs on the frontend.
+## The output is a synthesis, not a transcript
 
-```tsx
-// The agent returns a UI tree. Your catalog maps node types to components.
-const catalog = {
-  FlightCard: ({ airline, price, route }) => (
-    <article className="rounded-xl border p-4">
-      <header className="flex justify-between"><span>{airline}</span><span>{price}</span></header>
-      <div className="text-sm text-muted">{route}</div>
-    </article>
-  ),
-  // ...the rest of the components the agent is allowed to emit
-};
+This is the part I care about most, and the reason AskWell exists rather than being one more chat widget. When the interviews are in, you do not get a folder of conversations to read. You get the analysis a good researcher would produce, generated across everyone at once.
 
-// agent output (conceptual): { type: "FlightCard", props: { airline: "KLM", price: "€212", route: "AMS → JFK" } }
-```
+![The synthesis screen titled "Alignment, conflict, and the question no one asked," with an Alignment column ranking shared requirements by how many stakeholders raised them, a Hard Conflict card showing Sales wanting a public demo workspace versus Security and Compliance forbidding login-less surfaces with real data, and a card flagging that only the Engineering Lead mentioned EU data residency](shot-conflict.png)
 
-The bar here is the catalog. The agent has freedom inside it, it composes and fills the components however the conversation calls for, but it cannot emit anything the catalog does not define. The props are typed, so a malformed UI becomes a build error instead of a blank screen. You set the boundary once, in the catalog, and the agent works inside it for every UI it will ever produce.
+Three things come back. **Alignment**, the requirements people agree on, ranked by how many stakeholders raised each one, so you can see the consensus at a glance. **Conflict**, the moment two stakeholders directly contradict each other, sourced to who said what, like Sales asking for a public, login-less demo workspace while Security forbids exactly that. And **the lone voice**, the thing only one person flagged, the EU data-residency requirement the Engineering Lead mentioned and nobody else did, which is precisely the kind of detail that sinks a project when it surfaces too late.
 
-The token math is the reason this scales. Fifty card types or five hundred, the agent still sees one tool: "emit a UI from the catalog." Your component library can grow without growing the per-turn context cost at all. That flat line is the whole argument for Declarative over Controlled once you are past the prototype.
+The conflict map is the headline. A form can collect ten wish lists. It cannot tell you that two of them cannot both be true. AskWell can, because it interviewed everyone with the same rigor and normalized what they said into claims it can compare. That is the work that used to live in a senior analyst's head, and it is the work AskWell does for you while you sleep.
 
-It is also extensible in a way Controlled is not. The schema is just JSON, so the same agent output can render in React, Svelte, or anything else with a matching catalog, and any agent that already speaks the wire can drive it without touching agent code.
+## Who it is for
 
-The trade-off is real and you should name it out loud: the agent owns the layout within your catalog, so the exact arrangement varies run to run. If you are shipping legal disclosures, regulated content, or marketing surfaces where pixel placement is non-negotiable, this is the wrong bucket, go back to Controlled for those. The classic silent failure here is a catalog ID mismatch: you built a custom card, but the identifier the agent targets and the one your frontend registers do not match exactly, so the frontend quietly falls back to a generic component with no error in the console. Match the strings on both sides and it works.
+I built the launch version around requirements and stakeholder discovery for software and product teams, because that is the case where forms fail most expensively. Requirements work is broken in a specific way: the good information only comes from the follow-up question, stakeholders are the hardest people in the building to get on a call, and the requirements you miss come back as rework. AskWell sends one tireless analyst to every stakeholder at once, asks each of them the same rigorous questions, and returns the structured result with the contradictions already flagged. First-pass elicitation that covers everyone, so your humans can go deep on the contested twenty percent.
 
-Declarative is built for the long tail: dashboards, search results, forms, cards, the hundred small widgets you will never have time to hand-build. More use cases than hours, and you care about the token bill past the demo. That is the case for it.
+It is not only for that, though. The same mechanic fits a long list of jobs where a form is the wrong tool:
 
-## Setting 3: Open-ended, no bar at all
+- Founders and PMs running customer and user research without a research team.
+- Recruiters doing first-round screening at scale, every candidate the same questions, with real follow-ups.
+- People teams running onboarding intake, engagement check-ins, and exit interviews.
+- Consultants and agencies gathering structured discovery from clients.
+- Anyone who currently sends a form and wishes the answers were deeper.
 
-The far end of the spectrum removes the catalog entirely. The agent writes raw markup and your app renders it. Two flavors live here: an MCP App, where the agent drives a UI surface that a server exposes (an agent drawing diagrams on a real canvas, for instance), and sandboxed HTML, where the agent simply writes the HTML and you render it inside a locked-down iframe so it cannot touch your session.
+## What is in the box
 
-```tsx
-// The agent returns an HTML string. Render it sandboxed so it cannot escape.
-<iframe
-  srcDoc={agentHtml}
-  // allow it to run and submit, nothing else. Never allow-same-origin.
-  sandbox="allow-scripts allow-forms"
-/>
-```
+The launch build is a complete kit, not a teaser. Per-recipient invites with the full Sent-to-Completed funnel. Slot filling, so you define fields like name, email, or anything custom and the interviewer collects them naturally, landing as clean columns in your export. Versioning, so every assistant is a version you can iterate without breaking live links, and old responses keep the prompt they were collected under. CSV and Markdown export, one row per claim or one section per respondent. A public-or-private toggle with rate limits and a daily cap. And a live activity feed, so invites going out, responses coming in, and synthesis runs landing all update your dashboard in real time.
 
-There is no bar here. The agent draws whatever it wants, and that is exactly the point and exactly the problem. The freedom is total, and so is the variance.
+## Pricing, and how to start
 
-I tried running open-ended as the primary interface for an agent, in spirit, by letting it freestyle the HTML. It was neo-brutalist on Tuesday and an iOS-4 tribute on Wednesday. Style rules in the system prompt nudge the model toward your brand, they do not bind it, so the look kept drifting and the product felt unserious. Without a bar held on the output, the output is whatever aesthetic was loudest in the model's training that week.
+![The pricing section: a Free plan at $0 forever with one interview, fifteen respondents, and one synthesis run, beside a Pro plan at $19.99 per month with ten interviews plus an overage slider, two hundred and fifty respondents per interview, unlimited synthesis, and slot filling, marked as an introduction offer](shot-pricing.png)
 
-Open-ended is not useless, it is misapplied when teams reach for it as a default because it demos well. It is the right call for one thing: throwaway interactions the user will see once and never again. "Show me how electrons work." "Make a weird chart of my last ten queries." "Visualize this API response." Disposable, one-shot, nobody-cares-what-it-looks-like surfaces. For those, the freedom is a feature and the variance does not matter.
+Start free. The free plan is $0 forever: one interview, up to fifteen respondents, one synthesis run, enough to feel the difference between a form and a conversation on a real project. When you outgrow it, Pro is $19.99 a month during the introduction period: ten interviews with an overage slider, up to two hundred and fifty respondents per interview, unlimited synthesis, slot filling on every response, and priority capacity. No credit card to begin, and setup takes about a minute.
 
-One safety note that is easy to get wrong: set the iframe sandbox to allow scripts and forms and nothing else. Never grant allow-same-origin to agent-written HTML, because that hands markup the model invented access to your origin. The whole reason this pattern is safe is the sandbox, so do not open it.
+The pitch is simple, and it is the thing I kept wanting and could not buy: stop running interviews yourself. Brief AskWell once, send the link, read the synthesis, make the call. Every respondent gets the attention of a real interview, and you get your time back.
 
-## How to pick, on purpose
-
-The decision is short once you frame it as how much bar you want to hold.
-
-![A decision flow for choosing a generative-UI pattern: if a designer has pixel-perfect mockups for the flow, choose Controlled; if you have dozens of widgets and a long tail to cover, choose Declarative; if it is a one-shot disposable visualization, choose Open-ended; if unsure, default to Declarative, use Controlled for the top three flows, and never default to Open-ended](diagram-decision.png)
-
-A designer handed you exact mockups for this flow? Controlled, hold the bar tight. Dozens of widgets and results to cover with no time to hand-build them? Declarative, set the bar once in the catalog. A one-shot visualization the user will never see twice? Open-ended, drop the bar on purpose. Cannot decide? Default to Declarative, promote your top three flows to Controlled, and never let Open-ended be the default.
-
-![A comparison of the three settings across control, token cost as you scale, output predictability, and best fit: Controlled is highest control, linear token cost, exact output, best for top flows; Declarative is shared control, flat token cost, varies within the catalog, best for the long tail; Open-ended is lowest control, low fixed cost, unpredictable output, best for disposable one-shots](diagram-comparison.png)
-
-If you are already shipping and unsure where you landed, count your render tools. Past fifteen, you are in Controlled and the wall is near, start moving the long tail to Declarative this week.
-
-## It was a bar decision the whole time
-
-The reason this maps so cleanly is that drawing a screen is the same problem as any other agent output. You are deciding how much of the result you specify in advance and how much you let the agent invent. Controlled specifies everything, the agent only selects. Declarative specifies the vocabulary, the agent composes within it. Open-ended specifies nothing, and you get nothing you can count on, which is fine when the output is disposable and a problem when it ships twice.
-
-The mistake is not picking the wrong setting. It is not knowing you picked one. Teams default to Controlled because the framework does, hit the component wall, then grab Open-ended because it looks great in a demo, and neither move was a decision. Both were drift. Choose the setting the way you would choose any other bar: match how tightly you constrain the agent to how much the output matters. Tight for the flows that have to be exact, the catalog for the long tail, and no bar at all only for the things nobody will remember seeing.
-
-Saboo's reference implementations for all three patterns are worth cloning if you want to feel the differences in your hands rather than read about them. The framework is his. The lens, that every one of these is a bar you are choosing how tightly to hold, is what made me stop picking by accident.
+If you have ever sent a survey and been disappointed by what came back, send an assistant instead. It is live now at [askwell.cc](https://askwell.cc). Ask well, learn fast.
 
 ---
-
-*With thanks to Shubham Saboo, whose three-pattern framework for generative UI prompted this piece. His reference code for all three patterns lives in the awesome-llm-apps repository.*
 
 *Marco Kotrotsos, specializing in practical AI implementation for organizations ready to close the gap between AI hype and AI value. With 30 years of IT experience now focused purely on AI deployment, he works hands-on with companies to turn AI potential into measurable business outcomes.*
 
