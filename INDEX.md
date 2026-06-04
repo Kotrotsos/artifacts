@@ -375,3 +375,4 @@
 | 2026-06-04 | content | reports | [draft.md](projects/content/reports/draft.md) | Apple Foundation Models on-device classification article (subradar): draft.md |
 | 2026-06-04 | content | reports | [draft.html](projects/content/reports/draft.html) | Apple Foundation Models on-device classification article (subradar): draft.html |
 | 2026-06-04 | content | images | [hero.png](projects/content/images/hero.png) | Apple Foundation Models on-device classification article (subradar): hero.png |
+| 2026-06-04 | content | images | [diagram-architecture.png](projects/content/images/diagram-architecture.png) | Apple Foundation Models on-device classification article (subradar): diagram-architecture.png |

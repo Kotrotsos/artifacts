@@ -176,3 +176,4 @@
 | 2026-06-04 | reports | [draft.md](reports/draft.md) | Apple Foundation Models on-device classification article (subradar): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/apple-foundation-models-on-device/draft.md |
 | 2026-06-04 | reports | [draft.html](reports/draft.html) | Apple Foundation Models on-device classification article (subradar): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/apple-foundation-models-on-device/draft.html |
 | 2026-06-04 | images | [hero.png](images/hero.png) | Apple Foundation Models on-device classification article (subradar): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/apple-foundation-models-on-device/hero.png |
+| 2026-06-04 | images | [diagram-architecture.png](images/diagram-architecture.png) | Apple Foundation Models on-device classification article (subradar): diagram-architecture.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/apple-foundation-models-on-device/diagram-architecture.png |
