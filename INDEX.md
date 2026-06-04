@@ -386,3 +386,4 @@
 | 2026-06-04 | content | images | [hero.png](projects/content/images/hero.png) | The Smallest Eval That Beats an Opinion (informative eval guide): hero.png |
 | 2026-06-04 | content | images | [diagram-loop.png](projects/content/images/diagram-loop.png) | The Smallest Eval That Beats an Opinion (informative eval guide): diagram-loop.png |
 | 2026-06-04 | content | images | [diagram-scoring.png](projects/content/images/diagram-scoring.png) | The Smallest Eval That Beats an Opinion (informative eval guide): diagram-scoring.png |
+| 2026-06-04 | content | images | [cc-eval-run.png](projects/content/images/cc-eval-run.png) | The Smallest Eval That Beats an Opinion (informative eval guide): cc-eval-run.png |
