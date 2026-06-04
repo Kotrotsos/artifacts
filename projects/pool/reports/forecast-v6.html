@@ -3,150 +3,243 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>World Cup 2026, v6.2 Final Forecast</title>
+<title>World Cup 2026, v6.2 Forecast</title>
 <style>
-  :root{
-    --bg:#f5f6f8;--surface:#fff;--surface-2:#fafbfc;--surface-3:#f0f2f5;
-    --border:#e4e7eb;--text:#15181d;--muted:#6b7280;
-    --accent:#b8860b;--accent2:#e3b341;
-    --ok:#1f7a3a;--ok-bg:#e6f4ec;--ok-border:#b6dec5;
-    --warn:#a76b00;--warn-bg:#fbf2dc;--warn-border:#ebd6a3;
-    --fail:#a3251f;--fail-bg:#fbe6e5;--fail-border:#edbcb9;
-  }
-  [data-theme="dark"]{
-    --bg:#0e1116;--surface:#171b22;--surface-2:#1d2229;--surface-3:#222a36;
-    --border:#2a313b;--text:#e8eaed;--muted:#9aa3af;
-    --accent:#e3b341;--accent2:#f0cf6b;
-    --ok:#5fd185;--ok-bg:#15301f;--ok-border:#2c5a3a;
-    --warn:#f0b950;--warn-bg:#33260c;--warn-border:#5c4a23;
-    --fail:#f08580;--fail-bg:#331514;--fail-border:#5c2d2c;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);padding:40px 20px;line-height:1.55}
-  .wrap{max-width:1040px;margin:0 auto}
-  h1{font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
-  h2{font-size:20px;font-weight:700;letter-spacing:-.2px;margin:36px 0 12px}
-  h3{font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--text)}
-  p{margin-bottom:10px}
-  .sub{color:var(--muted);font-size:14px;margin:6px 0 22px}
-  .toggle{float:right;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer}
-  .sitenav{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#13161b;border:1px solid #262c36;border-radius:12px;padding:9px 14px;margin-bottom:18px}
-  .sitenav .brand{color:#fff;text-decoration:none;font-weight:800;font-size:14px}
-  .sitenav .lk{display:flex;gap:4px;flex-wrap:wrap}
-  .sitenav .lk a{color:#c2c9d4;text-decoration:none;font-size:13px;font-weight:600;padding:6px 11px;border-radius:8px}
-  .sitenav .lk a:hover{background:#222a36;color:#fff}
-  .sitenav .lk a.active{background:var(--accent);color:#fff}
+:root {
+  --bg: #f5f6f8; --surface: #fff; --surface-2: #fafbfc;
+  --border: #e4e7eb; --text: #15181d; --muted: #6b7280;
+  --accent: #b8860b; --accent2: #e3b341;
+  --pass: #1f7a3a; --pass-bg: #e6f4eb;
+  --warn: #a87100; --warn-bg: #fdf3e0;
+  --fail: #a32525; --fail-bg: #fde7e7;
+}
+[data-theme="dark"] {
+  --bg: #0e1116; --surface: #171b22; --surface-2: #1d2229;
+  --border: #2a313b; --text: #e8eaed; --muted: #9aa3af;
+  --accent: #e3b341; --accent2: #f0cf6b;
+  --pass: #4caf6a; --pass-bg: #1c3a26;
+  --warn: #d8a04a; --warn-bg: #3b2c12;
+  --fail: #e76d6d; --fail-bg: #3a1818;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text);
+  padding: 40px 20px; line-height: 1.5;
+}
+.wrap { max-width: 1000px; margin: 0 auto; }
+h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.4px; }
+h2 { font-size: 18px; font-weight: 700; margin: 32px 0 12px; letter-spacing: -0.2px; }
+h3 { font-size: 15px; font-weight: 700; margin: 16px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.sub { color: var(--muted); font-size: 14px; margin: 4px 0 22px; }
+.toggle {
+  float: right; border: 1px solid var(--border); background: var(--surface);
+  color: var(--text); border-radius: 8px; padding: 7px 14px; font-size: 13px; cursor: pointer;
+}
+.sitenav {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; background: #13161b; border: 1px solid #262c36;
+  border-radius: 12px; padding: 9px 14px; margin-bottom: 18px;
+}
+.sitenav .brand { color: #fff; text-decoration: none; font-weight: 800; font-size: 14px; }
+.sitenav .lk { display: flex; gap: 4px; flex-wrap: wrap; }
+.sitenav .lk a {
+  color: #c2c9d4; text-decoration: none; font-size: 13px;
+  font-weight: 600; padding: 6px 11px; border-radius: 8px;
+}
+.sitenav .lk a:hover { background: #222a36; color: #fff; }
+.sitenav .lk a.active { background: var(--accent); color: #fff; }
+table {
+  width: 100%; border-collapse: collapse; font-size: 13.5px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden;
+}
+th, td { padding: 9px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+th {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--muted); background: var(--surface-2);
+}
+td.num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+.code { font-weight: 700; font-size: 11px; color: var(--muted); }
+.tname { font-weight: 600; }
+.g { color: var(--muted); }
+tbody tr:hover { background: var(--surface-2); }
+.champ { position: relative; min-width: 160px; }
+.champ .cbar {
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  height: 20px; background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 5px; opacity: 0.85;
+}
+.champ span { position: relative; font-weight: 700; font-variant-numeric: tabular-nums; padding-left: 6px; }
+.callout {
+  font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.6;
+  padding: 10px 14px; background: var(--surface-2); border-left: 3px solid var(--accent);
+  border-radius: 4px;
+}
+.hero {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 24px; display: grid;
+  grid-template-columns: 1fr auto; gap: 24px; margin: 16px 0 22px;
+}
+.hero .lead-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.7px;
+  color: var(--muted); margin-bottom: 6px;
+}
+.hero .lead-name { font-size: 30px; font-weight: 800; letter-spacing: -0.6px; }
+.hero .lead-pct { font-size: 16px; color: var(--muted); margin: 6px 0 4px; }
+.hero .lead-pct strong { color: var(--text); font-weight: 700; font-size: 18px; }
+.hero .lead-note { font-size: 12px; color: var(--muted); }
+.chip-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; min-width: 320px; }
+.chip-grid > div {
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 12px;
+}
+.chip-grid span {
+  display: block; font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.6px; color: var(--muted); margin-bottom: 2px;
+}
+.chip-grid strong { font-size: 14px; font-weight: 700; }
 
-  .hero{background:linear-gradient(135deg,var(--surface),var(--surface-2));border:1px solid var(--border);border-radius:16px;padding:28px 28px;margin:14px 0 28px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
-  .hero .lead-label{text-transform:uppercase;letter-spacing:.8px;font-size:11px;color:var(--muted);font-weight:700}
-  .hero .lead-name{font-size:38px;font-weight:800;letter-spacing:-.8px;margin:4px 0}
-  .hero .lead-pct{font-size:18px;color:var(--muted)}
-  .hero .lead-pct strong{color:var(--accent);font-size:22px;font-weight:800}
-  .hero .lead-note{font-size:12.5px;color:var(--muted);margin-top:6px}
-  .hero .chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;font-size:12.5px}
-  .hero .chip-grid div span{color:var(--muted)}
-  .hero .chip-grid div strong{color:var(--text);margin-left:4px}
+.mode-banner {
+  border: 1px solid var(--border); background: var(--surface-2);
+  border-radius: 10px; padding: 12px 16px; margin: 8px 0 20px;
+  font-size: 13px; color: var(--muted);
+}
+.mode-banner strong { color: var(--text); }
 
-  table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-  th,td{padding:9px 12px;border-bottom:1px solid var(--border);text-align:left}
-  tr:last-child td{border-bottom:none}
-  th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);background:var(--surface-2)}
-  td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
-  td.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
-  .code{font-weight:700;font-size:11px;color:var(--muted)}
-  .tname{font-weight:600}
-  .g{color:var(--muted)}
-  tbody tr:hover{background:var(--surface-2)}
-  .champ{position:relative;min-width:140px}
-  .champ .cbar{position:absolute;left:0;top:50%;transform:translateY(-50%);height:20px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:5px;opacity:.85}
-  .champ span{position:relative;font-weight:700;font-variant-numeric:tabular-nums;padding-left:6px}
+.bt-summary {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 16px;
+}
+.bt-summary .blk {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 18px;
+}
+.bt-summary .lbl {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--muted); margin-bottom: 4px;
+}
+.bt-summary .val { font-size: 22px; font-weight: 800; }
+.bt-summary .val.warn { color: var(--warn); }
+.bt-summary .val.pass { color: var(--pass); }
+.bt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 760px) { .bt-grid { grid-template-columns: 1fr; } }
+.bt-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+}
+.bt-card.bt-pass { background: var(--pass-bg); border-color: var(--pass); }
+.bt-card.bt-warn { background: var(--warn-bg); border-color: var(--warn); }
+.bt-card.bt-fail { background: var(--fail-bg); border-color: var(--fail); }
+.bt-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.bt-year { font-weight: 800; font-size: 16px; }
+.bt-actual { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.bt-actual strong { color: var(--text); }
+.bt-badge {
+  font-size: 11px; font-weight: 700; padding: 4px 10px;
+  border-radius: 8px; white-space: nowrap;
+}
+.bt-badge.bt-badge-pass { background: var(--pass); color: #fff; }
+.bt-badge.bt-badge-warn { background: var(--warn); color: #fff; }
+.bt-badge.bt-badge-fail { background: var(--fail); color: #fff; }
+.bt-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.bt-stats > div { display: flex; flex-direction: column; }
+.bt-stats .lbl {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--muted);
+}
+.bt-stats .val { font-weight: 700; }
+.bt-top5-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--muted); margin-bottom: 4px;
+}
+.bt-top5 ol { list-style: none; padding: 0; margin: 0; }
+.bt-top5 li {
+  display: flex; justify-content: space-between; font-size: 12.5px;
+  padding: 2px 0; border-bottom: 1px solid var(--border);
+}
+.bt-top5 li:last-child { border: none; }
+.pickname { font-weight: 500; }
+.pickpct { color: var(--muted); font-variant-numeric: tabular-nums; }
 
-  details{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-top:10px}
-  details summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--text);list-style:none;padding:2px 0}
-  details summary::-webkit-details-marker{display:none}
-  details[open] summary{margin-bottom:10px}
-  details summary::before{content:'+';display:inline-block;width:16px;color:var(--accent);font-weight:800}
-  details[open] summary::before{content:'-'}
+.verdict-block {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px 18px;
+}
+.v-pill {
+  display: inline-block; font-weight: 700; font-size: 11px;
+  padding: 4px 10px; border-radius: 8px; margin-bottom: 10px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.v-pill.v-ok { background: var(--pass); color: #fff; }
+.v-pill.v-warn { background: var(--warn); color: #fff; }
+.v-pill.v-fail { background: var(--fail); color: #fff; }
+.verdict-block p { font-size: 13px; margin: 6px 0; color: var(--muted); }
+.verdict-block ul { font-size: 12.5px; color: var(--muted); margin: 8px 0 8px 18px; }
+.verdict-block li { margin: 3px 0; }
 
-  .bt-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}
-  .bt-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
-  .bt-pass{border-left:4px solid var(--ok)}
-  .bt-warn{border-left:4px solid var(--warn)}
-  .bt-fail{border-left:4px solid var(--fail)}
-  .bt-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:10px}
-  .bt-year{font-size:15px;font-weight:800;letter-spacing:-.3px}
-  .bt-actual{font-size:13px;color:var(--muted);margin-top:3px}
-  .bt-actual strong{color:var(--text)}
-  .bt-badge{font-size:11px;font-weight:800;padding:5px 10px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
-  .bt-badge-pass{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-border)}
-  .bt-badge-warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
-  .bt-badge-fail{background:var(--fail-bg);color:var(--fail);border:1px solid var(--fail-border)}
-  .bt-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;font-size:13px}
-  .bt-stats .lbl{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
-  .bt-stats .val{display:block;font-weight:700;font-size:14px}
-  .bt-top5-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
-  .bt-top5 ol{list-style:none;padding:0;margin:0}
-  .bt-top5 li{display:flex;justify-content:space-between;padding:4px 8px;border-radius:6px;font-size:13px}
-  .bt-top5 li:nth-child(odd){background:var(--surface-2)}
-  .pickname{font-weight:600}
-  .pickpct{color:var(--muted);font-variant-numeric:tabular-nums}
+.method-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+}
+@media (max-width: 760px) { .method-grid { grid-template-columns: 1fr; } }
+.m-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px;
+}
+.m-label { font-weight: 700; font-size: 13px; }
+.m-desc { font-size: 12px; color: var(--muted); margin: 4px 0; line-height: 1.4; }
+.m-weight {
+  font-size: 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  color: var(--accent);
+}
 
-  .bt-summary{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .bt-summary .blk{padding:10px 12px;background:var(--surface-2);border-radius:10px}
-  .bt-summary .blk .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
-  .bt-summary .blk .val{font-size:22px;font-weight:800;color:var(--text);margin-top:2px}
-  .bt-summary .blk .val.ok{color:var(--ok)}
-  .bt-summary .blk .val.warn{color:var(--warn)}
+.sq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (max-width: 760px) { .sq-grid { grid-template-columns: 1fr; } }
+.sq-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+}
+.sq-head { font-weight: 800; font-size: 15px; }
+.sq-score { font-size: 12px; color: var(--accent); margin-bottom: 8px; }
+.sq-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; }
+.sq-stats .lbl {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--muted);
+}
+.sq-stats .val { font-weight: 700; font-size: 13px; }
+.sq-xi { font-size: 12px; color: var(--muted); margin-left: 18px; }
+.sq-xi li { margin: 2px 0; }
 
-  .verdict-block{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px 22px;margin-top:14px}
-  .verdict-block .v-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-  .v-pill{font-size:13px;font-weight:800;padding:6px 14px;border-radius:8px;text-transform:uppercase;letter-spacing:.5px}
-  .v-pill.ok{background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-border)}
-  .v-pill.warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-border)}
-  .v-pill.fail{background:var(--fail-bg);color:var(--fail);border:1px solid var(--fail-border)}
-  .v-meta{color:var(--muted);font-size:13px}
-  .pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;text-transform:uppercase;letter-spacing:.4px}
-  .pill-ok{background:var(--ok-bg);color:var(--ok)}
-  .pill-warn{background:var(--warn-bg);color:var(--warn)}
-  .pill-fail{background:var(--fail-bg);color:var(--fail)}
-  .bug-clean{font-size:13px;color:var(--ok);background:var(--ok-bg);border:1px solid var(--ok-border);padding:10px 14px;border-radius:10px;margin-top:10px}
-  .bug-list{margin:10px 0 0 22px;color:var(--fail);font-size:13px}
-  .cherry-list{margin:6px 0 0 22px;color:var(--muted);font-size:12.5px}
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+@media (max-width: 760px) { .compare-grid { grid-template-columns: 1fr; } }
+.compare-col {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+}
+.compare-col h3 { margin-top: 0; }
+.compare-col table { font-size: 12px; border: none; border-radius: 0; }
+.compare-col th, .compare-col td { padding: 5px 8px; }
+.compare-col .mode-tag {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 6px; margin-bottom: 8px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.compare-col .mode-tag.prod { background: var(--pass-bg); color: var(--pass); }
+.compare-col .mode-tag.fit { background: var(--warn-bg); color: var(--warn); }
 
-  .signals{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
-  .signal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
-  .signal .s-title{font-weight:700;font-size:13.5px}
-  .signal .s-meta{font-size:12px;color:var(--muted);margin-top:3px}
-  .signal .s-w{display:inline-block;background:var(--surface-3);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;padding:2px 7px;border-radius:5px;margin-right:4px}
+.journey { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.journey p { margin: 8px 0; }
 
-  .squad-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
-  .squad-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
-  .squad-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-  .squad-name{font-weight:800;font-size:15px}
-  .squad-score{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700;color:var(--accent)}
-  .squad-meta{font-size:11.5px;color:var(--muted);margin-bottom:6px}
-  .squad-xi{font-size:12.5px;line-height:1.5}
+.mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; color: var(--accent); }
 
-  .journey{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-top:14px;font-size:14px}
-  .journey p{margin-bottom:10px}
-  .journey p:last-child{margin-bottom:0}
+footer { margin: 40px 0 0; padding-top: 20px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+footer a { color: var(--accent); }
 
-  .callout{background:var(--surface-2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:13px;color:var(--muted);margin-top:10px}
-
-  .footer{margin-top:42px;padding-top:18px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);line-height:1.7}
-  .footer a{color:var(--accent);text-decoration:none}
-  .footer a:hover{text-decoration:underline}
-
-  @media (max-width:720px){
-    .hero{grid-template-columns:1fr}
-    .bt-grid,.squad-grid,.signals{grid-template-columns:1fr}
-    .bt-summary{grid-template-columns:1fr}
-  }
-  @media print{
-    body{background:#fff;padding:0;color:#000}
-    .toggle,.sitenav{display:none}
-    .hero,.bt-card,.verdict-block,.signal,.squad-card,.journey,table{break-inside:avoid;page-break-inside:avoid;border:1px solid #ccc}
-  }
+@media print {
+  body { background: #fff; padding: 0; }
+  .toggle { display: none; }
+  .sitenav { background: #eee; color: #000; }
+  .sitenav .brand, .sitenav .lk a { color: #000; }
+}
 </style>
 </head>
 <body>
@@ -164,15 +257,20 @@
 </nav>
 <button class="toggle" id="themeBtn">Theme: System</button>
 
-<h1>World Cup 2026, v6.2 Final Forecast</h1>
-<div class="sub">100,000 Monte Carlo simulations &middot; locked params v6.2 &middot; data cutoff 2026-05-26 &middot; report date 2026-06-04</div>
+<h1>World Cup 2026, v6.2 Forecast</h1>
+<div class="sub">100,000 Monte Carlo simulations &middot; data cutoff 2026-05-26 &middot; report date 2026-06-04</div>
+
+<div class="mode-banner">
+  <strong>Two modes published.</strong> The <strong>production (calibrated)</strong> forecast below is the recommended live prediction; it uses mild weights to preserve a market-aligned probability distribution.
+  The <strong>backtest-fit (aggressive)</strong> mode, shown lower on the page, was tuned to maximise rank-1 picks on the last 4 World Cups; it scores best on historical backtest but concentrates the 2026 distribution unrealistically and is in-sample.
+</div>
 
 <section class="hero">
   <div>
-    <div class="lead-label">Predicted champion</div>
+    <div class="lead-label">Predicted champion (production / calibrated)</div>
     <div class="lead-name">Spain</div>
-    <div class="lead-pct"><strong>61.8%</strong> of simulations</div>
-    <div class="lead-note">Modal final opponent: France &middot; most likely path below</div>
+    <div class="lead-pct"><strong>31.9%</strong> of simulations</div>
+    <div class="lead-note">Next: Argentina 14.4% &middot; aggressive-fit pick: Spain 61.8%</div>
   </div>
   <div class="chip-grid">
     <div><span>Simulations</span><strong>100,000</strong></div>
@@ -184,198 +282,141 @@
   </div>
 </section>
 
-<h2>Top 16 forecast</h2>
-<table>
-  <thead>
-    <tr>
-      <th>#</th><th>Code</th><th>Country</th><th>Grp</th>
-      <th class="num">Base Elo</th><th class="num">v6.2 Adj Elo</th>
-      <th class="num">Advance</th><th class="num">Reach QF</th><th class="num">Final</th>
-      <th>Champion</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td class="num">1</td><td class="code">ESP</td><td class="tname">Spain</td><td class="g">H</td><td class="num">2233</td><td class="num">2486</td><td class="num">100.0%</td><td class="num">93.5%</td><td class="num">75.29%</td><td class="champ"><div class="cbar" style="width:100.0%"></div><span>61.75%</span></td></tr><tr><td class="num">2</td><td class="code">FRA</td><td class="tname">France</td><td class="g">I</td><td class="num">2146</td><td class="num">2322</td><td class="num">99.4%</td><td class="num">79.3%</td><td class="num">39.84%</td><td class="champ"><div class="cbar" style="width:29.3%"></div><span>18.09%</span></td></tr><tr><td class="num">3</td><td class="code">ENG</td><td class="tname">England</td><td class="g">L</td><td class="num">2088</td><td class="num">2283</td><td class="num">99.9%</td><td class="num">77.7%</td><td class="num">35.23%</td><td class="champ"><div class="cbar" style="width:22.1%"></div><span>13.64%</span></td></tr><tr><td class="num">4</td><td class="code">MAR</td><td class="tname">Morocco</td><td class="g">C</td><td class="num">1983</td><td class="num">2102</td><td class="num">99.2%</td><td class="num">48.5%</td><td class="num">8.72%</td><td class="champ"><div class="cbar" style="width:2.5%"></div><span>1.52%</span></td></tr><tr><td class="num">5</td><td class="code">NOR</td><td class="tname">Norway</td><td class="g">I</td><td class="num">1979</td><td class="num">2099</td><td class="num">92.7%</td><td class="num">37.1%</td><td class="num">6.61%</td><td class="champ"><div class="cbar" style="width:2.1%"></div><span>1.29%</span></td></tr><tr><td class="num">6</td><td class="code">COL</td><td class="tname">Colombia</td><td class="g">K</td><td class="num">2057</td><td class="num">2084</td><td class="num">99.1%</td><td class="num">44.9%</td><td class="num">7.38%</td><td class="champ"><div class="cbar" style="width:1.8%"></div><span>1.14%</span></td></tr><tr><td class="num">7</td><td class="code">POR</td><td class="tname">Portugal</td><td class="g">K</td><td class="num">2054</td><td class="num">2027</td><td class="num">98.1%</td><td class="num">33.9%</td><td class="num">3.85%</td><td class="champ"><div class="cbar" style="width:0.7%"></div><span>0.46%</span></td></tr><tr><td class="num">8</td><td class="code">SEN</td><td class="tname">Senegal</td><td class="g">I</td><td class="num">1929</td><td class="num">2025</td><td class="num">85.7%</td><td class="num">24.6%</td><td class="num">2.75%</td><td class="champ"><div class="cbar" style="width:0.6%"></div><span>0.38%</span></td></tr><tr><td class="num">9</td><td class="code">MEX</td><td class="tname">Mexico</td><td class="g">A</td><td class="num">1968</td><td class="num">2005</td><td class="num">99.4%</td><td class="num">35.2%</td><td class="num">3.48%</td><td class="champ"><div class="cbar" style="width:0.6%"></div><span>0.36%</span></td></tr><tr><td class="num">10</td><td class="code">ARG</td><td class="tname">Argentina *</td><td class="g">J</td><td class="num">2187</td><td class="num">2014</td><td class="num">90.9%</td><td class="num">31.5%</td><td class="num">2.99%</td><td class="champ"><div class="cbar" style="width:0.5%"></div><span>0.34%</span></td></tr><tr><td class="num">11</td><td class="code">BRA</td><td class="tname">Brazil</td><td class="g">C</td><td class="num">2060</td><td class="num">1985</td><td class="num">95.6%</td><td class="num">26.7%</td><td class="num">2.30%</td><td class="champ"><div class="cbar" style="width:0.4%"></div><span>0.22%</span></td></tr><tr><td class="num">12</td><td class="code">ECU</td><td class="tname">Ecuador</td><td class="g">E</td><td class="num">2022</td><td class="num">1969</td><td class="num">93.6%</td><td class="num">25.6%</td><td class="num">1.88%</td><td class="champ"><div class="cbar" style="width:0.3%"></div><span>0.17%</span></td></tr><tr><td class="num">13</td><td class="code">JPN</td><td class="tname">Japan</td><td class="g">F</td><td class="num">1992</td><td class="num">1963</td><td class="num">88.0%</td><td class="num">23.6%</td><td class="num">1.63%</td><td class="champ"><div class="cbar" style="width:0.2%"></div><span>0.14%</span></td></tr><tr><td class="num">14</td><td class="code">CRO</td><td class="tname">Croatia</td><td class="g">L</td><td class="num">1993</td><td class="num">1930</td><td class="num">91.1%</td><td class="num">16.8%</td><td class="num">0.99%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.07%</span></td></tr><tr><td class="num">15</td><td class="code">SUI</td><td class="tname">Switzerland</td><td class="g">B</td><td class="num">1947</td><td class="num">1891</td><td class="num">99.6%</td><td class="num">22.5%</td><td class="num">0.92%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.07%</span></td></tr><tr><td class="num">16</td><td class="code">URU</td><td class="tname">Uruguay</td><td class="g">H</td><td class="num">1976</td><td class="num">1928</td><td class="num">94.2%</td><td class="num">16.4%</td><td class="num">1.00%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.07%</span></td></tr>
-  </tbody>
-</table>
-<div class="callout">Adjusted Elo is the base Elo plus the v6.2 signal stack (WC tournament bias, recent champion credit, strong-opponent form, defending-champion penalty, squad strength, attack/defense, confederation calibration). Star marks the defending champion.</div>
+<h2>Top 16 forecast (production / calibrated)</h2>
+<table><thead><tr><th>#</th><th>Code</th><th>Country</th><th>Grp</th><th class="num">Base Elo</th><th class="num">Adj Elo</th><th class="num">Advance</th><th class="num">Reach QF</th><th class="num">Final</th><th>Champion</th></tr></thead><tbody><tr><td class="num">1</td><td class="code">ESP</td><td class="tname">Spain</td><td class="g">H</td><td class="num">2233</td><td class="num">2230</td><td class="num">99.7%</td><td class="num">76.9%</td><td class="num">45.96%</td><td class="champ"><div class="cbar" style="width:100.0%"></div><span>31.91%</span></td></tr><tr><td class="num">2</td><td class="code">ARG</td><td class="tname">Argentina *</td><td class="g">J</td><td class="num">2187</td><td class="num">2166</td><td class="num">97.4%</td><td class="num">52.2%</td><td class="num">25.45%</td><td class="champ"><div class="cbar" style="width:45.2%"></div><span>14.42%</span></td></tr><tr><td class="num">3</td><td class="code">FRA</td><td class="tname">France</td><td class="g">I</td><td class="num">2146</td><td class="num">2143</td><td class="num">95.9%</td><td class="num">41.4%</td><td class="num">18.57%</td><td class="champ"><div class="cbar" style="width:31.2%"></div><span>9.96%</span></td></tr><tr><td class="num">4</td><td class="code">MEX</td><td class="tname">Mexico</td><td class="g">A</td><td class="num">1968</td><td class="num">2004</td><td class="num">99.2%</td><td class="num">50.1%</td><td class="num">13.35%</td><td class="champ"><div class="cbar" style="width:20.7%"></div><span>6.59%</span></td></tr><tr><td class="num">5</td><td class="code">BRA</td><td class="tname">Brazil</td><td class="g">C</td><td class="num">2060</td><td class="num">2063</td><td class="num">94.5%</td><td class="num">46.1%</td><td class="num">11.23%</td><td class="champ"><div class="cbar" style="width:16.9%"></div><span>5.39%</span></td></tr><tr><td class="num">6</td><td class="code">ENG</td><td class="tname">England</td><td class="g">L</td><td class="num">2088</td><td class="num">2072</td><td class="num">95.7%</td><td class="num">37.1%</td><td class="num">10.74%</td><td class="champ"><div class="cbar" style="width:15.1%"></div><span>4.81%</span></td></tr><tr><td class="num">7</td><td class="code">COL</td><td class="tname">Colombia</td><td class="g">K</td><td class="num">2057</td><td class="num">2057</td><td class="num">97.6%</td><td class="num">32.2%</td><td class="num">8.67%</td><td class="champ"><div class="cbar" style="width:11.9%"></div><span>3.79%</span></td></tr><tr><td class="num">8</td><td class="code">POR</td><td class="tname">Portugal</td><td class="g">K</td><td class="num">2054</td><td class="num">2054</td><td class="num">97.4%</td><td class="num">31.6%</td><td class="num">8.22%</td><td class="champ"><div class="cbar" style="width:11.2%"></div><span>3.56%</span></td></tr><tr><td class="num">9</td><td class="code">NED</td><td class="tname">Netherlands</td><td class="g">F</td><td class="num">2020</td><td class="num">2020</td><td class="num">91.4%</td><td class="num">34.7%</td><td class="num">6.47%</td><td class="champ"><div class="cbar" style="width:8.4%"></div><span>2.68%</span></td></tr><tr><td class="num">10</td><td class="code">CAN</td><td class="tname">Canada</td><td class="g">B</td><td class="num">1901</td><td class="num">1940</td><td class="num">98.6%</td><td class="num">30.8%</td><td class="num">6.03%</td><td class="champ"><div class="cbar" style="width:7.7%"></div><span>2.45%</span></td></tr><tr><td class="num">11</td><td class="code">GER</td><td class="tname">Germany</td><td class="g">E</td><td class="num">1990</td><td class="num">1998</td><td class="num">93.9%</td><td class="num">31.0%</td><td class="num">5.06%</td><td class="champ"><div class="cbar" style="width:6.3%"></div><span>2.02%</span></td></tr><tr><td class="num">12</td><td class="code">ECU</td><td class="tname">Ecuador</td><td class="g">E</td><td class="num">2022</td><td class="num">1979</td><td class="num">92.5%</td><td class="num">27.7%</td><td class="num">4.24%</td><td class="champ"><div class="cbar" style="width:4.9%"></div><span>1.55%</span></td></tr><tr><td class="num">13</td><td class="code">USA</td><td class="tname">United States</td><td class="g">D</td><td class="num">1826</td><td class="num">1894</td><td class="num">94.1%</td><td class="num">28.0%</td><td class="num">4.12%</td><td class="champ"><div class="cbar" style="width:4.4%"></div><span>1.40%</span></td></tr><tr><td class="num">14</td><td class="code">CRO</td><td class="tname">Croatia</td><td class="g">L</td><td class="num">1993</td><td class="num">1983</td><td class="num">89.2%</td><td class="num">21.3%</td><td class="num">3.96%</td><td class="champ"><div class="cbar" style="width:4.4%"></div><span>1.40%</span></td></tr><tr><td class="num">15</td><td class="code">JPN</td><td class="tname">Japan</td><td class="g">F</td><td class="num">1992</td><td class="num">1970</td><td class="num">86.7%</td><td class="num">24.7%</td><td class="num">3.51%</td><td class="champ"><div class="cbar" style="width:3.8%"></div><span>1.21%</span></td></tr><tr><td class="num">16</td><td class="code">NOR</td><td class="tname">Norway</td><td class="g">I</td><td class="num">1979</td><td class="num">1980</td><td class="num">81.1%</td><td class="num">17.1%</td><td class="num">3.56%</td><td class="champ"><div class="cbar" style="width:3.7%"></div><span>1.19%</span></td></tr></tbody></table>
+<div class="callout">
+  Adjusted Elo is the base Elo plus the v6 signal stack at calibrated weights (squad strength + light attack/defense + confederation calibration + host advantage). Asterisk marks the defending champion.
+  This is the recommended live prediction.
+</div>
 
-<h2>All 48 teams</h2>
+<h2>All 48 teams (production)</h2>
 <details>
   <summary>Show the full table</summary>
-  <table>
-    <thead>
-      <tr>
-        <th>#</th><th>Code</th><th>Country</th><th>Grp</th>
-        <th class="num">Base Elo</th><th class="num">v6.2 Adj Elo</th>
-        <th class="num">Advance</th><th class="num">Reach QF</th><th class="num">Final</th>
-        <th>Champion</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td class="num">1</td><td class="code">ESP</td><td class="tname">Spain</td><td class="g">H</td><td class="num">2233</td><td class="num">2486</td><td class="num">100.0%</td><td class="num">93.5%</td><td class="num">75.29%</td><td class="champ"><div class="cbar" style="width:100.0%"></div><span>61.752%</span></td></tr><tr><td class="num">2</td><td class="code">FRA</td><td class="tname">France</td><td class="g">I</td><td class="num">2146</td><td class="num">2322</td><td class="num">99.4%</td><td class="num">79.3%</td><td class="num">39.84%</td><td class="champ"><div class="cbar" style="width:29.3%"></div><span>18.088%</span></td></tr><tr><td class="num">3</td><td class="code">ENG</td><td class="tname">England</td><td class="g">L</td><td class="num">2088</td><td class="num">2283</td><td class="num">99.9%</td><td class="num">77.7%</td><td class="num">35.23%</td><td class="champ"><div class="cbar" style="width:22.1%"></div><span>13.639%</span></td></tr><tr><td class="num">4</td><td class="code">MAR</td><td class="tname">Morocco</td><td class="g">C</td><td class="num">1983</td><td class="num">2102</td><td class="num">99.2%</td><td class="num">48.5%</td><td class="num">8.72%</td><td class="champ"><div class="cbar" style="width:2.5%"></div><span>1.519%</span></td></tr><tr><td class="num">5</td><td class="code">NOR</td><td class="tname">Norway</td><td class="g">I</td><td class="num">1979</td><td class="num">2099</td><td class="num">92.7%</td><td class="num">37.1%</td><td class="num">6.61%</td><td class="champ"><div class="cbar" style="width:2.1%"></div><span>1.292%</span></td></tr><tr><td class="num">6</td><td class="code">COL</td><td class="tname">Colombia</td><td class="g">K</td><td class="num">2057</td><td class="num">2084</td><td class="num">99.1%</td><td class="num">44.9%</td><td class="num">7.38%</td><td class="champ"><div class="cbar" style="width:1.8%"></div><span>1.137%</span></td></tr><tr><td class="num">7</td><td class="code">POR</td><td class="tname">Portugal</td><td class="g">K</td><td class="num">2054</td><td class="num">2027</td><td class="num">98.1%</td><td class="num">33.9%</td><td class="num">3.85%</td><td class="champ"><div class="cbar" style="width:0.7%"></div><span>0.461%</span></td></tr><tr><td class="num">8</td><td class="code">SEN</td><td class="tname">Senegal</td><td class="g">I</td><td class="num">1929</td><td class="num">2025</td><td class="num">85.7%</td><td class="num">24.6%</td><td class="num">2.75%</td><td class="champ"><div class="cbar" style="width:0.6%"></div><span>0.380%</span></td></tr><tr><td class="num">9</td><td class="code">MEX</td><td class="tname">Mexico</td><td class="g">A</td><td class="num">1968</td><td class="num">2005</td><td class="num">99.4%</td><td class="num">35.2%</td><td class="num">3.48%</td><td class="champ"><div class="cbar" style="width:0.6%"></div><span>0.362%</span></td></tr><tr><td class="num">10</td><td class="code">ARG</td><td class="tname">Argentina *</td><td class="g">J</td><td class="num">2187</td><td class="num">2014</td><td class="num">90.9%</td><td class="num">31.5%</td><td class="num">2.99%</td><td class="champ"><div class="cbar" style="width:0.5%"></div><span>0.338%</span></td></tr><tr><td class="num">11</td><td class="code">BRA</td><td class="tname">Brazil</td><td class="g">C</td><td class="num">2060</td><td class="num">1985</td><td class="num">95.6%</td><td class="num">26.7%</td><td class="num">2.30%</td><td class="champ"><div class="cbar" style="width:0.4%"></div><span>0.218%</span></td></tr><tr><td class="num">12</td><td class="code">ECU</td><td class="tname">Ecuador</td><td class="g">E</td><td class="num">2022</td><td class="num">1969</td><td class="num">93.6%</td><td class="num">25.6%</td><td class="num">1.88%</td><td class="champ"><div class="cbar" style="width:0.3%"></div><span>0.171%</span></td></tr><tr><td class="num">13</td><td class="code">JPN</td><td class="tname">Japan</td><td class="g">F</td><td class="num">1992</td><td class="num">1963</td><td class="num">88.0%</td><td class="num">23.6%</td><td class="num">1.63%</td><td class="champ"><div class="cbar" style="width:0.2%"></div><span>0.135%</span></td></tr><tr><td class="num">14</td><td class="code">CRO</td><td class="tname">Croatia</td><td class="g">L</td><td class="num">1993</td><td class="num">1930</td><td class="num">91.1%</td><td class="num">16.8%</td><td class="num">0.99%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.075%</span></td></tr><tr><td class="num">15</td><td class="code">SUI</td><td class="tname">Switzerland</td><td class="g">B</td><td class="num">1947</td><td class="num">1891</td><td class="num">99.6%</td><td class="num">22.5%</td><td class="num">0.92%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.068%</span></td></tr><tr><td class="num">16</td><td class="code">URU</td><td class="tname">Uruguay</td><td class="g">H</td><td class="num">1976</td><td class="num">1928</td><td class="num">94.2%</td><td class="num">16.4%</td><td class="num">1.00%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.068%</span></td></tr><tr><td class="num">17</td><td class="code">CIV</td><td class="tname">Ivory Coast</td><td class="g">E</td><td class="num">1796</td><td class="num">1911</td><td class="num">88.1%</td><td class="num">16.9%</td><td class="num">0.78%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.068%</span></td></tr><tr><td class="num">18</td><td class="code">NED</td><td class="tname">Netherlands</td><td class="g">F</td><td class="num">2020</td><td class="num">1915</td><td class="num">81.8%</td><td class="num">16.2%</td><td class="num">0.73%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.049%</span></td></tr><tr><td class="num">19</td><td class="code">GER</td><td class="tname">Germany</td><td class="g">E</td><td class="num">1990</td><td class="num">1889</td><td class="num">84.9%</td><td class="num">13.9%</td><td class="num">0.58%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.038%</span></td></tr><tr><td class="num">20</td><td class="code">KOR</td><td class="tname">South Korea</td><td class="g">A</td><td class="num">1873</td><td class="num">1882</td><td class="num">97.1%</td><td class="num">15.7%</td><td class="num">0.60%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.028%</span></td></tr><tr><td class="num">21</td><td class="code">AUS</td><td class="tname">Australia</td><td class="g">D</td><td class="num">1907</td><td class="num">1870</td><td class="num">94.7%</td><td class="num">14.6%</td><td class="num">0.51%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.027%</span></td></tr><tr><td class="num">22</td><td class="code">ALG</td><td class="tname">Algeria</td><td class="g">J</td><td class="num">1856</td><td class="num">1881</td><td class="num">71.8%</td><td class="num">11.2%</td><td class="num">0.41%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.024%</span></td></tr><tr><td class="num">23</td><td class="code">USA</td><td class="tname">United States</td><td class="g">D</td><td class="num">1826</td><td class="num">1862</td><td class="num">94.3%</td><td class="num">13.7%</td><td class="num">0.44%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.021%</span></td></tr><tr><td class="num">24</td><td class="code">IRN</td><td class="tname">Iran</td><td class="g">G</td><td class="num">1883</td><td class="num">1832</td><td class="num">88.1%</td><td class="num">11.7%</td><td class="num">0.29%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.016%</span></td></tr><tr><td class="num">25</td><td class="code">PAR</td><td class="tname">Paraguay</td><td class="g">D</td><td class="num">1917</td><td class="num">1847</td><td class="num">93.3%</td><td class="num">12.2%</td><td class="num">0.34%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.011%</span></td></tr><tr><td class="num">26</td><td class="code">JOR</td><td class="tname">Jordan</td><td class="g">J</td><td class="num">1786</td><td class="num">1836</td><td class="num">61.4%</td><td class="num">6.9%</td><td class="num">0.17%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.006%</span></td></tr><tr><td class="num">27</td><td class="code">TUN</td><td class="tname">Tunisia</td><td class="g">F</td><td class="num">1748</td><td class="num">1777</td><td class="num">52.4%</td><td class="num">3.8%</td><td class="num">0.06%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.004%</span></td></tr><tr><td class="num">28</td><td class="code">SWE</td><td class="tname">Sweden</td><td class="g">F</td><td class="num">1781</td><td class="num">1774</td><td class="num">51.5%</td><td class="num">3.7%</td><td class="num">0.04%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.002%</span></td></tr><tr><td class="num">29</td><td class="code">AUT</td><td class="tname">Austria</td><td class="g">J</td><td class="num">1881</td><td class="num">1789</td><td class="num">49.5%</td><td class="num">4.0%</td><td class="num">0.07%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.001%</span></td></tr><tr><td class="num">30</td><td class="code">SCO</td><td class="tname">Scotland</td><td class="g">C</td><td class="num">1834</td><td class="num">1695</td><td class="num">44.7%</td><td class="num">1.4%</td><td class="num">0.01%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.001%</span></td></tr><tr><td class="num">31</td><td class="code">RSA</td><td class="tname">South Africa</td><td class="g">A</td><td class="num">1659</td><td class="num">1671</td><td class="num">79.5%</td><td class="num">2.2%</td><td class="num">0.01%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.001%</span></td></tr><tr><td class="num">32</td><td class="code">TUR</td><td class="tname">Türkiye</td><td class="g">D</td><td class="num">1500</td><td class="num">1354</td><td class="num">1.8%</td><td class="num">0.0%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">33</td><td class="code">BEL</td><td class="tname">Belgium</td><td class="g">G</td><td class="num">1916</td><td class="num">1676</td><td class="num">59.6%</td><td class="num">1.9%</td><td class="num">0.01%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">34</td><td class="code">EGY</td><td class="tname">Egypt</td><td class="g">G</td><td class="num">1806</td><td class="num">1726</td><td class="num">71.1%</td><td class="num">3.8%</td><td class="num">0.03%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">35</td><td class="code">NZL</td><td class="tname">New Zealand</td><td class="g">G</td><td class="num">1742</td><td class="num">1664</td><td class="num">56.7%</td><td class="num">1.7%</td><td class="num">0.01%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">36</td><td class="code">BIH</td><td class="tname">Bosnia-Herzegovina</td><td class="g">B</td><td class="num">1500</td><td class="num">1259</td><td class="num">12.2%</td><td class="num">0.0%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">37</td><td class="code">CAN</td><td class="tname">Canada</td><td class="g">B</td><td class="num">1901</td><td class="num">1633</td><td class="num">89.4%</td><td class="num">1.9%</td><td class="num">0.01%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">38</td><td class="code">QAT</td><td class="tname">Qatar</td><td class="g">B</td><td class="num">1571</td><td class="num">1461</td><td class="num">55.9%</td><td class="num">0.1%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">39</td><td class="code">HAI</td><td class="tname">Haiti</td><td class="g">C</td><td class="num">1705</td><td class="num">1553</td><td class="num">13.7%</td><td class="num">0.1%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">40</td><td class="code">CPV</td><td class="tname">Cape Verde</td><td class="g">H</td><td class="num">1659</td><td class="num">1620</td><td class="num">37.5%</td><td class="num">0.5%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">41</td><td class="code">KSA</td><td class="tname">Saudi Arabia</td><td class="g">H</td><td class="num">1686</td><td class="num">1413</td><td class="num">6.2%</td><td class="num">0.0%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">42</td><td class="code">COD</td><td class="tname">Congo DR</td><td class="g">K</td><td class="num">1500</td><td class="num">1312</td><td class="num">1.7%</td><td class="num">0.0%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">43</td><td class="code">UZB</td><td class="tname">Uzbekistan</td><td class="g">K</td><td class="num">1833</td><td class="num">1745</td><td class="num">71.0%</td><td class="num">3.4%</td><td class="num">0.04%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">44</td><td class="code">GHA</td><td class="tname">Ghana</td><td class="g">L</td><td class="num">1622</td><td class="num">1605</td><td class="num">25.0%</td><td class="num">0.3%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">45</td><td class="code">PAN</td><td class="tname">Panama</td><td class="g">L</td><td class="num">1870</td><td class="num">1610</td><td class="num">26.2%</td><td class="num">0.3%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">46</td><td class="code">CUW</td><td class="tname">Curaçao</td><td class="g">E</td><td class="num">1614</td><td class="num">1557</td><td class="num">10.5%</td><td class="num">0.1%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">47</td><td class="code">CZE</td><td class="tname">Czechia</td><td class="g">A</td><td class="num">1500</td><td class="num">1135</td><td class="num">0.9%</td><td class="num">0.0%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr><tr><td class="num">48</td><td class="code">IRQ</td><td class="tname">Iraq</td><td class="g">I</td><td class="num">1740</td><td class="num">1512</td><td class="num">1.3%</td><td class="num">0.0%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.000%</span></td></tr>
-    </tbody>
-  </table>
+  <table><thead><tr><th>#</th><th>Code</th><th>Country</th><th>Grp</th><th class="num">Base Elo</th><th class="num">Adj Elo</th><th class="num">Advance</th><th class="num">Reach QF</th><th class="num">Final</th><th>Champion</th></tr></thead><tbody><tr><td class="num">1</td><td class="code">ESP</td><td class="tname">Spain</td><td class="g">H</td><td class="num">2233</td><td class="num">2230</td><td class="num">99.7%</td><td class="num">76.9%</td><td class="num">45.96%</td><td class="champ"><div class="cbar" style="width:100.0%"></div><span>31.91%</span></td></tr><tr><td class="num">2</td><td class="code">ARG</td><td class="tname">Argentina *</td><td class="g">J</td><td class="num">2187</td><td class="num">2166</td><td class="num">97.4%</td><td class="num">52.2%</td><td class="num">25.45%</td><td class="champ"><div class="cbar" style="width:45.2%"></div><span>14.42%</span></td></tr><tr><td class="num">3</td><td class="code">FRA</td><td class="tname">France</td><td class="g">I</td><td class="num">2146</td><td class="num">2143</td><td class="num">95.9%</td><td class="num">41.4%</td><td class="num">18.57%</td><td class="champ"><div class="cbar" style="width:31.2%"></div><span>9.96%</span></td></tr><tr><td class="num">4</td><td class="code">MEX</td><td class="tname">Mexico</td><td class="g">A</td><td class="num">1968</td><td class="num">2004</td><td class="num">99.2%</td><td class="num">50.1%</td><td class="num">13.35%</td><td class="champ"><div class="cbar" style="width:20.7%"></div><span>6.59%</span></td></tr><tr><td class="num">5</td><td class="code">BRA</td><td class="tname">Brazil</td><td class="g">C</td><td class="num">2060</td><td class="num">2063</td><td class="num">94.5%</td><td class="num">46.1%</td><td class="num">11.23%</td><td class="champ"><div class="cbar" style="width:16.9%"></div><span>5.39%</span></td></tr><tr><td class="num">6</td><td class="code">ENG</td><td class="tname">England</td><td class="g">L</td><td class="num">2088</td><td class="num">2072</td><td class="num">95.7%</td><td class="num">37.1%</td><td class="num">10.74%</td><td class="champ"><div class="cbar" style="width:15.1%"></div><span>4.81%</span></td></tr><tr><td class="num">7</td><td class="code">COL</td><td class="tname">Colombia</td><td class="g">K</td><td class="num">2057</td><td class="num">2057</td><td class="num">97.6%</td><td class="num">32.2%</td><td class="num">8.67%</td><td class="champ"><div class="cbar" style="width:11.9%"></div><span>3.79%</span></td></tr><tr><td class="num">8</td><td class="code">POR</td><td class="tname">Portugal</td><td class="g">K</td><td class="num">2054</td><td class="num">2054</td><td class="num">97.4%</td><td class="num">31.6%</td><td class="num">8.22%</td><td class="champ"><div class="cbar" style="width:11.2%"></div><span>3.56%</span></td></tr><tr><td class="num">9</td><td class="code">NED</td><td class="tname">Netherlands</td><td class="g">F</td><td class="num">2020</td><td class="num">2020</td><td class="num">91.4%</td><td class="num">34.7%</td><td class="num">6.47%</td><td class="champ"><div class="cbar" style="width:8.4%"></div><span>2.68%</span></td></tr><tr><td class="num">10</td><td class="code">CAN</td><td class="tname">Canada</td><td class="g">B</td><td class="num">1901</td><td class="num">1940</td><td class="num">98.6%</td><td class="num">30.8%</td><td class="num">6.03%</td><td class="champ"><div class="cbar" style="width:7.7%"></div><span>2.45%</span></td></tr><tr><td class="num">11</td><td class="code">GER</td><td class="tname">Germany</td><td class="g">E</td><td class="num">1990</td><td class="num">1998</td><td class="num">93.9%</td><td class="num">31.0%</td><td class="num">5.06%</td><td class="champ"><div class="cbar" style="width:6.3%"></div><span>2.02%</span></td></tr><tr><td class="num">12</td><td class="code">ECU</td><td class="tname">Ecuador</td><td class="g">E</td><td class="num">2022</td><td class="num">1979</td><td class="num">92.5%</td><td class="num">27.7%</td><td class="num">4.24%</td><td class="champ"><div class="cbar" style="width:4.9%"></div><span>1.55%</span></td></tr><tr><td class="num">13</td><td class="code">USA</td><td class="tname">United States</td><td class="g">D</td><td class="num">1826</td><td class="num">1894</td><td class="num">94.1%</td><td class="num">28.0%</td><td class="num">4.12%</td><td class="champ"><div class="cbar" style="width:4.4%"></div><span>1.40%</span></td></tr><tr><td class="num">14</td><td class="code">CRO</td><td class="tname">Croatia</td><td class="g">L</td><td class="num">1993</td><td class="num">1983</td><td class="num">89.2%</td><td class="num">21.3%</td><td class="num">3.96%</td><td class="champ"><div class="cbar" style="width:4.4%"></div><span>1.40%</span></td></tr><tr><td class="num">15</td><td class="code">JPN</td><td class="tname">Japan</td><td class="g">F</td><td class="num">1992</td><td class="num">1970</td><td class="num">86.7%</td><td class="num">24.7%</td><td class="num">3.51%</td><td class="champ"><div class="cbar" style="width:3.8%"></div><span>1.21%</span></td></tr><tr><td class="num">16</td><td class="code">NOR</td><td class="tname">Norway</td><td class="g">I</td><td class="num">1979</td><td class="num">1980</td><td class="num">81.1%</td><td class="num">17.1%</td><td class="num">3.56%</td><td class="champ"><div class="cbar" style="width:3.7%"></div><span>1.19%</span></td></tr><tr><td class="num">17</td><td class="code">MAR</td><td class="tname">Morocco</td><td class="g">C</td><td class="num">1983</td><td class="num">1948</td><td class="num">84.1%</td><td class="num">22.0%</td><td class="num">3.06%</td><td class="champ"><div class="cbar" style="width:3.3%"></div><span>1.06%</span></td></tr><tr><td class="num">18</td><td class="code">SUI</td><td class="tname">Switzerland</td><td class="g">B</td><td class="num">1947</td><td class="num">1943</td><td class="num">96.8%</td><td class="num">18.4%</td><td class="num">2.47%</td><td class="champ"><div class="cbar" style="width:2.5%"></div><span>0.81%</span></td></tr><tr><td class="num">19</td><td class="code">URU</td><td class="tname">Uruguay</td><td class="g">H</td><td class="num">1976</td><td class="num">1938</td><td class="num">88.1%</td><td class="num">12.6%</td><td class="num">2.15%</td><td class="champ"><div class="cbar" style="width:2.1%"></div><span>0.69%</span></td></tr><tr><td class="num">20</td><td class="code">BEL</td><td class="tname">Belgium</td><td class="g">G</td><td class="num">1916</td><td class="num">1917</td><td class="num">86.6%</td><td class="num">14.1%</td><td class="num">1.98%</td><td class="champ"><div class="cbar" style="width:1.8%"></div><span>0.58%</span></td></tr><tr><td class="num">21</td><td class="code">SEN</td><td class="tname">Senegal</td><td class="g">I</td><td class="num">1929</td><td class="num">1921</td><td class="num">71.1%</td><td class="num">13.0%</td><td class="num">1.82%</td><td class="champ"><div class="cbar" style="width:1.5%"></div><span>0.49%</span></td></tr><tr><td class="num">22</td><td class="code">PAR</td><td class="tname">Paraguay</td><td class="g">D</td><td class="num">1917</td><td class="num">1886</td><td class="num">87.3%</td><td class="num">17.5%</td><td class="num">1.71%</td><td class="champ"><div class="cbar" style="width:1.4%"></div><span>0.44%</span></td></tr><tr><td class="num">23</td><td class="code">AUS</td><td class="tname">Australia</td><td class="g">D</td><td class="num">1907</td><td class="num">1878</td><td class="num">86.1%</td><td class="num">16.5%</td><td class="num">1.50%</td><td class="champ"><div class="cbar" style="width:1.1%"></div><span>0.36%</span></td></tr><tr><td class="num">24</td><td class="code">PAN</td><td class="tname">Panama</td><td class="g">L</td><td class="num">1870</td><td class="num">1851</td><td class="num">70.1%</td><td class="num">10.7%</td><td class="num">0.91%</td><td class="champ"><div class="cbar" style="width:0.7%"></div><span>0.21%</span></td></tr><tr><td class="num">25</td><td class="code">IRN</td><td class="tname">Iran</td><td class="g">G</td><td class="num">1883</td><td class="num">1854</td><td class="num">77.8%</td><td class="num">8.9%</td><td class="num">0.89%</td><td class="champ"><div class="cbar" style="width:0.6%"></div><span>0.20%</span></td></tr><tr><td class="num">26</td><td class="code">KOR</td><td class="tname">South Korea</td><td class="g">A</td><td class="num">1873</td><td class="num">1853</td><td class="num">89.2%</td><td class="num">10.1%</td><td class="num">0.78%</td><td class="champ"><div class="cbar" style="width:0.6%"></div><span>0.18%</span></td></tr><tr><td class="num">27</td><td class="code">AUT</td><td class="tname">Austria</td><td class="g">J</td><td class="num">1881</td><td class="num">1862</td><td class="num">63.3%</td><td class="num">7.9%</td><td class="num">0.69%</td><td class="champ"><div class="cbar" style="width:0.5%"></div><span>0.15%</span></td></tr><tr><td class="num">28</td><td class="code">ALG</td><td class="tname">Algeria</td><td class="g">J</td><td class="num">1856</td><td class="num">1851</td><td class="num">61.4%</td><td class="num">7.3%</td><td class="num">0.64%</td><td class="champ"><div class="cbar" style="width:0.4%"></div><span>0.13%</span></td></tr><tr><td class="num">29</td><td class="code">SCO</td><td class="tname">Scotland</td><td class="g">C</td><td class="num">1834</td><td class="num">1820</td><td class="num">61.6%</td><td class="num">9.1%</td><td class="num">0.55%</td><td class="champ"><div class="cbar" style="width:0.4%"></div><span>0.11%</span></td></tr><tr><td class="num">30</td><td class="code">SWE</td><td class="tname">Sweden</td><td class="g">F</td><td class="num">1781</td><td class="num">1789</td><td class="num">54.6%</td><td class="num">6.7%</td><td class="num">0.29%</td><td class="champ"><div class="cbar" style="width:0.2%"></div><span>0.06%</span></td></tr><tr><td class="num">31</td><td class="code">EGY</td><td class="tname">Egypt</td><td class="g">G</td><td class="num">1806</td><td class="num">1768</td><td class="num">61.6%</td><td class="num">4.8%</td><td class="num">0.23%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.04%</span></td></tr><tr><td class="num">32</td><td class="code">UZB</td><td class="tname">Uzbekistan</td><td class="g">K</td><td class="num">1833</td><td class="num">1778</td><td class="num">66.6%</td><td class="num">8.1%</td><td class="num">0.37%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.04%</span></td></tr><tr><td class="num">33</td><td class="code">CIV</td><td class="tname">Ivory Coast</td><td class="g">E</td><td class="num">1796</td><td class="num">1775</td><td class="num">62.8%</td><td class="num">7.0%</td><td class="num">0.29%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.04%</span></td></tr><tr><td class="num">34</td><td class="code">JOR</td><td class="tname">Jordan</td><td class="g">J</td><td class="num">1786</td><td class="num">1781</td><td class="num">44.9%</td><td class="num">4.1%</td><td class="num">0.19%</td><td class="champ"><div class="cbar" style="width:0.1%"></div><span>0.03%</span></td></tr><tr><td class="num">35</td><td class="code">NZL</td><td class="tname">New Zealand</td><td class="g">G</td><td class="num">1742</td><td class="num">1714</td><td class="num">49.3%</td><td class="num">3.0%</td><td class="num">0.07%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.01%</span></td></tr><tr><td class="num">36</td><td class="code">TUN</td><td class="tname">Tunisia</td><td class="g">F</td><td class="num">1748</td><td class="num">1717</td><td class="num">37.0%</td><td class="num">3.1%</td><td class="num">0.08%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.01%</span></td></tr><tr><td class="num">37</td><td class="code">KSA</td><td class="tname">Saudi Arabia</td><td class="g">H</td><td class="num">1686</td><td class="num">1656</td><td class="num">33.9%</td><td class="num">1.8%</td><td class="num">0.04%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">38</td><td class="code">IRQ</td><td class="tname">Iraq</td><td class="g">I</td><td class="num">1740</td><td class="num">1704</td><td class="num">22.2%</td><td class="num">1.6%</td><td class="num">0.04%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">39</td><td class="code">HAI</td><td class="tname">Haiti</td><td class="g">C</td><td class="num">1705</td><td class="num">1685</td><td class="num">30.1%</td><td class="num">2.1%</td><td class="num">0.04%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">40</td><td class="code">CPV</td><td class="tname">Cape Verde</td><td class="g">H</td><td class="num">1659</td><td class="num">1634</td><td class="num">29.5%</td><td class="num">1.3%</td><td class="num">0.01%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">41</td><td class="code">TUR</td><td class="tname">Türkiye</td><td class="g">D</td><td class="num">1500</td><td class="num">1496</td><td class="num">10.1%</td><td class="num">0.2%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">42</td><td class="code">RSA</td><td class="tname">South Africa</td><td class="g">A</td><td class="num">1659</td><td class="num">1636</td><td class="num">50.7%</td><td class="num">2.3%</td><td class="num">0.03%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">43</td><td class="code">BIH</td><td class="tname">Bosnia-Herzegovina</td><td class="g">B</td><td class="num">1500</td><td class="num">1487</td><td class="num">20.9%</td><td class="num">0.3%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">44</td><td class="code">QAT</td><td class="tname">Qatar</td><td class="g">B</td><td class="num">1571</td><td class="num">1562</td><td class="num">36.6%</td><td class="num">1.0%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">45</td><td class="code">COD</td><td class="tname">Congo DR</td><td class="g">K</td><td class="num">1500</td><td class="num">1461</td><td class="num">6.3%</td><td class="num">0.1%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">46</td><td class="code">GHA</td><td class="tname">Ghana</td><td class="g">L</td><td class="num">1622</td><td class="num">1606</td><td class="num">16.1%</td><td class="num">0.7%</td><td class="num">0.01%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">47</td><td class="code">CUW</td><td class="tname">Curaçao</td><td class="g">E</td><td class="num">1614</td><td class="num">1586</td><td class="num">19.9%</td><td class="num">0.7%</td><td class="num">0.01%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr><tr><td class="num">48</td><td class="code">CZE</td><td class="tname">Czechia</td><td class="g">A</td><td class="num">1500</td><td class="num">1486</td><td class="num">18.7%</td><td class="num">0.2%</td><td class="num">0.00%</td><td class="champ"><div class="cbar" style="width:0.0%"></div><span>0.00%</span></td></tr></tbody></table>
 </details>
 
 <h2>Backtest validation: WC2010, WC2014, WC2018, WC2022</h2>
 <div class="bt-summary">
   <div class="blk">
-    <div class="lbl">Perfect (rank 1) on</div>
+    <div class="lbl">Rank-1 pick on</div>
     <div class="val warn">1 of 4 World Cups</div>
   </div>
   <div class="blk">
-    <div class="lbl">Perfect on last 3 (2014, 2018, 2022)</div>
+    <div class="lbl">Rank-1 on last 3 (2014, 2018, 2022)</div>
     <div class="val warn">1 of 3</div>
   </div>
 </div>
 <div class="bt-grid">
-  <div class="bt-card bt-warn"><div class="bt-head"><div><div class="bt-year">WC 2010</div><div class="bt-actual">Actual champion: <strong>Spain</strong></div></div><div class="bt-badge bt-badge-warn">Rank 2</div></div><div class="bt-stats"><div><span class="lbl">Our prob</span><span class="val">42.97%</span></div><div><span class="lbl">Defending</span><span class="val">Italy</span></div></div><div class="bt-top5"><div class="bt-top5-title">Our top 5 picks</div><ol><li><span class="pickname">Brazil</span><span class="pickpct">50.85%</span></li><li><span class="pickname">Spain</span><span class="pickpct">42.97%</span></li><li><span class="pickname">Germany</span><span class="pickpct">2.60%</span></li><li><span class="pickname">Argentina</span><span class="pickpct">1.08%</span></li><li><span class="pickname">England</span><span class="pickpct">0.80%</span></li></ol></div></div><div class="bt-card bt-warn"><div class="bt-head"><div><div class="bt-year">WC 2014</div><div class="bt-actual">Actual champion: <strong>Germany</strong></div></div><div class="bt-badge bt-badge-warn">Rank 2</div></div><div class="bt-stats"><div><span class="lbl">Our prob</span><span class="val">19.84%</span></div><div><span class="lbl">Defending</span><span class="val">Spain</span></div></div><div class="bt-top5"><div class="bt-top5-title">Our top 5 picks</div><ol><li><span class="pickname">Brazil</span><span class="pickpct">53.91%</span></li><li><span class="pickname">Germany</span><span class="pickpct">19.84%</span></li><li><span class="pickname">Portugal</span><span class="pickpct">12.36%</span></li><li><span class="pickname">Netherlands</span><span class="pickpct">4.75%</span></li><li><span class="pickname">Uruguay</span><span class="pickpct">2.56%</span></li></ol></div></div><div class="bt-card bt-warn"><div class="bt-head"><div><div class="bt-year">WC 2018</div><div class="bt-actual">Actual champion: <strong>France</strong></div></div><div class="bt-badge bt-badge-warn">Rank 3</div></div><div class="bt-stats"><div><span class="lbl">Our prob</span><span class="val">10.11%</span></div><div><span class="lbl">Defending</span><span class="val">Germany</span></div></div><div class="bt-top5"><div class="bt-top5-title">Our top 5 picks</div><ol><li><span class="pickname">Brazil</span><span class="pickpct">39.90%</span></li><li><span class="pickname">Portugal</span><span class="pickpct">33.33%</span></li><li><span class="pickname">France</span><span class="pickpct">10.11%</span></li><li><span class="pickname">Argentina</span><span class="pickpct">9.94%</span></li><li><span class="pickname">Spain</span><span class="pickpct">2.13%</span></li></ol></div></div><div class="bt-card bt-pass"><div class="bt-head"><div><div class="bt-year">WC 2022</div><div class="bt-actual">Actual champion: <strong>Argentina</strong></div></div><div class="bt-badge bt-badge-pass">Rank 1</div></div><div class="bt-stats"><div><span class="lbl">Our prob</span><span class="val">56.87%</span></div><div><span class="lbl">Defending</span><span class="val">France</span></div></div><div class="bt-top5"><div class="bt-top5-title">Our top 5 picks</div><ol><li><span class="pickname">Argentina</span><span class="pickpct">56.87%</span></li><li><span class="pickname">Brazil</span><span class="pickpct">36.86%</span></li><li><span class="pickname">Denmark</span><span class="pickpct">2.54%</span></li><li><span class="pickname">Netherlands</span><span class="pickpct">1.17%</span></li><li><span class="pickname">Japan</span><span class="pickpct">1.09%</span></li></ol></div></div>
+<div class="bt-card bt-warn"><div class="bt-head"><div><div class="bt-year">WC 2010</div><div class="bt-actual">Actual champion: <strong>Spain</strong></div></div><div class="bt-badge bt-badge-warn">Rank 2</div></div><div class="bt-stats"><div><span class="lbl">Our prob</span><span class="val">42.97%</span></div><div><span class="lbl">Defending</span><span class="val">Italy</span></div></div><div class="bt-top5"><div class="bt-top5-title">Our top 5 picks</div><ol><li><span class="pickname">Brazil</span><span class="pickpct">50.85%</span></li><li><span class="pickname">Spain</span><span class="pickpct">42.97%</span></li><li><span class="pickname">Germany</span><span class="pickpct">2.60%</span></li><li><span class="pickname">Argentina</span><span class="pickpct">1.08%</span></li><li><span class="pickname">England</span><span class="pickpct">0.80%</span></li></ol></div></div><div class="bt-card bt-warn"><div class="bt-head"><div><div class="bt-year">WC 2014</div><div class="bt-actual">Actual champion: <strong>Germany</strong></div></div><div class="bt-badge bt-badge-warn">Rank 2</div></div><div class="bt-stats"><div><span class="lbl">Our prob</span><span class="val">19.84%</span></div><div><span class="lbl">Defending</span><span class="val">Spain</span></div></div><div class="bt-top5"><div class="bt-top5-title">Our top 5 picks</div><ol><li><span class="pickname">Brazil</span><span class="pickpct">53.91%</span></li><li><span class="pickname">Germany</span><span class="pickpct">19.84%</span></li><li><span class="pickname">Portugal</span><span class="pickpct">12.36%</span></li><li><span class="pickname">Netherlands</span><span class="pickpct">4.75%</span></li><li><span class="pickname">Uruguay</span><span class="pickpct">2.56%</span></li></ol></div></div><div class="bt-card bt-warn"><div class="bt-head"><div><div class="bt-year">WC 2018</div><div class="bt-actual">Actual champion: <strong>France</strong></div></div><div class="bt-badge bt-badge-warn">Rank 3</div></div><div class="bt-stats"><div><span class="lbl">Our prob</span><span class="val">10.11%</span></div><div><span class="lbl">Defending</span><span class="val">Germany</span></div></div><div class="bt-top5"><div class="bt-top5-title">Our top 5 picks</div><ol><li><span class="pickname">Brazil</span><span class="pickpct">39.90%</span></li><li><span class="pickname">Portugal</span><span class="pickpct">33.33%</span></li><li><span class="pickname">France</span><span class="pickpct">10.11%</span></li><li><span class="pickname">Argentina</span><span class="pickpct">9.94%</span></li><li><span class="pickname">Spain</span><span class="pickpct">2.13%</span></li></ol></div></div><div class="bt-card bt-pass"><div class="bt-head"><div><div class="bt-year">WC 2022</div><div class="bt-actual">Actual champion: <strong>Argentina</strong></div></div><div class="bt-badge bt-badge-pass">Rank 1</div></div><div class="bt-stats"><div><span class="lbl">Our prob</span><span class="val">56.87%</span></div><div><span class="lbl">Defending</span><span class="val">France</span></div></div><div class="bt-top5"><div class="bt-top5-title">Our top 5 picks</div><ol><li><span class="pickname">Argentina</span><span class="pickpct">56.87%</span></li><li><span class="pickname">Brazil</span><span class="pickpct">36.86%</span></li><li><span class="pickname">Denmark</span><span class="pickpct">2.54%</span></li><li><span class="pickname">Netherlands</span><span class="pickpct">1.17%</span></li><li><span class="pickname">Japan</span><span class="pickpct">1.09%</span></li></ol></div></div>
 </div>
-<div class="callout">Each backtest re-runs the engine at 30,000 sims with all data cutoff strictly before the tournament's first match. Green = our number-one pick was the actual champion. Amber = the actual champion finished rank 2 or 3 in our forecast. Red = rank 4 or worse. Locked params (sum of last-3 ranks = 6, log-score = 5.319) are saved in <span class="mono">locked_params_v62.json</span>.</div>
+<div class="callout">
+  Backtest is run with the <strong>aggressive (backtest-fit) params</strong> at 30,000 sims per WC, seed=42, with all data cutoff strictly before the tournament's first match.
+  Green: our number-one pick was the actual champion. Amber: actual champion finished rank 2 or 3 in our forecast. Red: rank 4 or worse.
+  Locked params (sum-of-last-3-ranks = 6, log-score = 5.303) are saved in <span class="mono">data/v6/locked_params_v62.json</span>.
+</div>
+
+<h2>Production vs backtest-fit, top-10 side by side</h2>
+<div class="compare-grid">
+  <div class="compare-col">
+    <span class="mode-tag prod">Production (calibrated)</span>
+    <h3>2026 champion probability, top 10</h3>
+    <table><thead><tr><th>#</th><th>Country</th><th class="num">Champ %</th></tr></thead><tbody>
+    <tr><td class="num">1</td><td>Spain</td><td class="num">31.91%</td></tr><tr><td class="num">2</td><td>Argentina</td><td class="num">14.42%</td></tr><tr><td class="num">3</td><td>France</td><td class="num">9.96%</td></tr><tr><td class="num">4</td><td>Mexico</td><td class="num">6.59%</td></tr><tr><td class="num">5</td><td>Brazil</td><td class="num">5.39%</td></tr><tr><td class="num">6</td><td>England</td><td class="num">4.81%</td></tr><tr><td class="num">7</td><td>Colombia</td><td class="num">3.79%</td></tr><tr><td class="num">8</td><td>Portugal</td><td class="num">3.56%</td></tr><tr><td class="num">9</td><td>Netherlands</td><td class="num">2.68%</td></tr><tr><td class="num">10</td><td>Canada</td><td class="num">2.45%</td></tr>
+    </tbody></table>
+  </div>
+  <div class="compare-col">
+    <span class="mode-tag fit">Backtest-fit (aggressive)</span>
+    <h3>2026 champion probability, top 10</h3>
+    <table><thead><tr><th>#</th><th>Country</th><th class="num">Champ %</th></tr></thead><tbody>
+    <tr><td class="num">1</td><td>Spain</td><td class="num">61.75%</td></tr><tr><td class="num">2</td><td>France</td><td class="num">18.09%</td></tr><tr><td class="num">3</td><td>England</td><td class="num">13.64%</td></tr><tr><td class="num">4</td><td>Morocco</td><td class="num">1.52%</td></tr><tr><td class="num">5</td><td>Norway</td><td class="num">1.29%</td></tr><tr><td class="num">6</td><td>Colombia</td><td class="num">1.14%</td></tr><tr><td class="num">7</td><td>Portugal</td><td class="num">0.46%</td></tr><tr><td class="num">8</td><td>Senegal</td><td class="num">0.38%</td></tr><tr><td class="num">9</td><td>Mexico</td><td class="num">0.36%</td></tr><tr><td class="num">10</td><td>Argentina</td><td class="num">0.34%</td></tr>
+    </tbody></table>
+  </div>
+</div>
+<div class="callout">
+  The backtest-fit mode achieves a much better historical sum-of-ranks (6 on the last 3 WCs) by aggressively re-weighting WC tournament bias and defending-champion penalty, but those weights also concentrate the 2026 distribution onto Spain (61.8%) and crater Argentina (0.34%, hit by the 300-Elo defending-champion penalty).
+  We treat that as in-sample fit, not generalisable live predictive skill, and recommend the calibrated mode for the live 2026 forecast.
+</div>
+
+<h2>Verifier verdict</h2>
+<div class="verdict-block">
+  <span class="v-pill v-ok">CONFIRMED</span>
+  <p></p>
+  <h3>Independent backtest re-run (seed 3033, 20k sims)</h3>
+  <table><thead><tr><th>Year</th><th>Actual</th><th class="num">Claim rank</th><th class="num">Claim %</th><th class="num">Verifier rank</th><th class="num">Verifier %</th><th>Within 3pp</th></tr></thead><tbody>
+  <tr><td>2010</td><td>Spain</td><td class="num">2</td><td class="num">43.20%</td><td class="num">2</td><td class="num">42.86%</td><td>Yes</td></tr><tr><td>2014</td><td>Germany</td><td class="num">2</td><td class="num">19.78%</td><td class="num">2</td><td class="num">19.84%</td><td>Yes</td></tr><tr><td>2018</td><td>France</td><td class="num">3</td><td class="num">10.21%</td><td class="num">3</td><td class="num">10.72%</td><td>Yes</td></tr><tr><td>2022</td><td>Argentina</td><td class="num">1</td><td class="num">57.02%</td><td class="num">1</td><td class="num">56.50%</td><td>Yes</td></tr>
+  </tbody></table>
+  <h3>Cherry-pick flags (aggressive params)</h3>
+  <ul><li>w_wc_bias=5.0 is 10.0x default (0.5)</li><li>w_strong_opp_form=3.0 is 6.0x default (0.5)</li><li>w_recent_champ=2.5 (default=0); fully tuned-in</li><li>recent_champ_scale=70.0 is 2.3x default</li><li>defending_champion_penalty=300.0 Elo (default=0); large hand-crafted penalty</li><li>w_attack=0.1 reduced from default 1.0</li><li>w_defense=0.1 reduced from default 1.0</li><li>w_scorer=0 disabled (default=0.3); scorer signal zeroed</li><li>host_adv_elo=0 (default=80.0); host advantage removed</li><li>draw_boost=0.25 is 5.0x default</li></ul>
+  <h3>Bug findings</h3>
+  <ul></ul>
+</div>
 
 <h2>Refinement journey</h2>
 <div class="journey">
   <p>
     Getting from raw Elo to v6.2 took 36+ hyperparameter combinations across three sweep families
-    (12 candidates in sweep&nbsp;2, 10 rounds in sweep&nbsp;3, 12 candidates in the v6.2 sweep), plus four
+    (12 candidates in sweep 2, 10 rounds in sweep 3, 12 candidates in the v6.2 sweep), plus four
     explicit refinement rounds after the leading candidate was selected. The full record is committed
     in <span class="mono">data/v6/</span>. Each refinement either added a signal, changed a weight, or both.
   </p>
   <p>
     Adding per-player goal Elo, online attack/defense, WC tournament bias, recent-champion credit,
     strong-opponent form, and a defending-champion penalty progressively improved the backtest.
-    The final lock (candidate t03) hit rank-1 picks in 1 of 4 backtests (2022 Argentina at 56.9%) and
-    rank-2 on both 2010 Spain and 2014 Germany. France 2018 remained structurally at rank 3 because
-    France's pre-tournament Elo of ~2027 was over 100 points below Germany, Brazil, Portugal, and Spain
-    at that cutoff. The four refinement rounds (R1 through R4) all tried to fix 2018 by piling more
-    weight on WC bias, recent-champion credit, or the defending-champion penalty. Every attempt that
-    pushed France up either crashed it (R2: France rank 6) or broke another year (R3: 2018 France rank 7).
-    Pushing past sum-rank 6 would have required overfitting France's exact tactical profile, so we locked t03.
+    The aggressive lock (candidate t03) hit rank-1 in 1 of 4 backtests (2022 Argentina at 56.9%) and
+    rank-2 on both 2010 Spain and 2014 Germany. France 2018 remained at rank 3 because France's pre-tournament
+    Elo of 2027 sat over 100 points below Brazil, Germany, and Spain, and the model would not push France to rank-1 without overfitting on a single-WC feature.
   </p>
   <p>
-    The verifier (different seed, smaller run) independently reproduces all four ranks and stays
-    inside 1 pp of the locked numbers, so the result is RNG-stable.
+    The original goal asked for a perfect rank-1 sweep on the last 3 World Cups. We did not reach that.
+    The closest honest result, given strict no-peeking and no per-tournament hand-tuning, is the locked
+    state shown above. The production-calibrated mode trades historical fit for live calibration; the
+    backtest-fit mode reverses the trade.
   </p>
 </div>
-<details>
-  <summary>Four refinement rounds attempted after t03</summary>
-  <table style="margin-top:10px">
-    <thead><tr><th>Round</th><th>ID</th><th class="num">sum_rank_last3</th><th class="num">log_score</th><th>Outcome</th></tr></thead>
-    <tbody><tr><td>R1</td><td class="mono">v62_r1</td><td class="num">7</td><td class="num">5.147</td><td>worse (Brazil over-amplified)</td></tr><tr><td>R2</td><td class="mono">v62_r2</td><td class="num">8</td><td class="num">5.711</td><td>2014 Germany#1 achieved, but 2018 France crashed to #6</td></tr><tr><td>R3</td><td class="mono">v62_r3</td><td class="num">9</td><td class="num">6.020</td><td>2014 Germany#1, 2022 Argentina#1, but 2018 France rank 7</td></tr><tr><td>R4</td><td class="mono">v62_r4</td><td class="num">7</td><td class="num">5.245</td><td>regressed to sum=7 (vs t03&#x27;s 6)</td></tr></tbody>
-  </table>
-</details>
 
-<h2>Verifier verdict</h2>
-<div class="verdict-block">
-  <div class="v-head">
-    <div>
-      <div style="font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Independent re-run, seed 3033, 20,000 sims</div>
-      <div style="margin-top:4px;font-size:14px">All four backtest ranks reproduce with every per-WC difference under 1 pp.</div>
-    </div>
-    <div class="v-pill ok">CONFIRMED</div>
-  </div>
-  <div class="v-meta">Agreement within 3 pp: <strong>4 of 4 World Cups</strong>. Log-score under the verifier seed: <strong>5.268</strong> (locked log-score: <strong>5.319</strong>).</div>
-  <table style="margin-top:14px">
-    <thead><tr><th>Year</th><th>Actual champion</th><th class="num">Claim rank</th><th class="num">Claim %</th><th class="num">Verifier rank</th><th class="num">Verifier %</th><th class="num">Diff</th><th>Status</th></tr></thead>
-    <tbody><tr><td>2010</td><td>Spain</td><td class="num">2</td><td class="num">43.20%</td><td class="num">2</td><td class="num">42.86%</td><td class="num">0.34 pp</td><td><span class="pill pill-ok">match</span></td></tr><tr><td>2014</td><td>Germany</td><td class="num">2</td><td class="num">19.78%</td><td class="num">2</td><td class="num">19.84%</td><td class="num">0.05 pp</td><td><span class="pill pill-ok">match</span></td></tr><tr><td>2018</td><td>France</td><td class="num">3</td><td class="num">10.21%</td><td class="num">3</td><td class="num">10.72%</td><td class="num">0.51 pp</td><td><span class="pill pill-ok">match</span></td></tr><tr><td>2022</td><td>Argentina</td><td class="num">1</td><td class="num">57.02%</td><td class="num">1</td><td class="num">56.50%</td><td class="num">0.52 pp</td><td><span class="pill pill-ok">match</span></td></tr></tbody>
-  </table>
-  <h3>Bug findings</h3>
-  <div class="bug-clean">No bug findings. The verifier reproduced all per-WC ranks under seed=3033 (independent from the locked seed=42) with every difference under 1 pp.</div>
-  <h3>Cherry-pick flags (full transparency)</h3>
-  <div style="font-size:12.5px;color:var(--muted);margin-bottom:4px">The verifier flags every parameter that differs meaningfully from its default. These are not bugs, they are tuning choices the model needed to fit the historical record.</div>
-  <ul class="cherry-list"><li>w_wc_bias=5.0 is 10.0x default (0.5)</li><li>w_strong_opp_form=3.0 is 6.0x default (0.5)</li><li>w_recent_champ=2.5 (default=0); fully tuned-in</li><li>recent_champ_scale=70.0 is 2.3x default</li><li>defending_champion_penalty=300.0 Elo (default=0); large hand-crafted penalty</li><li>w_attack=0.1 reduced from default 1.0</li><li>w_defense=0.1 reduced from default 1.0</li><li>w_scorer=0 disabled (default=0.3); scorer signal zeroed</li><li>host_adv_elo=0 (default=80.0); host advantage removed</li><li>draw_boost=0.25 is 5.0x default</li></ul>
+<h2>Methodology, nine signals, final weights</h2>
+<div class="method-grid">
+<div class="m-card"><div class="m-label">Team Elo</div><div class="m-desc">World Football Elo from 49,257 historical matches</div><div class="m-weight">base</div></div><div class="m-card"><div class="m-label">Per-player goal Elo</div><div class="m-desc">Opponent-adjusted scoring rating from 47,602 goalscorer records, 14,842 scorers</div><div class="m-weight">data/v6/player_ratings.json</div></div><div class="m-card"><div class="m-label">Online attack/defense</div><div class="m-desc">Bivariate-Poisson team rating walked through history</div><div class="m-weight">w_attack=0.1, w_defense=0.1</div></div><div class="m-card"><div class="m-label">WC tournament bias</div><div class="m-desc">Per-team residual vs Elo in past 8 WC matches</div><div class="m-weight">w_wc_bias=5.0, neg_only=True</div></div><div class="m-card"><div class="m-label">Recent champion credit</div><div class="m-desc">Finalist/SF credit at Euro, Copa, AFCON, AC, Gold Cup, WC last 4 years</div><div class="m-weight">w_recent_champ=2.5, scale=70.0</div></div><div class="m-card"><div class="m-label">Strong-opponent form</div><div class="m-desc">PPG vs Elo&amp;ge;1900 opponents in last 24m (friendlies excluded)</div><div class="m-weight">w_strong_opp_form=3.0</div></div><div class="m-card"><div class="m-label">Defending-champion penalty</div><div class="m-desc">Flat Elo subtraction; reflects post-1998 curse (3 of 7 group-stage exits)</div><div class="m-weight">penalty=300.0 Elo</div></div><div class="m-card"><div class="m-label">Best-XI squad strength</div><div class="m-desc">Best XI weighted average from 1,227 active player ratings</div><div class="m-weight">w_squad=0</div></div><div class="m-card"><div class="m-label">Confederation calibration</div><div class="m-desc">Empirical log-goal shift from 2,057 cross-confederation matches since 2010</div><div class="m-weight">scale=80.0</div></div><div class="m-card"><div class="m-label">Host advantage</div><div class="m-desc">Applied to USA, Canada, Mexico in 2026 forecast</div><div class="m-weight">0.0 Elo (aggressive); 70 Elo (calibrated)</div></div>
 </div>
-
-<h2>Methodology: nine signals, final weights</h2>
-<div class="signals">
-  <div class="signal">
-    <div class="s-title">Team Elo</div>
-    <div class="s-meta"><span class="s-w">base</span> Built from 49,257 international matches up to the cutoff. Standard Elo with K=20, home advantage applied per match.</div>
-  </div>
-  <div class="signal">
-    <div class="s-title">Per-player goal Elo</div>
-    <div class="s-meta"><span class="s-w">w_scorer=0.0</span> Built from 47k goalscorer records (14,842 unique scorers). Disabled in v6.2 lock because team-level signals already encode scoring strength.</div>
-  </div>
-  <div class="signal">
-    <div class="s-title">Online attack / defense (Poisson)</div>
-    <div class="s-meta"><span class="s-w">w_attack=0.1</span><span class="s-w">w_defense=0.1</span> Per-team attack and defense ratings inferred online from match goal differentials. Kept light in v6.2.</div>
-  </div>
-  <div class="signal">
-    <div class="s-title">Confederation calibration</div>
-    <div class="s-meta"><span class="s-w">scale=80.0</span> Empirical log-shifts from 2,057 cross-confederation matches. UEFA +0.014, CONMEBOL +0.013, CAF +0.012, AFC -0.011, CONCACAF -0.018, OFC -0.064.</div>
-  </div>
-  <div class="signal">
-    <div class="s-title">Host advantage</div>
-    <div class="s-meta"><span class="s-w">host_adv_elo=0.0</span> Disabled in v6.2: 2026 has three co-hosts (USA, MEX, CAN), and the empirical home edge is captured upstream in the Elo home-advantage term.</div>
-  </div>
-  <div class="signal">
-    <div class="s-title">WC tournament bias</div>
-    <div class="s-meta"><span class="s-w">w_wc_bias=5.0</span><span class="s-w">neg_only=True</span> Per-team residual of WC performance vs Elo expectation in the four previous tournaments. Negative-only in v6.2: only teams that historically underperform in WCs get docked.</div>
-  </div>
-  <div class="signal">
-    <div class="s-title">Recent-champion credit</div>
-    <div class="s-meta"><span class="s-w">w_recent_champ=2.5</span><span class="s-w">scale=70.0</span> Bonus for teams that won or reached the final of a Euro, Copa America, or WC in the last 4 years.</div>
-  </div>
-  <div class="signal">
-    <div class="s-title">Strong-opponent form</div>
-    <div class="s-meta"><span class="s-w">w_strong_opp_form=3.0</span> Points per game against Elo&gt;1900 opponents in the last 24 months. Pulled Argentina 2022 to rank 1 at 57%.</div>
-  </div>
-  <div class="signal">
-    <div class="s-title">Defending-champion penalty</div>
-    <div class="s-meta"><span class="s-w">300.0 Elo</span> 3 of the last 7 defending champions exited at the group stage (France 2002, Italy 2010, Spain 2014, Germany 2018). Encoded as a flat Elo deduction.</div>
-  </div>
-  <div class="signal">
-    <div class="s-title">Best-XI squad strength</div>
-    <div class="s-meta"><span class="s-w">w_squad=0.8</span> Average rating of the projected best XI, computed from 1,227 active player ratings (club + national-team form weighted).</div>
-  </div>
+<div class="callout">
+  Weights shown are the aggressive backtest-fit lock. The calibrated forecast uses mild near-default weights (w_wc_bias=0, w_recent_champ=0, w_scorer=0, w_strong_opp_form=0, w_attack/def=0.3, defending_champion_penalty=0, w_squad=0.3) so the live 2026 distribution stays market-aligned.
 </div>
 
 <h2>Top 5 strongest squads (best XI rating)</h2>
-<div class="squad-grid">
-  <div class="squad-card"><div class="squad-head"><div class="squad-name">France</div><div class="squad-score">+7.90</div></div><div class="squad-meta">XI avg 1748 &middot; Top-4 avg 1790 &middot; GK 1660 &middot; ATT 1802</div><div class="squad-xi">Marcus Thuram, Michael Olise, Aurélien Tchouaméni, Warren Zaïre-Emery, N&#x27;Golo Kanté, Manu Koné, Jules Koundé, William Saliba, Dayot Upamecano, Ibrahima Konaté, Mike Maignan</div></div><div class="squad-card"><div class="squad-head"><div class="squad-name">Portugal</div><div class="squad-score">+5.75</div></div><div class="squad-meta">XI avg 1754 &middot; Top-4 avg 1791 &middot; GK 1668 &middot; ATT 1792</div><div class="squad-xi">Pedro Neto, Vitinha, João Neves, Francisco Conceição, Rúben Neves, Francisco Trincão, Rúben Dias, Nuno Mendes, Gonçalo Inácio, Diogo Dalot, Diogo Costa</div></div><div class="squad-card"><div class="squad-head"><div class="squad-name">Brazil</div><div class="squad-score">+5.07</div></div><div class="squad-meta">XI avg 1743 &middot; Top-4 avg 1794 &middot; GK 1665 &middot; ATT 1810</div><div class="squad-xi">Vinicius Junior, Matheus Cunha, Bruno Guimaraes, Lucas Paqueta, Danilo, Fabinho, Gabriel Magalhaes, Wesley, Bremer, Roger Ibanez, Alisson</div></div><div class="squad-card"><div class="squad-head"><div class="squad-name">Senegal</div><div class="squad-score">+1.19</div></div><div class="squad-meta">XI avg 1741 &middot; Top-4 avg 1795 &middot; GK 1650 &middot; ATT 1814</div><div class="squad-xi">Sadio Mane, Ismaila Sarr, Idrissa Gana Gueye, Pape Matar Sarr, Lamine Camara, Habib Diarra, Krepin Diatta, El Hadji Malick Diouf, Ismail Jakobs, Moussa Niakhate, Edouard Mendy</div></div><div class="squad-card"><div class="squad-head"><div class="squad-name">Spain</div><div class="squad-score">+0.47</div></div><div class="squad-meta">XI avg 1746 &middot; Top-4 avg 1786 &middot; GK 1663 &middot; ATT 1775</div><div class="squad-xi">Rodri, Pedri, Yéremy Pino, Fabián Ruiz, Martín Zubimendi, Víctor Muñoz, Pau Cubarsí, Marc Cucurella, Eric García, Pedro Porro, Unai Simón</div></div>
+<div class="sq-grid">
+<div class="sq-card"><div class="sq-head">France</div><div class="sq-score">Score 7.90</div><div class="sq-stats"><div><span class="lbl">XI avg</span><span class="val">1748</span></div><div><span class="lbl">Top 4 avg</span><span class="val">1790</span></div><div><span class="lbl">Bench avg</span><span class="val">1766</span></div></div><ol class="sq-xi"><li>Marcus Thuram</li><li>Michael Olise</li><li>Aurélien Tchouaméni</li><li>Warren Zaïre-Emery</li><li>N&#x27;Golo Kanté</li><li>Manu Koné</li><li>Jules Koundé</li><li>William Saliba</li><li>Dayot Upamecano</li><li>Ibrahima Konaté</li><li>Mike Maignan</li></ol></div><div class="sq-card"><div class="sq-head">Portugal</div><div class="sq-score">Score 5.75</div><div class="sq-stats"><div><span class="lbl">XI avg</span><span class="val">1754</span></div><div><span class="lbl">Top 4 avg</span><span class="val">1791</span></div><div><span class="lbl">Bench avg</span><span class="val">1717</span></div></div><ol class="sq-xi"><li>Pedro Neto</li><li>Vitinha</li><li>João Neves</li><li>Francisco Conceição</li><li>Rúben Neves</li><li>Francisco Trincão</li><li>Rúben Dias</li><li>Nuno Mendes</li><li>Gonçalo Inácio</li><li>Diogo Dalot</li><li>Diogo Costa</li></ol></div><div class="sq-card"><div class="sq-head">Brazil</div><div class="sq-score">Score 5.07</div><div class="sq-stats"><div><span class="lbl">XI avg</span><span class="val">1743</span></div><div><span class="lbl">Top 4 avg</span><span class="val">1794</span></div><div><span class="lbl">Bench avg</span><span class="val">1754</span></div></div><ol class="sq-xi"><li>Vinicius Junior</li><li>Matheus Cunha</li><li>Bruno Guimaraes</li><li>Lucas Paqueta</li><li>Danilo</li><li>Fabinho</li><li>Gabriel Magalhaes</li><li>Wesley</li><li>Bremer</li><li>Roger Ibanez</li><li>Alisson</li></ol></div><div class="sq-card"><div class="sq-head">Senegal</div><div class="sq-score">Score 1.19</div><div class="sq-stats"><div><span class="lbl">XI avg</span><span class="val">1741</span></div><div><span class="lbl">Top 4 avg</span><span class="val">1795</span></div><div><span class="lbl">Bench avg</span><span class="val">1723</span></div></div><ol class="sq-xi"><li>Sadio Mane</li><li>Ismaila Sarr</li><li>Idrissa Gana Gueye</li><li>Pape Matar Sarr</li><li>Lamine Camara</li><li>Habib Diarra</li><li>Krepin Diatta</li><li>El Hadji Malick Diouf</li><li>Ismail Jakobs</li><li>Moussa Niakhate</li><li>Edouard Mendy</li></ol></div><div class="sq-card"><div class="sq-head">Spain</div><div class="sq-score">Score 0.47</div><div class="sq-stats"><div><span class="lbl">XI avg</span><span class="val">1746</span></div><div><span class="lbl">Top 4 avg</span><span class="val">1786</span></div><div><span class="lbl">Bench avg</span><span class="val">1714</span></div></div><ol class="sq-xi"><li>Rodri</li><li>Pedri</li><li>Yéremy Pino</li><li>Fabián Ruiz</li><li>Martín Zubimendi</li><li>Víctor Muñoz</li><li>Pau Cubarsí</li><li>Marc Cucurella</li><li>Eric García</li><li>Pedro Porro</li><li>Unai Simón</li></ol></div>
 </div>
-<div class="callout">Squad strength score is the best-XI rating minus the field average, expressed in Elo-equivalent points. France leads the squad ranking despite finishing second on champion probability because their strong-opponent form (15-month sample) and head-to-head record at the cutoff are weaker than Spain's.</div>
+<div class="callout">
+  Squad strength is computed from 1,227 active players' ratings, choosing the best XI by position and weighting by top-4 concentration plus bench depth. See <span class="mono">data/v6/squad_strength.json</span>.
+</div>
 
 <h2>Top scorers in the tournament pool</h2>
-<details>
-  <summary>Top 15 goalscorer ratings (from 14,842 scorers, 47k goal records)</summary>
-  <table style="margin-top:10px">
-    <thead><tr><th>#</th><th>Player</th><th>Team</th><th class="num">Rating</th><th class="num">Intl goals</th></tr></thead>
-    <tbody><tr><td class="num">1</td><td class="tname">Lionel Messi</td><td>argentina</td><td class="num">1569.5</td><td class="num">63</td></tr><tr><td class="num">2</td><td class="tname">Cristiano Ronaldo</td><td>portugal</td><td class="num">1568.2</td><td class="num">121</td></tr><tr><td class="num">3</td><td class="tname">Kylian Mbappé</td><td>france</td><td class="num">1561.5</td><td class="num">45</td></tr><tr><td class="num">4</td><td class="tname">Luis Suárez</td><td>colombia</td><td class="num">1520.4</td><td class="num">51</td></tr><tr><td class="num">5</td><td class="tname">Robert Lewandowski</td><td>-</td><td class="num">1516.2</td><td class="num">69</td></tr><tr><td class="num">6</td><td class="tname">Patrik Schick</td><td>czechia</td><td class="num">1510.0</td><td class="num">21</td></tr><tr><td class="num">7</td><td class="tname">Edin Džeko</td><td>-</td><td class="num">1503.3</td><td class="num">58</td></tr><tr><td class="num">8</td><td class="tname">Albert Guðmundsson</td><td>-</td><td class="num">1500.0</td><td class="num">11</td></tr><tr><td class="num">9</td><td class="tname">Pierre-Emerick Aubameyang</td><td>-</td><td class="num">1500.0</td><td class="num">21</td></tr><tr><td class="num">10</td><td class="tname">Jaime Moreno</td><td>-</td><td class="num">1500.0</td><td class="num">10</td></tr><tr><td class="num">11</td><td class="tname">Teboho Mokoena</td><td>south-africa</td><td class="num">1500.0</td><td class="num">5</td></tr><tr><td class="num">12</td><td class="tname">Atiba Hutchinson</td><td>-</td><td class="num">1500.0</td><td class="num">5</td></tr><tr><td class="num">13</td><td class="tname">Paolo Guerrero</td><td>-</td><td class="num">1500.0</td><td class="num">26</td></tr><tr><td class="num">14</td><td class="tname">Saleh Al-Shehri</td><td>saudi-arabia</td><td class="num">1500.0</td><td class="num">14</td></tr><tr><td class="num">15</td><td class="tname">Bryan Ruiz</td><td>-</td><td class="num">1500.0</td><td class="num">20</td></tr></tbody>
-  </table>
-</details>
-
-<h2>Most likely bracket path</h2>
-<table>
-  <thead><tr><th>Round</th><th>Champion</th><th></th><th>Modal opponent</th><th class="num">Share</th></tr></thead>
-  <tbody><tr><td>Round of 32</td><td class="tname">Spain</td><td>vs</td><td class="tname">Uzbekistan <span class="g">(K)</span></td><td class="num">6.31%</td></tr><tr><td>Round of 16</td><td class="tname">Spain</td><td>vs</td><td class="tname">Uruguay <span class="g">(H)</span></td><td class="num">7.46%</td></tr><tr><td>Quarter-final</td><td class="tname">Spain</td><td>vs</td><td class="tname">France <span class="g">(I)</span></td><td class="num">9.37%</td></tr><tr><td>Semi-final</td><td class="tname">Spain</td><td>vs</td><td class="tname">France <span class="g">(I)</span></td><td class="num">16.76%</td></tr><tr><td>Final</td><td class="tname">Spain</td><td>vs</td><td class="tname">France <span class="g">(I)</span></td><td class="num">27.93%</td></tr></tbody>
-</table>
-<div class="callout">Modal opponent at each KO stage for the most-likely champion. Each row is the SINGLE most common opponent at that round across all simulations where the modal champion won the tournament. Rows are independent marginal modes, not a single jointly-most-likely sequence (a strong team like Argentina can be modal at multiple stages even though it can only appear at one of them in any single simulation).</div>
-
-<div class="footer">
-  v6.2 final report, generated 2026-06-04. Engine source in <span class="mono">scripts/v6/</span>,
-  locked parameters in <span class="mono">data/v6/locked_params_v62.json</span>, live forecast in
-  <span class="mono">data/v6/forecast_2026_v62.json</span>, verifier output in
-  <span class="mono">data/v6/verification_v62.json</span>.
-  Compare with the <a href="forecast.html">v5 forecast</a> for the prior model.
+<table><thead><tr><th>#</th><th>Player</th><th>Team</th><th class="num">Goal Elo</th><th class="num">Intl goals</th><th class="num">Caps</th></tr></thead><tbody>
+<tr><td class="num">1</td><td>Lionel Messi</td><td>argentina</td><td class="num">1570</td><td class="num">63</td><td class="num">None</td></tr><tr><td class="num">2</td><td>Cristiano Ronaldo</td><td>portugal</td><td class="num">1568</td><td class="num">121</td><td class="num">None</td></tr><tr><td class="num">3</td><td>Kylian Mbappé</td><td>france</td><td class="num">1562</td><td class="num">45</td><td class="num">None</td></tr><tr><td class="num">4</td><td>Luis Suárez</td><td>colombia</td><td class="num">1520</td><td class="num">51</td><td class="num">None</td></tr><tr><td class="num">5</td><td>Robert Lewandowski</td><td></td><td class="num">1516</td><td class="num">69</td><td class="num">None</td></tr><tr><td class="num">6</td><td>Patrik Schick</td><td>czechia</td><td class="num">1510</td><td class="num">21</td><td class="num">None</td></tr><tr><td class="num">7</td><td>Edin Džeko</td><td></td><td class="num">1503</td><td class="num">58</td><td class="num">None</td></tr><tr><td class="num">8</td><td>Albert Guðmundsson</td><td></td><td class="num">1500</td><td class="num">11</td><td class="num">None</td></tr><tr><td class="num">9</td><td>Pierre-Emerick Aubameyang</td><td></td><td class="num">1500</td><td class="num">21</td><td class="num">None</td></tr><tr><td class="num">10</td><td>Jaime Moreno</td><td></td><td class="num">1500</td><td class="num">10</td><td class="num">None</td></tr><tr><td class="num">11</td><td>Teboho Mokoena</td><td>south-africa</td><td class="num">1500</td><td class="num">5</td><td class="num">None</td></tr><tr><td class="num">12</td><td>Atiba Hutchinson</td><td></td><td class="num">1500</td><td class="num">5</td><td class="num">None</td></tr><tr><td class="num">13</td><td>Paolo Guerrero</td><td></td><td class="num">1500</td><td class="num">26</td><td class="num">None</td></tr><tr><td class="num">14</td><td>Saleh Al-Shehri</td><td>saudi-arabia</td><td class="num">1500</td><td class="num">14</td><td class="num">None</td></tr><tr><td class="num">15</td><td>Bryan Ruiz</td><td></td><td class="num">1500</td><td class="num">20</td><td class="num">None</td></tr>
+</tbody></table>
+<div class="callout">
+  Per-player goal Elo derived from 47,602 historical goalscorer records (14,842 distinct scorers), with opponent Elo at the time of each goal, K-weighted by tournament tier (WC 8x, majors 6x, qualifiers 4x, friendlies 3x), penalties at 0.5x, and exponential decay with years idle. Top-20 filtered to scorers active since 2022.
 </div>
 
-</div>
+<footer>
+  Built on the same data and engine family as the v5 forecast (<a href="forecast.html">comparison</a>). All scripts under <span class="mono">scripts/v6/</span>. Source data under <span class="mono">data/v6/</span>. No emojis, no em-dashes, sans-serif, light-mode default.
+</footer>
+
 <script>
-const btn=document.getElementById('themeBtn');
-const modes=["system","light","dark"];
-let idx=0;
-const mq=window.matchMedia('(prefers-color-scheme: dark)');
-function applyTheme(){
-  const m=modes[idx];
-  const eff=m==="system"?(mq.matches?"dark":"light"):m;
-  document.documentElement.setAttribute('data-theme',eff);
-  btn.textContent="Theme: "+m.charAt(0).toUpperCase()+m.slice(1);
+const btn = document.getElementById('themeBtn');
+const modes = ["system", "light", "dark"];
+let idx = 0;
+const mq = window.matchMedia('(prefers-color-scheme: dark)');
+function applyTheme() {
+  const m = modes[idx];
+  const eff = m === "system" ? (mq.matches ? "dark" : "light") : m;
+  document.documentElement.setAttribute('data-theme', eff);
+  btn.textContent = "Theme: " + m.charAt(0).toUpperCase() + m.slice(1);
 }
-btn.onclick=()=>{idx=(idx+1)%3;applyTheme();};
-mq.addEventListener('change',()=>{if(modes[idx]==="system")applyTheme();});
+btn.onclick = () => { idx = (idx + 1) % 3; applyTheme(); };
+mq.addEventListener('change', () => { if (modes[idx] === "system") applyTheme(); });
 applyTheme();
 </script>
+</div>
 </body>
 </html>
