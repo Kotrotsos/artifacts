@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Red Team Assessment - capibara (request capture service)</title>
+<style>
+  :root{
+    --bg:#f7f7f5; --surface:#ffffff; --surface-2:#f0f0ec; --border:#e2e2dc;
+    --text:#1c1c1a; --text-soft:#55554f; --text-faint:#86867e;
+    --accent:#1f6f8b; --accent-soft:#e6f0f3;
+    --crit:#9b1c1c; --crit-bg:#fbe9e9; --high:#b4480a; --high-bg:#fdeee2;
+    --med:#8a6d00; --med-bg:#fbf3d6; --low:#2563a8; --low-bg:#e8f0fb;
+    --ok:#1e6e3c; --ok-bg:#e6f4ea;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --maxw:980px;
+  }
+  [data-theme="dark"]{
+    --bg:#16171a; --surface:#1e2024; --surface-2:#26282d; --border:#33363c;
+    --text:#e9e9e6; --text-soft:#b6b6b0; --text-faint:#8a8a84;
+    --accent:#5cb5d1; --accent-soft:#1c2e35;
+    --crit:#f08b8b; --crit-bg:#3a1e1e; --high:#f0a766; --high-bg:#3a2a18;
+    --med:#e6cf6a; --med-bg:#332d14; --low:#7fb0e6; --low-bg:#1b2738;
+    --ok:#7fce9b; --ok-bg:#16291d;
+  }
+  @media (prefers-color-scheme:dark){[data-theme="system"]{
+    --bg:#16171a; --surface:#1e2024; --surface-2:#26282d; --border:#33363c;
+    --text:#e9e9e6; --text-soft:#b6b6b0; --text-faint:#8a8a84;
+    --accent:#5cb5d1; --accent-soft:#1c2e35;
+    --crit:#f08b8b; --crit-bg:#3a1e1e; --high:#f0a766; --high-bg:#3a2a18;
+    --med:#e6cf6a; --med-bg:#332d14; --low:#7fb0e6; --low-bg:#1b2738;
+    --ok:#7fce9b; --ok-bg:#16291d;
+  }}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  header.masthead{padding:56px 0 28px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 10px}
+  h1{font-size:33px;line-height:1.15;margin:0 0 14px;font-weight:750;letter-spacing:-.01em}
+  .sub{color:var(--text-soft);font-size:16.5px;max-width:64ch;margin:0}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:22px;font-size:13.5px;color:var(--text-soft)}
+  .meta b{color:var(--text);font-weight:650}
+  h2{font-size:23px;margin:48px 0 8px;font-weight:720;letter-spacing:-.01em;scroll-margin-top:20px}
+  h2 .num{color:var(--text-faint);font-weight:600;margin-right:10px}
+  h3{font-size:17.5px;margin:24px 0 6px;font-weight:680}
+  p{margin:10px 0}a{color:var(--accent)}
+  ul,ol{margin:10px 0;padding-left:22px}li{margin:5px 0}
+  code{font-family:var(--mono);font-size:13px;background:var(--surface-2);padding:1.5px 5px;border-radius:4px;border:1px solid var(--border);word-break:break-word}
+  pre{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.5;margin:12px 0}
+  pre code{background:none;border:none;padding:0}
+  .lead{font-size:17px;color:var(--text-soft)}
+  .badge{display:inline-block;font-size:11.5px;font-weight:750;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid transparent;white-space:nowrap;vertical-align:middle}
+  .b-crit{color:var(--crit);background:var(--crit-bg);border-color:var(--crit)}
+  .b-high{color:var(--high);background:var(--high-bg);border-color:var(--high)}
+  .b-med{color:var(--med);background:var(--med-bg);border-color:var(--med)}
+  .b-low{color:var(--low);background:var(--low-bg);border-color:var(--low)}
+  .b-ok{color:var(--ok);background:var(--ok-bg);border-color:var(--ok)}
+  .b-info{color:var(--text-soft);background:var(--surface-2);border-color:var(--border)}
+  .finding{border:1px solid var(--border);border-radius:12px;margin:18px 0;overflow:hidden;background:var(--surface)}
+  .finding>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;background:var(--surface)}
+  .finding>summary::-webkit-details-marker{display:none}
+  .finding .fid{font-family:var(--mono);font-size:13px;color:var(--text-faint);font-weight:700}
+  .finding .ftitle{font-weight:670;font-size:16.5px;flex:1;min-width:240px}
+  .finding>summary:hover{background:var(--surface-2)}
+  .finding .fbody{padding:4px 20px 20px;border-top:1px solid var(--border)}
+  .finding .fbody h4{margin:16px 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-faint)}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);font-weight:700}
+  tbody tr:hover{background:var(--surface-2)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:18px 0}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+  .stat .n{font-size:30px;font-weight:760;line-height:1}.stat .l{font-size:12.5px;color:var(--text-soft);margin-top:6px}
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  hr{border:none;border-top:1px solid var(--border);margin:34px 0}
+  .note{font-size:13.5px;color:var(--text-faint)}
+  .toggle{position:fixed;top:14px;right:14px;display:flex;border:1px solid var(--border);border-radius:999px;overflow:hidden;background:var(--surface);z-index:50;font-size:12.5px}
+  .toggle button{border:none;background:none;color:var(--text-soft);padding:7px 12px;cursor:pointer;font-family:var(--sans)}
+  .toggle button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:650}
+  .check{color:var(--ok);font-weight:700}.cross{color:var(--crit);font-weight:700}
+  footer.foot{margin:48px 0 60px;padding-top:20px;border-top:1px solid var(--border);color:var(--text-faint);font-size:13px}
+  @media (max-width:640px){h1{font-size:26px}.toggle{position:static;margin:16px auto 0;width:max-content}}
+  @media print{
+    :root{--bg:#fff;--surface:#fff;--surface-2:#f4f4f4;--border:#bbb;--text:#000;--text-soft:#222;--text-faint:#555}
+    .toggle{display:none}body{font-size:11.5pt}.finding{break-inside:avoid}.finding .fbody{display:block!important}
+    .finding>summary{background:none}h2{break-after:avoid}a{color:#000;text-decoration:underline}pre{white-space:pre-wrap}
+  }
+</style>
+</head>
+<body>
+<div class="toggle" role="group" aria-label="Color theme">
+  <button data-set="light" aria-pressed="true">Light</button>
+  <button data-set="dark" aria-pressed="false">Dark</button>
+  <button data-set="system" aria-pressed="false">System</button>
+</div>
+
+<header class="masthead"><div class="wrap">
+  <p class="eyebrow">Red Team Assessment</p>
+  <h1>Security Assessment of capibara, a request-capture service</h1>
+  <p class="sub">An owner-authorized passive and active red-team of the live application: reconnaissance, client-side reverse engineering, access-control and authorization testing, injection and forgery testing, and abuse-resistance checks. Testing was non-destructive: no denial-of-service, no mass fuzzing, no data destruction.</p>
+  <div class="meta">
+    <span><b>Target</b> capibara-production-c978.up.railway.app</span>
+    <span><b>Entry</b> /jomlat7cik49</span>
+    <span><b>Date</b> 4 June 2026</span>
+    <span><b>Method</b> Passive + active, non-destructive</span>
+    <span><b>Stack</b> Node/Express on Railway</span>
+  </div>
+</div></header>
+
+<main class="wrap">
+
+<section>
+  <h2 id="summary"><span class="num">01</span>Executive summary</h2>
+  <p class="lead">capibara is a webhook and request-inspection tool: any path <code>/{hash}</code> becomes a capture bin, requests sent to it are recorded in full, and the owner reads them back at <code>/{hash}/read</code> after entering a one-time secret token. The application is <b>well engineered from a security standpoint</b>. The classic failure modes for this kind of tool, stored XSS in the request viewer and cross-tenant data access, are both correctly handled. No critical or high-severity issue was found.</p>
+
+  <div class="grid">
+    <div class="stat"><div class="n" style="color:var(--ok)">0</div><div class="l">Critical / High</div></div>
+    <div class="stat"><div class="n" style="color:var(--med)">3</div><div class="l">Medium</div></div>
+    <div class="stat"><div class="n" style="color:var(--low)">4</div><div class="l">Low</div></div>
+    <div class="stat"><div class="n" style="color:var(--accent)">10+</div><div class="l">Controls verified</div></div>
+  </div>
+
+  <p>The remaining findings are about <b>abuse resistance and defense in depth</b>, not broken authentication or injection. The two that matter most: there is no rate limiting or resource ceiling anywhere (an availability and enumeration concern), and the bin model lets the first visitor of a name claim its read token, which allows silent squatting of predictable names. Both are fixable without redesign.</p>
+
+  <h3>Priorities</h3>
+  <ol>
+    <li><b>Add rate limiting and resource caps</b> (requests per bin, bins per IP, request rate, body size, retention TTL). (<a href="#m1">M1</a>)</li>
+    <li><b>Close the bin-squatting gap</b>: bind a bin to its creator, or warn clearly when a name already exists. (<a href="#m2">M2</a>)</li>
+    <li><b>Send security headers</b> (CSP, X-Frame-Options, nosniff) on the pages that render captured data. (<a href="#m3">M3</a>)</li>
+    <li><b>Remove the existence oracle and lock down CORS.</b> (<a href="#l1">L1</a>, <a href="#l2">L2</a>)</li>
+  </ol>
+</section>
+
+<section>
+  <h2 id="good"><span class="num">02</span>What is done right</h2>
+  <p>These were actively tested and held up. They are the reason the risk rating is low.</p>
+  <div class="pill-row">
+    <span class="badge b-ok">Bin-scoped tokens (no cross-bin IDOR)</span>
+    <span class="badge b-ok">Strict server-side input validation</span>
+    <span class="badge b-ok">Output escaping in the viewer</span>
+    <span class="badge b-ok">Destructive endpoint token-gated</span>
+    <span class="badge b-ok">No cookie auth, so no CSRF</span>
+    <span class="badge b-ok">High-entropy tokens</span>
+    <span class="badge b-ok">No host-header injection</span>
+    <span class="badge b-ok">No admin / list endpoint</span>
+    <span class="badge b-ok">Token page is no-store</span>
+  </div>
+  <table>
+    <thead><tr><th>Control</th><th>Test &amp; result</th></tr></thead>
+    <tbody>
+      <tr><td>Cross-bin authorization (IDOR)</td><td>A valid token for bin A returns <code>401 invalid token</code> against bin B's <code>/requests</code> and <code>/clear</code>. Tokens are bound to their bin. <span class="check">Secure</span></td></tr>
+      <tr><td>Input validation (bin name)</td><td>Server enforces <code>1-64 of [A-Za-z0-9_-]</code> and returns <code>400</code> otherwise. Blocks reflected XSS via the hash, encoded-slash tricks, and dotfile access like <code>/.env</code>. <span class="check">Secure</span></td></tr>
+      <tr><td>Stored XSS in the reader</td><td>The viewer routes every captured field (method, path, URL, headers, query, body) through an HTML-escaper into element/text context. Injected <code>&lt;script&gt;</code>, <code>&lt;img onerror&gt;</code>, <code>&lt;svg onload&gt;</code> payloads are stored raw and rendered inert. <span class="check">Secure</span></td></tr>
+      <tr><td>Destructive endpoint forgery (CSRF)</td><td><code>POST /{hash}/clear</code> requires the bin token in an <code>X-Token</code> header. Wrong token and no token both return <code>401</code>. Header auth (no cookies) means a cross-site page cannot forge it. <span class="check">Secure</span></td></tr>
+      <tr><td>Token strength &amp; handling</td><td>Tokens are <code>capi_</code> + 32 base64url chars (~190 bits). Empty, malformed, SQL-ish, and 500-char tokens all return a clean <code>401</code> with no error leak. <span class="check">Secure</span></td></tr>
+      <tr><td>Path traversal</td><td><code>/a/../b/requests</code> falls through to the capture catch-all (records the first segment), it does not reach another bin's data endpoint. <span class="check">Secure</span></td></tr>
+      <tr><td>Host-header injection</td><td>Spoofed <code>Host</code> is rejected at the edge (<code>404</code>); <code>X-Forwarded-Host</code> is not reflected into the displayed webhook URL. <span class="check">Secure</span></td></tr>
+      <tr><td>Admin / enumeration endpoints</td><td>No global list, stats, or admin route exists; <code>/admin</code>, <code>/bins</code>, <code>/metrics</code> are just ordinary capture bins. <span class="check">Secure</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2 id="register"><span class="num">03</span>Findings register</h2>
+  <table>
+    <thead><tr><th>ID</th><th>Finding</th><th>Severity</th><th>Class</th></tr></thead>
+    <tbody>
+      <tr><td><a href="#m1">M1</a></td><td>No rate limiting or resource ceilings (DoS + enumeration)</td><td><span class="badge b-med">Medium</span></td><td>Availability</td></tr>
+      <tr><td><a href="#m2">M2</a></td><td>Bin-name squatting via first-touch token model</td><td><span class="badge b-med">Medium</span></td><td>Authz design</td></tr>
+      <tr><td><a href="#m3">M3</a></td><td>No security headers on data-rendering pages</td><td><span class="badge b-med">Medium</span></td><td>Defense in depth</td></tr>
+      <tr><td><a href="#l1">L1</a></td><td>Bin existence oracle (404 vs 401)</td><td><span class="badge b-low">Low</span></td><td>Info disclosure</td></tr>
+      <tr><td><a href="#l2">L2</a></td><td>Overly permissive CORS (reflected origin, all methods)</td><td><span class="badge b-low">Low</span></td><td>Hardening</td></tr>
+      <tr><td><a href="#l3">L3</a></td><td>No HSTS</td><td><span class="badge b-low">Low</span></td><td>Transport</td></tr>
+      <tr><td><a href="#l4">L4</a></td><td>Captured secrets retained indefinitely under one secret</td><td><span class="badge b-low">Low</span></td><td>Data handling</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2><span class="num">04</span>Medium findings</h2>
+
+  <details class="finding" id="m1" open>
+    <summary><span class="fid">M1</span><span class="ftitle">No rate limiting or resource ceilings</span><span class="badge b-med">Medium</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>Twelve rapid wrong-token requests to <code>/{hash}/requests</code> all returned <code>401</code> with no <code>429</code> and no backoff. There is no observable limit on request rate, on the number of requests stored per bin, on the number of bins that can be created, or on retention. The store appears to be in-memory (no database was observed, responses are immediate, and the design is single-tenant per Railway service).</p>
+      <h4>Why it matters</h4>
+      <ul>
+        <li><b>Memory exhaustion / DoS.</b> An attacker can flood one bin with requests, or create unbounded bins, until the process runs out of memory and Railway restarts it, dropping every other user's captures.</li>
+        <li><b>Frictionless enumeration.</b> No rate limit means the existence oracle (L1) and any future guessable secret can be probed at full speed.</li>
+      </ul>
+      <h4>Recommendation</h4>
+      <p>Add per-IP rate limiting (for example via <code>express-rate-limit</code> behind Railway's proxy, trusting <code>X-Forwarded-For</code> correctly), plus hard caps: max stored requests per bin (ring-buffer eviction), max bins per IP per hour, a max captured-body size (truncation already exists, enforce a global byte budget), and a retention TTL that evicts idle bins. This also bounds the in-memory store.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="m2" open>
+    <summary><span class="fid">M2</span><span class="ftitle">Bin-name squatting via the first-touch token model</span><span class="badge b-med">Medium</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>A bin's read token is generated and shown exactly once, to whoever first navigates to that name in a browser. The site actively encourages human-readable names ("just navigate to <code>/anything-you-like</code>", plus a custom-name box). Anyone can pre-create predictable names (<code>/stripe</code>, <code>/github</code>, <code>/test</code>, <code>/webhook-prod</code>, a company or product name) and quietly retain their tokens.</p>
+      <h4>Why it matters</h4>
+      <p>If a victim later picks a name an attacker already owns, the victim is shown a bin page with <b>no token</b> (only a non-zero request counter as a subtle tell) while the attacker holds the working read token. Every request the victim then points at that bin, often containing webhook payloads, bearer tokens, signing secrets, is silently readable by the attacker. We verified that captured <code>Authorization: Bearer</code> headers are stored and returned verbatim to the token holder.</p>
+      <h4>Recommendation</h4>
+      <p>Bind a bin to its creator: set a signed creator cookie at creation and only reveal the token (and allow reads) to that identity, or scope the token to a session. At minimum, when a requested name already exists, show a clear "this bin already exists and is controlled by whoever created it, choose a fresh random name" warning, and prefer server-issued random names over user-chosen ones for anything sensitive.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="m3" open>
+    <summary><span class="fid">M3</span><span class="ftitle">No security headers on pages that render captured data</span><span class="badge b-med">Medium</span></summary>
+    <div class="fbody">
+      <h4>What we found</h4>
+      <p>The bin page and the <code>/read</code> viewer return only <code>cache-control: no-store</code>. There is no <code>Content-Security-Policy</code>, no <code>X-Frame-Options</code> or <code>frame-ancestors</code>, no <code>X-Content-Type-Options: nosniff</code>, and no <code>Referrer-Policy</code>. These are the pages that render attacker-influenced captured content.</p>
+      <h4>Why it matters</h4>
+      <p>The viewer's escaping is correct today, so there is no XSS now. But a request inspector renders hostile input by definition, so a CSP is the safety net: if any future change introduces an unescaped sink, a strict CSP turns a full account-equivalent compromise (the token lives in <code>localStorage</code>) into a blocked event. The missing <code>X-Frame-Options</code> also allows the reader to be framed for clickjacking.</p>
+      <h4>Recommendation</h4>
+      <p>Send on all app responses: <code>Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'</code> (move the small inline theme bootstrap to a nonce or into the existing JS file), plus <code>X-Frame-Options: DENY</code>, <code>X-Content-Type-Options: nosniff</code>, and <code>Referrer-Policy: no-referrer</code>.</p>
+    </div>
+  </details>
+</section>
+
+<section>
+  <h2><span class="num">05</span>Low findings</h2>
+
+  <details class="finding" id="l1">
+    <summary><span class="fid">L1</span><span class="ftitle">Bin existence oracle (404 vs 401)</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>Without any token, <code>GET /{hash}/requests</code> returns <code>401</code> for a bin that exists and <code>404</code> for one that was never used. This leaks which bins exist and, combined with no rate limiting (M1), allows mapping of named bins. Data still requires the token, so impact is limited, but it aids targeting and the squatting attack (M2). Return an identical response (for example always <code>401</code> for well-formed names) regardless of whether the bin exists.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="l2">
+    <summary><span class="fid">L2</span><span class="ftitle">Overly permissive CORS</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>The preflight reflects an arbitrary <code>Origin</code> (<code>Access-Control-Allow-Origin: https://evil.example</code>) and advertises <code>Allow-Methods: GET,POST,PUT,PATCH,DELETE,OPTIONS,HEAD</code> and <code>Allow-Headers: *</code>; the capture GET returns <code>Access-Control-Allow-Origin: *</code>. Impact is low because reads require the secret <code>X-Token</code> header and no credentials are accepted, but the official reader is same-origin and the data API does not need CORS at all. Remove CORS from <code>/requests</code>, <code>/events</code>, and <code>/clear</code>, or restrict to a strict allowlist.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="l3">
+    <summary><span class="fid">L3</span><span class="ftitle">No HSTS</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>No <code>Strict-Transport-Security</code> header is sent. Railway terminates TLS and serves over HTTPS, but without HSTS a browser is not told to refuse future plaintext. Add <code>Strict-Transport-Security: max-age=31536000; includeSubDomains</code> once HTTPS-only is confirmed.</p>
+    </div>
+  </details>
+
+  <details class="finding" id="l4">
+    <summary><span class="fid">L4</span><span class="ftitle">Captured secrets retained indefinitely under a single secret</span><span class="badge b-low">Low</span></summary>
+    <div class="fbody">
+      <p>Bins capture complete requests, including <code>Authorization</code> headers, cookies and bodies, and we observed these returned verbatim to the token holder. There is no expiry or retention limit, so anything sensitive sent to a bin lingers until the process restarts, guarded only by the one-time token (which cannot be rotated or revoked). Add an automatic retention/TTL policy, an explicit "delete bin" action, and a visible warning not to send production secrets to a shared bin. This pairs with the abuse caps in M1.</p>
+    </div>
+  </details>
+</section>
+
+<section>
+  <h2 id="notes"><span class="num">06</span>Additional notes (informational)</h2>
+  <ul>
+    <li><b>Token in localStorage.</b> The creation page auto-saves the token to <code>localStorage</code> and the viewer reads it back. Convenient, and safe given no XSS exists, but it raises the stakes of any future XSS, which is the main argument for the CSP in M3.</li>
+    <li><b>Client-side robustness.</b> One interpolation in the viewer, <code>r.httpVersion</code>, is not HTML-escaped; it is not exploitable because Node's HTTP parser constrains it to <code>digit.digit</code>. The JSON syntax-highlight regex could behave pathologically on adversarial captured JSON, but only in the bin owner's own browser.</li>
+    <li><b>Prototype pollution.</b> A <code>{"__proto__": {...}}</code> body was accepted and captured with no observable effect. Worth a quick code check that captured JSON is never deep-merged into objects server-side.</li>
+    <li><b>In-memory store.</b> Captures appear to live in process memory, so a restart loses all data. This is a reliability point and the same surface that M1 protects.</li>
+  </ul>
+</section>
+
+<section>
+  <h2 id="appendix"><span class="num">07</span>Appendix: evidence and method</h2>
+  <h3>Application map</h3>
+  <pre><code>GET  /                         landing page (HTML)
+GET  /{hash}     Accept: html  bin management page; token shown ONCE at creation
+ANY  /{hash}     (api client)  captures the request, returns JSON confirmation
+GET  /{hash}/read              viewer shell (loads /_assets/viewer.js)
+GET  /{hash}/requests   X-Token  JSON of captured requests   (401 wrong, 404 absent)
+GET  /{hash}/events     X-Token  SSE live stream             (text/event-stream)
+POST /{hash}/clear      X-Token  clears the bin              (401 without token)
+hash rule: 1-64 chars of [A-Za-z0-9_-]  (server-enforced, 400 otherwise)
+token:     capi_ + 32 base64url chars,  passed in X-Token header</code></pre>
+
+  <h3>Key test transcripts</h3>
+  <pre><code># Cross-bin IDOR (token of bin B against bin A) -> correctly denied
+GET /jomlat7cik49/requests  X-Token: &lt;token-for-rtprobe7k2x9q&gt;
+=> 401 {"error":"invalid token"}
+
+# Existence oracle
+GET /jomlat7cik49/requests  X-Token: bad   => 401   (exists)
+GET /zz-nope-8412/requests  X-Token: bad   => 404   (never used)
+
+# Destructive endpoint cannot be forged
+POST /rtprobe7k2x9q/clear  (wrong token)   => 401
+POST /rtprobe7k2x9q/clear  (no token)      => 401
+
+# Input validation
+GET /xqq&lt;img...&gt;   => 400 "Invalid bin name. Allowed: 1-64 of [A-Za-z0-9_-]."
+GET /foo%2fbar      => 400        GET /.env => 400
+
+# No rate limiting
+12x GET /{hash}/requests  X-Token: bad  => 401 x12  (no 429)
+
+# Stored payloads render inert (esc() in viewer.js): &lt;script&gt;, &lt;img onerror&gt;,
+# &lt;svg onload&gt; injected via query/header/body, stored raw, escaped on render.</code></pre>
+
+  <h3>Scope &amp; method</h3>
+  <p class="note">Owner-authorized assessment of a live application. Active testing was deliberately bounded: no denial-of-service, no high-volume fuzzing or brute forcing, and no destructive operations against data the tester did not create. All state-changing tests (injection, clear, delete) were run against a tester-created bin (<code>rtprobe7k2x9q</code>); the owner's bin (<code>/jomlat7cik49</code>) was only read or probed and accumulated a handful of capture entries that can be flushed with Clear. Tools: <code>curl</code>, <code>openssl</code>, manual HTTP, and static review of the served HTML/JS. Raw artifacts are stored under <code>capibara-redteam/raw/</code>.</p>
+</section>
+
+<footer class="foot"><div>
+  Red team assessment of capibara (capibara-production-c978.up.railway.app), 4 June 2026. Owner-authorized, non-destructive. Findings reflect the application state on the assessment date; re-test after changes.
+</div></footer>
+</main>
+
+<script>
+(function(){
+  var root=document.documentElement, btns=document.querySelectorAll('.toggle button');
+  function apply(m){root.setAttribute('data-theme',m);btns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.set===m?'true':'false');});try{localStorage.setItem('capi-rt-theme',m);}catch(e){}}
+  btns.forEach(function(b){b.addEventListener('click',function(){apply(b.dataset.set);});});
+  var s;try{s=localStorage.getItem('capi-rt-theme');}catch(e){}
+  apply(s||'light');
+})();
+</script>
+</body>
+</html>

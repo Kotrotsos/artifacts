@@ -377,3 +377,4 @@
 | 2026-06-04 | content | images | [hero.png](projects/content/images/hero.png) | Apple Foundation Models on-device classification article (subradar): hero.png |
 | 2026-06-04 | content | images | [diagram-architecture.png](projects/content/images/diagram-architecture.png) | Apple Foundation Models on-device classification article (subradar): diagram-architecture.png |
 | 2026-06-04 | content | images | [diagram-comparison.png](projects/content/images/diagram-comparison.png) | Apple Foundation Models on-device classification article (subradar): diagram-comparison.png |
+| 2026-06-04 | capibara | reports | [capibara-redteam-report.html](projects/capibara/reports/capibara-redteam-report.html) | Active and passive red team of capibara request-capture app on Railway |
