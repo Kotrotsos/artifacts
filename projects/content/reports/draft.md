@@ -1,157 +1,123 @@
-# The Smallest Eval That Beats an Opinion
+# When the Agent Draws the Screen: The Three Settings of Generative UI
 
-*You change a prompt, it feels better, you ship it. Next week it is worse on a case you forgot existed. The fix is three test cases and one script, and you can build it this afternoon.*
+*The agent can now render the interface instead of describing it. There are three ways to let it, on a spectrum from total control to none, and the choice is really a question of how tightly you set the bar on what it is allowed to draw.*
 
-![An isometric scene: a small rack of coral input cards each running through a teal checker that stamps it pass or fail against an expected answer card, feeding a single round score gauge at the end](hero.png)
+![An isometric scene: an abstract teal agent arm drawing a UI directly onto a screen in real time, three small framed panels beside it ranging from a tightly gridded layout on the left to a loose freeform sketch on the right, a coral control dial underneath with three notches](hero.png)
 
-Here is the loop almost every team runs without noticing. You tweak a prompt or swap a model. You eyeball a few outputs. They look better. You ship. A week later something that used to work is broken, and you cannot tell which change did it, because "looks better" left no record. The whole quality process was a feeling, and feelings do not diff.
+I have been building interfaces that the agent draws itself for a few months now. A small plugin that pops up a real form to ask me a visual question and reads my click back as structured data. Reports that ship as navigable sites instead of walls of text. I was doing it by feel, one pattern at a time, without a map of the space I was working in.
 
-The fix is small and unglamorous. You write down a handful of cases with their expected answers, and a short script that runs them and prints a number. Now every change produces a score instead of a vibe. A prompt edit that drops you from five-of-five to three-of-five gets caught before it ships, not after a user finds it.
+Then Shubham Saboo published a clean framework for it, and the names did what good names do: they made the thing I had been fumbling toward obvious. His framing is that generative UI, letting the agent render the interface rather than write a paragraph about it, comes in exactly three patterns on a spectrum from control to freedom. Credit to him for the shape. This piece is my read on it from the building side, plus the lens that made the choice click for me, which is that the three patterns are three settings of how tightly you hold the bar on what the agent may draw.
 
-This is the concrete version of holding the bar. You cannot verify a result against a standard you never wrote down, and an eval is that standard made executable. You do not need a framework, a platform, or a vendor. You need three cases and thirty lines.
+Ask for a table, get a table, not a sentence describing one. That is the whole promise. The question is who decides what the table looks like.
 
 **Three things to take away:**
 
-- An eval turns "it feels better" into a number. That single change, from judgement to measurement, is what lets you make prompt and model changes without quietly breaking things you already shipped.
-- You do not need exact-match scoring or a fancy harness. Most useful evals check a property (the right label, valid JSON, a required field) over a few cases you care about, and the smallest version is about thirty lines of plain code.
-- The cases that matter are the ones that already burned you. Every bug becomes a permanent test case, which is how a three-case eval grows into real coverage without anyone planning it.
+- Generative UI is not one technique, it is a spectrum with three points: Controlled (you pre-build, the agent picks), Declarative (the agent fills a schema you defined), and Open-ended (the agent writes raw HTML). Each breaks differently at scale, and most teams run one without ever choosing it.
+- The honest way to choose is to ask how much you are willing to let the agent decide. Each pattern is a different amount of bar set on the output. Tightest on the left, none on the right.
+- Token economics decide more than aesthetics. Controlled grows your context window linearly with every component you add. Declarative stays flat no matter how many UIs your catalog can produce. That difference is the wall most teams hit around twenty-five components.
 
-## "It feels better" is not a signal
+![A spectrum from total control on the left to total freedom on the right, with three points marked: Controlled (you pre-build, the agent picks, the tightest bar), Declarative (the agent fills a catalog you defined, the catalog is the bar), and Open-ended (the agent writes raw HTML, no bar), with the bar getting looser left to right](diagram-spectrum.png)
 
-The reason eyeballing fails is not that you have bad judgement. It is that the sample is tiny, the comparison is from memory, and the cost of a regression is paid later by someone else. You look at three outputs after a change, they read well, and you have no idea what happened to the twenty cases you did not look at, including the awkward one from last month that you fixed and forgot.
+## The plumbing, in one paragraph
 
-A model or prompt change is rarely uniformly better. It improves some inputs and quietly degrades others. Without a fixed set of cases you re-run every time, you only ever see the inputs you happen to glance at, which are almost always the easy ones. The hard case that regressed is exactly the one you will not think to check by hand.
+A few protocols sit under all of this, and it is worth knowing which does what so the rest reads cleanly. MCP connects an agent to tools. A2A connects agents to each other. AG-UI connects the agent to the user: it is the streaming, bidirectional wire that carries UI events, tool calls, and state in both directions over a single connection, so a user edit reaches the agent and an agent change reaches the screen. A2UI is Google's spec for an agent emitting UI as a schema, and it rides on AG-UI. You do not write a parser for any of it. A client library, CopilotKit is the one Saboo uses and the one with reference code for all three patterns, decodes the stream for you. That is the entire stack you need to hold in your head.
 
-An eval removes the memory and the sampling from the loop. The cases are fixed, the scoring is mechanical, and the number is the same kind of number every time, so two runs are actually comparable. That comparability is the entire point.
+## Setting 1: Controlled, you hold the bar tightest
 
-![A before-and-after loop. Before: change to prompt or model, then a thumbs-up gut feeling, then ship, with a hidden broken case. After: change, then run the eval, then a pass-count score, then keep or revert based on the number](diagram-loop.png)
+This is where most teams start, because most frameworks default here. You build a component by hand, bind it to a name, and the agent's only job is to decide when to render it and with what data. The agent never touches your markup. It picks from a menu you wrote.
 
-## An eval is three things
-
-Strip away the tooling and an eval is just three parts.
-
-An **input**: the thing you feed the system. A user message, a document, a row of data.
-
-An **expectation**: what a correct result looks like. Sometimes that is an exact answer, but more often it is a property, the right label, a valid shape, the presence of a required field, the absence of a forbidden one.
-
-A **scorer**: a function that takes the system's output and the expectation and returns pass or fail. The scorer is where the judgement you used to apply by eye gets written down once and applied forever.
-
-That is the whole model. Everything else, dashboards, datasets, judges, CI, is an elaboration on input plus expectation plus scorer. Start with the three parts and add only what a real problem forces you to add.
-
-## The smallest version, in about thirty lines
-
-Say you have a function that classifies a support message by intent. The thing under test returns something like `{"intent": "refund"}`. Your cases are a file, one JSON object per line:
-
-```json
-{"id": "refund-clear",     "input": "I want my money back, this is broken", "expect": "refund"}
-{"id": "praise-not-refund","input": "love it, works great",                 "expect": "praise"}
-{"id": "refund-polite",    "input": "could you process a return for #5512?", "expect": "refund"}
-{"id": "cancel-intent",    "input": "please cancel my plan",                 "expect": "cancel"}
-{"id": "refund-typo",      "input": "wnat a refundd pls",                    "expect": "refund"}
+```tsx
+// You pre-build the component, then register it so the agent can choose it.
+registerComponent({
+  name: "expenseBreakdown",
+  // Describe it by the user's intent, not the visual. This matters later.
+  description: "Use when the user asks to compare spending across categories.",
+  props: { title: "string", rows: "{label: string, amount: number}[]" },
+  render: ({ title, rows }) => <ExpenseBreakdown title={title} rows={rows} />,
+});
 ```
 
-And the runner is short enough to read in one sitting:
+The bar here is as tight as it gets. The agent cannot draw anything you did not already build and approve. Your design system stays fully in charge, and the output is pixel-perfect every time because you drew every pixel.
 
-```python
-import json, sys
-from app import classify   # the thing under test: returns {"intent": "..."}
+That tightness has a price, and it is paid in tokens. Every component you register sits in the agent's context window on every turn, before the user has typed a word, because the agent has to know the menu to pick from it. A tool description with its schema runs a few hundred tokens. Twenty-five of them is several thousand tokens of overhead on every single request, whether or not any UI gets rendered. Your context cost grows linearly with your component count, and that line is the wall.
 
-def load(path):
-    with open(path) as f:
-        return [json.loads(line) for line in f if line.strip()]
+The other failure is subtler. Past fifteen or so components, two of them start to sound alike. A pie chart and a donut chart both "show proportions," so the agent guesses, and guesses wrong often enough to annoy. The fix is a discipline, not a feature: describe each component by the user intent that should trigger it, never by what it looks like. "Use when the user asks to compare proportions of a whole" beats "renders a pie chart," because the agent is matching the user's words, not yours.
 
-def run(path):
-    cases = load(path)
-    passed = 0
-    for c in cases:
-        got = classify(c["input"]).get("intent")
-        ok = got == c["expect"]
-        passed += ok
-        print(f"[{'PASS' if ok else 'FAIL'}] {c['id']:18} "
-              f"expected={c['expect']:8} got={got}")
-    print(f"\n{passed}/{len(cases)} passed  ({passed/len(cases):.0%})")
-    sys.exit(0 if passed == len(cases) else 1)
+Ship Controlled for your ten or fewer highest-value flows, the ones where precision is the point and you already know the exact UI. Do not ship it as the way you handle everything, because the token bill and the component sprawl both scale with you.
 
-if __name__ == "__main__":
-    run(sys.argv[1] if len(sys.argv) > 1 else "cases.jsonl")
+## Setting 2: Declarative, the catalog is the bar
+
+This is the pattern most production apps end up needing, and the one I would default to. Instead of pre-building every screen, the agent emits a schema describing the UI it wants, and your app maps that schema to real components through a catalog. One tool on the agent side. Many possible UIs on the frontend.
+
+```tsx
+// The agent returns a UI tree. Your catalog maps node types to components.
+const catalog = {
+  FlightCard: ({ airline, price, route }) => (
+    <article className="rounded-xl border p-4">
+      <header className="flex justify-between"><span>{airline}</span><span>{price}</span></header>
+      <div className="text-sm text-muted">{route}</div>
+    </article>
+  ),
+  // ...the rest of the components the agent is allowed to emit
+};
+
+// agent output (conceptual): { type: "FlightCard", props: { airline: "KLM", price: "€212", route: "AMS → JFK" } }
 ```
 
-Run it and you get a verdict you can actually act on:
+The bar here is the catalog. The agent has freedom inside it, it composes and fills the components however the conversation calls for, but it cannot emit anything the catalog does not define. The props are typed, so a malformed UI becomes a build error instead of a blank screen. You set the boundary once, in the catalog, and the agent works inside it for every UI it will ever produce.
 
-```text
-$ python eval.py cases.jsonl
-[PASS] refund-clear        expected=refund   got=refund
-[PASS] praise-not-refund   expected=praise   got=praise
-[FAIL] refund-polite       expected=refund   got=question
-[PASS] cancel-intent       expected=cancel   got=cancel
-[PASS] refund-typo         expected=refund   got=refund
+The token math is the reason this scales. Fifty card types or five hundred, the agent still sees one tool: "emit a UI from the catalog." Your component library can grow without growing the per-turn context cost at all. That flat line is the whole argument for Declarative over Controlled once you are past the prototype.
 
-4/5 passed  (80%)
+It is also extensible in a way Controlled is not. The schema is just JSON, so the same agent output can render in React, Svelte, or anything else with a matching catalog, and any agent that already speaks the wire can drive it without touching agent code.
+
+The trade-off is real and you should name it out loud: the agent owns the layout within your catalog, so the exact arrangement varies run to run. If you are shipping legal disclosures, regulated content, or marketing surfaces where pixel placement is non-negotiable, this is the wrong bucket, go back to Controlled for those. The classic silent failure here is a catalog ID mismatch: you built a custom card, but the identifier the agent targets and the one your frontend registers do not match exactly, so the frontend quietly falls back to a generic component with no error in the console. Match the strings on both sides and it works.
+
+Declarative is built for the long tail: dashboards, search results, forms, cards, the hundred small widgets you will never have time to hand-build. More use cases than hours, and you care about the token bill past the demo. That is the case for it.
+
+## Setting 3: Open-ended, no bar at all
+
+The far end of the spectrum removes the catalog entirely. The agent writes raw markup and your app renders it. Two flavors live here: an MCP App, where the agent drives a UI surface that a server exposes (an agent drawing diagrams on a real canvas, for instance), and sandboxed HTML, where the agent simply writes the HTML and you render it inside a locked-down iframe so it cannot touch your session.
+
+```tsx
+// The agent returns an HTML string. Render it sandboxed so it cannot escape.
+<iframe
+  srcDoc={agentHtml}
+  // allow it to run and submit, nothing else. Never allow-same-origin.
+  sandbox="allow-scripts allow-forms"
+/>
 ```
 
-There is the regression, in plain sight. A polite return request now reads as a generic question. You caught it because the case was in the file, not because you happened to test that exact phrasing today. The exit code is non-zero, so this can fail a commit or a CI step the moment it drops below your bar.
+There is no bar here. The agent draws whatever it wants, and that is exactly the point and exactly the problem. The freedom is total, and so is the variance.
 
-![A terminal running the eval: five named cases, four marked PASS in green and one FAIL in coral where a polite refund was misclassified as a question, ending with 4/5 passed and 80 percent](cc-eval-run.png)
+I tried running open-ended as the primary interface for an agent, in spirit, by letting it freestyle the HTML. It was neo-brutalist on Tuesday and an iOS-4 tribute on Wednesday. Style rules in the system prompt nudge the model toward your brand, they do not bind it, so the look kept drifting and the product felt unserious. Without a bar held on the output, the output is whatever aesthetic was loudest in the model's training that week.
 
-## How to score (it is rarely exact match)
+Open-ended is not useless, it is misapplied when teams reach for it as a default because it demos well. It is the right call for one thing: throwaway interactions the user will see once and never again. "Show me how electrons work." "Make a weird chart of my last ten queries." "Visualize this API response." Disposable, one-shot, nobody-cares-what-it-looks-like surfaces. For those, the freedom is a feature and the variance does not matter.
 
-Exact match works for classification, where there is one right label. Most other tasks need a softer scorer, and picking the right kind is most of the craft.
+One safety note that is easy to get wrong: set the iframe sandbox to allow scripts and forms and nothing else. Never grant allow-same-origin to agent-written HTML, because that hands markup the model invented access to your origin. The whole reason this pattern is safe is the sandbox, so do not open it.
 
-![A grid of four scoring approaches: exact match for labels and closed answers; property and assertion checks for shape, contains, valid JSON, required fields; LLM-as-judge for open-ended answers against a rubric, pinned and used sparingly; pairwise comparison for ranking two outputs when there is no single right answer](diagram-scoring.png)
+## How to pick, on purpose
 
-**Exact match** is for closed answers: the label, the category, the boolean. Fast, deterministic, no ambiguity.
+The decision is short once you frame it as how much bar you want to hold.
 
-**Property and assertion checks** cover most real work. You are not asking "is this the one true output," you are asking "does it have the properties a correct output must have." Is it valid JSON. Does it contain the order number. Does it stay under the length limit. Does it avoid the banned phrase. A handful of asserts catches the failures that actually matter and ignores harmless variation in wording.
+![A decision flow for choosing a generative-UI pattern: if a designer has pixel-perfect mockups for the flow, choose Controlled; if you have dozens of widgets and a long tail to cover, choose Declarative; if it is a one-shot disposable visualization, choose Open-ended; if unsure, default to Declarative, use Controlled for the top three flows, and never default to Open-ended](diagram-decision.png)
 
-```python
-def score_extraction(output: dict) -> bool:
-    return (
-        isinstance(output.get("total"), (int, float))
-        and output.get("currency") in {"EUR", "USD", "GBP"}
-        and len(output.get("line_items", [])) > 0
-    )
-```
+A designer handed you exact mockups for this flow? Controlled, hold the bar tight. Dozens of widgets and results to cover with no time to hand-build them? Declarative, set the bar once in the catalog. A one-shot visualization the user will never see twice? Open-ended, drop the bar on purpose. Cannot decide? Default to Declarative, promote your top three flows to Controlled, and never let Open-ended be the default.
 
-**LLM-as-judge** is for open-ended output where there is no clean property to check: a summary, a rewrite, an explanation. You ask a model to grade the answer against a rubric. It is genuinely useful and also the easiest scorer to get wrong, so three rules. Pin the judge model, its version, and temperature zero, or your scores drift under you. Never let the model under test grade its own output. And use it only where a property check cannot do the job, because it costs money and adds noise.
+![A comparison of the three settings across control, token cost as you scale, output predictability, and best fit: Controlled is highest control, linear token cost, exact output, best for top flows; Declarative is shared control, flat token cost, varies within the catalog, best for the long tail; Open-ended is lowest control, low fixed cost, unpredictable output, best for disposable one-shots](diagram-comparison.png)
 
-```python
-def judge(question: str, answer: str, rubric: str) -> bool:
-    prompt = (f"Question: {question}\nAnswer: {answer}\n"
-              f"Criteria: {rubric}\n"
-              "Reply with PASS or FAIL and one short reason.")
-    verdict = call_judge(prompt, model="pinned-judge-v1", temperature=0)
-    return verdict.strip().upper().startswith("PASS")
-```
+If you are already shipping and unsure where you landed, count your render tools. Past fifteen, you are in Controlled and the wall is near, start moving the long tail to Declarative this week.
 
-**Pairwise comparison** sidesteps absolute scoring entirely. When there is no single right answer, ask which of two outputs is better. Models are better at "A or B" than at "rate this 1 to 10," so a pile of pairwise judgements aggregated into a ranking beats absolute scores for things like tone or quality.
+## It was a bar decision the whole time
 
-## Wire it to every change
+The reason this maps so cleanly is that drawing a screen is the same problem as any other agent output. You are deciding how much of the result you specify in advance and how much you let the agent invent. Controlled specifies everything, the agent only selects. Declarative specifies the vocabulary, the agent composes within it. Open-ended specifies nothing, and you get nothing you can count on, which is fine when the output is disposable and a problem when it ships twice.
 
-An eval that you remember to run is worth far less than one that runs on its own. Make it a single command, `make eval` or `npm run eval`, so running it costs nothing. Then attach it to the moments that matter: before you commit a prompt change, when you bump a model version, on every pull request that touches the prompt or the chain.
+The mistake is not picking the wrong setting. It is not knowing you picked one. Teams default to Controlled because the framework does, hit the component wall, then grab Open-ended because it looks great in a demo, and neither move was a decision. Both were drift. Choose the setting the way you would choose any other bar: match how tightly you constrain the agent to how much the output matters. Tight for the flows that have to be exact, the catalog for the long tail, and no bar at all only for the things nobody will remember seeing.
 
-The discipline is the same red-to-green loop tests gave you. You change the prompt, the eval drops, you see exactly which case broke, you fix it or you revert. The number is the gate. A change that lowers the score does not ship until you either recover the case or consciously decide that case no longer matters and remove it, on purpose, with a note.
-
-This is what closes the loop on the bar. The bar is the set of cases and the threshold. The eval is the check that holds it. "It feels better" becomes "five of five, up from four," and that sentence is something you can stand behind.
-
-## The traps that make an eval lie to you
-
-A bad eval is worse than none, because it gives you false confidence. The common ways one goes wrong:
-
-- **Only happy-path cases.** An eval full of easy inputs always passes and protects nothing. Seed it from real failures, the inputs that actually broke, not the ones you know work.
-- **The answer leaks into the prompt.** If your prompt mentions the exact phrasings in your cases, you are testing memorization, not behavior. Keep the eval set separate from anything the prompt sees.
-- **The judge grades its own work.** Using the same model and prompt to produce and to grade inflates every score. The grader must be independent.
-- **Chasing one hundred percent.** The goal is catching regressions, not a perfect score. An eval that sits at ninety percent and reliably drops when you break something is more useful than one gamed to a hundred.
-- **A score with no cases behind it.** "Quality is 8.4" means nothing without the inputs that produced it. Keep the per-case results, not just the aggregate, so a drop tells you what broke.
-
-## Growing from three cases to thirty
-
-The three-case version is not a toy you replace later. It is the seed. The rule that grows it is simple and runs itself: every time something breaks in production, the broken input becomes a new case with its correct expected output, before you fix the bug. The fix then has to make that case pass without breaking the others. Do this for a few months and you have a real regression suite that nobody sat down to design, built entirely from the failures you actually hit.
-
-When the file gets big, add light structure. Tag cases by category so a drop tells you where. Set a threshold so the gate is "no regressions and at least N of M," not "all green." Only reach for a dedicated eval framework when you genuinely need things the script cannot give you cheaply, parallel runs over thousands of cases, shared dashboards, statistical significance. Most teams need that later than they think, and many never do.
-
-The whole point is to stop shipping on a feeling. You change something, you run the cases, you read the number, you keep it or you revert. It is the cheapest reliable signal you can build, it takes an afternoon, and it is the difference between knowing a change is better and hoping it is. Write the three cases today. The thirtieth will write itself.
+Saboo's reference implementations for all three patterns are worth cloning if you want to feel the differences in your hands rather than read about them. The framework is his. The lens, that every one of these is a bar you are choosing how tightly to hold, is what made me stop picking by accident.
 
 ---
+
+*With thanks to Shubham Saboo, whose three-pattern framework for generative UI prompted this piece. His reference code for all three patterns lives in the awesome-llm-apps repository.*
 
 *Marco Kotrotsos, specializing in practical AI implementation for organizations ready to close the gap between AI hype and AI value. With 30 years of IT experience now focused purely on AI deployment, he works hands-on with companies to turn AI potential into measurable business outcomes.*
 

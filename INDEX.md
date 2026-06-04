@@ -393,3 +393,4 @@
 | 2026-06-04 | elastofirm-recepies | reports | [design-rubber-recipe-hypothesis-engine.html](projects/elastofirm-recepies/reports/design-rubber-recipe-hypothesis-engine.html) | Feasibility design doc: agentic rubber-recipe hypothesis engine for Elastofirm (HTML) |
 | 2026-06-04 | pool | reports | [forecast-v6.html](projects/pool/reports/forecast-v6.html) | WC2026 v6.3 final: perfect last-3 backtest via overlay + calibrated live forecast |
 | 2026-06-04 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: select+bulk-categorise verified, 8 items |
+| 2026-06-04 | content | reports | [draft.md](projects/content/reports/draft.md) | Generative UI three settings article (credits Saboo, Bar lens): draft.md |
