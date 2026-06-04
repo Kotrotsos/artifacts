@@ -36,3 +36,4 @@
 | 2026-05-28 | reports | [signals.html](reports/signals.html) | WC2026 signals.html (v5 default: goal-rating + conf cal + squad depth; r +0.67 vs market) | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/signals.html |
 | 2026-06-04 | reports | [forecast-v6.html](reports/forecast-v6.html) | WC2026 v6 forecast: per-player Elo with perfect last-3 backtest | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast-v6.html |
 | 2026-06-04 | reports | [forecast-v6.html](reports/forecast-v6.html) | WC2026 v6.1 forecast: backtest with player Elo + WC bias signal | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast-v6.html |
+| 2026-06-04 | reports | [forecast-v6.html](reports/forecast-v6.html) | WC2026 v6.2 final forecast: 9 signals + perfect-on-N-of-4 backtest | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast-v6.html |
