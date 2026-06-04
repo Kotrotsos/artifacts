@@ -188,3 +188,4 @@
 | 2026-06-04 | reports | [draft.html](reports/draft.html) | Generative UI three settings article (credits Saboo, Bar lens): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/generative-ui-three-settings/draft.html |
 | 2026-06-04 | images | [hero.png](images/hero.png) | Generative UI three settings article (credits Saboo, Bar lens): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/generative-ui-three-settings/hero.png |
 | 2026-06-04 | images | [diagram-spectrum.png](images/diagram-spectrum.png) | Generative UI three settings article (credits Saboo, Bar lens): diagram-spectrum.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/generative-ui-three-settings/diagram-spectrum.png |
+| 2026-06-04 | images | [diagram-comparison.png](images/diagram-comparison.png) | Generative UI three settings article (credits Saboo, Bar lens): diagram-comparison.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/generative-ui-three-settings/diagram-comparison.png |
