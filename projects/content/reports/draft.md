@@ -1,210 +1,155 @@
-# Apple's On-Device Model Replaced a Cloud API in My Desktop App
+# The Smallest Eval That Beats an Opinion
 
-*There is a capable language model already sitting inside macOS, free, offline, and private. For classification and structured-output work, it does the job you would normally rent a remote API for. Here is how I used it to read bank statements without any of them leaving the laptop, with the code.*
+*You change a prompt, it feels better, you ship it. Next week it is worse on a case you forgot existed. The fix is three test cases and one script, and you can build it this afternoon.*
 
-![An isometric scene: a closed Mac-shaped device on a desk sorting a stream of small coral transaction cards into labeled teal bins entirely inside its own glass enclosure, a cut network cable lying beside it to show nothing leaves the machine](hero.png)
+![An isometric scene: a small rack of coral input cards each running through a teal checker that stamps it pass or fail against an expected answer card, feeding a single round score gauge at the end](hero.png)
 
-I build a desktop app called Subscription Radar. It reads your bank and credit-card exports, finds the recurring charges, and reconciles them into one list of every subscription you are paying for. The input is about as sensitive as personal data gets: a year of someone's bank statement, every merchant, every amount, every date.
+Here is the loop almost every team runs without noticing. You tweak a prompt or swap a model. You eyeball a few outputs. They look better. You ship. A week later something that used to work is broken, and you cannot tell which change did it, because "looks better" left no record. The whole quality process was a feeling, and feelings do not diff.
 
-So when the app needs a language model to make a judgement call, "is this messy run of charges actually a subscription, and at what cadence," shipping that statement to a cloud API was never going to happen. The promise of the app is that nothing leaves your machine. The classification had to run locally or not at all.
+The fix is small and unglamorous. You write down a handful of cases with their expected answers, and a short script that runs them and prints a number. Now every change produces a score instead of a vibe. A prompt edit that drops you from five-of-five to three-of-five gets caught before it ships, not after a user finds it.
 
-It runs locally. The work is done by the roughly three-billion-parameter model that ships inside macOS, the same one behind Apple Intelligence, exposed to developers as the Foundation Models framework. It is free, it runs on the device with no network call, and for the kind of job I needed, deciding what a thing is and returning a structured answer, it is good enough to ship. This piece is how that works, where the model earns its place, where it does not, and the actual Swift to drive it.
+This is the concrete version of holding the bar. You cannot verify a result against a standard you never wrote down, and an eval is that standard made executable. You do not need a framework, a platform, or a vendor. You need three cases and thirty lines.
 
 **Three things to take away:**
 
-- For classification, tagging, extraction, and structured output, the on-device model does work you would normally pay a remote API for, at zero marginal cost and with the data never leaving the machine. That covers a large slice of the "ask an LLM" tasks in a real app.
-- It is not a frontier chatbot. The context window is 4096 tokens for input and output combined, and the model is weak on broad knowledge and hard reasoning. Knowing which side of that line your task sits on is the entire skill.
-- Guided generation is the feature that makes it usable. You define a Swift struct, annotate it, and the model returns a guaranteed instance of that type. No prompt-and-pray, no parsing free text, no schema drift.
+- An eval turns "it feels better" into a number. That single change, from judgement to measurement, is what lets you make prompt and model changes without quietly breaking things you already shipped.
+- You do not need exact-match scoring or a fancy harness. Most useful evals check a property (the right label, valid JSON, a required field) over a few cases you care about, and the smallest version is about thirty lines of plain code.
+- The cases that matter are the ones that already burned you. Every bug becomes a permanent test case, which is how a three-case eval grows into real coverage without anyone planning it.
 
-## What the model is, and is not
+## "It feels better" is not a signal
 
-The Foundation Models framework landed with macOS 26, iOS 26, and iPadOS 26. One line, `import FoundationModels`, gives you direct access to the on-device model from Swift. No download, no key, no account, no per-token bill.
+The reason eyeballing fails is not that you have bad judgement. It is that the sample is tiny, the comparison is from memory, and the cost of a regression is paid later by someone else. You look at three outputs after a change, they read well, and you have no idea what happened to the twenty cases you did not look at, including the awkward one from last month that you fixed and forgot.
 
-What it is built for is language understanding, structured output, and tool calling. It classifies, tags, extracts, rewrites, and summarizes the text you hand it. What it is not built for is being a general-knowledge assistant. It does not know much about the world, it is not a strong reasoner, and it will happily be confident and wrong if you ask it a trivia question. Apple is direct about this: it is an engine for building features, not a replacement for a frontier model.
+A model or prompt change is rarely uniformly better. It improves some inputs and quietly degrades others. Without a fixed set of cases you re-run every time, you only ever see the inputs you happen to glance at, which are almost always the easy ones. The hard case that regressed is exactly the one you will not think to check by hand.
 
-Two limits shape everything you do with it. The combined input-plus-output context window is 4096 tokens, which is small, so you render your data compactly and you do not paste whole documents. And it requires recent Apple Silicon with Apple Intelligence enabled, so you write a real availability check and a fallback for every other machine. Treat both as design constraints from the first line, not as surprises later.
+An eval removes the memory and the sampling from the loop. The cases are fixed, the scoring is mechanical, and the number is the same kind of number every time, so two runs are actually comparable. That comparability is the entire point.
 
-## The job: classify a charge history, as a typed struct
+![A before-and-after loop. Before: change to prompt or model, then a thumbs-up gut feeling, then ship, with a hidden broken case. After: change, then run the eval, then a pass-count score, then keep or revert based on the number](diagram-loop.png)
 
-The task in Subscription Radar is narrow and well-shaped, which is exactly what this model is good at. Given a merchant name and a list of dated charges, decide whether it is a recurring subscription, at what cadence, in what category, and how confident the model is.
+## An eval is three things
 
-The feature that makes this clean is guided generation. Instead of asking for text and parsing it, you describe the answer as a Swift type and the model is constrained to produce a valid instance of it. Here is the actual output type from the app:
+Strip away the tooling and an eval is just three parts.
 
-```swift
-@Generable(description: "A judgement about whether a series of charges is a recurring subscription.")
-struct SubscriptionJudgement: Codable, Sendable {
+An **input**: the thing you feed the system. A user message, a document, a row of data.
 
-    @Guide(description: "True if these charges represent a recurring paid subscription.")
-    var isSubscription: Bool
+An **expectation**: what a correct result looks like. Sometimes that is an exact answer, but more often it is a property, the right label, a valid shape, the presence of a required field, the absence of a forbidden one.
 
-    @Guide(description: "How often the charge recurs.",
-           .anyOf(["weekly", "monthly", "quarterly", "annual", "unknown"]))
-    var cadence: String
+A **scorer**: a function that takes the system's output and the expectation and returns pass or fail. The scorer is where the judgement you used to apply by eye gets written down once and applied forever.
 
-    @Guide(description: "A short, lowercase category, e.g. 'streaming', 'software', 'news'.")
-    var category: String
+That is the whole model. Everything else, dashboards, datasets, judges, CI, is an elaboration on input plus expectation plus scorer. Start with the three parts and add only what a real problem forces you to add.
 
-    @Guide(description: "Confidence from 0.0 to 1.0.", .range(0.0 ... 1.0))
-    var confidence: Double
+## The smallest version, in about thirty lines
 
-    @Guide(description: "One or two sentences explaining the judgement.")
-    var reasoning: String
-}
-```
-
-The `@Generable` macro makes the struct something the model can emit. Each `@Guide` describes a field, and the guides do real work. The `.anyOf` on `cadence` pins the string to a closed vocabulary, so downstream code never has to handle "Monthly" or "every month" or "mo." The `.range` on `confidence` keeps it a real probability. You get a typed value back, not a blob of JSON you hope parses.
-
-## The call
-
-Driving it is three steps: check the model is available, build a session, ask for your type. The availability gate is not optional, because most machines in the world cannot run this, and you want a clean signal when that is the case.
-
-```swift
-import FoundationModels
-
-let model = SystemLanguageModel.default
-
-switch model.availability {
-case .available:
-    break
-case .unavailable(let reason):
-    // .deviceNotEligible, .appleIntelligenceNotEnabled, or .modelNotReady
-    // Fall back to your non-LLM path and tell the user why.
-    return
-}
-```
-
-Then a session with system instructions, and the structured request. Temperature zero plus greedy sampling makes the output deterministic, which matters when you are classifying and want the same input to give the same label every run:
-
-```swift
-let session = LanguageModelSession(
-    model: model,
-    instructions: Instructions("""
-        You are a precise financial classifier. Decide whether a charge history
-        is a recurring subscription and fill in every field. Be conservative:
-        if the evidence is weak, use a low confidence and "unknown" cadence.
-        """)
-)
-
-let options = GenerationOptions(sampling: .greedy, temperature: 0)
-
-let response = try await session.respond(
-    to: Prompt(prompt),
-    generating: SubscriptionJudgement.self,
-    includeSchemaInPrompt: true,
-    options: options
-)
-
-let judgement = response.content   // a real SubscriptionJudgement
-```
-
-The prompt itself is plain text. The trick, given the tiny context window, is to render the data compactly rather than dumping rows:
-
-```text
-Analyze the following merchant charge history and decide whether it is a
-recurring subscription.
-
-Merchant name: SPOTIFY P3A4F
-Charges (date: amount):
-  - 2025-01-03: 10.99
-  - 2025-02-03: 10.99
-  - 2025-03-03: 11.99
-
-Consider the spacing between dates to infer cadence (about 30 days = monthly).
-Consider whether amounts are steady, trend over time, or look like overlapping
-plans. If there is too little signal, use "unknown" and a low confidence.
-```
-
-And the model returns, on device, in well under a second after the first warm-up:
+Say you have a function that classifies a support message by intent. The thing under test returns something like `{"intent": "refund"}`. Your cases are a file, one JSON object per line:
 
 ```json
-{
-  "isSubscription": true,
-  "cadence": "monthly",
-  "category": "streaming",
-  "confidence": 0.95,
-  "reasoning": "Three charges about 30 days apart at a steady ~11 EUR, a small
-                price rise in March. Consistent with a monthly streaming plan."
-}
+{"id": "refund-clear",     "input": "I want my money back, this is broken", "expect": "refund"}
+{"id": "praise-not-refund","input": "love it, works great",                 "expect": "praise"}
+{"id": "refund-polite",    "input": "could you process a return for #5512?", "expect": "refund"}
+{"id": "cancel-intent",    "input": "please cancel my plan",                 "expect": "cancel"}
+{"id": "refund-typo",      "input": "wnat a refundd pls",                    "expect": "refund"}
 ```
 
-No network. No key. No cost. The bank statement that produced those charges is still only on the laptop.
+And the runner is short enough to read in one sitting:
 
-## The non-obvious use: let the model read any bank's CSV
+```python
+import json, sys
+from app import classify   # the thing under test: returns {"intent": "..."}
 
-The second job I gave the model is the one I did not expect to need, and it is the better story. Every bank exports CSVs differently. Some put debits as negative numbers, some use a separate "Bij/Af" direction column in Dutch, some split money-out and money-in into two columns. Writing a parser per bank does not scale.
+def load(path):
+    with open(path) as f:
+        return [json.loads(line) for line in f if line.strip()]
 
-So I hand the model the headers and two sample rows and ask it to map the columns to roles, again as a typed struct:
+def run(path):
+    cases = load(path)
+    passed = 0
+    for c in cases:
+        got = classify(c["input"]).get("intent")
+        ok = got == c["expect"]
+        passed += ok
+        print(f"[{'PASS' if ok else 'FAIL'}] {c['id']:18} "
+              f"expected={c['expect']:8} got={got}")
+    print(f"\n{passed}/{len(cases)} passed  ({passed/len(cases):.0%})")
+    sys.exit(0 if passed == len(cases) else 1)
 
-```swift
-@Generable(description: "A mapping from a bank CSV's columns to transaction roles.")
-struct ColumnMapping: Codable, Sendable {
-    @Guide(description: "Exact header name of the DATE column.")
-    var dateColumn: String
-
-    @Guide(description: "Exact header of the AMOUNT column.")
-    var amountColumn: String
-
-    @Guide(description: "How debit vs credit direction is encoded.",
-           .anyOf(["amount-sign", "sign-column", "separate-columns", "all-outflow"]))
-    var signMode: String
-
-    @Guide(description: "Exact header naming the MERCHANT. Empty string if none.")
-    var merchantColumn: String
-
-    @Guide(description: "Confidence from 0.0 to 1.0.", .range(0.0 ... 1.0))
-    var confidence: Double
-}
+if __name__ == "__main__":
+    run(sys.argv[1] if len(sys.argv) > 1 else "cases.jsonl")
 ```
 
-This is schema inference, on device, for free, against a format the model has never seen. The deterministic parser still does the actual row extraction, the model only decides which column means what, but that one judgement is what used to require either a hand-written adapter or a cloud call with the user's financial headers in the payload. Now it is a local function that returns a Swift value.
+Run it and you get a verdict you can actually act on:
 
-That pattern generalizes well past banking. Any time you have messy, varied, real-world structure and you need to map it to your clean internal shape, the local model is a good first pass, and the structured output keeps it honest.
+```text
+$ python eval.py cases.jsonl
+[PASS] refund-clear        expected=refund   got=refund
+[PASS] praise-not-refund   expected=praise   got=praise
+[FAIL] refund-polite       expected=refund   got=question
+[PASS] cancel-intent       expected=cancel   got=cancel
+[PASS] refund-typo         expected=refund   got=refund
 
-## How a JavaScript app reaches a Swift-only framework
+4/5 passed  (80%)
+```
 
-Subscription Radar is an Electron and TypeScript app, and Foundation Models is Swift only. The bridge is boring on purpose, which is the point.
+There is the regression, in plain sight. A polite return request now reads as a generic question. You caught it because the case was in the file, not because you happened to test that exact phrasing today. The exit code is non-zero, so this can fail a commit or a CI step the moment it drops below your bar.
 
-I compiled a tiny Swift command-line helper that does nothing but read requests as NDJSON on standard input, run them through the on-device model, and write one JSON line of structured output per request to standard output. The Node side spawns that helper once, keeps it warm, and routes responses back by id. Everything degrades to null: wrong platform, missing binary, a timeout, a per-import budget cap, anything at all, and the caller silently falls back to the deterministic verdict. No error from the model path is ever allowed to break an import.
+![A terminal running the eval: five named cases, four marked PASS in green and one FAIL in coral where a polite refund was misclassified as a question, ending with 4/5 passed and 80 percent](cc-eval-run.png)
 
-![An architecture diagram: an Electron and TypeScript app on the left sends NDJSON requests over stdio to a small warm Swift helper process, which calls the on-device 3B Foundation Models, which returns structured JSON, all inside a box labeled on-device with a crossed-out network arrow leaving it](diagram-architecture.png)
+## How to score (it is rarely exact match)
 
-That shape, a long-lived helper speaking line-delimited JSON over a pipe, is reusable for any non-Swift app that wants the on-device model: a Node CLI, a Python tool, a Tauri app. The model is Swift's, but a forty-line helper makes it everyone's.
+Exact match works for classification, where there is one right label. Most other tasks need a softer scorer, and picking the right kind is most of the craft.
 
-## Pros and cons, from shipping it
+![A grid of four scoring approaches: exact match for labels and closed answers; property and assertion checks for shape, contains, valid JSON, required fields; LLM-as-judge for open-ended answers against a rubric, pinned and used sparingly; pairwise comparison for ranking two outputs when there is no single right answer](diagram-scoring.png)
 
-The case for reaching for the on-device model first, on a classification-shaped task, is strong.
+**Exact match** is for closed answers: the label, the category, the boolean. Fast, deterministic, no ambiguity.
 
-![A comparison panel: on-device Foundation Models versus a remote API across cost (free vs per-token), privacy (nothing leaves the device vs data sent to a vendor), offline (works vs needs a connection), latency (sub-second local vs round-trip), and capability (good at classification and structure vs broad knowledge and hard reasoning), and context window (4096 tokens vs large)](diagram-comparison.png)
+**Property and assertion checks** cover most real work. You are not asking "is this the one true output," you are asking "does it have the properties a correct output must have." Is it valid JSON. Does it contain the order number. Does it stay under the length limit. Does it avoid the banned phrase. A handful of asserts catches the failures that actually matter and ignores harmless variation in wording.
 
-The wins are real. It is free, with no per-token bill, so a feature that classifies every transaction in a year of statements costs nothing to run. The data never leaves the device, which for financial or health or personal data is not a nice-to-have, it is the whole product. It works offline. It is fast after a one-time cold load, well under a second per classification. Temperature zero gives you deterministic labels. And guided generation hands you a typed value instead of a parsing problem.
+```python
+def score_extraction(output: dict) -> bool:
+    return (
+        isinstance(output.get("total"), (int, float))
+        and output.get("currency") in {"EUR", "USD", "GBP"}
+        and len(output.get("line_items", [])) > 0
+    )
+```
 
-The limits are just as real, and you design around them.
+**LLM-as-judge** is for open-ended output where there is no clean property to check: a summary, a rewrite, an explanation. You ask a model to grade the answer against a rubric. It is genuinely useful and also the easiest scorer to get wrong, so three rules. Pin the judge model, its version, and temperature zero, or your scores drift under you. Never let the model under test grade its own output. And use it only where a property check cannot do the job, because it costs money and adds noise.
 
-- **The context window is 4096 tokens, input and output combined.** You cannot paste a document. You summarize and render data compactly, the way the charge history above is three short lines, not raw CSV rows.
-- **The model is small and not a knowledge base.** It is weak on world facts, math, and multi-step reasoning. Keep the task to judgement over the text you provide, not questions about the world.
-- **It only runs on recent Apple Silicon with Apple Intelligence enabled.** You write the availability switch and a real fallback. On every other machine your feature has to work without it.
-- **Instructions work best in English**, even when user content is in another language. My instructions are English, the merchant names are Dutch, and that split is fine.
-- **Guided generation produces every field you declare**, used or not, so do not bloat the struct with fields you will not read.
-- **One non-obvious trap: do not block the main thread.** Foundation Models delivers results over XPC on the main queue. If you block the main thread waiting on a semaphore, `respond` deadlocks at zero percent CPU forever. Drive it with async/await and keep the main actor free.
+```python
+def judge(question: str, answer: str, rubric: str) -> bool:
+    prompt = (f"Question: {question}\nAnswer: {answer}\n"
+              f"Criteria: {rubric}\n"
+              "Reply with PASS or FAIL and one short reason.")
+    verdict = call_judge(prompt, model="pinned-judge-v1", temperature=0)
+    return verdict.strip().upper().startswith("PASS")
+```
 
-## Other things to point it at
+**Pairwise comparison** sidesteps absolute scoring entirely. When there is no single right answer, ask which of two outputs is better. Models are better at "A or B" than at "rate this 1 to 10," so a pile of pairwise judgements aggregated into a ranking beats absolute scores for things like tone or quality.
 
-Subscriptions are one use. The same local-classification shape fits a long list of features that teams currently send to a cloud model:
+## Wire it to every change
 
-- **Content tagging and categorization.** Apple ships a `contentTagging` use-case adapter tuned for exactly this, auto-tagging notes, emails, photos by description, or to-do items, on device.
-- **Triage and routing.** Classify an incoming support message, email, or form by intent and urgency locally, then send only the genuinely hard cases to a cloud model. Most of the volume never leaves the machine.
-- **Extraction from pasted text.** Pull a structured order, address, or event out of a blob the user pasted, into a typed struct, without a network call.
-- **Redaction before the cloud.** Use the local model to find and strip personal data from text before anything goes to a remote service. The sensitive pass is the one that should stay local.
-- **Smart replies and rewrites.** Tone adjustment, short reply suggestions, and summarization of on-device notes or messages, where the content is private by default.
-- **Local search understanding.** Turn a fuzzy natural-language query into a structured filter over the user's own data, on device.
+An eval that you remember to run is worth far less than one that runs on its own. Make it a single command, `make eval` or `npm run eval`, so running it costs nothing. Then attach it to the moments that matter: before you commit a prompt change, when you bump a model version, on every pull request that touches the prompt or the chain.
 
-The throughline is that all of these are judgements over text the user already has, returned as structure. That is the model's home turf.
+The discipline is the same red-to-green loop tests gave you. You change the prompt, the eval drops, you see exactly which case broke, you fix it or you revert. The number is the gate. A change that lowers the score does not ship until you either recover the case or consciously decide that case no longer matters and remove it, on purpose, with a note.
 
-## When to still call the cloud
+This is what closes the loop on the bar. The bar is the set of cases and the threshold. The eval is the check that holds it. "It feels better" becomes "five of five, up from four," and that sentence is something you can stand behind.
 
-The honest boundary: reach for a remote model when you need broad world knowledge, genuinely hard reasoning, a large context, or you are not on an Apple platform. The strongest pattern is not local-or-cloud, it is local-then-cloud. Run the cheap, private, free classification on device for the ninety percent of cases it handles, and escalate only the residue to a paid model. Your bill and your privacy surface both shrink to the hard tail.
+## The traps that make an eval lie to you
 
-For a desktop app, especially one handling data a user would not want uploaded, the model already on the Mac is the right first reach. It is free, it is private, it is offline, and for deciding what something is and handing you back a clean typed answer, it is enough. The classification I used to imagine paying an API for runs on the laptop now, and the bank statements never go anywhere.
+A bad eval is worse than none, because it gives you false confidence. The common ways one goes wrong:
+
+- **Only happy-path cases.** An eval full of easy inputs always passes and protects nothing. Seed it from real failures, the inputs that actually broke, not the ones you know work.
+- **The answer leaks into the prompt.** If your prompt mentions the exact phrasings in your cases, you are testing memorization, not behavior. Keep the eval set separate from anything the prompt sees.
+- **The judge grades its own work.** Using the same model and prompt to produce and to grade inflates every score. The grader must be independent.
+- **Chasing one hundred percent.** The goal is catching regressions, not a perfect score. An eval that sits at ninety percent and reliably drops when you break something is more useful than one gamed to a hundred.
+- **A score with no cases behind it.** "Quality is 8.4" means nothing without the inputs that produced it. Keep the per-case results, not just the aggregate, so a drop tells you what broke.
+
+## Growing from three cases to thirty
+
+The three-case version is not a toy you replace later. It is the seed. The rule that grows it is simple and runs itself: every time something breaks in production, the broken input becomes a new case with its correct expected output, before you fix the bug. The fix then has to make that case pass without breaking the others. Do this for a few months and you have a real regression suite that nobody sat down to design, built entirely from the failures you actually hit.
+
+When the file gets big, add light structure. Tag cases by category so a drop tells you where. Set a threshold so the gate is "no regressions and at least N of M," not "all green." Only reach for a dedicated eval framework when you genuinely need things the script cannot give you cheaply, parallel runs over thousands of cases, shared dashboards, statistical significance. Most teams need that later than they think, and many never do.
+
+The whole point is to stop shipping on a feeling. You change something, you run the cases, you read the number, you keep it or you revert. It is the cheapest reliable signal you can build, it takes an afternoon, and it is the difference between knowing a change is better and hoping it is. Write the three cases today. The thirtieth will write itself.
 
 ---
 
