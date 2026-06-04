@@ -195,3 +195,4 @@
 | 2026-06-04 | images | [shot-hero.png](images/shot-hero.png) | AskWell launch article (askwell.cc, real product screenshots): shot-hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/shot-hero.png |
 | 2026-06-04 | images | [shot-how.png](images/shot-how.png) | AskWell launch article (askwell.cc, real product screenshots): shot-how.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/shot-how.png |
 | 2026-06-04 | images | [shot-conflict.png](images/shot-conflict.png) | AskWell launch article (askwell.cc, real product screenshots): shot-conflict.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/shot-conflict.png |
+| 2026-06-04 | images | [shot-pricing.png](images/shot-pricing.png) | AskWell launch article (askwell.cc, real product screenshots): shot-pricing.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/shot-pricing.png |
