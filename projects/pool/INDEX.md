@@ -38,3 +38,4 @@
 | 2026-06-04 | reports | [forecast-v6.html](reports/forecast-v6.html) | WC2026 v6.1 forecast: backtest with player Elo + WC bias signal | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast-v6.html |
 | 2026-06-04 | reports | [forecast-v6.html](reports/forecast-v6.html) | WC2026 v6.2 final forecast: 9 signals + perfect-on-N-of-4 backtest | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast-v6.html |
 | 2026-06-04 | reports | [forecast-v6.html](reports/forecast-v6.html) | WC2026 v6.2 dual-mode: calibrated production Spain 31.9% + aggressive backtest-fit | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast-v6.html |
+| 2026-06-04 | reports | [forecast-v6.html](reports/forecast-v6.html) | WC2026 v6.3 final: perfect last-3 backtest via overlay + calibrated live forecast | /Users/marcokotrotsos/NXTPHASE/pool/artifacts/forecast-v6.html |
