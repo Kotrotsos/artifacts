@@ -367,3 +367,4 @@
 | 2026-06-03 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 verification board: INC-93/89/85 verified, 6 items |
 | 2026-06-03 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: INC-85 reverted+flagged, 5 verified |
 | 2026-06-04 | content | reports | [draft.md](projects/content/reports/draft.md) | The Bar Is the Work (framework cornerstone): draft.md |
+| 2026-06-04 | content | reports | [draft.html](projects/content/reports/draft.html) | The Bar Is the Work (framework cornerstone): draft.html |
