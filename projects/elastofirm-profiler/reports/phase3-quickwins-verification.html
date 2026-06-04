@@ -102,7 +102,7 @@
       <h1>Phase 3 — work &amp; how to verify</h1>
       <div class="meta">
         <span><b>Project</b> Elastofirm Profiler — Phase 3</span>
-        <span><b>Branch</b> <span class="mono">inc-93-89-85-quickwins</span></span>
+        <span><b>Branch</b> <span class="mono">inc-90-91-doorselecteer</span></span>
         <span><b>Last update</b> 2026-06-03</span>
       </div>
     </div>
@@ -155,6 +155,47 @@ open http://localhost:3001</pre>
   </details>
 
   <h2 class="section">Verified &amp; in review</h2>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-90</span>
+      <h3>Doorselecteer — anchor range filters on a chosen result</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">Each result has a <b>Doorselecteer</b> button; "Gebruik als anker" sets the weight + surface range filters to &plusmn;10% around that record and recenters the results. Zero/missing values are skipped (no degenerate 0&ndash;0 range). A banner shows the active anchor with a "Wis anker" clear.</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (anchorProfile state, setAnchor/clearAnchor, anchor effect, banner)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open <span class="mono">http://localhost:3001</span> and search.</li>
+        <li>On a card that shows a real weight (e.g. search <span class="mono">EG-00254</span>, w=134), open <b>Doorselecteer</b> &rarr; <b>Gebruik als anker</b>.</li>
+        <li><span class="expect"><b>Expected:</b> weight range fills to ~<span class="mono">121&ndash;147</span> (134 &plusmn;10%), a blue "Anker: …" banner appears, results recenter; "Wis anker" restores.</span></li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-91</span>
+      <h3>Doorselecteer menu — image, anchor, download DXF</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">The Doorselecteer button opens a small reusable menu: <b>Gebruik als anker</b>, <b>Bekijk afbeelding</b> (when an image exists), and <b>Download DXF</b> (when a CAD file exists). Same menu on grid and list cards.</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (renderActionsMenu using the shadcn DropdownMenu + existing downloadDxf)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Search, then click <b>Doorselecteer</b> on any result card.</li>
+        <li><span class="expect"><b>Expected:</b> a menu with up to three items; "Bekijk afbeelding" opens the profile image, "Download DXF" downloads the drawing, "Gebruik als anker" sets the anchor (INC-90).</span></li>
+      </ol>
+    </div>
+  </details>
 
   <details class="item">
     <summary>
@@ -278,7 +319,7 @@ open http://localhost:3001</pre>
         <tr><td>Filters list sanity</td><td>shared</td><td>1</td><td class="pass">pass</td></tr>
       </tbody>
     </table>
-    <p class="files" style="margin-top:12px">No JS test runner is wired up, so the suite covers API contracts; UI behaviors are verified in the browser. INC-89 (image-search rerank) and INC-99 (client empty-state) are verified manually per the steps above.</p>
+    <p class="files" style="margin-top:12px">No JS test runner is wired up, so the suite covers API contracts; UI behaviors are verified in the browser. INC-89 (image-search rerank), INC-99 (client empty-state) and INC-90/91 (anchor + Doorselecteer menu, no backend change) are verified in-browser per the steps above.</p>
   </div>
 
   <footer>
