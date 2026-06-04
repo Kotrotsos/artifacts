@@ -383,3 +383,4 @@
 | 2026-06-04 | unomundi-redteam | reports | [weekly-2026-06-04.html](projects/unomundi-redteam/reports/weekly-2026-06-04.html) | Weekly red-team #4 diff of unomundi.com 2026-06-04: 4 fixed, JWT secret still unrotated |
 | 2026-06-04 | content | reports | [draft.md](projects/content/reports/draft.md) | The Smallest Eval That Beats an Opinion (informative eval guide): draft.md |
 | 2026-06-04 | content | reports | [draft.html](projects/content/reports/draft.html) | The Smallest Eval That Beats an Opinion (informative eval guide): draft.html |
+| 2026-06-04 | content | images | [hero.png](projects/content/images/hero.png) | The Smallest Eval That Beats an Opinion (informative eval guide): hero.png |

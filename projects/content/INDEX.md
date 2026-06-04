@@ -180,3 +180,4 @@
 | 2026-06-04 | images | [diagram-comparison.png](images/diagram-comparison.png) | Apple Foundation Models on-device classification article (subradar): diagram-comparison.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/apple-foundation-models-on-device/diagram-comparison.png |
 | 2026-06-04 | reports | [draft.md](reports/draft.md) | The Smallest Eval That Beats an Opinion (informative eval guide): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/smallest-eval/draft.md |
 | 2026-06-04 | reports | [draft.html](reports/draft.html) | The Smallest Eval That Beats an Opinion (informative eval guide): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/smallest-eval/draft.html |
+| 2026-06-04 | images | [hero.png](images/hero.png) | The Smallest Eval That Beats an Opinion (informative eval guide): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/smallest-eval/hero.png |
