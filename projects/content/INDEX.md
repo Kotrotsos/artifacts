@@ -192,3 +192,4 @@
 | 2026-06-04 | images | [diagram-decision.png](images/diagram-decision.png) | Generative UI three settings article (credits Saboo, Bar lens): diagram-decision.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/generative-ui-three-settings/diagram-decision.png |
 | 2026-06-04 | reports | [draft.md](reports/draft.md) | AskWell launch article (askwell.cc, real product screenshots): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/draft.md |
 | 2026-06-04 | reports | [draft.html](reports/draft.html) | AskWell launch article (askwell.cc, real product screenshots): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/draft.html |
+| 2026-06-04 | images | [shot-hero.png](images/shot-hero.png) | AskWell launch article (askwell.cc, real product screenshots): shot-hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/shot-hero.png |
