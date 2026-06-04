@@ -373,3 +373,4 @@
 | 2026-06-04 | content | images | [diagram-two-jobs.png](projects/content/images/diagram-two-jobs.png) | The Bar Is the Work (framework cornerstone): diagram-two-jobs.png |
 | 2026-06-04 | content | images | [cc-set-the-bar.png](projects/content/images/cc-set-the-bar.png) | The Bar Is the Work (framework cornerstone): cc-set-the-bar.png |
 | 2026-06-04 | content | reports | [draft.md](projects/content/reports/draft.md) | Apple Foundation Models on-device classification article (subradar): draft.md |
+| 2026-06-04 | content | reports | [draft.html](projects/content/reports/draft.html) | Apple Foundation Models on-device classification article (subradar): draft.html |

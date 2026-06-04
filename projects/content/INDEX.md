@@ -174,3 +174,4 @@
 | 2026-06-04 | images | [diagram-two-jobs.png](images/diagram-two-jobs.png) | The Bar Is the Work (framework cornerstone): diagram-two-jobs.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/diagram-two-jobs.png |
 | 2026-06-04 | images | [cc-set-the-bar.png](images/cc-set-the-bar.png) | The Bar Is the Work (framework cornerstone): cc-set-the-bar.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/cc-set-the-bar.png |
 | 2026-06-04 | reports | [draft.md](reports/draft.md) | Apple Foundation Models on-device classification article (subradar): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/apple-foundation-models-on-device/draft.md |
+| 2026-06-04 | reports | [draft.html](reports/draft.html) | Apple Foundation Models on-device classification article (subradar): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/apple-foundation-models-on-device/draft.html |
