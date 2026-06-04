@@ -167,3 +167,4 @@
 | 2026-06-03 | images | [cc-redteam.png](images/cc-redteam.png) | Dynamic workflows non-obvious uses article: cc-redteam.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/cc-redteam.png |
 | 2026-06-03 | images | [cc-investigate.png](images/cc-investigate.png) | Dynamic workflows non-obvious uses article: cc-investigate.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/cc-investigate.png |
 | 2026-06-03 | images | [cc-quarantine.png](images/cc-quarantine.png) | Dynamic workflows non-obvious uses article: cc-quarantine.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/cc-quarantine.png |
+| 2026-06-04 | reports | [draft.md](reports/draft.md) | The Bar Is the Work (framework cornerstone): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/draft.md |
