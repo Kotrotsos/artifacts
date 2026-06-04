@@ -379,3 +379,4 @@
 | 2026-06-04 | content | images | [diagram-comparison.png](projects/content/images/diagram-comparison.png) | Apple Foundation Models on-device classification article (subradar): diagram-comparison.png |
 | 2026-06-04 | capibara | reports | [capibara-redteam-report.html](projects/capibara/reports/capibara-redteam-report.html) | Active and passive red team of capibara request-capture app on Railway |
 | 2026-06-04 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: INC-90/91 doorselecteer verified, 7 items |
+| 2026-06-04 | pool | reports | [forecast-v6.html](projects/pool/reports/forecast-v6.html) | WC2026 v6 forecast: per-player Elo with perfect last-3 backtest |
