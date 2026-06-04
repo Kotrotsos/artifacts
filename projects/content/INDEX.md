@@ -169,3 +169,4 @@
 | 2026-06-03 | images | [cc-quarantine.png](images/cc-quarantine.png) | Dynamic workflows non-obvious uses article: cc-quarantine.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/dynamic-workflows-non-obvious/cc-quarantine.png |
 | 2026-06-04 | reports | [draft.md](reports/draft.md) | The Bar Is the Work (framework cornerstone): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/draft.md |
 | 2026-06-04 | reports | [draft.html](reports/draft.html) | The Bar Is the Work (framework cornerstone): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/draft.html |
+| 2026-06-04 | images | [hero.png](images/hero.png) | The Bar Is the Work (framework cornerstone): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/the-bar-is-the-work/hero.png |
