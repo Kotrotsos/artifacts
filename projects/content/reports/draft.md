@@ -1,82 +1,210 @@
-# The Bar Is the Work
+# Apple's On-Device Model Replaced a Cloud API in My Desktop App
 
-*The hours of doing just moved to the agent. What is left for you sits at the two ends: setting the bar before it starts, and holding the bar after it finishes. Get good at the ends.*
+*There is a capable language model already sitting inside macOS, free, offline, and private. For classification and structured-output work, it does the job you would normally rent a remote API for. Here is how I used it to read bank statements without any of them leaving the laptop, with the code.*
 
-![An isometric scene: a horizontal coral threshold bar held up at two ends, a knob on the left where a hand sets its height and a magnifying lens on the right where it gets checked, while a teal machine in the middle stacks blocks that have to clear the bar](hero.png)
+![An isometric scene: a closed Mac-shaped device on a desk sorting a stream of small coral transaction cards into labeled teal bins entirely inside its own glass enclosure, a cut network cable lying beside it to show nothing leaves the machine](hero.png)
 
-Last week I handed an agent a task and it came back in eleven minutes with something clean, formatted, and complete-looking. My real work that day was the four minutes before I started it and the ten minutes after it finished. The middle, the writing, the wiring, the grinding, the part that used to be the entire job, I did none of it. And the quality of the result came almost entirely from those two short windows at the ends.
+I build a desktop app called Subscription Radar. It reads your bank and credit-card exports, finds the recurring charges, and reconciles them into one list of every subscription you are paying for. The input is about as sensitive as personal data gets: a year of someone's bank statement, every merchant, every amount, every date.
 
-That is the shape of the work now, and it is worth naming, because once you can see it you can get deliberately good at it instead of accidentally bad at it.
+So when the app needs a language model to make a judgement call, "is this messy run of charges actually a subscription, and at what cadence," shipping that statement to a cloud API was never going to happen. The promise of the app is that nothing leaves your machine. The classification had to run locally or not at all.
 
-The work did not disappear when agents got capable. It split. Two jobs stay on the human side of the line, and everything between them crossed over to the machine. The first is setting the bar: defining what done and correct mean, before the agent starts, in a form it can check itself against. The second is holding the bar: verifying the result against that definition after it finishes, especially when it looks finished. Together they are **the bar**, and the bar is the work now.
+It runs locally. The work is done by the roughly three-billion-parameter model that ships inside macOS, the same one behind Apple Intelligence, exposed to developers as the Foundation Models framework. It is free, it runs on the device with no network call, and for the kind of job I needed, deciding what a thing is and returning a structured answer, it is good enough to ship. This piece is how that works, where the model earns its place, where it does not, and the actual Swift to drive it.
 
 **Three things to take away:**
 
-- Setting the bar is specification done up front, in a checkable form. When you did the work yourself, a vague goal cost you one course-correction along the way. When an agent does it, vagueness costs you the whole result, because there is nobody in the loop to fix it mid-run.
-- Holding the bar is verification, and it runs against your instincts. A polished output reads as trustworthy at exactly the moment you should check it hardest. Make the check structural, a test, a fresh reviewer, a gate, instead of a feeling.
-- The middle, the doing, is where your attention still wants to go. That pull is nostalgia for the old job. Every model release makes the agent better at the middle and no better at knowing your bar. The two ends are the part that stays yours.
+- For classification, tagging, extraction, and structured output, the on-device model does work you would normally pay a remote API for, at zero marginal cost and with the data never leaving the machine. That covers a large slice of the "ask an LLM" tasks in a real app.
+- It is not a frontier chatbot. The context window is 4096 tokens for input and output combined, and the model is weak on broad knowledge and hard reasoning. Knowing which side of that line your task sits on is the entire skill.
+- Guided generation is the feature that makes it usable. You define a Swift struct, annotate it, and the model returns a guaranteed instance of that type. No prompt-and-pray, no parsing free text, no schema drift.
 
-## The work bifurcated
+## What the model is, and is not
 
-For your whole career the bar and the doing were the same activity. You held the standard in your head and enforced it continuously, line by line, as you built. When something drifted below the bar you felt it and corrected, often without naming what the bar even was. The specification lived inside the act of doing the work, which is why most good engineers could never fully explain their standards: they did not need to, they just applied them.
+The Foundation Models framework landed with macOS 26, iOS 26, and iPadOS 26. One line, `import FoundationModels`, gives you direct access to the on-device model from Swift. No download, no key, no account, no per-token bill.
 
-When the agent took over the doing, the bar got ripped out of that middle and exposed at the two ends, where it now has to be explicit. You can no longer enforce a standard by applying it as you go, because you are not the one going. You have to state the standard before the agent starts, and check the output against it after the agent stops. The thing that used to be implicit and continuous is now explicit and bracketed.
+What it is built for is language understanding, structured output, and tool calling. It classifies, tags, extracts, rewrites, and summarizes the text you hand it. What it is not built for is being a general-knowledge assistant. It does not know much about the world, it is not a strong reasoner, and it will happily be confident and wrong if you ask it a trivia question. Apple is direct about this: it is an engine for building features, not a replacement for a frontier model.
 
-![A before-and-after diagram. Before: a single human figure does the work, the bar implicit and continuous inside the doing. After: the human sets the bar on the left, the agent does the work in the middle, the human holds the bar on the right, the bar now explicit at the two ends](diagram-bifurcation.png)
+Two limits shape everything you do with it. The combined input-plus-output context window is 4096 tokens, which is small, so you render your data compactly and you do not paste whole documents. And it requires recent Apple Silicon with Apple Intelligence enabled, so you write a real availability check and a fallback for every other machine. Treat both as design constraints from the first line, not as surprises later.
 
-This is why the transition feels harder than it should. The skill did not get more complex. It got pulled out of your hands and turned into something you have to articulate, twice, at moments when you would rather just be building.
+## The job: classify a charge history, as a typed struct
 
-## Job one: set the bar
+The task in Subscription Radar is narrow and well-shaped, which is exactly what this model is good at. Given a merchant name and a list of dated charges, decide whether it is a recurring subscription, at what cadence, in what category, and how confident the model is.
 
-Setting the bar means defining done and correct before the agent runs, in a form that can be checked without you in the room. The strongest version reads like an acceptance test. "Build a subscription flow" is not a bar. "Build a subscription flow where a user can sign up, create a subscription in test mode, cancel it, and the existing tests still pass" is a bar, because every clause is something an agent or a colleague can verify against.
+The feature that makes this clean is guided generation. Instead of asking for text and parsing it, you describe the answer as a Swift type and the model is constrained to produce a valid instance of it. Here is the actual output type from the app:
 
-This is the same move as plan mode's "don't implement yet." Telling the agent to write the plan before it writes the code buys a checkpoint between intent and action, and the checkpoint is where the bar gets set while it is still cheap to change. The interview-me-then-write-a-spec pattern is the long-form version: you let the agent ask you the questions you had not thought to answer, and the answers become the bar.
+```swift
+@Generable(description: "A judgement about whether a series of charges is a recurring subscription.")
+struct SubscriptionJudgement: Codable, Sendable {
 
-The reason this is hard is that vagueness used to be nearly free. You would start with a fuzzy idea, notice halfway through that it was going sideways, and course-correct. The bar assembled itself as you worked. With an agent there is no halfway correction, because you are not there for the halfway. Whatever you specified at the start is the only standard the entire run has to meet. Vagueness stops being a small tax you pay once and becomes the full bill.
+    @Guide(description: "True if these charges represent a recurring paid subscription.")
+    var isSubscription: Bool
 
-![A Claude Code session: a vague one-line prompt produces a confident but wrong-shaped result, while the same task written as an acceptance test (named files, explicit done conditions, tests must pass) produces a result that can be checked clause by clause](cc-set-the-bar.png)
+    @Guide(description: "How often the charge recurs.",
+           .anyOf(["weekly", "monthly", "quarterly", "annual", "unknown"]))
+    var cadence: String
 
-The test of whether you set the bar well is simple. Could someone else check the result against your specification without asking you a single question? If yes, the bar is real. If they would have to come back and ask what you meant, you did not set a bar, you set a mood.
+    @Guide(description: "A short, lowercase category, e.g. 'streaming', 'software', 'news'.")
+    var category: String
 
-## Job two: hold the bar
+    @Guide(description: "Confidence from 0.0 to 1.0.", .range(0.0 ... 1.0))
+    var confidence: Double
 
-Holding the bar means verifying the finished result against the standard you set, and the hard part is that the finished result will actively discourage you from doing it.
+    @Guide(description: "One or two sentences explaining the judgement.")
+    var reasoning: String
+}
+```
 
-Anthropic measured this directly in its AI Fluency Index. When the output was a polished artifact, a document, a piece of code, an interactive tool, people put more care into directing the work and less into checking it. Fact-checking, gap-spotting, and questioning the result all dropped, at the same time, in the same conversations, exactly when the work looked most done. Polish reads as correctness to the human eye, and that surface signal quietly stands in for the work of confirming whether the thing is right.
+The `@Generable` macro makes the struct something the model can emit. Each `@Guide` describes a field, and the guides do real work. The `.anyOf` on `cadence` pins the string to a closed vocabulary, so downstream code never has to handle "Monthly" or "every month" or "mo." The `.range` on `confidence` keeps it a real probability. You get a typed value back, not a blob of JSON you hope parses.
 
-So holding the bar is a discipline that fights a reflex. The defense is to stop trusting how finished something looks and attach a check that runs without your judgment in the loop. A test suite. A build that has to pass. A fresh reviewer who sees only the diff and the bar and is told to find the gap, not to confirm the work. A workflow's own adversarial verifier that tries to break the result before it reaches you. The common thread is that the agent which produced the answer is the worst possible judge of the answer, and a separate one with no stake in it is the right judge.
+## The call
 
-![A two-panel diagram of the two jobs. Left, Set the bar: define done and correct, write it like an acceptance test, before the agent runs. Right, Hold the bar: verify against the bar, distrust polish, use a check that runs without you, after the agent finishes](diagram-two-jobs.png)
+Driving it is three steps: check the model is available, build a session, ask for your type. The availability gate is not optional, because most machines in the world cannot run this, and you want a clean signal when that is the case.
 
-The practical rule is to treat polish as the cue. When you are about to wave through a clean, well-formatted result, that is the moment to slow down and ask what it inferred, what it skipped, and what it is confident about that it should not be. The better it looks, the harder you check.
+```swift
+import FoundationModels
 
-## The middle is a trap
+let model = SystemLanguageModel.default
 
-The doing still pulls at you. You hover over the session, you watch the tokens stream, you tweak the prompt mid-run, you feel busy and useful. That feeling is the residue of the job you used to have, and it is the lowest-value place you can put your attention now.
+switch model.availability {
+case .available:
+    break
+case .unavailable(let reason):
+    // .deviceNotEligible, .appleIntelligenceNotEnabled, or .modelNotReady
+    // Fall back to your non-LLM path and tell the user why.
+    return
+}
+```
 
-The middle is where the agent has caught up to you and where you add the least. Every minute you spend supervising the doing is a minute you did not spend sharpening the bar or checking the output, which are the two places your judgment is still the scarce resource. The skill to build is noticing when you have drifted into the middle and pulling yourself back to the ends.
+Then a session with system instructions, and the structured request. Temperature zero plus greedy sampling makes the output deterministic, which matters when you are classifying and want the same input to give the same label every run:
 
-## Better models only improve the middle
+```swift
+let session = LanguageModelSession(
+    model: model,
+    instructions: Instructions("""
+        You are a precise financial classifier. Decide whether a charge history
+        is a recurring subscription and fill in every field. Be conservative:
+        if the evidence is weak, use a low confidence and "unknown" cadence.
+        """)
+)
 
-Prompt engineering was the defining skill of the last two years, and it is depreciating, because each model release needs less of it. Setting and holding the bar does not depreciate the same way, and the reason is structural. A better model does the middle better. It writes cleaner code, makes fewer mistakes, drifts less. None of that improvement touches the question of what you wanted or whether the result fits your specific situation, because that information was never inside the model. It was inside you, and the model can only act on the part of it you managed to express.
+let options = GenerationOptions(sampling: .greedy, temperature: 0)
 
-So as the models climb, the value does not spread out evenly. It concentrates at the two ends, where a human still has to say what good means and confirm that this is it. That concentration is the whole reason to get deliberate about the bar now rather than later.
+let response = try await session.respond(
+    to: Prompt(prompt),
+    generating: SubscriptionJudgement.self,
+    includeSchemaInPrompt: true,
+    options: options
+)
 
-## It reshapes who is valuable on a team
+let judgement = response.content   // a real SubscriptionJudgement
+```
 
-A senior engineer's value was never really the typing. It was the judgment about what good looks like and whether the thing in front of them met it. That judgment is exactly the bar, which means the senior's job translates cleanly into the new shape: set and hold the bar across far more work than they could ever have produced by hand. Their leverage goes up.
+The prompt itself is plain text. The trick, given the tiny context window, is to render the data compactly rather than dumping rows:
 
-The exposure lands on whoever's value was the middle, the person whose contribution was producing the output the agent now produces directly. The response is not to defend the middle, it is to move up to the ends, to get good at specifying and verifying. For teams, this changes what to hire for and how to review. Hiring tilts toward people who can define a sharp bar and verify against it. Review shifts from reading every line to checking the result against a stated standard, which is faster and catches different, often worse, problems.
+```text
+Analyze the following merchant charge history and decide whether it is a
+recurring subscription.
 
-## Building the two muscles
+Merchant name: SPOTIFY P3A4F
+Charges (date: amount):
+  - 2025-01-03: 10.99
+  - 2025-02-03: 10.99
+  - 2025-03-03: 11.99
 
-For setting the bar: write the prompt like an acceptance test, with named files, explicit done conditions, and a way to tell right from wrong. For anything large, let the agent interview you first and write the spec, then run it in a clean session. The standing test is whether a colleague could check the work against your spec without asking you anything.
+Consider the spacing between dates to infer cadence (about 30 days = monthly).
+Consider whether amounts are steady, trend over time, or look like overlapping
+plans. If there is too little signal, use "unknown" and a low confidence.
+```
 
-For holding the bar: never accept a result on the strength of how it looks. Attach a check that runs without you, and for anything that ships, add a reviewer in fresh context whose only instruction is to find where the result misses the bar. Train yourself to read polish as a warning rather than an all-clear.
+And the model returns, on device, in well under a second after the first warm-up:
 
-For both: catch yourself in the middle. When you notice that you are watching an agent work and nudging it along, ask whether the bar was set well enough that you could have walked away and trusted the check to catch the misses. If the answer is no, the fix is the bar, not the prompt.
+```json
+{
+  "isSubscription": true,
+  "cadence": "monthly",
+  "category": "streaming",
+  "confidence": 0.95,
+  "reasoning": "Three charges about 30 days apart at a steady ~11 EUR, a small
+                price rise in March. Consistent with a monthly streaming plan."
+}
+```
 
-The doing is gone, and it is not coming back. You will hand more and more of the middle to the agent, and it will keep getting better at it than you are. The part that stays yours is the bar, set before and held after. That is not a smaller job than the one you had. It is a harder one, because it runs on judgment instead of effort, and judgment does not get faster with reps the way typing did. Get good at the ends. The bar is the work now.
+No network. No key. No cost. The bank statement that produced those charges is still only on the laptop.
+
+## The non-obvious use: let the model read any bank's CSV
+
+The second job I gave the model is the one I did not expect to need, and it is the better story. Every bank exports CSVs differently. Some put debits as negative numbers, some use a separate "Bij/Af" direction column in Dutch, some split money-out and money-in into two columns. Writing a parser per bank does not scale.
+
+So I hand the model the headers and two sample rows and ask it to map the columns to roles, again as a typed struct:
+
+```swift
+@Generable(description: "A mapping from a bank CSV's columns to transaction roles.")
+struct ColumnMapping: Codable, Sendable {
+    @Guide(description: "Exact header name of the DATE column.")
+    var dateColumn: String
+
+    @Guide(description: "Exact header of the AMOUNT column.")
+    var amountColumn: String
+
+    @Guide(description: "How debit vs credit direction is encoded.",
+           .anyOf(["amount-sign", "sign-column", "separate-columns", "all-outflow"]))
+    var signMode: String
+
+    @Guide(description: "Exact header naming the MERCHANT. Empty string if none.")
+    var merchantColumn: String
+
+    @Guide(description: "Confidence from 0.0 to 1.0.", .range(0.0 ... 1.0))
+    var confidence: Double
+}
+```
+
+This is schema inference, on device, for free, against a format the model has never seen. The deterministic parser still does the actual row extraction, the model only decides which column means what, but that one judgement is what used to require either a hand-written adapter or a cloud call with the user's financial headers in the payload. Now it is a local function that returns a Swift value.
+
+That pattern generalizes well past banking. Any time you have messy, varied, real-world structure and you need to map it to your clean internal shape, the local model is a good first pass, and the structured output keeps it honest.
+
+## How a JavaScript app reaches a Swift-only framework
+
+Subscription Radar is an Electron and TypeScript app, and Foundation Models is Swift only. The bridge is boring on purpose, which is the point.
+
+I compiled a tiny Swift command-line helper that does nothing but read requests as NDJSON on standard input, run them through the on-device model, and write one JSON line of structured output per request to standard output. The Node side spawns that helper once, keeps it warm, and routes responses back by id. Everything degrades to null: wrong platform, missing binary, a timeout, a per-import budget cap, anything at all, and the caller silently falls back to the deterministic verdict. No error from the model path is ever allowed to break an import.
+
+![An architecture diagram: an Electron and TypeScript app on the left sends NDJSON requests over stdio to a small warm Swift helper process, which calls the on-device 3B Foundation Models, which returns structured JSON, all inside a box labeled on-device with a crossed-out network arrow leaving it](diagram-architecture.png)
+
+That shape, a long-lived helper speaking line-delimited JSON over a pipe, is reusable for any non-Swift app that wants the on-device model: a Node CLI, a Python tool, a Tauri app. The model is Swift's, but a forty-line helper makes it everyone's.
+
+## Pros and cons, from shipping it
+
+The case for reaching for the on-device model first, on a classification-shaped task, is strong.
+
+![A comparison panel: on-device Foundation Models versus a remote API across cost (free vs per-token), privacy (nothing leaves the device vs data sent to a vendor), offline (works vs needs a connection), latency (sub-second local vs round-trip), and capability (good at classification and structure vs broad knowledge and hard reasoning), and context window (4096 tokens vs large)](diagram-comparison.png)
+
+The wins are real. It is free, with no per-token bill, so a feature that classifies every transaction in a year of statements costs nothing to run. The data never leaves the device, which for financial or health or personal data is not a nice-to-have, it is the whole product. It works offline. It is fast after a one-time cold load, well under a second per classification. Temperature zero gives you deterministic labels. And guided generation hands you a typed value instead of a parsing problem.
+
+The limits are just as real, and you design around them.
+
+- **The context window is 4096 tokens, input and output combined.** You cannot paste a document. You summarize and render data compactly, the way the charge history above is three short lines, not raw CSV rows.
+- **The model is small and not a knowledge base.** It is weak on world facts, math, and multi-step reasoning. Keep the task to judgement over the text you provide, not questions about the world.
+- **It only runs on recent Apple Silicon with Apple Intelligence enabled.** You write the availability switch and a real fallback. On every other machine your feature has to work without it.
+- **Instructions work best in English**, even when user content is in another language. My instructions are English, the merchant names are Dutch, and that split is fine.
+- **Guided generation produces every field you declare**, used or not, so do not bloat the struct with fields you will not read.
+- **One non-obvious trap: do not block the main thread.** Foundation Models delivers results over XPC on the main queue. If you block the main thread waiting on a semaphore, `respond` deadlocks at zero percent CPU forever. Drive it with async/await and keep the main actor free.
+
+## Other things to point it at
+
+Subscriptions are one use. The same local-classification shape fits a long list of features that teams currently send to a cloud model:
+
+- **Content tagging and categorization.** Apple ships a `contentTagging` use-case adapter tuned for exactly this, auto-tagging notes, emails, photos by description, or to-do items, on device.
+- **Triage and routing.** Classify an incoming support message, email, or form by intent and urgency locally, then send only the genuinely hard cases to a cloud model. Most of the volume never leaves the machine.
+- **Extraction from pasted text.** Pull a structured order, address, or event out of a blob the user pasted, into a typed struct, without a network call.
+- **Redaction before the cloud.** Use the local model to find and strip personal data from text before anything goes to a remote service. The sensitive pass is the one that should stay local.
+- **Smart replies and rewrites.** Tone adjustment, short reply suggestions, and summarization of on-device notes or messages, where the content is private by default.
+- **Local search understanding.** Turn a fuzzy natural-language query into a structured filter over the user's own data, on device.
+
+The throughline is that all of these are judgements over text the user already has, returned as structure. That is the model's home turf.
+
+## When to still call the cloud
+
+The honest boundary: reach for a remote model when you need broad world knowledge, genuinely hard reasoning, a large context, or you are not on an Apple platform. The strongest pattern is not local-or-cloud, it is local-then-cloud. Run the cheap, private, free classification on device for the ninety percent of cases it handles, and escalate only the residue to a paid model. Your bill and your privacy surface both shrink to the hard tail.
+
+For a desktop app, especially one handling data a user would not want uploaded, the model already on the Mac is the right first reach. It is free, it is private, it is offline, and for deciding what something is and handing you back a clean typed answer, it is enough. The classification I used to imagine paying an API for runs on the laptop now, and the bank statements never go anywhere.
 
 ---
 
