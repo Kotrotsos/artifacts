@@ -384,3 +384,4 @@
 | 2026-06-04 | content | reports | [draft.md](projects/content/reports/draft.md) | The Smallest Eval That Beats an Opinion (informative eval guide): draft.md |
 | 2026-06-04 | content | reports | [draft.html](projects/content/reports/draft.html) | The Smallest Eval That Beats an Opinion (informative eval guide): draft.html |
 | 2026-06-04 | content | images | [hero.png](projects/content/images/hero.png) | The Smallest Eval That Beats an Opinion (informative eval guide): hero.png |
+| 2026-06-04 | content | images | [diagram-loop.png](projects/content/images/diagram-loop.png) | The Smallest Eval That Beats an Opinion (informative eval guide): diagram-loop.png |
