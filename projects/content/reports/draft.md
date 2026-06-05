@@ -1,78 +1,108 @@
-# AskWell Sends an Interviewer to Every Stakeholder, and Maps Where They Disagree
+# Uber Burned Its Annual AI Budget in Four Months
 
-*I built a tool that replaces the form you send with an assistant that holds a real conversation, then hands you back the alignment, the conflicts, and the question nobody thought to ask. It is live today at askwell.cc.*
+*Five thousand engineers got Claude Code in December. The pricing model, not the engineers, did this.*
 
-![The AskWell landing page: a pale sage canvas with the headline "Send an assistant to interview your stakeholders. Get back answers, not transcripts," beside a live chat panel where the interviewer presses a respondent and an Extracted card shows a must-have and a dealbreaker](shot-hero.png)
+![An isometric fuel gauge with the needle pinned past empty into the red, coins stacked beside it draining downward and converting into glowing token-shaped hexagons that pour into a hopper, on a clean white base](hero.png)
 
-Forms get you what people can be bothered to type. The richest answer is always the one the form could not think to ask for. So you either accept thin data, or you book a dozen calls you do not have time for, and most people pick the thin data and move on.
+**Key takeaways:**
 
-That trade-off has bothered me for years, and a few weeks ago the economics finally flipped. A conversational model is now good enough to interview a stranger, stay on track, press on a vague answer, and know when to stop. The thing that made an interview better than a form was never the human. It was the follow-up question. That part just stopped being scarce.
+- Uber gave 5,000 engineers Claude Code in December 2025. By April 15, the CTO told the company the entire 2026 AI budget was spent. Per-engineer cost ran $500 to $2,000 a month.
+- This is not an engineering overreach story. It is a finance story. Consumption pricing and annual budgeting are structurally incompatible, and most enterprises are building their FY26 AI line item on assumptions that already broke at Uber.
+- The fix is not to slow adoption. The fix is to tier engineers, move to quarterly elastic budgets, and measure cost per merged PR instead of cost per token. Three moves you can make in the next thirty days.
 
-So I built AskWell. You brief it once, the way you would brief a teammate, and send it to everyone you want to hear from. It interviews each person in a real, adaptive conversation, then returns the results already synthesized: where people agree, where they directly clash, and what only one person flagged. It is live today at [askwell.cc](https://askwell.cc), and the free tier needs no credit card.
+---
 
-**Three things to take away:**
+In December 2025, Uber rolled out Claude Code to 5,000 engineers. By February the usage had nearly doubled. By March, 84% of Uber's developers were classified as agentic coding users, up from 32% the prior December. On April 15, Chief Technology Officer Praveen Neppalli Naga told the company they had burned through the entire 2026 AI budget. Four months in.
 
-- AskWell replaces the survey with an assistant that actually converses. It adapts to every answer, digs into the vague ones, and quantifies the fuzzy ones, the way a good interviewer does, for one respondent or two hundred, identically and tirelessly.
-- The output is not a pile of transcripts. It is a synthesis: an alignment view, a conflict map that surfaces the moment two stakeholders contradict each other, and the lone-voice flags that are easy to miss and expensive to ignore.
-- The launch wedge is requirements and stakeholder discovery, because that is where forms fail most expensively and the buyer feels the pain by name. But anywhere you send a form and wish the answers were deeper, you can send an assistant instead.
+The reaction in the press was predictable. AI is expensive. Engineers got carried away. Maybe the tools are not ready for production scale. Maybe the spend is irresponsible.
 
-## The problem, at both ends
+Look at the same data with finance eyes instead of engineering eyes and a different story emerges. The engineers were doing exactly what the company asked them to do. The budget itself was built on assumptions that no longer match the tool. Every enterprise reading the headlines about Uber has a version of the same problem sitting in their own FY26 plan, waiting to surface.
 
-Gathering honest answers from a group is broken on both sides, and everyone has quietly accepted it.
+This is the article I would want to read if I were running a finance review next week.
 
-Forms are cheap and shallow. Multiple choice flattens the answer before it forms. Free text gets you one sentence, and you lose the why with no way to ask for it. People skim, skip, and abandon, and you end up with the bare minimum from the few who bothered.
+## What actually happened at Uber
 
-Real interviews are rich and do not scale. A live conversation gets you the truth, but you cannot book thirty calls this week and you certainly cannot do a thousand. Twenty respondents and your week is gone to scheduling, notes, transcripts, and summaries. Worse, everyone hears a slightly different version of the question, so the answers are not even comparable.
+Start with the numbers, because the numbers tell the story better than the framing.
 
-And then there is the part that hurts later. Even when you do the work, the alignment, the conflicts, and the missing voices live in a doc nobody re-reads. The contradiction between two stakeholders that should have been caught in week one surfaces in week six as rework, which is the most expensive kind of mistake there is.
+Uber's R&D budget for 2026 includes a $3.4 billion allocation, of which the AI line item is the fastest-growing slice. The CTO did not say AI costs were 6x what was forecast. He said the entire annual envelope, the full year of planned spend, was gone in four months. AI-related costs at Uber are up roughly 6x since 2024.
 
-## What AskWell does
+The per-engineer numbers are the interesting part. Monthly Claude Code spend per engineer ranged from $500 to $2,000. That four-fold variance inside a single workforce is the first signal something different is happening. With a SaaS seat, the per-engineer cost is bounded by the per-engineer license price. With a consumption-priced tool, the cost per engineer is bounded only by how many agent loops that engineer chooses to run.
 
-The loop is four steps: brief, share, converse, synthesize.
+The adoption curve was the second signal. From December to March, the percentage of Uber engineers classified as agentic coders went from 32% to 84%. By April, 95% of all Uber engineers were using AI tools at least monthly, and 70% of committed code had some AI involvement. Approximately 11% of live backend code changes are now written by AI agents end-to-end. None of this is bad. All of it is the kind of adoption rate companies dream about when they sign a deal.
 
-You describe what you want to learn in plain language, the way you would brief an analyst. AskWell turns that into a set of objectives and an opening message you can edit. No prompt engineering, no script to write. You are describing a goal, not authoring a questionnaire.
+The third signal, the one I want to spend more time on, is what Uber did to drive that adoption. Engineers were ranked on internal dashboards by AI tool usage. Usage was a visible performance signal. Leadership was rewarding the people who used Claude Code the most.
 
-![The how-it-works section: step 01 Brief it, with a plain-language goal turned into lettered objectives; step 02 Share the link, showing per-recipient invites moving through Sent, Opened, Started, Completed; step 03 Get the synthesis, showing an alignment list building up](shot-how.png)
+Read those three signals together. The tool is consumption-priced. The workforce is incentivized to consume. The budget is annual and fixed. There is no version of those three statements that ends with the budget surviving the year.
 
-Then you share. Send tokenized email invites to a list, each tied to one recipient and tracked through a Sent, Opened, Started, Completed funnel, or drop a single public link with rate limits so a viral share cannot run up your bill. Each respondent opens it in their own browser and talks to the assistant. No login, no account, no friction on the side that matters most.
+## The pricing model mismatch
 
-The conversation is where the product wins. The assistant works through its objectives in whatever order fits the person, presses for a concrete example when an answer goes vague, turns "slow" into a number and "often" into a frequency, reflects back to confirm it understood, and respects the time budget because a complete short interview beats an abandoned long one. It stays neutral. It captures, it does not lead the witness.
+Software has had two budgeting eras. Both worked because the pricing model matched the budgeting model.
 
-## The output is a synthesis, not a transcript
+The license era had perpetual software. You paid once, you owned a copy, the budget was capital expense, and depreciation handled the rest. Predictable. The SaaS era introduced per-seat subscriptions. Per-seat is bounded. Each licensed user can consume at most one unit of the service per period. You count seats, multiply by price, add a buffer, and you have a number. Annual budgeting works fine.
 
-This is the part I care about most, and the reason AskWell exists rather than being one more chat widget. When the interviews are in, you do not get a folder of conversations to read. You get the analysis a good researcher would produce, generated across everyone at once.
+Consumption pricing breaks both of those assumptions.
 
-![The synthesis screen titled "Alignment, conflict, and the question no one asked," with an Alignment column ranking shared requirements by how many stakeholders raised them, a Hard Conflict card showing Sales wanting a public demo workspace versus Security and Compliance forbidding login-less surfaces with real data, and a card flagging that only the Engineering Lead mentioned EU data residency](shot-conflict.png)
+With Claude Code, the unit of consumption is the agent loop, not the engineer. One engineer running one well-crafted prompt against a small codebase might cost $100 a month. The same engineer running an agentic workflow that spawns sub-agents, calls tools, reads thousands of files into context, executes multiple iterations, and merges back into a parent task might cost $2,000 a month. The ceiling on spend has nothing to do with headcount and everything to do with how often each engineer chooses to launch agent loops, multiplied by the average complexity of those loops.
 
-Three things come back. **Alignment**, the requirements people agree on, ranked by how many stakeholders raised each one, so you can see the consensus at a glance. **Conflict**, the moment two stakeholders directly contradict each other, sourced to who said what, like Sales asking for a public, login-less demo workspace while Security forbids exactly that. And **the lone voice**, the thing only one person flagged, the EU data-residency requirement the Engineering Lead mentioned and nobody else did, which is precisely the kind of detail that sinks a project when it surfaces too late.
+Agentic AI uses 5 to 30 times more tokens per task than a standard chatbot interaction, depending on the workload. That is the multiplier that makes consumption-priced agents structurally different from any SaaS product your finance team has ever budgeted for.
 
-The conflict map is the headline. A form can collect ten wish lists. It cannot tell you that two of them cannot both be true. AskWell can, because it interviewed everyone with the same rigor and normalized what they said into claims it can compare. That is the work that used to live in a senior analyst's head, and it is the work AskWell does for you while you sleep.
+Annual budgets are built on the bounded assumption. You forecast a number based on expected seats, expected usage per seat, and a contingency. That math works when the per-seat ceiling is a hard ceiling. It does not work when the per-seat ceiling is the engineer's imagination plus the latency of a feedback loop they enjoy. Uber discovered exactly this, the same way every enterprise running a Claude Code pilot will discover it on their own timeline. The engineers were not the problem, the budget model was.
 
-## Who it is for
+## The internal leaderboard problem
 
-I built the launch version around requirements and stakeholder discovery for software and product teams, because that is the case where forms fail most expensively. Requirements work is broken in a specific way: the good information only comes from the follow-up question, stakeholders are the hardest people in the building to get on a call, and the requirements you miss come back as rework. AskWell sends one tireless analyst to every stakeholder at once, asks each of them the same rigorous questions, and returns the structured result with the contradictions already flagged. First-pass elicitation that covers everyone, so your humans can go deep on the contested twenty percent.
+This is the piece I want managers and execs to sit with.
 
-It is not only for that, though. The same mechanic fits a long list of jobs where a form is the wrong tool:
+Uber rolled out Claude Code with an explicit adoption push. Internal dashboards ranked engineers by AI tool usage. That is a textbook adoption strategy. Make the behavior visible, reward it, watch usage spread. It worked. 32% to 84% in three months is not a fluke. It is the result of well-designed internal incentives.
 
-- Founders and PMs running customer and user research without a research team.
-- Recruiters doing first-round screening at scale, every candidate the same questions, with real follow-ups.
-- People teams running onboarding intake, engagement check-ins, and exit interviews.
-- Consultants and agencies gathering structured discovery from clients.
-- Anyone who currently sends a form and wishes the answers were deeper.
+The problem is that the same lever that drives adoption drives cost. There is no separation between "engineer is being productive with AI" and "engineer is generating tokens." For a consumption-priced tool, productivity signal and cost signal are the same signal.
 
-## What is in the box
+If your leaderboard rewards usage, your leaderboard is also rewarding spend. If your spend is uncapped per engineer, your leaderboard is an unhedged buy order on Anthropic's revenue, written in your engineering culture.
 
-The launch build is a complete kit, not a teaser. Per-recipient invites with the full Sent-to-Completed funnel. Slot filling, so you define fields like name, email, or anything custom and the interviewer collects them naturally, landing as clean columns in your export. Versioning, so every assistant is a version you can iterate without breaking live links, and old responses keep the prompt they were collected under. CSV and Markdown export, one row per claim or one section per respondent. A public-or-private toggle with rate limits and a daily cap. And a live activity feed, so invites going out, responses coming in, and synthesis runs landing all update your dashboard in real time.
+This is not a reason to drop the leaderboard. Cultural pressure works. The point is to acknowledge that the cultural lever and the financial lever are now the same lever. The cost implications of that linkage have not made it into the standard adoption playbook yet.
 
-## Pricing, and how to start
+## Why every enterprise has this problem
 
-![The pricing section: a Free plan at $0 forever with one interview, fifteen respondents, and one synthesis run, beside a Pro plan at $19.99 per month with ten interviews plus an overage slider, two hundred and fifty respondents per interview, unlimited synthesis, and slot filling, marked as an introduction offer](shot-pricing.png)
+Uber is just the public version of what is happening everywhere.
 
-Start free. The free plan is $0 forever: one interview, up to fifteen respondents, one synthesis run, enough to feel the difference between a form and a conversation on a real project. When you outgrow it, Pro is $19.99 a month during the introduction period: ten interviews with an overage slider, up to two hundred and fifty respondents per interview, unlimited synthesis, slot filling on every response, and priority capacity. No credit card to begin, and setup takes about a minute.
+The FinOps Foundation's 2026 State of FinOps report has the supporting numbers. 78% of IT leaders have experienced unexpected charges on a consumption-based SaaS bill in the past year. 98% of FinOps practitioners are now tasked with managing AI spend, up from 31% in 2024. The average enterprise AI budget went from $1.2 million in 2024 to $7 million in 2026, a 5.8x increase in two years.
 
-The pitch is simple, and it is the thing I kept wanting and could not buy: stop running interviews yourself. Brief AskWell once, send the link, read the synthesis, make the call. Every respondent gets the attention of a real interview, and you get your time back.
+The pattern is industry-wide. Companies are rolling out consumption-priced AI tools to broad engineering populations. The tools work. Adoption spreads. Token consumption scales with adoption. The annual budget, set in October of the previous year on assumptions that already do not match the tool, runs out somewhere in Q2 or Q3.
 
-If you have ever sent a survey and been disappointed by what came back, send an assistant instead. It is live now at [askwell.cc](https://askwell.cc). Ask well, learn fast.
+The companies talking publicly about this are doing the rest of us a favor. The ones not talking are either lucky, in a smaller pilot, or about to have the same conversation with their CFO in a less convenient context.
+
+## A budgeting model that survives this
+
+I am going to give you four specific changes. None of them require slowing adoption. All of them are about restructuring the cost side to match the new revenue side of the tool's pricing model.
+
+**Move from annual fixed to quarterly elastic.** Annual envelopes were designed for predictable consumption. If your consumption shape is non-predictable, your envelope cadence has to match. Quarterly budgets with explicit re-forecast at each quarter close, ratified by finance, give you four chances to catch a runaway curve. Not one chance, with eight months of damage already done.
+
+**Set a per-engineer monthly soft cap with explicit overage approval.** Not a hard cut-off, a signal that prompts a quick review. If an engineer crosses the cap, their manager gets a ping, the engineer gets a brief justification ask, and the additional spend is approved or rerouted. This is how cloud spend is managed already. It is the same governance you already apply to AWS, repurposed for AI tooling.
+
+**Measure cost per merged PR or cost per deployed feature, not cost per token.** Cost per token is the wrong unit. It compares well to other tokens. It compares badly to everything you actually care about. Cost per merged PR is the unit that lets you have an honest conversation about ROI. If the cost per merged PR is dropping while the cost per engineer is rising, the tool is winning. If the cost per merged PR is flat or rising while spend keeps climbing, you are funding adoption that is not yet producing matching engineering output.
+
+**Tier engineers by usage profile.** Light user, heavy user, agent runner. The agent runner is a different cost center than the light user. Mixing them in the same budget bucket lets a small number of agent runners distort the per-capita number, which makes the budget look better than it is on average and worse than it should be at the heavy end. Tiered budgets give you accuracy and let you say honest things to your CFO about where the money is going.
+
+These four moves are not novel. They are the standard FinOps playbook for any consumption-priced resource, applied to AI tooling. The novelty is that AI tooling now sits in the same budgeting category as cloud infrastructure. Most finance teams are still treating it like Microsoft Office, which is the wrong category, and that mismatch is the actual driver of the surprise bills.
+
+## What to do in the next thirty days
+
+If you sit in front of a budget that includes an AI line item, three concrete moves.
+
+First, find out what your current per-engineer consumption looks like, by engineer, by month, broken down by tool. Most companies do not have this data. Get it. If the answer is "we cannot get it without a quarter of engineering work," that is your first finding. Build the visibility before you build the controls.
+
+Second, talk to whichever engineering leader is closest to the adoption push and find out what the cultural incentives look like. Are engineers being ranked by usage? Are managers being told to drive adoption to a specific percentage? Are there internal leaderboards? If yes, surface the cost implications now, while you can still adjust the metric, instead of waiting for the bill.
+
+Third, run the numbers as if your AI line item is going to grow 5 to 10x over the next twelve months. That is the magnitude Uber and the FinOps data suggest is plausible. If a 5x growth in your AI budget is survivable, you have time. If a 5x growth would crater the rest of your tooling budget, you have a planning problem to solve before the curve catches you.
+
+None of these require slowing adoption. None require punishing engineers. All of them give you better data and better controls than the median Fortune 500 has right now.
+
+## Closing
+
+The Uber number is a warning about an entire generation of consumption-priced AI tooling meeting a generation of annual-budgeting practices that were designed for a slower, more bounded category of software.
+
+Uber is the canary. The companies that read the canary correctly will spend the rest of 2026 quietly tuning their cost models while their competitors are stuck in emergency budget reviews. The companies that read it as an Uber problem will have their own version of the conversation by Q3.
+
+You can adopt aggressively and budget sanely. The two are not in conflict. They just require you to update the budgeting model at the same speed you are updating the tooling.
 
 ---
 

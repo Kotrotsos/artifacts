@@ -196,3 +196,4 @@
 | 2026-06-04 | images | [shot-how.png](images/shot-how.png) | AskWell launch article (askwell.cc, real product screenshots): shot-how.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/shot-how.png |
 | 2026-06-04 | images | [shot-conflict.png](images/shot-conflict.png) | AskWell launch article (askwell.cc, real product screenshots): shot-conflict.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/shot-conflict.png |
 | 2026-06-04 | images | [shot-pricing.png](images/shot-pricing.png) | AskWell launch article (askwell.cc, real product screenshots): shot-pricing.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/askwell-launch/shot-pricing.png |
+| 2026-06-05 | reports | [draft.md](reports/draft.md) | Uber AI budget article HTML page: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/draft.md |
