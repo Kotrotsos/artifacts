@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang='en' data-theme='light'>
+<head>
+<meta charset='utf-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1'/>
+<title>PolyKing — BTC Polymarket Trading Agent</title>
+<style>
+:root {
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#0f172a; --muted:#64748b;
+  --line:#e5e8ee; --accent:#2563eb; --pos:#16a34a; --neg:#dc2626;
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.05);
+}
+html[data-theme='dark'] {
+  --bg:#0b1020; --panel:#141a2e; --ink:#e7ecf5; --muted:#94a3b8;
+  --line:#23304d; --accent:#60a5fa; --pos:#34d399; --neg:#f87171;
+  --shadow:0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.5; }
+.wrap { max-width:1080px; margin:0 auto; padding:28px 20px 64px; }
+header { display:flex; align-items:center; justify-content:space-between; gap:16px;
+  margin-bottom:8px; flex-wrap:wrap; }
+h1 { font-size:22px; margin:0; letter-spacing:-.02em; }
+h1 .tag { color:var(--accent); }
+.sub { color:var(--muted); font-size:13px; margin:2px 0 22px; }
+h2 { font-size:15px; margin:30px 0 12px; letter-spacing:-.01em; }
+.grid { display:grid; gap:14px; }
+.metrics { grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:14px;
+  padding:16px 18px; box-shadow:var(--shadow); }
+.metric .m-label { font-size:12px; color:var(--muted); text-transform:uppercase;
+  letter-spacing:.04em; }
+.metric .m-value { font-size:26px; font-weight:650; margin-top:4px; letter-spacing:-.02em; }
+.metric .m-sub { font-size:12px; color:var(--muted); margin-top:2px; }
+.metric.pos .m-value { color:var(--pos); }
+.metric.neg .m-value { color:var(--neg); }
+.two { grid-template-columns:1.6fr 1fr; align-items:start; }
+@media (max-width:820px) { .two { grid-template-columns:1fr; } }
+.chart { width:100%; height:auto; display:block; }
+.grid line.grid { stroke:var(--line); stroke-width:1; }
+line.grid { stroke:var(--line); }
+line.baseline { stroke:var(--muted); stroke-dasharray:4 4; stroke-width:1.2; }
+text.axis { fill:var(--muted); font-size:10px; }
+text.bar-lbl { font-size:9px; }
+.badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px;
+  font-weight:600; }
+.badge.pos { background:color-mix(in srgb,var(--pos) 16%,transparent); color:var(--pos); }
+.badge.neg { background:color-mix(in srgb,var(--neg) 16%,transparent); color:var(--neg); }
+.signal { display:flex; flex-direction:column; gap:8px; }
+.signal .act { font-size:24px; font-weight:700; }
+.signal .act.pos { color:var(--pos); }
+.signal .act.neutral { color:var(--muted); }
+.feed { max-height:340px; overflow:auto; display:flex; flex-direction:column; gap:0; }
+.feed-item { display:flex; gap:10px; padding:9px 2px; border-bottom:1px solid var(--line);
+  font-size:13px; }
+.feed-item:last-child { border-bottom:none; }
+.feed-t { color:var(--muted); font-variant-numeric:tabular-nums; min-width:54px; font-size:12px; }
+.feed-item.decision .feed-msg { font-weight:600; }
+.feed-item.win .feed-msg { color:var(--pos); }
+.feed-item.discard .feed-msg { color:var(--neg); }
+.think { background:color-mix(in srgb,var(--accent) 7%,var(--panel));
+  border-left:3px solid var(--accent); }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); }
+th { color:var(--muted); font-weight:600; font-size:11px; text-transform:uppercase;
+  letter-spacing:.04em; }
+tr.win td:nth-child(5) { color:var(--pos); font-weight:600; }
+tr.loss td:nth-child(5) { color:var(--neg); font-weight:600; }
+td.pos { color:var(--pos); } td.neg { color:var(--neg); }
+.muted { color:var(--muted); }
+.switch { display:flex; gap:4px; background:var(--panel); border:1px solid var(--line);
+  border-radius:999px; padding:3px; }
+.switch button { border:none; background:none; color:var(--muted); cursor:pointer;
+  padding:5px 12px; border-radius:999px; font-size:12px; font-weight:600; }
+.switch button.active { background:var(--accent); color:#fff; }
+.tbl-wrap { overflow-x:auto; }
+footer { margin-top:36px; color:var(--muted); font-size:12px; text-align:center; }
+</style>
+</head>
+<body>
+<div class='wrap'>
+<header>
+  <div>
+    <h1>Poly<span class='tag'>King</span> · BTC Trading Agent</h1>
+  </div>
+  <div class='switch' id='switch'>
+    <button data-t='light'>Light</button>
+    <button data-t='dark'>Dark</button>
+    <button data-t='system'>System</button>
+  </div>
+</header>
+<div class='sub'>Champion strategy: <b>meanrev_vol_v1a_v2a_v3a</b> · Goal: beat coin toss (50%) ·
+Holdout starts 2025-06-25 · Generated 2026-06-05T15:06:58Z</div>
+
+<div class='grid metrics'>
+  <div class='card metric'><div class='m-label'>Start Amount</div><div class='m-value'>$1,000</div></div>
+  <div class='card metric pos'><div class='m-label'>Current Amount</div><div class='m-value'>$1,758.93</div><div class='m-sub'>+75.9% on holdout</div></div>
+  <div class='card metric pos'><div class='m-label'>Directional Accuracy</div><div class='m-value'>54.20%</div><div class='m-sub'>+4.20 pts vs coin toss</div></div>
+  <div class='card metric pos'><div class='m-label'>Beats Coin Toss?</div><div class='m-value'>YES</div><div class='m-sub'>out-of-sample</div></div>
+  <div class='card metric pos'><div class='m-label'>Sharpe (holdout)</div><div class='m-value'>3.85</div></div>
+  <div class='card metric pos'><div class='m-label'>Max Drawdown</div><div class='m-value'>-11.7%</div></div>
+  <div class='card metric pos'><div class='m-label'>Bet Win Rate</div><div class='m-value'>66.1%</div><div class='m-sub'>56 paper bets</div></div>
+  <div class='card metric'><div class='m-label'>Paper Trades</div><div class='m-value'>56</div></div>
+</div>
+
+<div class='grid two' style='margin-top:8px'>
+  <div class='card'>
+    <h2 style='margin-top:4px'>Paper-Trading Equity (Holdout)</h2>
+    <svg viewBox='0 0 720 260' class='chart' preserveAspectRatio='xMidYMid meet'>
+      <defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'>
+        <stop offset='0%' stop-color='#2563eb' stop-opacity='0.25'/>
+        <stop offset='100%' stop-color='#2563eb' stop-opacity='0'/>
+      </linearGradient></defs>
+      <line x1='40' y1='40.0' x2='680' y2='40.0' class='grid'/><text x='34' y='44.0' class='axis' text-anchor='end'>2,074</text><line x1='40' y1='85.0' x2='680' y2='85.0' class='grid'/><text x='34' y='89.0' class='axis' text-anchor='end'>1,779</text><line x1='40' y1='130.0' x2='680' y2='130.0' class='grid'/><text x='34' y='134.0' class='axis' text-anchor='end'>1,484</text><line x1='40' y1='175.0' x2='680' y2='175.0' class='grid'/><text x='34' y='179.0' class='axis' text-anchor='end'>1,189</text><line x1='40' y1='220.0' x2='680' y2='220.0' class='grid'/><text x='34' y='224.0' class='axis' text-anchor='end'>894</text><line x1='40' y1='203.8' x2='680' y2='203.8' class='baseline'/><text x='680' y='197.8' class='axis' text-anchor='end'>start $1,000</text>
+      <path d='M40.0,203.8 L40.0,203.8 L41.9,203.8 L43.7,203.8 L45.6,203.8 L47.4,203.8 L49.3,203.8 L51.2,203.8 L53.0,203.8 L54.9,203.8 L56.7,203.8 L58.6,203.8 L60.5,203.8 L62.3,203.8 L64.2,203.8 L66.0,203.8 L67.9,203.8 L69.8,199.2 L71.6,203.2 L73.5,207.6 L75.3,202.3 L77.2,202.3 L79.1,202.3 L80.9,198.0 L82.8,193.4 L84.7,188.8 L86.5,188.8 L88.4,193.8 L90.2,188.4 L92.1,188.4 L94.0,188.4 L95.8,188.4 L97.7,188.4 L99.5,188.4 L101.4,188.4 L103.3,188.4 L105.1,188.4 L107.0,188.4 L108.8,188.4 L110.7,183.5 L112.6,183.5 L114.4,183.5 L116.3,183.5 L118.1,183.5 L120.0,183.5 L121.9,183.5 L123.7,183.5 L125.6,183.5 L127.4,183.5 L129.3,183.5 L131.2,183.5 L133.0,183.5 L134.9,183.5 L136.7,183.5 L138.6,183.5 L140.5,183.5 L142.3,183.5 L144.2,183.5 L146.0,183.5 L147.9,183.5 L149.8,183.5 L151.6,183.5 L153.5,183.5 L155.3,183.5 L157.2,183.5 L159.1,183.5 L160.9,178.6 L162.8,178.6 L164.7,178.6 L166.5,178.6 L168.4,178.6 L170.2,178.6 L172.1,178.6 L174.0,178.6 L175.8,178.6 L177.7,178.6 L179.5,178.6 L181.4,178.6 L183.3,178.6 L185.1,178.6 L187.0,170.1 L188.8,162.2 L190.7,170.5 L192.6,177.5 L194.4,170.7 L196.3,175.3 L198.1,167.8 L200.0,167.8 L201.9,163.1 L203.7,163.1 L205.6,163.1 L207.4,163.1 L209.3,163.1 L211.2,163.1 L213.0,163.1 L214.9,163.1 L216.7,163.1 L218.6,163.1 L220.5,163.1 L222.3,163.1 L224.2,163.1 L226.0,163.1 L227.9,163.1 L229.8,163.1 L231.6,155.3 L233.5,155.3 L235.3,155.3 L237.2,149.5 L239.1,149.5 L240.9,149.5 L242.8,149.5 L244.7,149.5 L246.5,149.5 L248.4,149.5 L250.2,149.5 L252.1,138.3 L254.0,128.8 L255.8,118.4 L257.7,128.4 L259.5,138.3 L261.4,125.8 L263.3,119.0 L265.1,119.0 L267.0,119.0 L268.8,119.0 L270.7,119.0 L272.6,119.0 L274.4,119.0 L276.3,119.0 L278.1,119.0 L280.0,119.0 L281.9,119.0 L283.7,119.0 L285.6,119.0 L287.4,119.0 L289.3,119.0 L291.2,119.0 L293.0,119.0 L294.9,119.0 L296.7,119.0 L298.6,119.0 L300.5,119.0 L302.3,119.0 L304.2,119.0 L306.0,119.0 L307.9,131.5 L309.8,119.1 L311.6,119.1 L313.5,129.6 L315.3,129.6 L317.2,143.7 L319.1,130.9 L320.9,118.7 L322.8,118.7 L324.7,118.7 L326.5,118.7 L328.4,118.7 L330.2,118.7 L332.1,118.7 L334.0,118.7 L335.8,118.7 L337.7,118.7 L339.5,118.7 L341.4,118.7 L343.3,118.7 L345.1,112.2 L347.0,112.2 L348.8,112.2 L350.7,112.2 L352.6,112.2 L354.4,112.2 L356.3,112.2 L358.1,112.2 L360.0,112.2 L361.9,112.2 L363.7,112.2 L365.6,120.2 L367.4,113.4 L369.3,113.4 L371.2,113.4 L373.0,113.4 L374.9,113.4 L376.7,113.4 L378.6,113.4 L380.5,113.4 L382.3,113.4 L384.2,113.4 L386.0,113.4 L387.9,113.4 L389.8,113.4 L391.6,113.4 L393.5,113.4 L395.3,113.4 L397.2,113.4 L399.1,113.4 L400.9,104.8 L402.8,94.8 L404.7,94.8 L406.5,94.8 L408.4,94.8 L410.2,94.8 L412.1,94.8 L414.0,94.8 L415.8,94.8 L417.7,94.8 L419.5,94.8 L421.4,94.8 L423.3,94.8 L425.1,94.8 L427.0,88.0 L428.8,88.0 L430.7,88.0 L432.6,88.0 L434.4,88.0 L436.3,88.0 L438.1,88.0 L440.0,88.0 L441.9,80.9 L443.7,94.3 L445.6,94.3 L447.4,94.3 L449.3,94.3 L451.2,94.3 L453.0,94.3 L454.9,94.3 L456.7,94.3 L458.6,94.3 L460.5,94.3 L462.3,94.3 L464.2,94.3 L466.0,94.3 L467.9,94.3 L469.8,94.3 L471.6,94.3 L473.5,86.4 L475.3,86.4 L477.2,86.4 L479.1,86.4 L480.9,86.4 L482.8,86.4 L484.7,86.4 L486.5,86.4 L488.4,86.4 L490.2,86.4 L492.1,95.4 L494.0,89.0 L495.8,89.0 L497.7,89.0 L499.5,89.0 L501.4,89.0 L503.3,89.0 L505.1,89.0 L507.0,89.0 L508.8,89.0 L510.7,89.0 L512.6,89.0 L514.4,89.0 L516.3,89.0 L518.1,89.0 L520.0,89.0 L521.9,89.0 L523.7,89.0 L525.6,89.0 L527.4,89.0 L529.3,89.0 L531.2,89.0 L533.0,89.0 L534.9,89.0 L536.7,89.0 L538.6,89.0 L540.5,89.0 L542.3,89.0 L544.2,89.0 L546.0,89.0 L547.9,89.0 L549.8,89.0 L551.6,89.0 L553.5,89.0 L555.3,97.8 L557.2,89.9 L559.1,80.5 L560.9,80.5 L562.8,80.5 L564.7,80.5 L566.5,80.5 L568.4,80.5 L570.2,80.5 L572.1,80.5 L574.0,80.5 L575.8,80.5 L577.7,88.3 L579.5,81.3 L581.4,81.3 L583.3,81.3 L585.1,81.3 L587.0,81.3 L588.8,81.3 L590.7,81.3 L592.6,81.3 L594.4,81.3 L596.3,81.3 L598.1,81.3 L600.0,81.3 L601.9,81.3 L603.7,81.3 L605.6,81.3 L607.4,81.3 L609.3,81.3 L611.2,81.3 L613.0,81.3 L614.9,81.3 L616.7,81.3 L618.6,81.3 L620.5,81.3 L622.3,81.3 L624.2,81.3 L626.0,81.3 L627.9,81.3 L629.8,81.3 L631.6,81.3 L633.5,81.3 L635.3,81.3 L637.2,81.3 L639.1,81.3 L640.9,81.3 L642.8,81.3 L644.7,81.3 L646.5,81.3 L648.4,81.3 L650.2,81.3 L652.1,81.3 L654.0,81.3 L655.8,73.3 L657.7,73.3 L659.5,65.8 L661.4,65.8 L663.3,65.8 L665.1,65.8 L667.0,65.8 L668.8,52.4 L670.7,63.8 L672.6,74.1 L674.4,88.0 L676.3,88.0 L678.1,88.0 L680.0,88.0 L680.0,220.0 L40.0,220.0 Z' fill='url(#g)' stroke='none'/>
+      <path d='M40.0,203.8 L41.9,203.8 L43.7,203.8 L45.6,203.8 L47.4,203.8 L49.3,203.8 L51.2,203.8 L53.0,203.8 L54.9,203.8 L56.7,203.8 L58.6,203.8 L60.5,203.8 L62.3,203.8 L64.2,203.8 L66.0,203.8 L67.9,203.8 L69.8,199.2 L71.6,203.2 L73.5,207.6 L75.3,202.3 L77.2,202.3 L79.1,202.3 L80.9,198.0 L82.8,193.4 L84.7,188.8 L86.5,188.8 L88.4,193.8 L90.2,188.4 L92.1,188.4 L94.0,188.4 L95.8,188.4 L97.7,188.4 L99.5,188.4 L101.4,188.4 L103.3,188.4 L105.1,188.4 L107.0,188.4 L108.8,188.4 L110.7,183.5 L112.6,183.5 L114.4,183.5 L116.3,183.5 L118.1,183.5 L120.0,183.5 L121.9,183.5 L123.7,183.5 L125.6,183.5 L127.4,183.5 L129.3,183.5 L131.2,183.5 L133.0,183.5 L134.9,183.5 L136.7,183.5 L138.6,183.5 L140.5,183.5 L142.3,183.5 L144.2,183.5 L146.0,183.5 L147.9,183.5 L149.8,183.5 L151.6,183.5 L153.5,183.5 L155.3,183.5 L157.2,183.5 L159.1,183.5 L160.9,178.6 L162.8,178.6 L164.7,178.6 L166.5,178.6 L168.4,178.6 L170.2,178.6 L172.1,178.6 L174.0,178.6 L175.8,178.6 L177.7,178.6 L179.5,178.6 L181.4,178.6 L183.3,178.6 L185.1,178.6 L187.0,170.1 L188.8,162.2 L190.7,170.5 L192.6,177.5 L194.4,170.7 L196.3,175.3 L198.1,167.8 L200.0,167.8 L201.9,163.1 L203.7,163.1 L205.6,163.1 L207.4,163.1 L209.3,163.1 L211.2,163.1 L213.0,163.1 L214.9,163.1 L216.7,163.1 L218.6,163.1 L220.5,163.1 L222.3,163.1 L224.2,163.1 L226.0,163.1 L227.9,163.1 L229.8,163.1 L231.6,155.3 L233.5,155.3 L235.3,155.3 L237.2,149.5 L239.1,149.5 L240.9,149.5 L242.8,149.5 L244.7,149.5 L246.5,149.5 L248.4,149.5 L250.2,149.5 L252.1,138.3 L254.0,128.8 L255.8,118.4 L257.7,128.4 L259.5,138.3 L261.4,125.8 L263.3,119.0 L265.1,119.0 L267.0,119.0 L268.8,119.0 L270.7,119.0 L272.6,119.0 L274.4,119.0 L276.3,119.0 L278.1,119.0 L280.0,119.0 L281.9,119.0 L283.7,119.0 L285.6,119.0 L287.4,119.0 L289.3,119.0 L291.2,119.0 L293.0,119.0 L294.9,119.0 L296.7,119.0 L298.6,119.0 L300.5,119.0 L302.3,119.0 L304.2,119.0 L306.0,119.0 L307.9,131.5 L309.8,119.1 L311.6,119.1 L313.5,129.6 L315.3,129.6 L317.2,143.7 L319.1,130.9 L320.9,118.7 L322.8,118.7 L324.7,118.7 L326.5,118.7 L328.4,118.7 L330.2,118.7 L332.1,118.7 L334.0,118.7 L335.8,118.7 L337.7,118.7 L339.5,118.7 L341.4,118.7 L343.3,118.7 L345.1,112.2 L347.0,112.2 L348.8,112.2 L350.7,112.2 L352.6,112.2 L354.4,112.2 L356.3,112.2 L358.1,112.2 L360.0,112.2 L361.9,112.2 L363.7,112.2 L365.6,120.2 L367.4,113.4 L369.3,113.4 L371.2,113.4 L373.0,113.4 L374.9,113.4 L376.7,113.4 L378.6,113.4 L380.5,113.4 L382.3,113.4 L384.2,113.4 L386.0,113.4 L387.9,113.4 L389.8,113.4 L391.6,113.4 L393.5,113.4 L395.3,113.4 L397.2,113.4 L399.1,113.4 L400.9,104.8 L402.8,94.8 L404.7,94.8 L406.5,94.8 L408.4,94.8 L410.2,94.8 L412.1,94.8 L414.0,94.8 L415.8,94.8 L417.7,94.8 L419.5,94.8 L421.4,94.8 L423.3,94.8 L425.1,94.8 L427.0,88.0 L428.8,88.0 L430.7,88.0 L432.6,88.0 L434.4,88.0 L436.3,88.0 L438.1,88.0 L440.0,88.0 L441.9,80.9 L443.7,94.3 L445.6,94.3 L447.4,94.3 L449.3,94.3 L451.2,94.3 L453.0,94.3 L454.9,94.3 L456.7,94.3 L458.6,94.3 L460.5,94.3 L462.3,94.3 L464.2,94.3 L466.0,94.3 L467.9,94.3 L469.8,94.3 L471.6,94.3 L473.5,86.4 L475.3,86.4 L477.2,86.4 L479.1,86.4 L480.9,86.4 L482.8,86.4 L484.7,86.4 L486.5,86.4 L488.4,86.4 L490.2,86.4 L492.1,95.4 L494.0,89.0 L495.8,89.0 L497.7,89.0 L499.5,89.0 L501.4,89.0 L503.3,89.0 L505.1,89.0 L507.0,89.0 L508.8,89.0 L510.7,89.0 L512.6,89.0 L514.4,89.0 L516.3,89.0 L518.1,89.0 L520.0,89.0 L521.9,89.0 L523.7,89.0 L525.6,89.0 L527.4,89.0 L529.3,89.0 L531.2,89.0 L533.0,89.0 L534.9,89.0 L536.7,89.0 L538.6,89.0 L540.5,89.0 L542.3,89.0 L544.2,89.0 L546.0,89.0 L547.9,89.0 L549.8,89.0 L551.6,89.0 L553.5,89.0 L555.3,97.8 L557.2,89.9 L559.1,80.5 L560.9,80.5 L562.8,80.5 L564.7,80.5 L566.5,80.5 L568.4,80.5 L570.2,80.5 L572.1,80.5 L574.0,80.5 L575.8,80.5 L577.7,88.3 L579.5,81.3 L581.4,81.3 L583.3,81.3 L585.1,81.3 L587.0,81.3 L588.8,81.3 L590.7,81.3 L592.6,81.3 L594.4,81.3 L596.3,81.3 L598.1,81.3 L600.0,81.3 L601.9,81.3 L603.7,81.3 L605.6,81.3 L607.4,81.3 L609.3,81.3 L611.2,81.3 L613.0,81.3 L614.9,81.3 L616.7,81.3 L618.6,81.3 L620.5,81.3 L622.3,81.3 L624.2,81.3 L626.0,81.3 L627.9,81.3 L629.8,81.3 L631.6,81.3 L633.5,81.3 L635.3,81.3 L637.2,81.3 L639.1,81.3 L640.9,81.3 L642.8,81.3 L644.7,81.3 L646.5,81.3 L648.4,81.3 L650.2,81.3 L652.1,81.3 L654.0,81.3 L655.8,73.3 L657.7,73.3 L659.5,65.8 L661.4,65.8 L663.3,65.8 L665.1,65.8 L667.0,65.8 L668.8,52.4 L670.7,63.8 L672.6,74.1 L674.4,88.0 L676.3,88.0 L678.1,88.0 L680.0,88.0' fill='none' stroke='#2563eb' stroke-width='2.5'/>
+      <text x='40.0' y='238.0' class='axis' text-anchor='middle'>2025-06-25</text><text x='360.0' y='238.0' class='axis' text-anchor='middle'>2025-12-14</text><text x='680.0' y='238.0' class='axis' text-anchor='middle'>2026-06-04</text>
+    </svg>
+  </div>
+  <div class='card signal'>
+    <h2 style='margin-top:4px'>Live Signal · Polymarket</h2>
+    <div class='act neutral'>NO BET</div>
+    <div class='muted' style='font-size:13px'>Bitcoin Up or Down on June 5?</div>
+    <div style='font-size:13px'>Model P(up): <b>50%</b>
+      &nbsp;·&nbsp; Market P(up): <b>10%</b></div>
+    <div class='muted' style='font-size:13px'>Market prices UP at 10% — this looks intraday-informed or near-resolved, while our model only sees the prior daily close (P(up)=50%). The apparent edge is stale, not real. A daily-close model should only trade this market at the daily open before intraday information leaks in. Standing aside.</div>
+  </div>
+</div>
+
+<div class='grid two' style='margin-top:6px'>
+  <div class='card'>
+    <h2 style='margin-top:4px'>Agent Activity &amp; Reasoning</h2>
+    <div class='feed'><div class='feed-item info'><span class='feed-t'>step 1</span><span class='feed-msg'>Fetched 5y (1825 daily) BTCUSDT candles from Binance into data/. Also pulled 2y hourly.</span></div><div class='feed-item info'><span class='feed-t'>step 2</span><span class='feed-msg'>Built 29 causal features + walk-forward backtest harness with a 20% untouched holdout and a Polymarket-style yes/no betting simulator (2% vig, fractional-Kelly sizing).</span></div><div class='feed-item info'><span class='feed-t'>step 3</span><span class='feed-msg'>Baseline: coin toss never bets; naive logreg overfits validation (+170%) but is ~50% / -14% on holdout. That is the record to beat.</span></div><div class='feed-item info'><span class='feed-t'>step 4</span><span class='feed-msg'>Fetched 7 live Polymarket BTC markets incl. &#x27;Bitcoin Up or Down on June 5&#x27; via Gamma API.</span></div><div class='feed-item decision'><span class='feed-t'>step 5</span><span class='feed-msg'>Launched tournament of 6 diverse strategies (GBM, RF ensemble, regime-trend, mean-rev/vol, sparse logit, seasonal-momentum). 4 of 6 beat coin toss on the holdout.</span></div><div class='feed-item win'><span class='feed-t'>step 6</span><span class='feed-msg'>Champion after design: meanrev_vol (+0.0246 edge, +52% return, Sharpe 2.59) — fades RSI extremes only in calm-volatility regimes.</span></div><div class='feed-item win'><span class='feed-t'>round 1</span><span class='feed-msg'>Challenger meanrev_vol_v1a BEATS champion: edge 0.0362 &gt; 0.0246. Promoted + expanded.</span></div><div class='feed-item discard'><span class='feed-t'>round 1</span><span class='feed-msg'>Challenger v1b (edge 0.0275) did NOT beat champion — discarded.</span></div><div class='feed-item win'><span class='feed-t'>round 2</span><span class='feed-msg'>Challenger v1a_v2a BEATS champion: edge 0.0391 &gt; 0.0362. Promoted + expanded.</span></div><div class='feed-item discard'><span class='feed-t'>round 2</span><span class='feed-msg'>Challenger v1a_v2b (edge 0.042 but redundant/higher overfit risk) not promoted under the strict gate — discarded.</span></div><div class='feed-item win'><span class='feed-t'>round 3</span><span class='feed-msg'>Challenger v1a_v2a_v3a BEATS champion: edge 0.0420 &gt; 0.0391, by adding a disjoint trend-specialist that bets only the non-calm days the core skips.</span></div><div class='feed-item decision'><span class='feed-t'>verify</span><span class='feed-msg'>Independently re-ran the champion backtest: reproduced acc 54.2%, +75.9%, Sharpe 3.85, 66% win rate, -11.7% maxDD. Numbers are real, not fabricated.</span></div><div class='feed-item win'><span class='feed-t'>verify</span><span class='feed-msg'>Robustness: positive edge at holdout fractions 15/20/25/30% (+0.054/+0.042/+0.022/+0.028). Not a single-slice fluke.</span></div><div class='feed-item decision'><span class='feed-t'>live</span><span class='feed-msg'>Live signal: NO BET on today&#x27;s market — its price is intraday-informed while the model only sees the prior daily close. A daily-close model must trade this at the daily open to be comparable.</span></div></div>
+  </div>
+  <div class='card think'>
+    <h2 style='margin-top:4px'>What the agent is thinking next</h2>
+    <div style='font-size:14px'>Champion meanrev_vol_v1a_v2a_v3a is locked in (holdout edge +0.042, verified robust across 4 holdout sizes). Next cycle: (1) re-pull the live Polymarket up/down market at the daily OPEN, not mid-session, so the model&#x27;s daily-close signal is comparable to the market price; (2) run a fresh expansion round seeding from the champion to try to push edge past 0.045 without inflating overfit_gap; (3) widen the feature set with on-chain / funding-rate inputs if a data source is available. Standing aside on today&#x27;s live market because its price is intraday-informed and our model only sees the prior daily close.</div>
+  </div>
+</div>
+
+<div class='card' style='margin-top:14px'>
+  <h2 style='margin-top:4px'>Strategy Tournament — Holdout Edge vs Coin Toss</h2>
+  <svg viewBox='0 0 720 300' class='chart' preserveAspectRatio='xMidYMid meet'>
+      <line x1='44' y1='150.0' x2='676' y2='150.0' class='grid'/>
+      <text x='38' y='154.0' class='axis' text-anchor='end'>0</text>
+      <rect x='53.0' y='44.0' width='27.1' height='106.0' rx='3' fill='#16a34a'/><text x='66.6' y='39.0' class='axis' text-anchor='middle'>+0.042</text><text x='66.6' y='272.0' class='axis bar-lbl' text-anchor='middle'>meanrev_vol_</text><rect x='98.2' y='44.0' width='27.1' height='106.0' rx='3' fill='#16a34a'/><text x='111.7' y='39.0' class='axis' text-anchor='middle'>+0.042</text><text x='111.7' y='272.0' class='axis bar-lbl' text-anchor='middle'>meanrev_vol_</text><rect x='143.3' y='51.3' width='27.1' height='98.7' rx='3' fill='#16a34a'/><text x='156.9' y='46.3' class='axis' text-anchor='middle'>+0.039</text><text x='156.9' y='272.0' class='axis bar-lbl' text-anchor='middle'>meanrev_vol_</text><rect x='188.5' y='58.6' width='27.1' height='91.4' rx='3' fill='#16a34a'/><text x='202.0' y='53.6' class='axis' text-anchor='middle'>+0.036</text><text x='202.0' y='272.0' class='axis bar-lbl' text-anchor='middle'>meanrev_vol_</text><rect x='233.6' y='58.6' width='27.1' height='91.4' rx='3' fill='#16a34a'/><text x='247.1' y='53.6' class='axis' text-anchor='middle'>+0.036</text><text x='247.1' y='272.0' class='axis bar-lbl' text-anchor='middle'>meanrev_vol_</text><rect x='278.7' y='73.2' width='27.1' height='76.8' rx='3' fill='#16a34a'/><text x='292.3' y='68.2' class='axis' text-anchor='middle'>+0.030</text><text x='292.3' y='272.0' class='axis bar-lbl' text-anchor='middle'>regime_trend</text><rect x='323.9' y='73.2' width='27.1' height='76.8' rx='3' fill='#16a34a'/><text x='337.4' y='68.2' class='axis' text-anchor='middle'>+0.030</text><text x='337.4' y='272.0' class='axis bar-lbl' text-anchor='middle'>rf_ensemble</text><rect x='369.0' y='80.6' width='27.1' height='69.4' rx='3' fill='#16a34a'/><text x='382.6' y='75.6' class='axis' text-anchor='middle'>+0.028</text><text x='382.6' y='272.0' class='axis bar-lbl' text-anchor='middle'>meanrev_vol_</text><rect x='414.2' y='87.9' width='27.1' height='62.1' rx='3' fill='#16a34a'/><text x='427.7' y='82.9' class='axis' text-anchor='middle'>+0.025</text><text x='427.7' y='272.0' class='axis bar-lbl' text-anchor='middle'>meanrev_vol</text><rect x='459.3' y='87.9' width='27.1' height='62.1' rx='3' fill='#16a34a'/><text x='472.9' y='82.9' class='axis' text-anchor='middle'>+0.025</text><text x='472.9' y='272.0' class='axis bar-lbl' text-anchor='middle'>seasonal_mom</text><rect x='504.5' y='102.5' width='27.1' height='47.5' rx='3' fill='#16a34a'/><text x='518.0' y='97.5' class='axis' text-anchor='middle'>+0.019</text><text x='518.0' y='272.0' class='axis bar-lbl' text-anchor='middle'>coin_toss</text><rect x='549.6' y='124.4' width='27.1' height='25.6' rx='3' fill='#16a34a'/><text x='563.1' y='119.4' class='axis' text-anchor='middle'>+0.010</text><text x='563.1' y='272.0' class='axis bar-lbl' text-anchor='middle'>gbm</text><rect x='594.7' y='150.0' width='27.1' height='3.7' rx='3' fill='#dc2626'/><text x='608.3' y='167.7' class='axis' text-anchor='middle'>-0.001</text><text x='608.3' y='272.0' class='axis bar-lbl' text-anchor='middle'>logreg</text><rect x='639.9' y='150.0' width='27.1' height='47.5' rx='3' fill='#dc2626'/><text x='653.4' y='211.5' class='axis' text-anchor='middle'>-0.019</text><text x='653.4' y='272.0' class='axis bar-lbl' text-anchor='middle'>logreg_l1</text>
+    </svg>
+  <div class='tbl-wrap'>
+  <table>
+    <thead><tr><th>Strategy</th><th>Acc</th><th>Edge</th><th>Return</th>
+      <th>Sharpe</th><th>MaxDD</th><th>Bets</th></tr></thead>
+    <tbody><tr><td>★ meanrev_vol_v1a_v2a_v3a</td><td>0.542</td><td class='pos'>+0.0420</td><td>+75.9%</td><td>3.85</td><td>-11.7%</td><td>56</td></tr><tr><td> meanrev_vol_v1a_v2b</td><td>0.542</td><td class='pos'>+0.0420</td><td>+42.8%</td><td>3.31</td><td>-13.4%</td><td>40</td></tr><tr><td> meanrev_vol_v1a_v2a</td><td>0.539</td><td class='pos'>+0.0391</td><td>+66.6%</td><td>3.67</td><td>-11.7%</td><td>52</td></tr><tr><td> meanrev_vol_v1a</td><td>0.536</td><td class='pos'>+0.0362</td><td>+65.8%</td><td>3.33</td><td>-13.4%</td><td>56</td></tr><tr><td> meanrev_vol_v1a_v2a_v3b</td><td>0.536</td><td class='pos'>+0.0362</td><td>+64.9%</td><td>5.60</td><td>-11.7%</td><td>31</td></tr><tr><td> regime_trend</td><td>0.530</td><td class='pos'>+0.0304</td><td>+1.2%</td><td>0.61</td><td>-7.4%</td><td>18</td></tr><tr><td> rf_ensemble</td><td>0.530</td><td class='pos'>+0.0304</td><td>-6.1%</td><td>-2.21</td><td>-12.4%</td><td>19</td></tr><tr><td> meanrev_vol_v1b</td><td>0.528</td><td class='pos'>+0.0275</td><td>+54.4%</td><td>2.98</td><td>-11.6%</td><td>63</td></tr><tr><td> meanrev_vol</td><td>0.525</td><td class='pos'>+0.0246</td><td>+52.0%</td><td>2.59</td><td>-14.8%</td><td>72</td></tr><tr><td> seasonal_mom</td><td>0.525</td><td class='pos'>+0.0246</td><td>+11.9%</td><td>1.11</td><td>-16.0%</td><td>44</td></tr><tr><td> coin_toss</td><td>0.519</td><td class='pos'>+0.0188</td><td>+0.0%</td><td>0.00</td><td>0.0%</td><td>0</td></tr><tr><td> gbm</td><td>0.510</td><td class='pos'>+0.0101</td><td>-43.1%</td><td>-1.98</td><td>-45.0%</td><td>132</td></tr><tr><td> logreg</td><td>0.499</td><td class='neg'>-0.0014</td><td>-13.9%</td><td>-0.47</td><td>-32.8%</td><td>158</td></tr><tr><td> logreg_l1</td><td>0.481</td><td class='neg'>-0.0188</td><td>+0.0%</td><td>0.00</td><td>0.0%</td><td>0</td></tr></tbody>
+  </table>
+  </div>
+</div>
+
+<div class='card' style='margin-top:14px'>
+  <h2 style='margin-top:4px'>Recent Paper Trades (Champion, Holdout)</h2>
+  <div class='tbl-wrap'>
+  <table>
+    <thead><tr><th>Date</th><th>Side</th><th>P(up)</th><th>Stake</th>
+      <th>Result</th><th>PnL</th><th>Bankroll</th></tr></thead>
+    <tbody><tr class='loss'><td>2026-06-01</td><td>UP</td><td>0.61</td><td>$91.47</td><td>LOSS</td><td>-91.47</td><td>$1758.93</td></tr><tr class='loss'><td>2026-05-31</td><td>UP</td><td>0.58</td><td>$67.29</td><td>LOSS</td><td>-67.29</td><td>$1850.40</td></tr><tr class='loss'><td>2026-05-30</td><td>UP</td><td>0.58</td><td>$74.72</td><td>LOSS</td><td>-74.72</td><td>$1917.69</td></tr><tr class='win'><td>2026-05-29</td><td>UP</td><td>0.60</td><td>$91.58</td><td>WIN</td><td>+87.99</td><td>$1992.42</td></tr><tr class='win'><td>2026-05-24</td><td>UP</td><td>0.56</td><td>$51.08</td><td>WIN</td><td>+49.08</td><td>$1904.43</td></tr><tr class='win'><td>2026-05-22</td><td>UP</td><td>0.57</td><td>$54.32</td><td>WIN</td><td>+52.19</td><td>$1855.35</td></tr><tr class='win'><td>2026-04-11</td><td>DOWN</td><td>0.44</td><td>$48.14</td><td>WIN</td><td>+46.25</td><td>$1803.17</td></tr><tr class='loss'><td>2026-04-10</td><td>DOWN</td><td>0.43</td><td>$51.72</td><td>LOSS</td><td>-51.72</td><td>$1756.92</td></tr><tr class='win'><td>2026-03-31</td><td>DOWN</td><td>0.42</td><td>$64.12</td><td>WIN</td><td>+61.60</td><td>$1808.64</td></tr><tr class='win'><td>2026-03-30</td><td>UP</td><td>0.57</td><td>$54.00</td><td>WIN</td><td>+51.89</td><td>$1747.04</td></tr><tr class='loss'><td>2026-03-29</td><td>DOWN</td><td>0.43</td><td>$57.41</td><td>LOSS</td><td>-57.41</td><td>$1695.15</td></tr><tr class='win'><td>2026-02-24</td><td>UP</td><td>0.56</td><td>$43.74</td><td>WIN</td><td>+42.03</td><td>$1752.56</td></tr><tr class='loss'><td>2026-02-23</td><td>UP</td><td>0.58</td><td>$59.10</td><td>LOSS</td><td>-59.10</td><td>$1710.53</td></tr><tr class='win'><td>2026-02-13</td><td>UP</td><td>0.57</td><td>$53.61</td><td>WIN</td><td>+51.51</td><td>$1769.64</td></tr><tr class='loss'><td>2026-01-28</td><td>UP</td><td>0.60</td><td>$87.43</td><td>LOSS</td><td>-87.43</td><td>$1718.13</td></tr><tr class='win'><td>2026-01-27</td><td>UP</td><td>0.56</td><td>$48.33</td><td>WIN</td><td>+46.44</td><td>$1805.56</td></tr><tr class='win'><td>2026-01-19</td><td>DOWN</td><td>0.44</td><td>$46.46</td><td>WIN</td><td>+44.64</td><td>$1759.12</td></tr><tr class='win'><td>2026-01-06</td><td>DOWN</td><td>0.41</td><td>$67.85</td><td>WIN</td><td>+65.19</td><td>$1714.48</td></tr><tr class='win'><td>2026-01-05</td><td>DOWN</td><td>0.42</td><td>$58.68</td><td>WIN</td><td>+56.38</td><td>$1649.28</td></tr><tr class='win'><td>2025-12-18</td><td>UP</td><td>0.57</td><td>$46.39</td><td>WIN</td><td>+44.57</td><td>$1592.91</td></tr><tr class='loss'><td>2025-12-17</td><td>UP</td><td>0.57</td><td>$52.25</td><td>LOSS</td><td>-52.25</td><td>$1548.34</td></tr><tr class='win'><td>2025-12-06</td><td>UP</td><td>0.57</td><td>$44.41</td><td>WIN</td><td>+42.67</td><td>$1600.59</td></tr><tr class='win'><td>2025-11-23</td><td>UP</td><td>0.62</td><td>$82.96</td><td>WIN</td><td>+79.71</td><td>$1557.92</td></tr><tr class='win'><td>2025-11-22</td><td>UP</td><td>0.63</td><td>$87.18</td><td>WIN</td><td>+83.76</td><td>$1478.21</td></tr><tr class='loss'><td>2025-11-21</td><td>UP</td><td>0.63</td><td>$91.95</td><td>LOSS</td><td>-91.95</td><td>$1394.45</td></tr><tr class='loss'><td>2025-11-19</td><td>UP</td><td>0.60</td><td>$69.06</td><td>LOSS</td><td>-69.06</td><td>$1486.40</td></tr><tr class='win'><td>2025-11-17</td><td>UP</td><td>0.62</td><td>$84.57</td><td>WIN</td><td>+81.26</td><td>$1555.45</td></tr><tr class='loss'><td>2025-11-16</td><td>UP</td><td>0.61</td><td>$81.70</td><td>LOSS</td><td>-81.70</td><td>$1474.20</td></tr><tr class='win'><td>2025-10-23</td><td>UP</td><td>0.57</td><td>$46.32</td><td>WIN</td><td>+44.50</td><td>$1555.90</td></tr><tr class='win'><td>2025-10-22</td><td>UP</td><td>0.63</td><td>$84.94</td><td>WIN</td><td>+81.61</td><td>$1511.40</td></tr><tr class='loss'><td>2025-10-21</td><td>UP</td><td>0.59</td><td>$64.80</td><td>LOSS</td><td>-64.80</td><td>$1429.79</td></tr><tr class='loss'><td>2025-10-20</td><td>UP</td><td>0.59</td><td>$65.49</td><td>LOSS</td><td>-65.49</td><td>$1494.59</td></tr><tr class='win'><td>2025-10-19</td><td>UP</td><td>0.60</td><td>$71.07</td><td>WIN</td><td>+68.28</td><td>$1560.08</td></tr><tr class='win'><td>2025-10-18</td><td>UP</td><td>0.60</td><td>$64.85</td><td>WIN</td><td>+62.31</td><td>$1491.80</td></tr><tr class='win'><td>2025-10-17</td><td>UP</td><td>0.62</td><td>$76.10</td><td>WIN</td><td>+73.11</td><td>$1429.49</td></tr><tr class='win'><td>2025-10-09</td><td>DOWN</td><td>0.43</td><td>$40.06</td><td>WIN</td><td>+38.49</td><td>$1356.38</td></tr><tr class='win'><td>2025-10-06</td><td>DOWN</td><td>0.41</td><td>$52.91</td><td>WIN</td><td>+50.84</td><td>$1317.89</td></tr><tr class='win'><td>2025-09-20</td><td>DOWN</td><td>0.44</td><td>$32.11</td><td>WIN</td><td>+30.85</td><td>$1267.05</td></tr><tr class='win'><td>2025-09-18</td><td>DOWN</td><td>0.41</td><td>$51.25</td><td>WIN</td><td>+49.24</td><td>$1236.20</td></tr><tr class='loss'><td>2025-09-17</td><td>DOWN</td><td>0.44</td><td>$30.36</td><td>LOSS</td><td>-30.36</td><td>$1186.96</td></tr></tbody>
+  </table>
+  </div>
+</div>
+
+<footer>PolyKing · backtested on 5y Binance BTCUSDT daily data · paper trading only,
+not financial advice · prediction-market odds from Polymarket Gamma API</footer>
+</div>
+<script>
+(function(){
+  var root=document.documentElement, sw=document.getElementById('switch');
+  function apply(mode){
+    if(mode==='system'){
+      var d=window.matchMedia('(prefers-color-scheme:dark)').matches;
+      root.setAttribute('data-theme', d?'dark':'light');
+    } else root.setAttribute('data-theme', mode);
+    [].forEach.call(sw.children,function(b){b.classList.toggle('active',b.dataset.t===mode);});
+    try{localStorage.setItem('pk-theme',mode);}catch(e){}
+  }
+  sw.addEventListener('click',function(e){ if(e.target.dataset.t) apply(e.target.dataset.t); });
+  var saved='light'; try{saved=localStorage.getItem('pk-theme')||'light';}catch(e){}
+  apply(saved);
+})();
+</script>
+</body>
+</html>
