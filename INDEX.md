@@ -413,3 +413,4 @@
 | 2026-06-05 | content | reports | [draft.md](projects/content/reports/draft.md) | AskWell build retro (8 days, cost math, The Bar worked example): draft.md |
 | 2026-06-05 | content | reports | [draft.html](projects/content/reports/draft.html) | AskWell build retro (8 days, cost math, The Bar worked example): draft.html |
 | 2026-06-05 | content | images | [hero.png](projects/content/images/hero.png) | AskWell build retro (8 days, cost math, The Bar worked example): hero.png |
+| 2026-06-05 | content | images | [diagram-build-shape.png](projects/content/images/diagram-build-shape.png) | AskWell build retro (8 days, cost math, The Bar worked example): diagram-build-shape.png |
