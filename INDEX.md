@@ -408,3 +408,4 @@
 | 2026-06-04 | content | images | [shot-pricing.png](projects/content/images/shot-pricing.png) | AskWell launch article (askwell.cc, real product screenshots): shot-pricing.png |
 | 2026-06-05 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: INC-118 gating + INC-87 export, 10 verified |
 | 2026-06-05 | content | reports | [draft.md](projects/content/reports/draft.md) | Uber AI budget article HTML page: draft.md |
+| 2026-06-05 | content | reports | [draft.html](projects/content/reports/draft.html) | Uber AI budget article HTML page: draft.html |
