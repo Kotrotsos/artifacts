@@ -201,3 +201,4 @@
 | 2026-06-05 | images | [hero.png](images/hero.png) | Uber AI budget article HTML page: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/uber-budget-burned/hero.png |
 | 2026-06-05 | reports | [draft.md](reports/draft.md) | AskWell build retro (8 days, cost math, The Bar worked example): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/building-askwell-claude-code/draft.md |
 | 2026-06-05 | reports | [draft.html](reports/draft.html) | AskWell build retro (8 days, cost math, The Bar worked example): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/building-askwell-claude-code/draft.html |
+| 2026-06-05 | images | [hero.png](images/hero.png) | AskWell build retro (8 days, cost math, The Bar worked example): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/building-askwell-claude-code/hero.png |
