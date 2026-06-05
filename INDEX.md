@@ -424,3 +424,4 @@
 | 2026-06-05 | content | images | [chart-cot.png](projects/content/images/chart-cot.png) | Prompt Engineering Summer 2026 (researched, verified, charts): chart-cot.png |
 | 2026-06-05 | content | images | [chart-gepa.png](projects/content/images/chart-gepa.png) | Prompt Engineering Summer 2026 (researched, verified, charts): chart-gepa.png |
 | 2026-06-05 | elastofirm-profiler | reports | [prompt-xml-sections.html](projects/elastofirm-profiler/reports/prompt-xml-sections.html) | Reference: flat prompt vs XML-tagged sections |
+| 2026-06-05 | virtuele-assistent | reports | [rag-triad-eval-setup.html](projects/virtuele-assistent/reports/rag-triad-eval-setup.html) | Step-by-step guide to wire the RAG triad LLM-as-judge evaluators in Langfuse |

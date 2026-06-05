@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RAG Triad evals, opzetten in Langfuse</title>
+<style>
+  :root {
+    --bg:#ffffff; --fg:#1a1a1a; --muted:#545454; --card:#f7f9fb; --border:#dce1e6;
+    --accent:#01689b; --accent-soft:#e6f0f7; --stripe:#ffb612; --ok:#1d6b2f; --code:#0b3a52;
+    --font:"RO Sans","Source Sans Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  [data-theme="dark"]{
+    --bg:#14181d; --fg:#e7ebf0; --muted:#9aa4af; --card:#1c2128; --border:#2d343c;
+    --accent:#5db0e0; --accent-soft:#1a2730; --ok:#7bd494; --code:#cfe6f2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:54rem;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+  header.page{border-bottom:4px solid var(--stripe);padding-bottom:1.1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+  h1{font-size:1.8rem;line-height:1.2;margin:0 0 .3rem}
+  h2{font-size:1.25rem;margin:2.2rem 0 .6rem;display:flex;align-items:center;gap:.5rem}
+  h2 .num{display:inline-flex;align-items:center;justify-content:center;width:1.7rem;height:1.7rem;border-radius:999px;background:var(--accent);color:#fff;font-size:.95rem;font-weight:700;flex:0 0 auto}
+  h3{font-size:1.02rem;margin:1.3rem 0 .3rem}
+  p{margin:.5rem 0}
+  .sub{color:var(--muted);margin:0}
+  .meta{color:var(--muted);font-size:.85rem}
+  a{color:var(--accent)}
+  code{font-family:var(--mono);font-size:.86em;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:.08em .38em}
+  .lead{background:var(--accent-soft);border:1px solid var(--border);border-left:5px solid var(--accent);border-radius:8px;padding:1rem 1.15rem;margin:1.2rem 0 1.8rem}
+  ol.steps{padding-left:0;list-style:none;counter-reset:s;margin:0}
+  table{border-collapse:collapse;width:100%;margin:.6rem 0 1.2rem;font-size:.92rem}
+  th,td{text-align:left;padding:.55rem .65rem;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-weight:700;border-bottom:2px solid var(--border)}
+  tbody tr:last-child td{border-bottom:none}
+  .eval{border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;margin:1.1rem 0;background:var(--card)}
+  .eval h3{margin-top:0;color:var(--accent)}
+  .promptbox{position:relative;margin:.6rem 0}
+  pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem 1rem;overflow:auto;font-family:var(--mono);font-size:.8rem;line-height:1.5;color:var(--code);white-space:pre-wrap}
+  .copy{position:absolute;top:.55rem;right:.55rem;background:var(--accent);color:#fff;border:none;border-radius:6px;padding:.32rem .7rem;font-size:.76rem;font-family:inherit;cursor:pointer}
+  .copy:active{transform:translateY(1px)}
+  .copy.done{background:var(--ok)}
+  .pill{display:inline-block;font-size:.72rem;font-weight:700;padding:.12rem .55rem;border-radius:999px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--border);margin-left:.4rem}
+  .toggle{background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:999px;padding:.4rem .85rem;font-size:.82rem;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .toggle:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .note{font-size:.9rem;color:var(--muted)}
+  .kbd{font-family:var(--mono);font-size:.82em;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:.05em .35em}
+  footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.82rem}
+  @media print{.toggle,.copy{display:none}body{background:#fff;color:#000}.wrap{max-width:none;padding:0}.eval,table,pre{break-inside:avoid}a{color:#000}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <div>
+      <h1>RAG Triad evals opzetten</h1>
+      <p class="sub">De drie LLM-as-judge evaluators aanzetten in Langfuse</p>
+    </div>
+    <button class="toggle" id="themeBtn" type="button" aria-label="Wissel licht of donker thema">Donker thema</button>
+  </header>
+
+  <p class="meta">Langfuse: <a href="https://langfuse.montferland.info" target="_blank" rel="noopener">langfuse.montferland.info</a> &middot; branch <code>evals/rag-triad</code> &middot; bronbestanden in <code>eval/rag-triad/</code></p>
+
+  <div class="lead">
+    De drie judge-prompts staan al in Langfuse (namespace <code>eval/</code>, label <code>production</code>). Wat hier overblijft is eenmalig handwerk: per eval een <strong>Evaluator</strong> aanmaken in de UI. Dat kan niet via de API, want het evaluator-endpoint geeft 404 op deze Langfuse-versie. Doorloop stap 1 tot en met 5, en herhaal voor elk van de drie evals onderaan.
+  </div>
+
+  <h2><span class="num">1</span> Nieuwe evaluator</h2>
+  <ol class="steps">
+    <li>Open Langfuse, linkermenu <strong>Evaluations</strong> (of <strong>Evaluators</strong> / <strong>LLM-as-a-judge</strong>), dan <strong>Set up evaluator</strong> / <strong>New</strong>.</li>
+    <li>Kies <strong>Custom</strong> (geen kant-en-klaar sjabloon).</li>
+    <li>Plak de prompttekst van de betreffende eval (zie hieronder, knop <em>Kopieer</em>). Kan jouw versie naar een beheerde prompt verwijzen, kies dan de prompt <code>eval/&lt;naam&gt;</code> zodat het in sync blijft met de repo.</li>
+    <li>Judge-model: <span class="kbd">gpt-4.1-mini</span> (of <span class="kbd">gpt-4o-mini</span>), <strong>temperature 0</strong>.</li>
+  </ol>
+
+  <h2><span class="num">2</span> Score uit de output halen</h2>
+  <p>Elke prompt geeft <code>{"score": &lt;0..1&gt;, "reasoning": "&lt;Nederlands&gt;"}</code> terug.</p>
+  <table>
+    <thead><tr><th>Veld</th><th>Instelling</th></tr></thead>
+    <tbody>
+      <tr><td>Score-naam</td><td><code>context_relevance</code> / <code>groundedness</code> / <code>answer_relevance</code></td></tr>
+      <tr><td>Type</td><td><strong>Numeric</strong>, bereik <strong>0 tot 1</strong></td></tr>
+      <tr><td>Mapping</td><td>outputveld <code>score</code> &rarr; de score, <code>reasoning</code> &rarr; het commentaar</td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="num">3</span> Variabelen koppelen <span class="pill">belangrijkste stap</span></h2>
+  <p>Koppel elke <code>{{variabele}}</code> uit de prompt aan de juiste plek op een chat-trace:</p>
+  <table>
+    <thead><tr><th>Variabele</th><th>Koppel aan</th><th>Toelichting</th></tr></thead>
+    <tbody>
+      <tr><td><code>{{query}}</code></td><td>trace <strong>input</strong></td><td>de vraag van de gebruiker</td></tr>
+      <tr><td><code>{{generation}}</code></td><td>trace <strong>output</strong></td><td>het antwoord van de assistent</td></tr>
+      <tr><td><code>{{context}}</code></td><td>de <strong>output van de RAG-zoekobservatie</strong></td><td>de opgehaalde chunks, alleen Context Relevance en Groundedness gebruiken dit</td></tr>
+    </tbody>
+  </table>
+  <p class="note"><code>{{context}}</code> vinden: de opgehaalde chunks zijn de output van de RAG-zoektool-observatie in de trace (de tool waarvan de backend het resultaat parseert in <code>ChatHttpRoute.extractRagMetadata</code>, bewaard als <code>ragResults[].chunks</code>). Kies in de variabele-mapping die observatie-output. Toont jouw versie alleen input/output op trace-niveau, dan kan Answer Relevance (heeft geen context nodig) sowieso al draaien.</p>
+
+  <h2><span class="num">4</span> Filter en sampling</h2>
+  <ol class="steps">
+    <li><strong>Filter</strong> op de chat-traces die je wilt, bijvoorbeeld environment <code>production</code> (of <code>development</code> tijdens testen) en/of trace-naam <code>chat</code>. Draai niet op losse, ongerelateerde traces.</li>
+    <li><strong>Sampling</strong>: begin laag (10 tot 20 procent) om judge-kosten te beperken, verhoog als de scores kloppen.</li>
+    <li>Scope: nieuwe traces vanaf nu, eventueel een backfill over recente traces.</li>
+  </ol>
+
+  <h2><span class="num">5</span> Controle</h2>
+  <p>Open na het aanzetten een paar gescoorde traces en lees de <code>reasoning</code>. Score en uitleg horen te kloppen bij dat antwoord. Klopt iets niet, pas de prompt aan in <code>eval/rag-triad/prompts/</code>, draai <code>bash eval/rag-triad/push-eval-prompts.sh</code> opnieuw, en zet de evaluator op de nieuwe promptversie.</p>
+
+  <h2>De drie evals</h2>
+
+  <div class="eval">
+    <h3>1. Context Relevance <span class="pill">eval/context-relevance</span></h3>
+    <p class="note">Heeft retrieval het juiste materiaal gevonden? Variabelen: <code>{{query}}</code>, <code>{{context}}</code>.</p>
+    <div class="promptbox">
+      <button class="copy" type="button">Kopieer</button>
+      <pre>You are an expert evaluator for a Dutch municipal (gemeente) RAG assistant.
+Your job is to judge CONTEXT RELEVANCE: whether the retrieved context contains
+the information needed to answer the user's question. You judge the RETRIEVAL
+step only, not the final answer.
+
+User question:
+{{query}}
+
+Retrieved context (chunks from the knowledge base):
+{{context}}
+
+Score how relevant the retrieved context is to answering the question, on a
+continuous scale from 0.0 to 1.0:
+
+- 1.0  The context directly and fully contains the information needed to answer
+       the question, with no important gaps.
+- 0.7  The context is on topic and contains most of what is needed, but misses a
+       detail or includes some unrelated material.
+- 0.4  The context is only partially relevant: a related municipal topic, but it
+       does not actually contain the answer.
+- 0.1  The context is off topic, or about a different service or procedure.
+- 0.0  No usable context was retrieved (empty, or "no documents found").
+
+Guidance:
+- Judge relevance to the QUESTION, not the correctness of any answer.
+- Dutch and English content are both acceptable, do not penalize language.
+- Be strict: retrieving a lot of text that does not answer the question is not
+  relevant.
+
+Return ONLY a JSON object, with no other text:
+{"score": &lt;number between 0 and 1&gt;, "reasoning": "&lt;one or two sentences in Dutch explaining the score&gt;"}</pre>
+    </div>
+  </div>
+
+  <div class="eval">
+    <h3>2. Groundedness <span class="pill">eval/groundedness</span></h3>
+    <p class="note">Is het antwoord gedekt door dat materiaal (geen hallucinatie)? Variabelen: <code>{{context}}</code>, <code>{{generation}}</code>.</p>
+    <div class="promptbox">
+      <button class="copy" type="button">Kopieer</button>
+      <pre>You are an expert evaluator for a Dutch municipal (gemeente) RAG assistant.
+Your job is to judge GROUNDEDNESS (faithfulness): whether every factual claim in
+the assistant's answer is supported by the retrieved context. This detects
+hallucination.
+
+Retrieved context (the only source the answer may rely on):
+{{context}}
+
+Assistant answer:
+{{generation}}
+
+Score how well the answer is grounded in the context, on a continuous scale from
+0.0 to 1.0:
+
+- 1.0  Every factual claim in the answer is directly supported by the context.
+- 0.7  Mostly grounded: one minor detail is not explicit in the context but is a
+       reasonable paraphrase of it.
+- 0.4  Partially grounded: the answer mixes supported claims with claims that are
+       not in the context.
+- 0.1  Largely ungrounded: key claims (facts, amounts, deadlines, procedures,
+       phone numbers, URLs) are not supported by the context.
+- 0.0  The answer contradicts the context, or invents information wholesale.
+
+Guidance:
+- Generic, non-factual phrasing (greetings, "neem contact op met de gemeente",
+  safe refusals, a clarifying question) counts as grounded.
+- Specific facts that are not present in the context are hallucinations and
+  lower the score.
+- Do not reward correctness from world knowledge: only the provided context
+  counts as support.
+
+Return ONLY a JSON object, with no other text:
+{"score": &lt;number between 0 and 1&gt;, "reasoning": "&lt;one or two sentences in Dutch explaining the score, naming any unsupported claim&gt;"}</pre>
+    </div>
+  </div>
+
+  <div class="eval">
+    <h3>3. Answer Relevance <span class="pill">eval/answer-relevance</span></h3>
+    <p class="note">Beantwoordt het antwoord de vraag? Variabelen: <code>{{query}}</code>, <code>{{generation}}</code>. Heeft geen context nodig, kan meteen draaien.</p>
+    <div class="promptbox">
+      <button class="copy" type="button">Kopieer</button>
+      <pre>You are an expert evaluator for a Dutch municipal (gemeente) RAG assistant.
+Your job is to judge ANSWER RELEVANCE: whether the assistant's answer actually
+addresses the user's question and is useful to a citizen.
+
+User question:
+{{query}}
+
+Assistant answer:
+{{generation}}
+
+Score how well the answer addresses the question, on a continuous scale from 0.0
+to 1.0:
+
+- 1.0  Directly and completely answers the question, a citizen knows what to do
+       next.
+- 0.7  Answers the main question but is incomplete or slightly off, or buries the
+       answer.
+- 0.4  Partially relevant: touches the topic but does not really answer it, or
+       answers a different question.
+- 0.1  Evasive or generic ("neem contact op met de gemeente") when the question
+       could have been answered.
+- 0.0  Off topic, empty, or refuses a reasonable, answerable question.
+
+Guidance:
+- A correct clarifying question for a genuinely ambiguous query scores high
+  (0.8 to 1.0): it is the relevant response.
+- A correct "ik kan dit niet beantwoorden" for an out-of-scope question scores
+  high: refusing the unanswerable is relevant.
+- Judge relevance and usefulness, not factual correctness or grounding (those
+  are covered by the other two evaluators).
+
+Return ONLY a JSON object, with no other text:
+{"score": &lt;number between 0 and 1&gt;, "reasoning": "&lt;one or two sentences in Dutch explaining the score&gt;"}</pre>
+    </div>
+  </div>
+
+  <footer>
+    Lees de drie samen: lage Context Relevance wijst op retrieval, hoge Context Relevance maar lage Groundedness wijst op de generatiestap die dingen verzint, hoog op de eerste twee maar lage Answer Relevance wijst op een correct maar onbruikbaar antwoord. Bron: <code>eval/rag-triad/SETUP.md</code> en <code>README.md</code>.
+  </footer>
+</div>
+
+<script>
+  (function(){
+    var btn=document.getElementById('themeBtn'), root=document.documentElement;
+    btn.addEventListener('click',function(){
+      var dark=root.getAttribute('data-theme')==='dark';
+      if(dark){root.removeAttribute('data-theme');btn.textContent='Donker thema';}
+      else{root.setAttribute('data-theme','dark');btn.textContent='Licht thema';}
+    });
+    document.querySelectorAll('.copy').forEach(function(b){
+      b.addEventListener('click',function(){
+        var pre=b.parentElement.querySelector('pre');
+        var txt=pre.innerText;
+        navigator.clipboard.writeText(txt).then(function(){
+          var old=b.textContent;b.textContent='Gekopieerd';b.classList.add('done');
+          setTimeout(function(){b.textContent=old;b.classList.remove('done');},1500);
+        });
+      });
+    });
+  })();
+</script>
+</body>
+</html>
