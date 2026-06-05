@@ -421,3 +421,4 @@
 | 2026-06-05 | content | images | [hero.png](projects/content/images/hero.png) | Prompt Engineering Summer 2026 (researched, verified, charts): hero.png |
 | 2026-06-05 | content | images | [screenshot-prompts.png](projects/content/images/screenshot-prompts.png) | Prompt Engineering Summer 2026 (researched, verified, charts): screenshot-prompts.png |
 | 2026-06-05 | content | images | [diagram-map.png](projects/content/images/diagram-map.png) | Prompt Engineering Summer 2026 (researched, verified, charts): diagram-map.png |
+| 2026-06-05 | content | images | [chart-cot.png](projects/content/images/chart-cot.png) | Prompt Engineering Summer 2026 (researched, verified, charts): chart-cot.png |
