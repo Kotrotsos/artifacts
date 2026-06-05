@@ -416,3 +416,4 @@
 | 2026-06-05 | content | images | [diagram-build-shape.png](projects/content/images/diagram-build-shape.png) | AskWell build retro (8 days, cost math, The Bar worked example): diagram-build-shape.png |
 | 2026-06-05 | content | images | [diagram-cost-stack.png](projects/content/images/diagram-cost-stack.png) | AskWell build retro (8 days, cost math, The Bar worked example): diagram-cost-stack.png |
 | 2026-06-05 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: INC-78 role flags + INC-92 anchor sliders, 12 verified |
+| 2026-06-05 | content | reports | [draft.md](projects/content/reports/draft.md) | Prompt Engineering Summer 2026 (researched, verified, charts): draft.md |
