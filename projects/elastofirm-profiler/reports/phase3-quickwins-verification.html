@@ -102,7 +102,7 @@
       <h1>Phase 3 — work &amp; how to verify</h1>
       <div class="meta">
         <span><b>Project</b> Elastofirm Profiler — Phase 3</span>
-        <span><b>Branch</b> <span class="mono">inc-118-87-gating-export</span></span>
+        <span><b>Branch</b> <span class="mono">inc-78-92-roleflags-sliders</span></span>
         <span><b>Last update</b> 2026-06-03</span>
       </div>
     </div>
@@ -113,7 +113,7 @@
     </div>
   </header>
 
-  <div class="banner"><span class="dot"></span><span><b>Regression suite: 15 / 15 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
+  <div class="banner"><span class="dot"></span><span><b>Regression suite: 17 / 17 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
 
   <div class="note">
     <b>This is the living board and the flow.</b> Every batch: implement on a branch → validate live in the running app → extend the pytest suite and run it after each change → record the item here → deploy the board to Railway → sync Linear. <b>Verified items collapse; items in development stay expanded.</b> Click any header to toggle.
@@ -155,6 +155,47 @@ open http://localhost:3001</pre>
   </details>
 
   <h2 class="section">Verified &amp; in review</h2>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-78</span>
+      <h3>Role flags: download DXF &amp; see customer</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">Two capabilities derived from Azure AD roles, exposed on <code>/api/auth/me</code>: <b>can_download_dxf</b> (Engineering/Beheer) and <b>can_see_customer</b> (hidden for Sales/CustomerService). Enforced server-side: <code>/api/download-dxf</code> returns 403 without the flag, and the customer name is stripped from <code>/api/profiles</code>, the detail, and image-search responses for restricted roles — while the customer <i>filter</i> keeps working. Frontend hides the DXF affordances; the customer badge auto-hides (it's already guarded on a present value).</p>
+      <p class="files">Touched: <code>api/main.py</code> (can_download_dxf/can_see_customer, gates + stripping), <code>app/page.tsx</code> (DXF gating)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>As a normal dev user (capabilities on) DXF + customer show as before.</li>
+        <li><span class="expect"><b>Expected (restricted role):</b> no DXF download affordance and a 403 on the endpoint; customer name absent from results/detail but still usable as a filter. Verified in dev via the capability flags + isolated role logic (Sales → dxf false / customer false; Engineering → both true).</span></li>
+      </ol>
+      <p class="caveat">Default for unmapped/no-role users is permissive (preserves current behaviour); the full role matrix is INC-81. Confirm the exact Entra app-role strings.</p>
+    </div>
+  </details>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-92</span>
+      <h3>Anchor range sliders (re-query on release)</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">After "Gebruik als anker", the banner shows weight + surface sliders initialised to the ±10% band. Dragging updates the thumbs; the result set only re-queries when you <b>release</b> the slider (onValueCommit), per the PO ("niet tijdens het schuiven"). Slider domain is anchor-relative (≈3× the anchor) so it stays usable despite a data outlier in the absolute Area range.</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (Slider, anchorWeight/anchorArea, commit → re-search), <code>api/main.py</code> (area_range in /api/filters)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Search, anchor a record that has a weight (e.g. EG-00254, w=134).</li>
+        <li><span class="expect"><b>Expected:</b> a weight slider appears showing <span class="mono">121 – 147</span>; drag and release → results re-query to the new band (no churn mid-drag). A surface slider appears only when the record has an area.</span></li>
+      </ol>
+    </div>
+  </details>
 
   <details class="item">
     <summary>
@@ -383,6 +424,8 @@ open http://localhost:3001</pre>
         <tr><td>Process multi-select + dedupe</td><td>INC-93</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Categorize fields + endpoint guards</td><td>INC-111/112/117</td><td>4</td><td class="pass">pass</td></tr>
         <tr><td>Data-management capability exposed</td><td>INC-118</td><td>1</td><td class="pass">pass</td></tr>
+        <tr><td>Role flags exposed (dxf / customer)</td><td>INC-78</td><td>1</td><td class="pass">pass</td></tr>
+        <tr><td>Area range for anchor sliders</td><td>INC-92</td><td>1</td><td class="pass">pass</td></tr>
         <tr><td>Filters list sanity</td><td>shared</td><td>1</td><td class="pass">pass</td></tr>
       </tbody>
     </table>
