@@ -210,3 +210,4 @@
 | 2026-06-05 | images | [screenshot-prompts.png](images/screenshot-prompts.png) | Prompt Engineering Summer 2026 (researched, verified, charts): screenshot-prompts.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompting-summer-2026/screenshot-prompts.png |
 | 2026-06-05 | images | [diagram-map.png](images/diagram-map.png) | Prompt Engineering Summer 2026 (researched, verified, charts): diagram-map.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompting-summer-2026/diagram-map.png |
 | 2026-06-05 | images | [chart-cot.png](images/chart-cot.png) | Prompt Engineering Summer 2026 (researched, verified, charts): chart-cot.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompting-summer-2026/chart-cot.png |
+| 2026-06-05 | images | [chart-gepa.png](images/chart-gepa.png) | Prompt Engineering Summer 2026 (researched, verified, charts): chart-gepa.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompting-summer-2026/chart-gepa.png |
