@@ -102,7 +102,7 @@
       <h1>Phase 3 — work &amp; how to verify</h1>
       <div class="meta">
         <span><b>Project</b> Elastofirm Profiler — Phase 3</span>
-        <span><b>Branch</b> <span class="mono">inc-117-categorize</span></span>
+        <span><b>Branch</b> <span class="mono">inc-118-87-gating-export</span></span>
         <span><b>Last update</b> 2026-06-03</span>
       </div>
     </div>
@@ -113,7 +113,7 @@
     </div>
   </header>
 
-  <div class="banner"><span class="dot"></span><span><b>Regression suite: 14 / 14 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
+  <div class="banner"><span class="dot"></span><span><b>Regression suite: 15 / 15 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
 
   <div class="note">
     <b>This is the living board and the flow.</b> Every batch: implement on a branch → validate live in the running app → extend the pytest suite and run it after each change → record the item here → deploy the board to Railway → sync Linear. <b>Verified items collapse; items in development stay expanded.</b> Click any header to toggle.
@@ -155,6 +155,48 @@ open http://localhost:3001</pre>
   </details>
 
   <h2 class="section">Verified &amp; in review</h2>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-118</span>
+      <h3>Categorise gated to data-management (beheer)</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">Editing classifications is now a capability: a "Databeheer" mode toggle (shown only to users with the beheer/data-management capability) reveals the Categoriseer action + bulk panel. The <code>/api/profiles/categorize</code> endpoint enforces it server-side (403 without the capability) — UI hiding alone is not the boundary. Capability is derived from the Azure AD <code>Beheer</code> role and exposed on <code>/api/auth/me</code>.</p>
+      <p class="files">Touched: <code>api/main.py</code> (user_can_manage_data, auth/me, endpoint gate, dev mock role), <code>app/page.tsx</code> (Databeheer toggle, gated controls)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Search a set. Note the <b>Categoriseer</b> action is hidden by default.</li>
+        <li>Click <b>Databeheer uit</b> &rarr; it flips to <b>aan</b>, select records, and <b>Categoriseer (N)</b> appears.</li>
+        <li><span class="expect"><b>Expected:</b> categorise controls only exist in Databeheer mode; the endpoint returns 403 for non-beheer users (enforced server-side).</span></li>
+      </ol>
+      <p class="caveat">Dev note: the local mock user is given the <span class="mono">Beheer</span> role so dev exercises the real capability path. The 403 path applies to non-beheer prod users; verify role mapping in the Entra app registration.</p>
+    </div>
+  </details>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-87</span>
+      <h3>Export the entire result set (incl. categories)</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">"Exporteer alle (N)" dumps the <b>whole current filter result</b> (full fetch, not just the loaded page) to Excel, with all columns <b>including Toepassing / Omschrijving</b>. Independent of selection (per the agreed spec). The per-page and selected-set exports use the same column mapping, so categories are everywhere.</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (toExportRow + writeProfilesXlsx, handleExportAllResults, category passthrough in transformProfile)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Search a set, click <b>Exporteer alle (N)</b>.</li>
+        <li><span class="expect"><b>Expected:</b> an .xlsx downloads with every matching row and Toepassing/Omschrijving columns populated for categorised records.</span></li>
+      </ol>
+    </div>
+  </details>
 
   <details class="item">
     <summary>
@@ -340,6 +382,7 @@ open http://localhost:3001</pre>
         <tr><td>Weight/surface exposed</td><td>INC-88</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Process multi-select + dedupe</td><td>INC-93</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Categorize fields + endpoint guards</td><td>INC-111/112/117</td><td>4</td><td class="pass">pass</td></tr>
+        <tr><td>Data-management capability exposed</td><td>INC-118</td><td>1</td><td class="pass">pass</td></tr>
         <tr><td>Filters list sanity</td><td>shared</td><td>1</td><td class="pass">pass</td></tr>
       </tbody>
     </table>

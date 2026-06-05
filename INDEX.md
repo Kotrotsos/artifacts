@@ -406,3 +406,4 @@
 | 2026-06-04 | content | images | [shot-how.png](projects/content/images/shot-how.png) | AskWell launch article (askwell.cc, real product screenshots): shot-how.png |
 | 2026-06-04 | content | images | [shot-conflict.png](projects/content/images/shot-conflict.png) | AskWell launch article (askwell.cc, real product screenshots): shot-conflict.png |
 | 2026-06-04 | content | images | [shot-pricing.png](projects/content/images/shot-pricing.png) | AskWell launch article (askwell.cc, real product screenshots): shot-pricing.png |
+| 2026-06-05 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: INC-118 gating + INC-87 export, 10 verified |
