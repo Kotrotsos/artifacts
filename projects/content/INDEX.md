@@ -206,3 +206,4 @@
 | 2026-06-05 | images | [diagram-cost-stack.png](images/diagram-cost-stack.png) | AskWell build retro (8 days, cost math, The Bar worked example): diagram-cost-stack.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/building-askwell-claude-code/diagram-cost-stack.png |
 | 2026-06-05 | reports | [draft.md](reports/draft.md) | Prompt Engineering Summer 2026 (researched, verified, charts): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompting-summer-2026/draft.md |
 | 2026-06-05 | reports | [draft.html](reports/draft.html) | Prompt Engineering Summer 2026 (researched, verified, charts): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompting-summer-2026/draft.html |
+| 2026-06-05 | images | [hero.png](images/hero.png) | Prompt Engineering Summer 2026 (researched, verified, charts): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompting-summer-2026/hero.png |

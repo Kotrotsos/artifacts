@@ -418,3 +418,4 @@
 | 2026-06-05 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: INC-78 role flags + INC-92 anchor sliders, 12 verified |
 | 2026-06-05 | content | reports | [draft.md](projects/content/reports/draft.md) | Prompt Engineering Summer 2026 (researched, verified, charts): draft.md |
 | 2026-06-05 | content | reports | [draft.html](projects/content/reports/draft.html) | Prompt Engineering Summer 2026 (researched, verified, charts): draft.html |
+| 2026-06-05 | content | images | [hero.png](projects/content/images/hero.png) | Prompt Engineering Summer 2026 (researched, verified, charts): hero.png |
