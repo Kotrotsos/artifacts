@@ -102,7 +102,7 @@
       <h1>Phase 3 — work &amp; how to verify</h1>
       <div class="meta">
         <span><b>Project</b> Elastofirm Profiler — Phase 3</span>
-        <span><b>Branch</b> <span class="mono">inc-109-120-140-batch</span></span>
+        <span><b>Branch</b> <span class="mono">inc-100-113-125-batch</span></span>
         <span><b>Last update</b> 2026-06-06</span>
       </div>
     </div>
@@ -113,7 +113,7 @@
     </div>
   </header>
 
-  <div class="banner"><span class="dot"></span><span><b>Regression suite: 21 / 21 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
+  <div class="banner"><span class="dot"></span><span><b>Regression suite: 26 / 26 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
 
   <div class="note">
     <b>This is the living board and the flow.</b> Every batch: implement on a branch → validate live in the running app → extend the pytest suite and run it after each change → record the item here → deploy the board to Railway → sync Linear. <b>Verified items collapse; items in development stay expanded.</b> Click any header to toggle.
@@ -155,6 +155,70 @@ open http://localhost:3001</pre>
   </details>
 
   <h2 class="section">Verified &amp; in review</h2>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-125</span>
+      <h3>Compound-price staleness indicator</h3>
+      <span class="badge effort">S</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">The Prijs tab now shows where the compound price came from and how fresh it is. <code>GET /api/pricing/config</code> returns the price, the date it was set, the source, and a configurable staleness threshold, plus a derived <code>price_age_days</code> + <code>price_stale</code>. A red <b>verouderd · Nd</b> / green <b>actueel</b> chip sits next to the price; the literal date + threshold show on hover. Threshold is env-tunable (<code>COMPOUND_PRICE_STALE_DAYS</code>, default 30) so the open monthly-vs-daily cadence question can change without a deploy.</p>
+      <p class="files">Touched: <code>api/main.py</code> (pricing config + /api/pricing/config), <code>app/page.tsx</code> (chip on Prijs tab, uses fetched price)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open <span class="mono">EG-00254</span> detail &rarr; <b>Prijs</b> tab.</li>
+        <li><span class="expect"><b>Expected:</b> a red <span class="mono">verouderd · 36d</span> chip beside the placeholder <span class="mono">€2,85/kg</span>; verified live.</span></li>
+      </ol>
+      <p class="caveat">Price + date are a placeholder until the BI feed (INC-124) lands. The chip is driven off <code>COMPOUND_PRICE_UPDATED</code>; once the feed provides a real <code>fetched_at</code> it should feed this endpoint.</p>
+    </div>
+  </details>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-113</span>
+      <h3>English equivalents of toepassing / omschrijving</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">Classification is now bilingual via a lookup table <code>classification_terms(kind, value_nl, value_en)</code>, seeded from existing values and auto-extended whenever a new Dutch value is categorised. <code>GET /api/classification-terms</code> returns the nl&rarr;en map; <code>PUT</code> (beheer-only) sets the English term. A Databeheer editor panel lets the PO fill in translations, and the categorise combobox shows <span class="mono">Dutch — English</span> labels. Missing translations are handled gracefully (Dutch shown alone).</p>
+      <p class="files">Touched: <code>api/main.py</code> (classification_terms table, GET/PUT, categorize auto-seed), <code>app/page.tsx</code> (terms editor, bilingual datalist)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Enter <b>Databeheer</b> mode, expand "Engelse classificatietermen".</li>
+        <li>Type an English term next to a Dutch value, blur to save.</li>
+        <li><span class="expect"><b>Expected:</b> toast "Engelse term opgeslagen"; value persists (verified: Afdichting &rarr; Sealing) and appears in the categorise combobox.</span></li>
+      </ol>
+      <p class="caveat">Lookup-table approach (not denormalised columns). The SAP-sync task (INC-119) may want a flat per-record value — decision noted on the issue.</p>
+    </div>
+  </details>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-100</span>
+      <h3>Oppervlakte (surface) as a first-class field</h3>
+      <span class="badge effort">S</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">Oppervlakte (mm²) is now an explicit labelled row in the <b>Stamkaart</b> detail tab rather than only inside a specs string. The surface min/max filter (<code>surface_min</code>/<code>surface_max</code>) was already enforced server-side in <code>/api/profiles</code> + count, and surface similarity sort exists for image search (INC-89).</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (Oppervlakte row in Stamkaart tab)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open any result's detail &rarr; <b>Stamkaart</b> tab.</li>
+        <li><span class="expect"><b>Expected:</b> an "Oppervlakte (mm²)" row (verified live on EG-00254).</span></li>
+      </ol>
+      <p class="caveat">A general server-side list sort by surface was not added (deferred — list is paginated; surface sort exists for image-search via INC-89). Source-of-truth normalisation (drawing vs SAP) stays open per the issue.</p>
+    </div>
+  </details>
 
   <details class="item">
     <summary>
@@ -498,8 +562,8 @@ open http://localhost:3001</pre>
   <div class="card">
     <p class="what">Guards the API contracts behind these fixes. Run after every change to this area:</p>
     <pre>API_BASE=http://localhost:3000 pytest scripts/test/test_phase3_quickwins.py -q
-<span class="ok">.....................                             [100%]
-21 passed in 0.67s</span></pre>
+<span class="ok">..........................                        [100%]
+26 passed in 0.72s</span></pre>
     <table>
       <thead><tr><th>Area</th><th>Guards</th><th>Tests</th><th>Result</th></tr></thead>
       <tbody>
@@ -507,7 +571,9 @@ open http://localhost:3001</pre>
         <tr><td>Weight/surface exposed</td><td>INC-88</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Process multi-select + dedupe</td><td>INC-93</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Categorize fields + endpoint guards</td><td>INC-111/112/117</td><td>4</td><td class="pass">pass</td></tr>
-        <tr><td>T&amp;C clauses + accept validation</td><td>INC-140</td><td>3</td><td class="pass">pass</td></tr>
+        <tr><td>T&amp;C clauses + accept validation (incl. empty-body bypass)</td><td>INC-140</td><td>4</td><td class="pass">pass</td></tr>
+        <tr><td>Price provenance + staleness</td><td>INC-125</td><td>1</td><td class="pass">pass</td></tr>
+        <tr><td>Bilingual classification terms (map + PUT)</td><td>INC-113</td><td>3</td><td class="pass">pass</td></tr>
         <tr><td>Data-management capability exposed</td><td>INC-118</td><td>1</td><td class="pass">pass</td></tr>
         <tr><td>Role flags exposed (dxf / customer)</td><td>INC-78</td><td>1</td><td class="pass">pass</td></tr>
         <tr><td>Area range for anchor sliders</td><td>INC-92</td><td>1</td><td class="pass">pass</td></tr>
