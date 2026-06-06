@@ -431,3 +431,4 @@
 | 2026-06-06 | polyking | reports | [xrev-model-card.md](projects/polyking/reports/xrev-model-card.md) | XREV model card markdown source |
 | 2026-06-06 | content | reports | [draft.md](projects/content/reports/draft.md) | AI environment balanced piece (workflow-researched, fact-checked): draft.md |
 | 2026-06-06 | content | reports | [draft.html](projects/content/reports/draft.html) | AI environment balanced piece (workflow-researched, fact-checked): draft.html |
+| 2026-06-06 | content | images | [hero.png](projects/content/images/hero.png) | AI environment balanced piece (workflow-researched, fact-checked): hero.png |
