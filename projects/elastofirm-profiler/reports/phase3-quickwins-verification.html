@@ -102,7 +102,7 @@
       <h1>Phase 3 — work &amp; how to verify</h1>
       <div class="meta">
         <span><b>Project</b> Elastofirm Profiler — Phase 3</span>
-        <span><b>Branch</b> <span class="mono">inc-100-113-125-batch</span></span>
+        <span><b>Branch</b> <span class="mono">inc-82-83-84-usage-stats</span></span>
         <span><b>Last update</b> 2026-06-06</span>
       </div>
     </div>
@@ -113,7 +113,7 @@
     </div>
   </header>
 
-  <div class="banner"><span class="dot"></span><span><b>Regression suite: 26 / 26 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
+  <div class="banner"><span class="dot"></span><span><b>Regression suite: 28 / 28 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
 
   <div class="note">
     <b>This is the living board and the flow.</b> Every batch: implement on a branch → validate live in the running app → extend the pytest suite and run it after each change → record the item here → deploy the board to Railway → sync Linear. <b>Verified items collapse; items in development stay expanded.</b> Click any header to toggle.
@@ -155,6 +155,28 @@ open http://localhost:3001</pre>
   </details>
 
   <h2 class="section">Verified &amp; in review</h2>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-82/83/84</span>
+      <h3>Usage statistics module (logins · sessions · search intensity · CSV)</h3>
+      <span class="badge effort">L</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">A new <code>usage_events</code> table records <b>login</b> (OAuth callback), <b>session</b> (once per session per day, via middleware) and <b>search</b> events. Search events carry <code>filters_count</code> + <code>had_query</code> so we can tell "opened &amp; idle" from "actively searching" — but <b>never the query content</b> (INC-84 privacy: wie en hoe vaak, niet wat). <code>GET /api/admin/usage-stats</code> aggregates per user over 7/30/90-day windows plus searches-per-session and avg filters; <code>GET /api/admin/usage-export</code> streams a counts-only CSV (UTF-8 BOM). Both gated on the <code>can_access_admin</code> capability (INC-81), not a brittle name match. An admin-only panel renders the per-user table + CSV export. This activates the previously-dormant <code>view_stats</code>/<code>access_admin</code> capabilities.</p>
+      <p class="files">Touched: <code>api/main.py</code> (usage_events + log_usage_event + _track_session, login/session/search instrumentation, /api/admin/usage-stats + usage-export), <code>app/page.tsx</code> (admin stats panel)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>As an admin, open "Gebruiksstatistieken" near the results.</li>
+        <li>Run a few searches, hit <b>Ververs</b>.</li>
+        <li><span class="expect"><b>Expected:</b> a per-user row with Logins / Sessies / Searches over 7/30/90, an Intensiteit (searches/session) and Gem. filters; <b>Exporteer CSV</b> downloads a counts-only file. Verified live + the CSV is confirmed free of query content.</span></li>
+      </ol>
+      <p class="caveat">Dev (<code>LOCAL_DEVELOPMENT</code>) has no OAuth callback, so it simulates a daily login for demonstrability; real login/session counts only accrue in prod. Note: <code>usage_events</code> must live in a DB that is NOT wiped by reindex/import — confirm <code>DB_PATH</code> in prod is the durable DB, else history is lost.</p>
+    </div>
+  </details>
 
   <details class="item">
     <summary>
@@ -562,8 +584,8 @@ open http://localhost:3001</pre>
   <div class="card">
     <p class="what">Guards the API contracts behind these fixes. Run after every change to this area:</p>
     <pre>API_BASE=http://localhost:3000 pytest scripts/test/test_phase3_quickwins.py -q
-<span class="ok">..........................                        [100%]
-26 passed in 0.72s</span></pre>
+<span class="ok">............................                      [100%]
+28 passed in 1.06s</span></pre>
     <table>
       <thead><tr><th>Area</th><th>Guards</th><th>Tests</th><th>Result</th></tr></thead>
       <tbody>
@@ -574,6 +596,7 @@ open http://localhost:3001</pre>
         <tr><td>T&amp;C clauses + accept validation (incl. empty-body bypass)</td><td>INC-140</td><td>4</td><td class="pass">pass</td></tr>
         <tr><td>Price provenance + staleness</td><td>INC-125</td><td>1</td><td class="pass">pass</td></tr>
         <tr><td>Bilingual classification terms (map + PUT)</td><td>INC-113</td><td>3</td><td class="pass">pass</td></tr>
+        <tr><td>Usage stats aggregation + CSV (no query content)</td><td>INC-82/83/84</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Data-management capability exposed</td><td>INC-118</td><td>1</td><td class="pass">pass</td></tr>
         <tr><td>Role flags exposed (dxf / customer)</td><td>INC-78</td><td>1</td><td class="pass">pass</td></tr>
         <tr><td>Area range for anchor sliders</td><td>INC-92</td><td>1</td><td class="pass">pass</td></tr>
