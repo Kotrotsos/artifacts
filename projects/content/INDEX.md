@@ -212,3 +212,4 @@
 | 2026-06-05 | images | [chart-cot.png](images/chart-cot.png) | Prompt Engineering Summer 2026 (researched, verified, charts): chart-cot.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompting-summer-2026/chart-cot.png |
 | 2026-06-05 | images | [chart-gepa.png](images/chart-gepa.png) | Prompt Engineering Summer 2026 (researched, verified, charts): chart-gepa.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/prompting-summer-2026/chart-gepa.png |
 | 2026-06-06 | reports | [draft.md](reports/draft.md) | AI environment balanced piece (workflow-researched, fact-checked): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-environment-right-argument/draft.md |
+| 2026-06-06 | reports | [draft.html](reports/draft.html) | AI environment balanced piece (workflow-researched, fact-checked): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-environment-right-argument/draft.html |
