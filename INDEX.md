@@ -429,3 +429,4 @@
 | 2026-06-05 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: full role matrix INC-80/81, 13 verified |
 | 2026-06-06 | polyking | reports | [xrev-model-card.html](projects/polyking/reports/xrev-model-card.html) | XREV 5-minute BTC model card and visual explainer with canvas charts |
 | 2026-06-06 | polyking | reports | [xrev-model-card.md](projects/polyking/reports/xrev-model-card.md) | XREV model card markdown source |
+| 2026-06-06 | content | reports | [draft.md](projects/content/reports/draft.md) | AI environment balanced piece (workflow-researched, fact-checked): draft.md |
