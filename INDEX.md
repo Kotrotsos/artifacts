@@ -433,3 +433,4 @@
 | 2026-06-06 | content | reports | [draft.html](projects/content/reports/draft.html) | AI environment balanced piece (workflow-researched, fact-checked): draft.html |
 | 2026-06-06 | content | images | [hero.png](projects/content/images/hero.png) | AI environment balanced piece (workflow-researched, fact-checked): hero.png |
 | 2026-06-06 | content | images | [chart-water-split.png](projects/content/images/chart-water-split.png) | AI environment balanced piece (workflow-researched, fact-checked): chart-water-split.png |
+| 2026-06-06 | content | images | [chart-demand-range.png](projects/content/images/chart-demand-range.png) | AI environment balanced piece (workflow-researched, fact-checked): chart-demand-range.png |
