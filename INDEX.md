@@ -436,3 +436,4 @@
 | 2026-06-06 | content | images | [chart-demand-range.png](projects/content/images/chart-demand-range.png) | AI environment balanced piece (workflow-researched, fact-checked): chart-demand-range.png |
 | 2026-06-06 | content | images | [chart-concentration.png](projects/content/images/chart-concentration.png) | AI environment balanced piece (workflow-researched, fact-checked): chart-concentration.png |
 | 2026-06-06 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 verification board — INC-109 tabs, INC-120-123 indicative pricing, INC-140 T&C gate (21/21 tests) |
+| 2026-06-06 | kyssbook-kdp | reports | [chapter-plan.html](projects/kyssbook-kdp/reports/chapter-plan.html) | Claude Code Unstoppable chapter plan: 4 volumes, 35 chapters from platform docs |

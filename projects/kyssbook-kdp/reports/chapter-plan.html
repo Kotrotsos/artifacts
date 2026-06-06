@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Claude Code Unstoppable - Chapter Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#212121;--primary:#17171c;--canvas:#fff;--deep-green:#003c33;--coral:#ff7759;--action-blue:#1863dc;
+--hairline:#d9d9dd;--soft:#fbfbfa;--stone:#eeece7;--muted:#93939f;--slate:#75758a;
+--display:'Space Grotesk',sans-serif;--body:'Inter',sans-serif;--mono:'JetBrains Mono',monospace;}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--canvas);color:var(--ink);font-family:var(--body);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:48px 28px 110px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--coral);font-weight:500}
+h1{font-family:var(--display);font-weight:500;font-size:48px;line-height:1.03;letter-spacing:-1.5px;margin:8px 0 12px}
+.lead{font-size:19px;color:var(--slate);max-width:680px;margin:0 0 8px}
+.stat{font-family:var(--mono);font-size:13px;color:var(--muted);margin:18px 0 0}
+.vol{margin:54px 0 0;border-top:1px solid var(--hairline);padding-top:26px}
+.voln{font-family:var(--mono);font-size:12px;letter-spacing:1px;color:var(--coral)}
+.volhead h2{font-family:var(--display);font-weight:500;font-size:30px;letter-spacing:-0.5px;margin:6px 0 6px}
+.angle{font-size:16px;color:var(--slate);max-width:640px;margin:0 0 4px}
+.volmeta{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.chs{margin:20px 0 0}
+.ch{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #ededed}
+.chn{font-family:var(--mono);font-size:13px;color:var(--deep-green);padding-top:2px;min-width:26px}
+.cht{font-size:17px;font-weight:600;color:var(--ink)}
+.chnote{font-size:14.5px;color:var(--slate);margin:2px 0 7px;max-width:60ch}
+.srcs{display:flex;flex-wrap:wrap;gap:5px}
+.src{font-family:var(--mono);font-size:11px;color:var(--slate);background:var(--soft);border:1px solid var(--hairline);border-radius:6px;padding:2px 7px}
+.src.new{color:var(--coral);border-color:#ffd9cf;background:#fff7f4}
+.apps{margin:16px 0 0;padding:12px 14px;background:var(--soft);border:1px solid var(--hairline);border-radius:10px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.appl{font-family:var(--mono);font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--coral)}
+.appx{font-size:13px;color:var(--slate)} .appx code{font-family:var(--mono);font-size:12px}
+.note{background:var(--soft);border:1px solid var(--hairline);border-left:3px solid var(--coral);border-radius:0 10px 10px 0;padding:14px 18px;margin:22px 0;font-size:15px;color:var(--ink)}
+footer{margin-top:50px;color:var(--muted);font-size:13px;border-top:1px solid var(--hairline);padding-top:16px;font-family:var(--mono)}
+@media print{a{color:inherit}}
+</style></head><body><div class="wrap">
+<span class="kicker">Sitemap . Chapter Plan . for review</span>
+<h1>Claude Code Unstoppable</h1>
+<p class="lead">The full platform docs, reworked into four volumes and 35 chapters. Optimized for reading, not a 1:1 copy of the sidebar: thin pages are merged, and the 715 api/* SDK pages collapse into reference appendices.</p>
+<p class="stat">797 source pages parsed  .  83 narrative pages placed  .  35 chapters  .  4 volumes</p>
+<div class="note"><strong>How to read this.</strong> Each chapter lists the source doc pages that feed it (the <span class="src">grey chips</span>). Chips marked <span class="src new">new / synthesized</span> are chapters I will write from scratch or assemble from reference. Tell me what to move, merge, split, or rename, and I will lock the plan before the editorial team writes.</div>
+<section class="vol">
+      <div class="volhead">
+        <span class="voln">VOLUME I</span>
+        <h2>Core</h2>
+        <p class="angle">Build on the Claude API: the request, the response, and every feature layered on the Messages call.</p>
+        <span class="volmeta">12 chapters</span>
+      </div>
+      <div class="chs"><div class="ch"><div class="chn">01</div><div class="chbody">
+          <div class="cht">What Claude Is, and How to Read This Book</div><div class="chnote">The platform in one mental model, plus the four-volume map.</div>
+          <div class="srcs"><span class="src">intro</span></div></div></div><div class="ch"><div class="chn">02</div><div class="chbody">
+          <div class="cht">Your First Call to Claude</div><div class="chnote">API key to a working Messages call, and what each response field means.</div>
+          <div class="srcs"><span class="src">get-started</span></div></div></div><div class="ch"><div class="chn">03</div><div class="chbody">
+          <div class="cht">The Messages API in Depth</div><div class="chnote">Request and response anatomy, roles, content blocks, system prompts.</div>
+          <div class="srcs"><span class="src">working-with-messages</span><span class="src">overview</span></div></div></div><div class="ch"><div class="chn">04</div><div class="chbody">
+          <div class="cht">Choosing a Model</div><div class="chnote">Opus, Sonnet, Haiku: capability, latency, and price, matched to the job.</div>
+          <div class="srcs"><span class="src">models</span></div></div></div><div class="ch"><div class="chn">05</div><div class="chbody">
+          <div class="cht">Streaming and Stop Reasons</div><div class="chnote">Stream tokens as they arrive and handle why generation ends.</div>
+          <div class="srcs"><span class="src">handling-stop-reasons</span></div></div></div><div class="ch"><div class="chn">06</div><div class="chbody">
+          <div class="cht">Context: Windows, Editing, and Compaction</div><div class="chnote">Manage the window as conversations grow.</div>
+          <div class="srcs"><span class="src">context-editing</span><span class="src">compaction</span></div></div></div><div class="ch"><div class="chn">07</div><div class="chbody">
+          <div class="cht">Prompt Caching</div><div class="chnote">Cut cost and latency on repeated context, and diagnose hit rates.</div>
+          <div class="srcs"><span class="src">prompt-caching</span><span class="src">cache-diagnostics</span></div></div></div><div class="ch"><div class="chn">08</div><div class="chbody">
+          <div class="cht">Thinking and Effort</div><div class="chnote">Let Claude reason more or less, and tune the speed/quality dial.</div>
+          <div class="srcs"><span class="src">extended-thinking</span><span class="src">adaptive-thinking</span><span class="src">effort</span><span class="src">fast-mode</span></div></div></div><div class="ch"><div class="chn">09</div><div class="chbody">
+          <div class="cht">Structured Outputs, Citations, and Search Results</div><div class="chnote">Make outputs machine-parseable and grounded in sources.</div>
+          <div class="srcs"><span class="src">structured-outputs</span><span class="src">citations</span><span class="src">search-results</span></div></div></div><div class="ch"><div class="chn">10</div><div class="chbody">
+          <div class="cht">Documents and Languages</div><div class="chnote">Feed PDFs and work across languages.</div>
+          <div class="srcs"><span class="src">pdf-support</span><span class="src">multilingual-support</span></div></div></div><div class="ch"><div class="chn">11</div><div class="chbody">
+          <div class="cht">Tool Use Fundamentals</div><div class="chnote">Give Claude tools and run the tool loop.</div>
+          <div class="srcs"><span class="src">overview</span><span class="src">define-tools</span><span class="src">build-a-tool-using-agent</span></div></div></div><div class="ch"><div class="chn">12</div><div class="chbody">
+          <div class="cht">Batch Processing</div><div class="chnote">Run large jobs asynchronously at lower cost.</div>
+          <div class="srcs"><span class="src">batch-processing</span></div></div></div></div>
+      <div class="apps"><span class="appl">Appendices</span><span class="appx">Messages API reference . <code>api/messages</code></span></div>
+    </section><section class="vol">
+      <div class="volhead">
+        <span class="voln">VOLUME II</span>
+        <h2>Managed Agents</h2>
+        <p class="angle">Anthropic-hosted agents that run sessions in sandboxes, use tools and skills, and stream events.</p>
+        <span class="volmeta">8 chapters</span>
+      </div>
+      <div class="chs"><div class="ch"><div class="chn">01</div><div class="chbody">
+          <div class="cht">What Managed Agents Are</div><div class="chnote">The hosted-agent model and when to reach for it.</div>
+          <div class="srcs"><span class="src">overview</span></div></div></div><div class="ch"><div class="chn">02</div><div class="chbody">
+          <div class="cht">Quickstart and Prototyping in Console</div><div class="chnote">First agent in minutes, then iterate in the Console.</div>
+          <div class="srcs"><span class="src">quickstart</span><span class="src">onboarding</span></div></div></div><div class="ch"><div class="chn">03</div><div class="chbody">
+          <div class="cht">Sessions and the Event Stream</div><div class="chnote">Start a session and consume its event stream.</div>
+          <div class="srcs"><span class="src">agent-setup</span><span class="src">sessions</span><span class="src">events-and-streaming</span></div></div></div><div class="ch"><div class="chn">04</div><div class="chbody">
+          <div class="cht">Sandboxes: Cloud and Self-Hosted</div><div class="chnote">Where agent code runs, and the security model.</div>
+          <div class="srcs"><span class="src">cloud-sandboxes-reference</span><span class="src">self-hosted-sandboxes-security</span></div></div></div><div class="ch"><div class="chn">05</div><div class="chbody">
+          <div class="cht">Tools, Skills, and Files</div><div class="chnote">Equip an agent and move files in and out.</div>
+          <div class="srcs"><span class="src">tools</span><span class="src">skills</span><span class="src">files</span></div></div></div><div class="ch"><div class="chn">06</div><div class="chbody">
+          <div class="cht">GitHub and Secrets</div><div class="chnote">Give agents repo access and credentials, safely.</div>
+          <div class="srcs"><span class="src">github</span><span class="src">vaults</span></div></div></div><div class="ch"><div class="chn">07</div><div class="chbody">
+          <div class="cht">Multi-Agent Sessions</div><div class="chnote">Coordinate several agents in one session.</div>
+          <div class="srcs"><span class="src">multi-agent</span></div></div></div><div class="ch"><div class="chn">08</div><div class="chbody">
+          <div class="cht">Dreams</div><div class="chnote">The Dreams capability, end to end.</div>
+          <div class="srcs"><span class="src">dreams</span></div></div></div></div>
+      
+    </section><section class="vol">
+      <div class="volhead">
+        <span class="voln">VOLUME III</span>
+        <h2>Visibility &amp; Observability</h2>
+        <p class="angle">See and govern what your organization is doing: admin, usage, cost, analytics, compliance, and keys.</p>
+        <span class="volmeta">8 chapters</span>
+      </div>
+      <div class="chs"><div class="ch"><div class="chn">01</div><div class="chbody">
+          <div class="cht">The Admin API</div><div class="chnote">Programmatic control of your org, and how to authenticate to it.</div>
+          <div class="srcs"><span class="src">admin-api</span><span class="src">authentication</span></div></div></div><div class="ch"><div class="chn">02</div><div class="chbody">
+          <div class="cht">Usage and Cost</div><div class="chnote">Pull usage and spend, by workspace and key.</div>
+          <div class="srcs"><span class="src">usage-cost-api</span></div></div></div><div class="ch"><div class="chn">03</div><div class="chbody">
+          <div class="cht">Claude Code Analytics</div><div class="chnote">Measure Claude Code adoption and activity.</div>
+          <div class="srcs"><span class="src">claude-code-analytics-api</span></div></div></div><div class="ch"><div class="chn">04</div><div class="chbody">
+          <div class="cht">Rate Limits</div><div class="chnote">Read and reason about your limits.</div>
+          <div class="srcs"><span class="src">rate-limits-api</span></div></div></div><div class="ch"><div class="chn">05</div><div class="chbody">
+          <div class="cht">Organizations, Workspaces, and Roles</div><div class="chnote">Structure teams, workspaces, roles, and groups.</div>
+          <div class="srcs"><span class="src">workspaces</span><span class="src">compliance-org-data</span></div></div></div><div class="ch"><div class="chn">06</div><div class="chbody">
+          <div class="cht">The Compliance Activity Feed</div><div class="chnote">Audit every action across the org.</div>
+          <div class="srcs"><span class="src">compliance-activity-feed</span><span class="src">compliance-api-access</span><span class="src">compliance-errors</span><span class="src">compliance-faq</span></div></div></div><div class="ch"><div class="chn">07</div><div class="chbody">
+          <div class="cht">Data Residency and Customer-Managed Keys</div><div class="chnote">Control where data lives and who holds the keys.</div>
+          <div class="srcs"><span class="src">data-residency</span><span class="src">cmek</span><span class="src">cmek-aws-kms</span><span class="src">cmek-azure-key-vault</span><span class="src">cmek-google-cloud-kms</span></div></div></div><div class="ch"><div class="chn">08</div><div class="chbody">
+          <div class="cht">Workload Identity Federation</div><div class="chnote">Keyless auth from your existing identity provider.</div>
+          <div class="srcs"><span class="src">wif-reference</span><span class="src">azure</span><span class="src">gcp</span><span class="src">github-actions</span><span class="src">kubernetes</span><span class="src">okta</span><span class="src">spiffe</span></div></div></div></div>
+      <div class="apps"><span class="appl">Appendices</span><span class="appx">Admin API reference . <code>api/admin</code></span></div>
+    </section><section class="vol">
+      <div class="volhead">
+        <span class="voln">VOLUME IV</span>
+        <h2>Everything Else</h2>
+        <p class="angle">The rest of the platform: the tool catalog, skills, MCP, cloud deployment, SDKs, guardrails, and beta.</p>
+        <span class="volmeta">7 chapters</span>
+      </div>
+      <div class="chs"><div class="ch"><div class="chn">01</div><div class="chbody">
+          <div class="cht">The Tool Catalog</div><div class="chnote">Every built-in tool, with combinations and troubleshooting.</div>
+          <div class="srcs"><span class="src">web-fetch-tool</span><span class="src">text-editor-tool</span><span class="src">memory-tool</span><span class="src">tool-runner</span><span class="src">tool-combinations</span><span class="src">fine-grained-tool-streaming</span><span class="src">manage-tool-context</span><span class="src">tool-use-with-prompt-caching</span><span class="src">troubleshooting-tool-use</span></div></div></div><div class="ch"><div class="chn">02</div><div class="chbody">
+          <div class="cht">Agent Skills</div><div class="chnote">Package reusable skills, including for enterprise.</div>
+          <div class="srcs"><span class="src">overview</span><span class="src">best-practices</span><span class="src">enterprise</span></div></div></div><div class="ch"><div class="chn">03</div><div class="chbody">
+          <div class="cht">MCP: Connector and Tunnels</div><div class="chnote">Connect Claude to MCP servers and tunnel to private ones.</div>
+          <div class="srcs"><span class="src">mcp-connector</span><span class="src">quickstart</span><span class="src">concepts</span><span class="src">security</span><span class="src">deploy-helm</span></div></div></div><div class="ch"><div class="chn">04</div><div class="chbody">
+          <div class="cht">Running Claude on Your Cloud</div><div class="chnote">Bedrock, Vertex AI, Microsoft Foundry, and AWS.</div>
+          <div class="srcs"><span class="src">claude-platform-on-aws</span><span class="src">claude-on-amazon-bedrock-legacy</span><span class="src">claude-on-vertex-ai</span><span class="src">claude-in-microsoft-foundry</span></div></div></div><div class="ch"><div class="chn">05</div><div class="chbody">
+          <div class="cht">The SDKs</div><div class="chnote">Python, TypeScript, Go, Ruby, Java, C#, PHP, and the CLI: one model, eight surfaces. Built from the api/* SDK reference.</div>
+          <div class="srcs"><span class="src new">new / synthesized</span></div></div></div><div class="ch"><div class="chn">06</div><div class="chbody">
+          <div class="cht">Guardrails and Testing</div><div class="chnote">Strengthen guardrails and handle streaming refusals.</div>
+          <div class="srcs"><span class="src">handle-streaming-refusals</span></div></div></div><div class="ch"><div class="chn">07</div><div class="chbody">
+          <div class="cht">Beta Features</div><div class="chnote">What is in beta and how to opt in. Built from api/beta.</div>
+          <div class="srcs"><span class="src new">new / synthesized</span></div></div></div></div>
+      <div class="apps"><span class="appl">Appendices</span><span class="appx">SDK reference (all languages) . <code>api/* sdk</code></span><span class="appx">Beta API reference . <code>api/beta</code></span><span class="appx">Compliance API reference . <code>api/compliance</code></span></div>
+    </section>
+
+<footer>generated from content/llms.txt . edit build_sitemap.py and rerun to revise</footer>
+</div></body></html>
