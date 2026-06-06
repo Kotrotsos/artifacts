@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>XREV Model Card &amp; Visual Explainer</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e6e9f0;
+  --accent:#2563eb; --pos:#16a34a; --neg:#dc2626; --flow:#7c3aed; --warn:#d97706;
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 10px 30px rgba(15,23,42,.05);
+}
+html[data-theme="dark"]{
+  --bg:#0b1020; --panel:#141a2e; --ink:#e7ecf5; --muted:#94a3b8; --line:#23304d;
+  --accent:#60a5fa; --pos:#34d399; --neg:#f87171; --flow:#a78bfa; --warn:#fbbf24;
+  --shadow:0 1px 3px rgba(0,0,0,.4),0 12px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.55;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 20px 72px}
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+h1{font-size:30px;margin:6px 0 4px;letter-spacing:-.02em}
+h2{font-size:19px;margin:40px 0 8px;letter-spacing:-.01em;display:flex;align-items:center;gap:9px}
+h2 .n{display:inline-flex;width:24px;height:24px;border-radius:7px;background:var(--accent);color:#fff;
+  font-size:13px;align-items:center;justify-content:center;font-weight:700}
+h3{font-size:14px;margin:18px 0 6px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+p{margin:8px 0}
+.lead{color:var(--muted);font-size:15px;max-width:70ch}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:14px}
+.cols-4{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.cols-2{grid-template-columns:1fr 1fr}
+@media(max-width:760px){.cols-2{grid-template-columns:1fr}}
+.kpi{padding:16px 18px}
+.kpi .lab{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.kpi .val{font-size:27px;font-weight:680;letter-spacing:-.02em;margin-top:3px}
+.kpi .sub{font-size:12px;color:var(--muted)}
+.kpi.good .val{color:var(--pos)} .kpi.bad .val{color:var(--neg)}
+.switch{display:flex;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px}
+.switch button{border:0;background:none;color:var(--muted);cursor:pointer;padding:6px 13px;border-radius:999px;font-size:12px;font-weight:600}
+.switch button.active{background:var(--accent);color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em;width:34%}
+.tag{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:650}
+.tag.pos{background:color-mix(in srgb,var(--pos) 16%,transparent);color:var(--pos)}
+.tag.warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.tag.flow{background:color-mix(in srgb,var(--flow) 16%,transparent);color:var(--flow)}
+.muted{color:var(--muted)}
+canvas{width:100%;display:block}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.flow-svg{width:100%;height:auto}
+.note{border-left:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--panel));
+  padding:12px 16px;border-radius:0 10px 10px 0;font-size:14px;margin:14px 0}
+.warnnote{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn) 9%,var(--panel))}
+.sig{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media(max-width:760px){.sig{grid-template-columns:1fr}}
+.sigcard{border:1px solid var(--line);border-radius:13px;padding:14px 16px}
+.sigcard .h{font-weight:650;font-size:14px;display:flex;align-items:center;gap:8px}
+.sigcard .dot{width:9px;height:9px;border-radius:50%}
+.sigcard p{font-size:13px;color:var(--muted);margin:6px 0 0}
+.ev{display:grid;grid-template-columns:1fr 230px;gap:20px;align-items:center}
+@media(max-width:760px){.ev{grid-template-columns:1fr}}
+.slider label{font-size:13px;display:flex;justify-content:space-between;margin:14px 0 4px}
+.slider label b{color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.verdict{text-align:center;border-radius:14px;padding:18px;border:2px solid var(--line)}
+.verdict .big{font-size:26px;font-weight:750;letter-spacing:-.01em}
+.verdict.go{border-color:var(--pos);background:color-mix(in srgb,var(--pos) 10%,transparent)}
+.verdict.go .big{color:var(--pos)}
+.verdict.no{border-color:var(--muted)}
+.verdict .ev-num{font-size:13px;color:var(--muted);margin-top:6px}
+code{background:color-mix(in srgb,var(--accent) 10%,transparent);padding:1px 6px;border-radius:5px;font-size:12.5px}
+footer{margin-top:48px;color:var(--muted);font-size:12px;text-align:center;line-height:1.7}
+@media print{
+  body{background:#fff} .switch{display:none} .card{box-shadow:none;break-inside:avoid}
+  h2{break-after:avoid} .note,.warnnote{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="eyebrow">Model Card</div>
+    <h1>XREV &mdash; 5-Minute Bitcoin Up/Down</h1>
+    <p class="lead">A microstructure model that predicts the direction of the next 5-minute Bitcoin move
+    for Polymarket binary markets, and only bets when the real market price leaves positive expected value.</p>
+  </div>
+  <div class="switch" id="switch">
+    <button data-t="light">Light</button>
+    <button data-t="dark">Dark</button>
+    <button data-t="system">System</button>
+  </div>
+</header>
+
+<!-- TL;DR -->
+<div class="grid cols-4" style="margin-top:22px">
+  <div class="card kpi good"><div class="lab">Full-year accuracy</div><div class="val">51.57%</div><div class="sub">74,944 out-of-sample windows</div></div>
+  <div class="card kpi good"><div class="lab">Holdout vs coin toss</div><div class="val">+1.69</div><div class="sub">pts, z = 4.91</div></div>
+  <div class="card kpi good"><div class="lab">High-conviction bets</div><div class="val">52.6&ndash;53.4%</div><div class="sub">gated subset</div></div>
+  <div class="card kpi"><div class="lab">Leakage null test</div><div class="val">49.5%</div><div class="sub">shuffled labels collapse</div></div>
+</div>
+
+<!-- ===================== MODEL CARD ===================== -->
+<h2><span class="n">1</span> Model card</h2>
+<div class="grid cols-2">
+  <div class="card">
+    <h3>Overview</h3>
+    <table>
+      <tr><th>Name</th><td>XREV (microstructure reversion ensemble)</td></tr>
+      <tr><th>Version</th><td>1.0</td></tr>
+      <tr><th>Task</th><td>Binary classification: will BTC close higher at the end of a 5-minute window</td></tr>
+      <tr><th>Output</th><td>P(up), a probability in (0, 1), plus a bet / abstain decision</td></tr>
+      <tr><th>Model family</th><td>Gradient-boosted decision trees (HistGradientBoosting), shallow + regularized</td></tr>
+      <tr><th>Inputs</th><td>29 causal features from past 5-minute OHLCV + taker flow</td></tr>
+      <tr><th>Status</th><td><span class="tag pos">Research / paper trading</span></td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Intended use &amp; scope</h3>
+    <p><b>Intended:</b> research signal for Polymarket "Bitcoin Up or Down" 5-minute markets, and for studying
+    short-horizon crypto microstructure. Decisions are selective: it abstains far more often than it bets.</p>
+    <p><b>Out of scope:</b> longer horizons (the daily model is a separate system), other assets, and any
+    use as financial advice. It is not a high-accuracy oracle; the edge is small by design.</p>
+    <div class="note warnnote">Not financial advice. Paper trading only. Realized profit depends on the
+    price you can actually fill at, which is the one thing the backtest cannot prove.</div>
+  </div>
+</div>
+
+<div class="grid cols-2" style="margin-top:14px">
+  <div class="card">
+    <h3>Training data</h3>
+    <table>
+      <tr><th>Source</th><td>Binance BTCUSDT 5-minute candles</td></tr>
+      <tr><th>Span</th><td>1 year (about 105,000 bars)</td></tr>
+      <tr><th>Label</th><td>1 if close &gt; open of the window, else 0</td></tr>
+      <tr><th>Split</th><td>Expanding walk-forward, weekly retrain, final 20% held out untouched</td></tr>
+      <tr><th>Leakage control</th><td>Every feature shifted to use only bars before the decision instant</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>Evaluation results</h3>
+    <table>
+      <tr><th>Full-year OOS accuracy</th><td>51.57% (n = 74,944)</td></tr>
+      <tr><th>Holdout accuracy</th><td>51.69%, z = 4.91 vs 50%</td></tr>
+      <tr><th>Gated (conviction) accuracy</th><td>52.6% to 53.4%</td></tr>
+      <tr><th>Temporal stability</th><td>Positive every month; flat trend (-0.02 pts/month)</td></tr>
+      <tr><th>Null test (shuffled labels)</th><td>49.5% &rarr; no leakage</td></tr>
+      <tr><th>Break-even market efficiency</th><td>58% at a 2-cent spread</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3>Limitations &amp; honest caveats</h3>
+  <div class="grid cols-2">
+    <div>
+      <p><b>The edge is thin.</b> About 1.6 points over a coin toss. A 5-minute move is mostly random; this finds a faint, real tilt, not a strong predictor.</p>
+      <p><b>Fills are unproven.</b> Backtest assumes entry near 0.50. If the market already prices the same momentum, the edge shrinks. The live panel measures this for real.</p>
+    </div>
+    <div>
+      <p><b>One idea failed.</b> Round-number magnetism contributed almost nothing. The lift came from mean reversion plus micro-range position and order-flow persistence.</p>
+      <p><b>Decay risk.</b> As these markets mature and more participants arrive, a small microstructure edge can be arbitraged away. Needs ongoing monitoring.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<h2><span class="n">2</span> How it works</h2>
+
+<div class="card">
+  <h3>Anatomy of one bet</h3>
+  <svg class="flow-svg" viewBox="0 0 920 200" role="img" aria-label="5-minute window timeline">
+    <defs>
+      <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--muted)"/></marker>
+    </defs>
+    <line x1="40" y1="120" x2="880" y2="120" stroke="var(--line)" stroke-width="2"/>
+    <!-- past bars -->
+    <g>
+      <rect x="120" y="92" width="14" height="40" rx="2" fill="var(--muted)" opacity=".45"/>
+      <rect x="150" y="80" width="14" height="52" rx="2" fill="var(--muted)" opacity=".45"/>
+      <rect x="180" y="100" width="14" height="32" rx="2" fill="var(--muted)" opacity=".45"/>
+      <rect x="210" y="74" width="14" height="58" rx="2" fill="var(--muted)" opacity=".45"/>
+      <rect x="240" y="96" width="14" height="36" rx="2" fill="var(--muted)" opacity=".45"/>
+    </g>
+    <text x="185" y="160" fill="var(--muted)" font-size="12" text-anchor="middle">closed past bars  &rarr;  features</text>
+    <!-- decision point -->
+    <line x1="300" y1="50" x2="300" y2="150" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="5 4"/>
+    <circle cx="300" cy="120" r="6" fill="var(--accent)"/>
+    <text x="300" y="42" fill="var(--accent)" font-size="12.5" text-anchor="middle" font-weight="700">DECIDE @ window open</text>
+    <text x="300" y="175" fill="var(--muted)" font-size="11.5" text-anchor="middle">know past + current price, NOT the result</text>
+    <!-- the window -->
+    <rect x="300" y="92" width="150" height="40" rx="4" fill="color-mix(in srgb,var(--accent) 18%,transparent)" stroke="var(--accent)"/>
+    <text x="375" y="117" fill="var(--ink)" font-size="12.5" text-anchor="middle" font-weight="650">5-min window</text>
+    <!-- resolve -->
+    <line x1="450" y1="60" x2="450" y2="150" stroke="var(--pos)" stroke-width="2"/>
+    <text x="450" y="52" fill="var(--pos)" font-size="12.5" text-anchor="middle" font-weight="700">RESOLVE</text>
+    <text x="640" y="100" fill="var(--ink)" font-size="13" text-anchor="middle">up if close &gt; open</text>
+    <line x1="470" y1="120" x2="800" y2="120" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ah)"/>
+    <text x="640" y="142" fill="var(--muted)" font-size="11.5" text-anchor="middle">payout 1.0 if your side is right, else 0</text>
+  </svg>
+  <p class="muted" style="font-size:13px">You commit at the open of the window using only what is known then. The window
+  resolves 5 minutes later on the sign of the move. The model predicts that sign.</p>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3>The pipeline</h3>
+  <svg class="flow-svg" viewBox="0 0 940 130" role="img" aria-label="pipeline from data to decision">
+    <defs><marker id="a2" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--muted)"/></marker></defs>
+    <g font-size="12.5" text-anchor="middle">
+      <g><rect x="10" y="40" width="150" height="52" rx="11" fill="var(--panel)" stroke="var(--line)"/><text x="85" y="62" fill="var(--ink)" font-weight="650">Live 5-min bars</text><text x="85" y="80" fill="var(--muted)" font-size="11">Binance</text></g>
+      <line x1="162" y1="66" x2="196" y2="66" stroke="var(--muted)" marker-end="url(#a2)"/>
+      <g><rect x="198" y="40" width="160" height="52" rx="11" fill="var(--panel)" stroke="var(--line)"/><text x="278" y="62" fill="var(--ink)" font-weight="650">29 causal features</text><text x="278" y="80" fill="var(--muted)" font-size="11">5 signal families</text></g>
+      <line x1="360" y1="66" x2="394" y2="66" stroke="var(--muted)" marker-end="url(#a2)"/>
+      <g><rect x="396" y="40" width="160" height="52" rx="11" fill="color-mix(in srgb,var(--accent) 14%,transparent)" stroke="var(--accent)"/><text x="476" y="62" fill="var(--ink)" font-weight="650">Gradient-boosted</text><text x="476" y="80" fill="var(--muted)" font-size="11">trees &rarr; P(up)</text></g>
+      <line x1="558" y1="66" x2="592" y2="66" stroke="var(--muted)" marker-end="url(#a2)"/>
+      <g><rect x="594" y="40" width="160" height="52" rx="11" fill="var(--panel)" stroke="var(--line)"/><text x="674" y="58" fill="var(--ink)" font-weight="650">EV gate</text><text x="674" y="76" fill="var(--muted)" font-size="11">vs real market ask</text></g>
+      <line x1="756" y1="66" x2="790" y2="66" stroke="var(--muted)" marker-end="url(#a2)"/>
+      <g><rect x="792" y="40" width="138" height="52" rx="11" fill="color-mix(in srgb,var(--pos) 12%,transparent)" stroke="var(--pos)"/><text x="861" y="62" fill="var(--ink)" font-weight="650">Bet or abstain</text><text x="861" y="80" fill="var(--muted)" font-size="11">only if EV &gt; 0</text></g>
+    </g>
+  </svg>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3>The five signal families</h3>
+  <div class="sig">
+    <div class="sigcard"><div class="h"><span class="dot" style="background:var(--accent)"></span>Mean reversion <span class="tag pos">drives edge</span></div><p>How far price has stretched above or below its 1-hour and 3-hour averages. Stretched up tends to pull back.</p></div>
+    <div class="sigcard"><div class="h"><span class="dot" style="background:var(--pos)"></span>Micro-range position <span class="tag pos">novel, worked</span></div><p>Where price sits inside the recent high-to-low band. At the top it leans down, at the bottom it leans up.</p></div>
+    <div class="sigcard"><div class="h"><span class="dot" style="background:var(--flow)"></span>Order-flow persistence <span class="tag flow">novel, worked</span></div><p>Whether aggressive buyers or sellers dominated recently (taker imbalance). Has short memory that carries forward.</p></div>
+    <div class="sigcard"><div class="h"><span class="dot" style="background:var(--muted)"></span>Overreaction + volatility</div><p>The last move z-scored by recent volatility. Big bars snap back. Volatility regime gates how strong the effect is.</p></div>
+    <div class="sigcard"><div class="h"><span class="dot" style="background:var(--warn)"></span>Round-number magnetism <span class="tag warn">flopped</span></div><p>Distance to nearest 500 and 1000 dollar levels. The idea I was most excited about, and it contributed almost nothing.</p></div>
+    <div class="sigcard"><div class="h"><span class="dot" style="background:var(--muted)"></span>Time of day</div><p>Cyclical encoding of the time of day and day of week, so the model can switch behavior by session.</p></div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3>What the model actually leans on</h3>
+  <p class="muted" style="font-size:13px">Permutation importance on the holdout. Green = my novel features that earned
+  their place. Red = the idea that failed. Blue = classic mean reversion.</p>
+  <canvas id="impChart" height="300"></canvas>
+  <div class="legend">
+    <span><i style="background:var(--accent)"></i>mean reversion</span>
+    <span><i style="background:var(--pos)"></i>micro-range (novel)</span>
+    <span><i style="background:var(--flow)"></i>order flow (novel)</span>
+    <span><i style="background:var(--muted)"></i>momentum / regime / time</span>
+    <span><i style="background:var(--neg)"></i>round number (flopped)</span>
+  </div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3>The bet gate, interactive</h3>
+  <p class="muted" style="font-size:13px">A 51% predictor that bets every window loses to the spread. XREV only bets when
+  expected value at the <b>real ask price</b> is positive. Drag the sliders.</p>
+  <div class="ev">
+    <div class="slider">
+      <label>Model says P(up) <b id="pv">53%</b></label>
+      <input type="range" id="pUp" min="50" max="58" value="53" step="0.5"/>
+      <label>Market ask price for UP <b id="av">0.51</b></label>
+      <input type="range" id="ask" min="50" max="55" value="51" step="0.5"/>
+      <p class="muted" style="font-size:12.5px;margin-top:12px">Expected value per 1 dollar share = P(win) minus the price you pay.
+      The gate requires EV above +0.01 to bet, leaving room for being wrong about the edge.</p>
+    </div>
+    <div class="verdict" id="verdict">
+      <div class="big" id="vbig">BET UP</div>
+      <div class="ev-num" id="vev">EV = +0.020</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3>How it learns: walk-forward, no peeking</h3>
+  <svg class="flow-svg" viewBox="0 0 920 150" role="img" aria-label="walk forward retraining">
+    <g font-size="11.5">
+      <text x="20" y="24" fill="var(--muted)">Each row: train on the past, predict the next unseen week, then roll forward.</text>
+      <!-- rows -->
+      <g transform="translate(20,40)">
+        <rect x="0" y="0" width="360" height="20" rx="4" fill="color-mix(in srgb,var(--accent) 22%,transparent)"/><rect x="360" y="0" width="70" height="20" rx="4" fill="var(--pos)"/>
+        <text x="180" y="14" fill="var(--ink)" text-anchor="middle">train</text><text x="395" y="14" fill="#fff" text-anchor="middle">predict</text>
+      </g>
+      <g transform="translate(20,70)">
+        <rect x="0" y="0" width="430" height="20" rx="4" fill="color-mix(in srgb,var(--accent) 22%,transparent)"/><rect x="430" y="0" width="70" height="20" rx="4" fill="var(--pos)"/>
+        <text x="215" y="14" fill="var(--ink)" text-anchor="middle">train (more history)</text><text x="465" y="14" fill="#fff" text-anchor="middle">predict</text>
+      </g>
+      <g transform="translate(20,100)">
+        <rect x="0" y="0" width="500" height="20" rx="4" fill="color-mix(in srgb,var(--accent) 22%,transparent)"/><rect x="500" y="0" width="70" height="20" rx="4" fill="var(--pos)"/>
+        <text x="250" y="14" fill="var(--ink)" text-anchor="middle">train</text><text x="535" y="14" fill="#fff" text-anchor="middle">predict</text>
+      </g>
+      <text x="640" y="84" fill="var(--muted)" font-size="12">every green block is genuinely<tspan x="640" dy="16">out-of-sample. 74,944 of them.</tspan></text>
+    </g>
+  </svg>
+</div>
+
+<!-- ===================== PERFORMANCE ===================== -->
+<h2><span class="n">3</span> Performance</h2>
+
+<div class="grid cols-2">
+  <div class="card">
+    <h3>Accuracy by month (whole year)</h3>
+    <canvas id="monthChart" height="240"></canvas>
+    <p class="muted" style="font-size:12.5px">Bounces around 51.5% with normal noise. The last point (June) is a 1.5-day sliver and is statistical noise, not decay.</p>
+  </div>
+  <div class="card">
+    <h3>Accuracy by volatility regime</h3>
+    <canvas id="volChart" height="240"></canvas>
+    <p class="muted" style="font-size:12.5px">The edge is broad, not a one-regime fluke. Positive in calm, low, elevated and high volatility.</p>
+  </div>
+</div>
+
+<div class="card" style="margin-top:14px">
+  <h3>Does the edge survive real prices? Break-even analysis</h3>
+  <p class="muted" style="font-size:13px">Return per bet as the market gets smarter (k = fraction of the signal the market already prices).
+  Where each line crosses zero is the break-even. At a 2-cent spread the market must already know <b>58%</b> of the signal to erase the edge.</p>
+  <canvas id="beChart" height="300"></canvas>
+  <div class="legend">
+    <span><i style="background:var(--pos)"></i>0c spread (be 0.87)</span>
+    <span><i style="background:var(--accent)"></i>1c spread (be 0.73)</span>
+    <span><i style="background:var(--warn)"></i>2c spread (be 0.58)</span>
+    <span><i style="background:var(--neg)"></i>3c spread (be 0.43)</span>
+  </div>
+</div>
+
+<div class="note" style="margin-top:18px">
+  <b>Bottom line.</b> XREV is a small, real, leak-free directional edge (about 51.6% over a full year, z = 4.9),
+  broad across regimes and stable over time, made tradeable by a strict expected-value gate. The open question is
+  not the prediction, it is the fill: whether live Polymarket prices stay loose enough to capture it. That is what
+  the live dashboard panel now measures.
+</div>
+
+<footer>
+  XREV Model Card v1.0 &middot; generated for PolyKing &middot; trained on Binance BTCUSDT 5-minute data &middot;
+  paper trading only, not financial advice<br/>
+  Charts rendered with HTML canvas from the real backtest numbers. Light mode default with theme switch and print stylesheet.
+</footer>
+</div>
+
+<script>
+// ---------- theme ----------
+const root=document.documentElement, sw=document.getElementById('switch');
+function applyTheme(mode){
+  if(mode==='system'){const d=matchMedia('(prefers-color-scheme:dark)').matches;root.setAttribute('data-theme',d?'dark':'light');}
+  else root.setAttribute('data-theme',mode);
+  [...sw.children].forEach(b=>b.classList.toggle('active',b.dataset.t===mode));
+  try{localStorage.setItem('xrev-theme',mode);}catch(e){}
+  drawAll();
+}
+sw.addEventListener('click',e=>{if(e.target.dataset.t)applyTheme(e.target.dataset.t);});
+
+function cssvar(n){return getComputedStyle(root).getPropertyValue(n).trim();}
+
+// ---------- canvas helpers (retina) ----------
+function prep(cv){
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const w=cv.clientWidth, h=cv.height;
+  cv.width=w*dpr; cv.height=h*dpr;
+  const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  return {ctx,w,h};
+}
+
+// ---------- data (real backtest numbers) ----------
+const IMP=[
+  ['sma_dev_12',0.00465,'rev'],['range_pos_36',0.00373,'range'],['taker_persist',0.00315,'flow'],
+  ['ret_2',0.00221,'mom'],['vol_ratio',0.00210,'mom'],['ret_6',0.00187,'mom'],
+  ['taker_1',0.00131,'flow'],['range_pos_12',0.00123,'range'],['over_2',0.00090,'rev'],
+  ['over_1',0.00087,'rev'],['tod_cos',0.00056,'mom'],['rn_abs_500',0.00046,'rn']
+];
+const GCOL={rev:'--accent',range:'--pos',flow:'--flow',mom:'--muted',rn:'--neg'};
+const MONTH=[['Sep',.5171],['Oct',.5080],['Nov',.5157],['Dec',.5090],['Jan',.5220],['Feb',.5241],['Mar',.5161],['Apr',.5168],['May',.5162],['Jun',.5037]];
+const VOL=[['calm',.5148],['low',.5188],['elevated',.5154],['high',.5137]];
+const KS=[0,.2,.4,.6,.8,1];
+const BE=[
+  {c:'--pos',v:[.0300,.0231,.0162,.0093,.0024,-.0045]},
+  {c:'--accent',v:[.0250,.0181,.0112,.0043,-.0026,-.0095]},
+  {c:'--warn',v:[.0200,.0131,.0062,-.0007,-.0076,-.0145]},
+  {c:'--neg',v:[.0150,.0081,.0012,-.0057,-.0126,-.0195]}
+];
+
+// ---------- feature importance (horizontal bars) ----------
+function drawImp(){
+  const {ctx,w,h}=prep(document.getElementById('impChart'));
+  const ink=cssvar('--ink'),mut=cssvar('--muted'),line=cssvar('--line');
+  const padL=110,padR=46,padT=8,padB=8, n=IMP.length;
+  const max=Math.max(...IMP.map(d=>d[1])), bh=(h-padT-padB)/n*0.66, gap=(h-padT-padB)/n;
+  ctx.font='12px -apple-system,system-ui,sans-serif';
+  IMP.forEach((d,i)=>{
+    const y=padT+gap*i+(gap-bh)/2, len=(w-padL-padR)*d[1]/max;
+    ctx.fillStyle=cssvar(GCOL[d[2]]);
+    roundRect(ctx,padL,y,len,bh,4); ctx.fill();
+    ctx.fillStyle=ink; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText(d[0],padL-8,y+bh/2);
+    ctx.fillStyle=mut; ctx.textAlign='left';
+    ctx.fillText('+'+d[1].toFixed(4),padL+len+7,y+bh/2);
+  });
+}
+
+// ---------- line chart (months) ----------
+function drawMonth(){
+  const cv=document.getElementById('monthChart');const {ctx,w,h}=prep(cv);
+  const ink=cssvar('--ink'),mut=cssvar('--muted'),line=cssvar('--line'),acc=cssvar('--accent'),pos=cssvar('--pos');
+  const padL=44,padR=14,padT=14,padB=26;
+  const ys=MONTH.map(d=>d[1]), ymin=0.498, ymax=0.527;
+  const X=i=>padL+(w-padL-padR)*i/(MONTH.length-1);
+  const Y=v=>padT+(h-padT-padB)*(1-(v-ymin)/(ymax-ymin));
+  // gridlines
+  ctx.font='10px system-ui';ctx.textAlign='right';ctx.textBaseline='middle';
+  [0.50,0.51,0.52].forEach(g=>{ctx.strokeStyle=line;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(padL,Y(g));ctx.lineTo(w-padR,Y(g));ctx.stroke();ctx.fillStyle=mut;ctx.fillText((g*100).toFixed(0)+'%',padL-6,Y(g));});
+  // 50% baseline emphasis
+  ctx.strokeStyle=mut;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(padL,Y(0.5));ctx.lineTo(w-padR,Y(0.5));ctx.stroke();ctx.setLineDash([]);
+  // area + line
+  ctx.beginPath();MONTH.forEach((d,i)=>{i?ctx.lineTo(X(i),Y(d[1])):ctx.moveTo(X(i),Y(d[1]));});
+  ctx.lineTo(X(MONTH.length-1),Y(ymin));ctx.lineTo(X(0),Y(ymin));ctx.closePath();
+  const grd=ctx.createLinearGradient(0,padT,0,h-padB);grd.addColorStop(0,acc+'44');grd.addColorStop(1,acc+'00');ctx.fillStyle=grd;ctx.fill();
+  ctx.beginPath();MONTH.forEach((d,i)=>{i?ctx.lineTo(X(i),Y(d[1])):ctx.moveTo(X(i),Y(d[1]));});
+  ctx.strokeStyle=acc;ctx.lineWidth=2.4;ctx.stroke();
+  MONTH.forEach((d,i)=>{ctx.fillStyle=d[1]>=0.5?pos:cssvar('--neg');ctx.beginPath();ctx.arc(X(i),Y(d[1]),3,0,7);ctx.fill();});
+  ctx.fillStyle=mut;ctx.textAlign='center';ctx.textBaseline='top';
+  MONTH.forEach((d,i)=>{if(i%2===0)ctx.fillText(d[0],X(i),h-padB+6);});
+}
+
+// ---------- vertical bars (vol regime) ----------
+function drawVol(){
+  const {ctx,w,h}=prep(document.getElementById('volChart'));
+  const ink=cssvar('--ink'),mut=cssvar('--muted'),line=cssvar('--line'),acc=cssvar('--accent');
+  const padL=44,padR=14,padT=14,padB=28, n=VOL.length;
+  const ymin=0.50,ymax=0.521;
+  const Y=v=>padT+(h-padT-padB)*(1-(v-ymin)/(ymax-ymin));
+  ctx.font='10px system-ui';ctx.textAlign='right';ctx.textBaseline='middle';
+  [0.50,0.51,0.52].forEach(g=>{ctx.strokeStyle=line;ctx.beginPath();ctx.moveTo(padL,Y(g));ctx.lineTo(w-padR,Y(g));ctx.stroke();ctx.fillStyle=mut;ctx.fillText((g*100).toFixed(0)+'%',padL-6,Y(g));});
+  const bw=(w-padL-padR)/n*0.5, gap=(w-padL-padR)/n;
+  VOL.forEach((d,i)=>{
+    const x=padL+gap*i+(gap-bw)/2, y=Y(d[1]);
+    ctx.fillStyle=acc;roundRect(ctx,x,y,bw,(h-padB)-y,5);ctx.fill();
+    ctx.fillStyle=ink;ctx.textAlign='center';ctx.textBaseline='bottom';ctx.font='600 11px system-ui';
+    ctx.fillText((d[1]*100).toFixed(1)+'%',x+bw/2,y-3);
+    ctx.fillStyle=mut;ctx.textBaseline='top';ctx.font='11px system-ui';
+    ctx.fillText(d[0],x+bw/2,h-padB+6);
+  });
+}
+
+// ---------- break-even multi-line ----------
+function drawBE(){
+  const {ctx,w,h}=prep(document.getElementById('beChart'));
+  const ink=cssvar('--ink'),mut=cssvar('--muted'),line=cssvar('--line');
+  const padL=52,padR=16,padT=14,padB=30;
+  const ymin=-0.022,ymax=0.032;
+  const X=k=>padL+(w-padL-padR)*k;
+  const Y=v=>padT+(h-padT-padB)*(1-(v-ymin)/(ymax-ymin));
+  ctx.font='10px system-ui';
+  // y grid
+  ctx.textAlign='right';ctx.textBaseline='middle';
+  [-0.02,-0.01,0,0.01,0.02,0.03].forEach(g=>{
+    ctx.strokeStyle=g===0?mut:line;ctx.lineWidth=g===0?1.4:1;ctx.beginPath();ctx.moveTo(padL,Y(g));ctx.lineTo(w-padR,Y(g));ctx.stroke();
+    ctx.fillStyle=mut;ctx.fillText((g*100).toFixed(0)+'%',padL-6,Y(g));
+  });
+  // x labels
+  ctx.textAlign='center';ctx.textBaseline='top';
+  KS.forEach(k=>ctx.fillText(k.toFixed(1),X(k),h-padB+6));
+  ctx.fillText('market efficiency k  (fraction of signal already priced)',(padL+w-padR)/2,h-12);
+  // lines
+  BE.forEach(s=>{
+    ctx.strokeStyle=cssvar(s.c);ctx.lineWidth=2.4;ctx.beginPath();
+    s.v.forEach((v,i)=>{i?ctx.lineTo(X(KS[i]),Y(v)):ctx.moveTo(X(KS[i]),Y(v));});
+    ctx.stroke();
+    // break-even dot where it crosses 0
+    for(let i=1;i<s.v.length;i++){if(s.v[i-1]>0&&s.v[i]<=0){const t=s.v[i-1]/(s.v[i-1]-s.v[i]);const k=KS[i-1]+(KS[i]-KS[i-1])*t;ctx.fillStyle=cssvar(s.c);ctx.beginPath();ctx.arc(X(k),Y(0),4,0,7);ctx.fill();}}
+  });
+}
+
+function roundRect(ctx,x,y,w,h,r){r=Math.min(r,h/2,w/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+function drawAll(){drawImp();drawMonth();drawVol();drawBE();}
+
+// ---------- EV gate interactive ----------
+const pUp=document.getElementById('pUp'),ask=document.getElementById('ask');
+function ev(){
+  const p=+pUp.value/100, a=+ask.value/100;
+  document.getElementById('pv').textContent=(p*100).toFixed(1)+'%';
+  document.getElementById('av').textContent=a.toFixed(2);
+  const e=p-a; // EV of buying UP at ask a, win prob p, payout 1
+  const v=document.getElementById('verdict'),big=document.getElementById('vbig'),num=document.getElementById('vev');
+  num.textContent='EV = '+(e>=0?'+':'')+e.toFixed(3)+' per $1';
+  if(e>0.01){v.className='verdict go';big.textContent='BET UP';}
+  else{v.className='verdict no';big.textContent='NO BET';}
+}
+pUp.addEventListener('input',ev);ask.addEventListener('input',ev);
+
+// init
+let saved='light';try{saved=localStorage.getItem('xrev-theme')||'light';}catch(e){}
+applyTheme(saved); ev();
+addEventListener('resize',()=>{clearTimeout(window._rt);window._rt=setTimeout(drawAll,150);});
+</script>
+</body>
+</html>

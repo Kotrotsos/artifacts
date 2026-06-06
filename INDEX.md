@@ -427,3 +427,4 @@
 | 2026-06-05 | virtuele-assistent | reports | [rag-triad-eval-setup.html](projects/virtuele-assistent/reports/rag-triad-eval-setup.html) | Step-by-step guide to wire the RAG triad LLM-as-judge evaluators in Langfuse |
 | 2026-06-05 | polyking | reports | [index.html](projects/polyking/reports/index.html) | BTC Polymarket trading agent dashboard: champion strategy, equity curve, live signal, metrics |
 | 2026-06-05 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board: full role matrix INC-80/81, 13 verified |
+| 2026-06-06 | polyking | reports | [xrev-model-card.html](projects/polyking/reports/xrev-model-card.html) | XREV 5-minute BTC model card and visual explainer with canvas charts |
