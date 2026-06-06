@@ -214,3 +214,4 @@
 | 2026-06-06 | reports | [draft.md](reports/draft.md) | AI environment balanced piece (workflow-researched, fact-checked): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-environment-right-argument/draft.md |
 | 2026-06-06 | reports | [draft.html](reports/draft.html) | AI environment balanced piece (workflow-researched, fact-checked): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-environment-right-argument/draft.html |
 | 2026-06-06 | images | [hero.png](images/hero.png) | AI environment balanced piece (workflow-researched, fact-checked): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-environment-right-argument/hero.png |
+| 2026-06-06 | images | [chart-water-split.png](images/chart-water-split.png) | AI environment balanced piece (workflow-researched, fact-checked): chart-water-split.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-environment-right-argument/chart-water-split.png |
