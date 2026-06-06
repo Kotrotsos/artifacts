@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How agentlog works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#fe5a1d; --primary-strong:#f4511a;
+    --bg:#ffffff; --surface:#ffffff; --surface-subtle:#f7f7f7;
+    --text:#262626; --muted:#6e6e6e; --border:#e8e8e8;
+    --code-bg:#f7f7f7; --shadow:0 1px 3px rgba(0,0,0,.05);
+    --diagram-stroke:#e8e8e8; --diagram-fill:#ffffff; --diagram-text:#262626;
+    --r-md:8px; --r-lg:12px; --r-xl:18px; --r-full:9999px;
+    --font:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  [data-theme="dark"]{
+    --primary:#ff6b33; --primary-strong:#fe5a1d;
+    --bg:#161616; --surface:#1f1f1f; --surface-subtle:#262626;
+    --text:#f2f2f2; --muted:#a3a3a3; --border:#333333;
+    --code-bg:#262626; --shadow:0 1px 3px rgba(0,0,0,.4);
+    --diagram-stroke:#3a3a3a; --diagram-fill:#1f1f1f; --diagram-text:#f2f2f2;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--font);
+    line-height:1.6; letter-spacing:-.01em; -webkit-font-smoothing:antialiased;
+    transition:background .2s,color .2s;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:0 24px}
+  h1,h2,h3{line-height:1.15; letter-spacing:-.025em; font-weight:600; margin:0 0 .5em}
+  h1{font-size:clamp(34px,5vw,52px)}
+  h2{font-size:clamp(26px,3.4vw,34px); margin-top:0}
+  h3{font-size:20px}
+  p{margin:0 0 1em}
+  a{color:var(--primary-strong)}
+  .muted{color:var(--muted)}
+  code{font-family:var(--mono); background:var(--code-bg); padding:2px 6px; border-radius:5px; font-size:.9em}
+  pre{font-family:var(--mono); background:var(--code-bg); padding:18px 20px; border-radius:var(--r-md);
+    overflow:auto; font-size:13.5px; line-height:1.6; border:1px solid var(--border)}
+  pre code{background:none; padding:0}
+
+  /* top bar */
+  .topbar{position:sticky; top:0; z-index:20; backdrop-filter:saturate(160%) blur(8px);
+    background:color-mix(in srgb, var(--bg) 82%, transparent);
+    border-bottom:1px solid var(--border)}
+  .topbar .wrap{display:flex; align-items:center; gap:12px; height:60px}
+  .brand{display:flex; align-items:center; gap:9px; font-weight:600; font-size:17px; color:var(--text); text-decoration:none}
+  .brand .dot{width:14px; height:14px; border-radius:var(--r-full); background:var(--primary)}
+  .spacer{flex:1}
+  .theme-toggle{display:inline-flex; background:var(--surface-subtle); border:1px solid var(--border);
+    border-radius:var(--r-full); padding:3px}
+  .theme-toggle button{font-family:var(--font); font-size:12px; font-weight:500; color:var(--muted);
+    border:none; background:none; padding:6px 12px; border-radius:var(--r-full); cursor:pointer}
+  .theme-toggle button.active{background:var(--surface); color:var(--text); box-shadow:var(--shadow)}
+
+  /* hero */
+  .hero{padding:72px 0 40px}
+  .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:600;
+    text-transform:uppercase; letter-spacing:.08em; color:var(--primary-strong);
+    background:color-mix(in srgb,var(--primary) 12%, transparent); padding:6px 12px; border-radius:var(--r-full); margin-bottom:20px}
+  .hero p.lead{font-size:clamp(18px,2.2vw,22px); color:var(--muted); max-width:680px}
+
+  section{padding:44px 0; border-top:1px solid var(--border)}
+  .lead-tag{font-size:13px; font-weight:600; color:var(--primary-strong); letter-spacing:.04em; text-transform:uppercase; margin-bottom:10px}
+
+  .grid{display:grid; gap:18px}
+  .cols-2{grid-template-columns:repeat(2,1fr)}
+  .cols-3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:760px){.cols-2,.cols-3{grid-template-columns:1fr}}
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+    padding:22px; box-shadow:var(--shadow)}
+  .card h3{margin-bottom:8px}
+  .card .ic{width:40px; height:40px; border-radius:var(--r-md); display:flex; align-items:center; justify-content:center;
+    background:color-mix(in srgb,var(--primary) 13%, transparent); margin-bottom:14px}
+  .card .ic svg{width:22px; height:22px; stroke:var(--primary-strong)}
+
+  .chip{display:inline-flex; align-items:center; font-size:12px; font-weight:600; padding:5px 11px;
+    border-radius:var(--r-full); background:var(--surface-subtle); border:1px solid var(--border); color:var(--muted)}
+  .chip.orange{background:var(--primary); color:#fff; border-color:var(--primary)}
+
+  figure{margin:0}
+  .diagram{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+    padding:26px; box-shadow:var(--shadow)}
+  .diagram svg{display:block; width:100%; height:auto}
+  figcaption{font-size:13.5px; color:var(--muted); margin-top:12px; text-align:center}
+
+  /* svg primitives */
+  .d-box{fill:var(--diagram-fill); stroke:var(--diagram-stroke); stroke-width:1.5}
+  .d-box-accent{fill:color-mix(in srgb,var(--primary) 10%, var(--diagram-fill)); stroke:var(--primary); stroke-width:1.5}
+  .d-fill-accent{fill:var(--primary)}
+  .d-t{fill:var(--diagram-text); font-family:var(--font); font-weight:600}
+  .d-sub{fill:var(--muted); font-family:var(--font); font-weight:500}
+  .d-line{stroke:var(--diagram-stroke); stroke-width:1.6; fill:none}
+  .d-line-accent{stroke:var(--primary); stroke-width:1.8; fill:none}
+  .d-mono{font-family:var(--mono); fill:var(--diagram-text)}
+
+  ol.steps{counter-reset:s; list-style:none; padding:0; margin:0; display:grid; gap:14px}
+  ol.steps li{position:relative; padding:16px 16px 16px 58px; background:var(--surface);
+    border:1px solid var(--border); border-radius:var(--r-md); box-shadow:var(--shadow)}
+  ol.steps li::before{counter-increment:s; content:counter(s); position:absolute; left:14px; top:14px;
+    width:28px; height:28px; border-radius:var(--r-full); background:var(--primary); color:#fff;
+    font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center}
+  ol.steps li b{display:block; margin-bottom:2px}
+
+  footer{padding:48px 0 64px; color:var(--muted); font-size:14px; text-align:center; border-top:1px solid var(--border)}
+
+  @media print{
+    .topbar{display:none}
+    body{background:#fff; color:#000}
+    section,.card,.diagram,pre,ol.steps li{break-inside:avoid}
+    a{color:#000; text-decoration:underline}
+    .hero{padding-top:0}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <a class="brand" href="https://agentlog-production.up.railway.app"><span class="dot"></span> agentlog</a>
+  <span class="spacer"></span>
+  <div class="theme-toggle" role="group" aria-label="Theme">
+    <button data-set="light" class="active">Light</button>
+    <button data-set="dark">Dark</button>
+    <button data-set="system">System</button>
+  </div>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <span class="eyebrow"><span class="dot" style="width:8px;height:8px;border-radius:50%;background:var(--primary-strong);display:inline-block"></span> How it works</span>
+  <h1>One place for everything your agents make.</h1>
+  <p class="lead">agentlog stores, organises and shares the artifacts your agents create, the HTML reports, examples and Markdown docs, addressed by <b>project, tag, title and version</b>. Push from a Chrome extension or a skill, view it in a clean web app, share it with a click.</p>
+</div></header>
+
+<!-- BIG PICTURE -->
+<section><div class="wrap">
+  <div class="lead-tag">The big picture</div>
+  <h2>Three ways in, one organised store</h2>
+  <p class="muted">An agent produces an artifact. You capture it from the browser or straight from the agent. agentlog versions it, files it under the right project and tag, and gives you a link to share.</p>
+
+  <figure class="diagram" style="margin-top:24px">
+    <svg viewBox="0 0 900 360" role="img" aria-label="Architecture diagram">
+      <!-- sources -->
+      <g>
+        <rect class="d-box" x="20" y="40" width="180" height="62" rx="12"/>
+        <text class="d-t" x="110" y="66" font-size="15" text-anchor="middle">Chrome extension</text>
+        <text class="d-sub" x="110" y="86" font-size="12" text-anchor="middle">click to save a page</text>
+
+        <rect class="d-box" x="20" y="150" width="180" height="62" rx="12"/>
+        <text class="d-t" x="110" y="176" font-size="15" text-anchor="middle">agentlog skill</text>
+        <text class="d-sub" x="110" y="196" font-size="12" text-anchor="middle">auto-upload a file</text>
+
+        <rect class="d-box" x="20" y="260" width="180" height="62" rx="12"/>
+        <text class="d-t" x="110" y="286" font-size="15" text-anchor="middle">REST API</text>
+        <text class="d-sub" x="110" y="306" font-size="12" text-anchor="middle">curl / your code</text>
+      </g>
+
+      <!-- arrows to API -->
+      <path class="d-line-accent" d="M200 71 C 270 71, 280 175, 348 178" marker-end="url(#arrow)"/>
+      <path class="d-line-accent" d="M200 181 H 348" marker-end="url(#arrow)"/>
+      <path class="d-line-accent" d="M200 291 C 270 291, 280 184, 348 181" marker-end="url(#arrow)"/>
+      <text class="d-mono" x="250" y="150" font-size="11">Bearer agl_…</text>
+
+      <!-- server -->
+      <rect class="d-box-accent" x="350" y="120" width="210" height="120" rx="14"/>
+      <text class="d-t" x="455" y="150" font-size="16" text-anchor="middle">agentlog server</text>
+      <text class="d-sub" x="455" y="172" font-size="12" text-anchor="middle">Express + web UI</text>
+      <text class="d-sub" x="455" y="190" font-size="12" text-anchor="middle">auth · versioning</text>
+      <text class="d-sub" x="455" y="208" font-size="12" text-anchor="middle">access control</text>
+
+      <!-- db -->
+      <path class="d-line" d="M560 180 H 640" marker-end="url(#arrow)"/>
+      <g>
+        <path class="d-box" d="M650 150 q0 -14 55 -14 q55 0 55 14 v60 q0 14 -55 14 q-55 0 -55 -14 z"/>
+        <ellipse class="d-box" cx="705" cy="150" rx="55" ry="14"/>
+        <text class="d-t" x="705" y="190" font-size="14" text-anchor="middle">Postgres</text>
+      </g>
+
+      <!-- viewer -->
+      <path class="d-line" d="M455 240 V 300" marker-end="url(#arrow)"/>
+      <rect class="d-box" x="350" y="300" width="210" height="46" rx="12"/>
+      <text class="d-t" x="455" y="328" font-size="14" text-anchor="middle">Web viewer + share links</text>
+
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" class="d-fill-accent"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>Sources authenticate with a token, the server versions and files the artifact in Postgres, the viewer renders and shares it.</figcaption>
+  </figure>
+</div></section>
+
+<!-- STORAGE MODEL -->
+<section><div class="wrap">
+  <div class="lead-tag">The address of every artifact</div>
+  <h2>project / tag / title / version</h2>
+  <p class="muted">Every artifact lives at a predictable path. The <b>project</b> is the top-level space (asked for first if it is new). The <b>tag</b> is a category like <code>requirements</code> or <code>design ideas</code>. The <b>title</b> is the document. The <b>version</b> is assigned automatically.</p>
+
+  <figure class="diagram" style="margin-top:24px">
+    <svg viewBox="0 0 900 330" role="img" aria-label="Storage hierarchy">
+      <!-- project -->
+      <rect class="d-box-accent" x="30" y="20" width="170" height="50" rx="12"/>
+      <text class="d-t" x="115" y="42" font-size="15" text-anchor="middle">Acme Site</text>
+      <text class="d-sub" x="115" y="60" font-size="11" text-anchor="middle">project</text>
+
+      <!-- connectors -->
+      <path class="d-line" d="M115 70 V 110 H 330" />
+      <path class="d-line" d="M115 110 V 210 H 330" />
+
+      <!-- tags -->
+      <rect class="d-box" x="330" y="86" width="150" height="48" rx="11"/>
+      <text class="d-t" x="405" y="108" font-size="14" text-anchor="middle">reports</text>
+      <text class="d-sub" x="405" y="125" font-size="11" text-anchor="middle">tag</text>
+
+      <rect class="d-box" x="330" y="186" width="150" height="48" rx="11"/>
+      <text class="d-t" x="405" y="208" font-size="14" text-anchor="middle">design ideas</text>
+      <text class="d-sub" x="405" y="225" font-size="11" text-anchor="middle">tag</text>
+
+      <!-- titles -->
+      <path class="d-line" d="M480 110 H 600"/>
+      <rect class="d-box" x="600" y="86" width="170" height="48" rx="11"/>
+      <text class="d-t" x="685" y="108" font-size="13.5" text-anchor="middle">Launch Report</text>
+      <text class="d-sub" x="685" y="125" font-size="11" text-anchor="middle">title</text>
+
+      <path class="d-line" d="M480 210 H 600"/>
+      <rect class="d-box" x="600" y="186" width="170" height="48" rx="11"/>
+      <text class="d-t" x="685" y="208" font-size="13.5" text-anchor="middle">Homepage Mock</text>
+      <text class="d-sub" x="685" y="225" font-size="11" text-anchor="middle">title</text>
+
+      <!-- versions -->
+      <g>
+        <rect class="d-box" x="790" y="80" width="40" height="26" rx="7"/>
+        <text class="d-mono" x="810" y="98" font-size="11" text-anchor="middle">v1</text>
+        <rect class="d-box" x="838" y="80" width="40" height="26" rx="7"/>
+        <text class="d-mono" x="858" y="98" font-size="11" text-anchor="middle">v2</text>
+        <rect class="d-box-accent" x="790" y="112" width="88" height="26" rx="7"/>
+        <text class="d-mono" x="834" y="130" font-size="11" text-anchor="middle">v3 latest</text>
+      </g>
+      <text class="d-sub" x="834" y="160" font-size="11" text-anchor="middle">versions (auto)</text>
+    </svg>
+    <figcaption>One project fans out into tags, then titles, then an automatic version history. The newest version is always the latest.</figcaption>
+  </figure>
+</div></section>
+
+<!-- VERSIONING -->
+<section><div class="wrap">
+  <div class="lead-tag">Never overwrite anything</div>
+  <h2>Versions are historical by default</h2>
+  <p class="muted">Upload the same project, tag and title again and agentlog simply adds the next version. The newest is served as the latest, older ones are kept as history. No version numbers to manage, nothing lost.</p>
+
+  <figure class="diagram" style="margin-top:24px">
+    <svg viewBox="0 0 900 170" role="img" aria-label="Versioning timeline">
+      <line class="d-line" x1="60" y1="90" x2="840" y2="90"/>
+      <!-- v1 -->
+      <circle class="d-box" cx="150" cy="90" r="13"/>
+      <text class="d-mono" x="150" y="94" font-size="11" text-anchor="middle">1</text>
+      <text class="d-sub" x="150" y="130" font-size="11" text-anchor="middle">first upload</text>
+      <!-- v2 -->
+      <circle class="d-box" cx="390" cy="90" r="13"/>
+      <text class="d-mono" x="390" y="94" font-size="11" text-anchor="middle">2</text>
+      <text class="d-sub" x="390" y="130" font-size="11" text-anchor="middle">re-upload, same title</text>
+      <!-- v3 latest -->
+      <circle class="d-fill-accent" cx="700" cy="90" r="17"/>
+      <text class="d-mono" x="700" y="95" font-size="12" text-anchor="middle" fill="#fff">3</text>
+      <text class="d-t" x="700" y="135" font-size="12" text-anchor="middle">latest</text>
+      <text class="d-sub" x="150" y="55" font-size="11" text-anchor="middle">kept</text>
+      <text class="d-sub" x="390" y="55" font-size="11" text-anchor="middle">kept</text>
+    </svg>
+    <figcaption>Each upload appends a version. History stays browsable, the latest is what people see first.</figcaption>
+  </figure>
+</div></section>
+
+<!-- THREE WAYS IN -->
+<section><div class="wrap">
+  <div class="lead-tag">Getting artifacts in</div>
+  <h2>Capture from anywhere</h2>
+  <div class="grid cols-3" style="margin-top:22px">
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 9h18M9 21V9"/></svg></div>
+      <h3>Chrome extension</h3>
+      <p class="muted">On any artifact page, click the icon, set project, tag and title, and save the page. It grabs the full HTML for you.</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m0 8v3a2 2 0 0 0 2 2h3m8-18h3a2 2 0 0 1 2 2v3m0 8v3a2 2 0 0 1-2 2h-3"/><path d="M9 12h6"/></svg></div>
+      <h3>The skill</h3>
+      <p class="muted">Tell your agent to store an artifact and the skill uploads the file directly, asking which project it belongs to first.</p>
+    </div>
+    <div class="card">
+      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></div>
+      <h3>REST API</h3>
+      <p class="muted">A single authenticated <code>POST</code> from a script or your own tooling. Same endpoint the extension and skill use.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- UPLOAD FLOW -->
+<section><div class="wrap">
+  <div class="lead-tag">What happens on upload</div>
+  <h2>From click to link</h2>
+  <figure class="diagram" style="margin:22px 0 24px">
+    <svg viewBox="0 0 900 250" role="img" aria-label="Upload sequence">
+      <!-- lanes -->
+      <g font-size="13">
+        <rect class="d-box" x="40" y="30" width="150" height="40" rx="10"/><text class="d-t" x="115" y="55" text-anchor="middle">Source</text>
+        <rect class="d-box-accent" x="375" y="30" width="150" height="40" rx="10"/><text class="d-t" x="450" y="55" text-anchor="middle">Server</text>
+        <rect class="d-box" x="710" y="30" width="150" height="40" rx="10"/><text class="d-t" x="785" y="55" text-anchor="middle">Postgres</text>
+      </g>
+      <line class="d-line" x1="115" y1="70" x2="115" y2="230" stroke-dasharray="4 5"/>
+      <line class="d-line" x1="450" y1="70" x2="450" y2="230" stroke-dasharray="4 5"/>
+      <line class="d-line" x1="785" y1="70" x2="785" y2="230" stroke-dasharray="4 5"/>
+
+      <path class="d-line-accent" d="M115 105 H 450" marker-end="url(#arrow2)"/>
+      <text class="d-sub" x="282" y="98" font-size="11" text-anchor="middle">POST /api/upload + token</text>
+
+      <path class="d-line" d="M450 150 H 785" marker-end="url(#arrow2)"/>
+      <text class="d-sub" x="617" y="143" font-size="11" text-anchor="middle">find/create project, tag, title</text>
+
+      <path class="d-line" d="M785 185 H 450" marker-end="url(#arrow2)"/>
+      <text class="d-sub" x="617" y="178" font-size="11" text-anchor="middle">next version number</text>
+
+      <path class="d-line-accent" d="M450 220 H 115" marker-end="url(#arrow2)"/>
+      <text class="d-sub" x="282" y="213" font-size="11" text-anchor="middle">201 + shareable URL</text>
+
+      <defs>
+        <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" class="d-fill-accent"/>
+        </marker>
+      </defs>
+    </svg>
+    <figcaption>The token identifies you, the server resolves the path and assigns the version, then hands back a link.</figcaption>
+  </figure>
+  <pre><code>curl -X POST https://agentlog-production.up.railway.app/api/upload \
+  -H "Authorization: Bearer agl_…" \
+  -H "Content-Type: application/json" \
+  -d '{"project":"Acme Site","tag":"reports",
+       "title":"Launch Report","content":"&lt;h1&gt;Hi&lt;/h1&gt;",
+       "content_type":"text/html"}'</code></pre>
+</div></section>
+
+<!-- ACCESS CONTROL -->
+<section><div class="wrap">
+  <div class="lead-tag">Sharing</div>
+  <h2>Access that cascades down</h2>
+  <p class="muted">Grant a person access at any level and they get everything beneath it. Give someone the whole <b>project</b> and they see every tag and document inside. Grant a single <b>tag</b> and they see only that category. Grant one <b>document</b> and that is all they get. Or flip on a public link for view-only access with no account.</p>
+
+  <figure class="diagram" style="margin-top:24px">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Access cascade">
+      <!-- project grant -->
+      <rect class="d-box-accent" x="40" y="20" width="200" height="56" rx="12"/>
+      <text class="d-t" x="140" y="44" font-size="14" text-anchor="middle">Grant: project</text>
+      <text class="d-sub" x="140" y="62" font-size="11" text-anchor="middle">sees everything below</text>
+
+      <path class="d-line-accent" d="M140 76 V 110"/>
+      <rect class="d-box" x="40" y="110" width="200" height="40" rx="10"/><text class="d-t" x="140" y="135" font-size="12.5" text-anchor="middle">tag: reports</text>
+      <path class="d-line-accent" d="M140 150 V 180"/>
+      <rect class="d-box" x="40" y="180" width="200" height="36" rx="9"/><text class="d-sub" x="140" y="203" font-size="11.5" text-anchor="middle">Launch Report · v1–v3</text>
+
+      <!-- tag grant -->
+      <rect class="d-box-accent" x="350" y="110" width="200" height="56" rx="12"/>
+      <text class="d-t" x="450" y="134" font-size="14" text-anchor="middle">Grant: tag</text>
+      <text class="d-sub" x="450" y="152" font-size="11" text-anchor="middle">only this category</text>
+      <path class="d-line-accent" d="M450 166 V 196"/>
+      <rect class="d-box" x="350" y="196" width="200" height="36" rx="9"/><text class="d-sub" x="450" y="219" font-size="11.5" text-anchor="middle">all docs under the tag</text>
+
+      <!-- doc grant -->
+      <rect class="d-box-accent" x="660" y="180" width="200" height="56" rx="12"/>
+      <text class="d-t" x="760" y="204" font-size="14" text-anchor="middle">Grant: document</text>
+      <text class="d-sub" x="760" y="222" font-size="11" text-anchor="middle">just one document</text>
+    </svg>
+    <figcaption>Pick the level once. Access to everything underneath comes for free.</figcaption>
+  </figure>
+</div></section>
+
+<!-- SECURITY -->
+<section><div class="wrap">
+  <div class="lead-tag">Safe by design</div>
+  <h2>Rendering untrusted HTML, safely</h2>
+  <div class="grid cols-2" style="margin-top:22px">
+    <div class="card">
+      <h3>Sandboxed artifacts</h3>
+      <p class="muted">Saved HTML is served under a strict content-security-policy sandbox, in an isolated origin. Interactive reports still run, but a stored artifact can never reach your session, cookies or the surrounding page.</p>
+    </div>
+    <div class="card">
+      <h3>Scoped tokens and grants</h3>
+      <p class="muted">API tokens are hashed at rest and only act for their owner. Web sessions are signed, http-only cookies. Every document view is checked against the cascading grant rules before a byte is served.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- QUICKSTART -->
+<section><div class="wrap">
+  <div class="lead-tag">Get going</div>
+  <h2>Quickstart</h2>
+  <ol class="steps" style="margin-top:20px">
+    <li><b>Create an account</b> at agentlog and sign in.</li>
+    <li><b>Generate an API token</b> under API tokens. Copy it once, it is shown only at creation.</li>
+    <li><b>Connect a source.</b> Paste the URL and token into the Chrome extension settings, or export <code>AGENTLOG_URL</code> and <code>AGENTLOG_TOKEN</code> for the skill.</li>
+    <li><b>Push an artifact.</b> Set project, tag and title, then save. agentlog versions it and returns a link.</li>
+    <li><b>Share it.</b> Grant a teammate at the project, tag or document level, or enable a public link.</li>
+  </ol>
+</div></section>
+
+<footer><div class="wrap">
+  agentlog · store, organise and share what your agents make ·
+  <a href="https://agentlog-production.up.railway.app">agentlog-production.up.railway.app</a>
+</div></footer>
+
+<script>
+  (function(){
+    var root=document.documentElement, KEY="agentlog-theme";
+    var buttons=document.querySelectorAll(".theme-toggle button");
+    var mq=window.matchMedia("(prefers-color-scheme: dark)");
+    function apply(mode){
+      var effective = mode==="system" ? (mq.matches?"dark":"light") : mode;
+      root.setAttribute("data-theme", effective);
+      buttons.forEach(function(b){ b.classList.toggle("active", b.dataset.set===mode); });
+    }
+    var saved = localStorage.getItem(KEY) || "light";
+    apply(saved);
+    buttons.forEach(function(b){
+      b.addEventListener("click", function(){
+        var m=b.dataset.set; localStorage.setItem(KEY,m); apply(m);
+      });
+    });
+    mq.addEventListener("change", function(){
+      if((localStorage.getItem(KEY)||"light")==="system") apply("system");
+    });
+  })();
+</script>
+</body>
+</html>

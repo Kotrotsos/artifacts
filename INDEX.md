@@ -438,3 +438,4 @@
 | 2026-06-06 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 verification board — INC-109 tabs, INC-120-123 indicative pricing, INC-140 T&C gate (21/21 tests) |
 | 2026-06-06 | kyssbook-kdp | reports | [chapter-plan.html](projects/kyssbook-kdp/reports/chapter-plan.html) | Claude Code Unstoppable chapter plan: 4 volumes, 35 chapters from platform docs |
 | 2026-06-06 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board — INC-100 surface field, INC-113 bilingual terms, INC-125 price staleness (26/26) |
+| 2026-06-06 | agentlog | reports | [how-agentlog-works.html](projects/agentlog/reports/how-agentlog-works.html) | Visual explainer of how agentlog works, with SVG diagrams and light/dark theme |
