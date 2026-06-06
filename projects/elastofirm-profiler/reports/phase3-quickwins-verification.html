@@ -102,8 +102,8 @@
       <h1>Phase 3 — work &amp; how to verify</h1>
       <div class="meta">
         <span><b>Project</b> Elastofirm Profiler — Phase 3</span>
-        <span><b>Branch</b> <span class="mono">inc-80-81-role-matrix</span></span>
-        <span><b>Last update</b> 2026-06-03</span>
+        <span><b>Branch</b> <span class="mono">inc-109-120-140-batch</span></span>
+        <span><b>Last update</b> 2026-06-06</span>
       </div>
     </div>
     <div class="theme-toggle" role="group" aria-label="Theme">
@@ -113,7 +113,7 @@
     </div>
   </header>
 
-  <div class="banner"><span class="dot"></span><span><b>Regression suite: 18 / 18 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
+  <div class="banner"><span class="dot"></span><span><b>Regression suite: 21 / 21 passing.</b> &nbsp;<span class="mono">scripts/test/test_phase3_quickwins.py</span></span></div>
 
   <div class="note">
     <b>This is the living board and the flow.</b> Every batch: implement on a branch → validate live in the running app → extend the pytest suite and run it after each change → record the item here → deploy the board to Railway → sync Linear. <b>Verified items collapse; items in development stay expanded.</b> Click any header to toggle.
@@ -155,6 +155,69 @@ open http://localhost:3001</pre>
   </details>
 
   <h2 class="section">Verified &amp; in review</h2>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-140</span>
+      <h3>Terms &amp; Conditions accreditation gate</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">The confidentiality / NDA agreement is now a <b>per-clause</b> accreditation (7 clauses, version <span class="mono">v3</span>) shown at login. <code>GET /api/tos/clauses</code> serves the versioned intro + clause list; <code>POST /api/tos/accept</code> validates that <b>every</b> clause id is ticked (<span class="mono">400</span> with the missing ids otherwise) and records the accepted clause set as JSON per user + version. The <code>/tos</code> page renders one checkbox per clause plus an "Accept all" master; the submit stays disabled until all are ticked, and it shows an already-accepted state when the stored version matches the required one.</p>
+      <p class="files">Touched: <code>api/main.py</code> (TOS_CLAUSES + TOS_VERSION v3, accepted_clauses column, /api/tos/clauses, accept validation), <code>app/tos/page.tsx</code> (per-clause checkboxes + accept-all)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open <span class="mono">http://localhost:3001/tos</span>.</li>
+        <li>Note 7 clause checkboxes; tick <b>Accept all</b> &rarr; all flip on and <b>Accept &amp; continue</b> enables.</li>
+        <li><span class="expect"><b>Expected:</b> accepting all → redirect, status persists (re-open shows "You accepted the terms (version v3)"). A partial set is rejected server-side with a 400 listing the missing clauses.</span></li>
+      </ol>
+      <p class="caveat">Bumping <span class="mono">TOS_VERSION</span> re-prompts everyone. Dev user is <span class="mono">local-dev-user</span>; in prod the acceptance is keyed on the Entra <span class="mono">sub</span>.</p>
+    </div>
+  </details>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-109</span>
+      <h3>Detail view grouped into tabs</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">The profile detail dialog's single 4-table "Technical Specifications" grid is replaced by tabs — <b>Stamkaart</b>, <b>Compound</b>, <b>Proces</b> and <b>Prijs</b> — so the dense field set is scannable instead of one long wall. Each tab carries the fields that belong to it; the Prijs tab hosts the indicative pricing (INC-120–123).</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (shadcn Tabs in the detail dialog, field regrouping)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Search, open any result's detail dialog.</li>
+        <li><span class="expect"><b>Expected:</b> four tabs (Stamkaart / Compound / Proces / Prijs); clicking each shows only that group's fields.</span></li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="item">
+    <summary>
+      <span class="chev">&#9654;</span>
+      <span class="badge id">INC-120/121/122/123</span>
+      <h3>Indicative pricing (material cost + margin tiers)</h3>
+      <span class="badge effort">M</span>
+      <span class="badge verified">Verified</span>
+      <span class="badge review">In Review</span>
+    </summary>
+    <div class="item-body">
+      <p class="what">The Prijs tab computes an <b>indicative</b> price from the meter weight: material cost = <span class="mono">(g/m ÷ 1000) × compound €/kg</span>, then an A / B / C margin tier (50 / 60 / 70%). The result is always labelled <b>indicatief</b> with an amber badge — never "quote" / "offerte". Tier is switchable inline.</p>
+      <p class="files">Touched: <code>app/page.tsx</code> (priceTier state, MARGIN_TIERS, DEFAULT_COMPOUND_PRICE, Prijs tab compute + INDICATIEF badge)</p>
+      <div class="verify-label">Verify visually</div>
+      <ol class="steps">
+        <li>Open detail for a record with a weight (e.g. <span class="mono">EG-00254</span>, 134 g/m), go to the <b>Prijs</b> tab.</li>
+        <li><span class="expect"><b>Expected:</b> materiaalkost ≈ <span class="mono">€0,38/m</span>; B-tier indicatief ≈ <span class="mono">€0,61/m</span>; A/B/C buttons recompute; an amber <b>INDICATIEF</b> badge is always present.</span></li>
+      </ol>
+      <p class="caveat">Compound price is a placeholder (<span class="mono">€2,85/kg</span>) until the live BI feed lands (INC-124). Figure is indicative only, by design.</p>
+    </div>
+  </details>
 
   <details class="item">
     <summary>
@@ -435,8 +498,8 @@ open http://localhost:3001</pre>
   <div class="card">
     <p class="what">Guards the API contracts behind these fixes. Run after every change to this area:</p>
     <pre>API_BASE=http://localhost:3000 pytest scripts/test/test_phase3_quickwins.py -q
-<span class="ok">..........                                        [100%]
-10 passed in 0.45s</span></pre>
+<span class="ok">.....................                             [100%]
+21 passed in 0.67s</span></pre>
     <table>
       <thead><tr><th>Area</th><th>Guards</th><th>Tests</th><th>Result</th></tr></thead>
       <tbody>
@@ -444,6 +507,7 @@ open http://localhost:3001</pre>
         <tr><td>Weight/surface exposed</td><td>INC-88</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Process multi-select + dedupe</td><td>INC-93</td><td>2</td><td class="pass">pass</td></tr>
         <tr><td>Categorize fields + endpoint guards</td><td>INC-111/112/117</td><td>4</td><td class="pass">pass</td></tr>
+        <tr><td>T&amp;C clauses + accept validation</td><td>INC-140</td><td>3</td><td class="pass">pass</td></tr>
         <tr><td>Data-management capability exposed</td><td>INC-118</td><td>1</td><td class="pass">pass</td></tr>
         <tr><td>Role flags exposed (dxf / customer)</td><td>INC-78</td><td>1</td><td class="pass">pass</td></tr>
         <tr><td>Area range for anchor sliders</td><td>INC-92</td><td>1</td><td class="pass">pass</td></tr>
