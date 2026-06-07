@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elastofirm Profiler — Phase 3 · Full Task List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f9fafb;--surface:#fff;--surface-2:#f3f4f6;--border:#e5e7eb;--border-strong:#d1d5db;--ink:#18181b;--ink-2:#3f3f46;--muted:#71717a;--accent:#2563eb;--good:#059669;--good-bg:#ecfdf5;--good-bd:#a7f3d0;--amber:#d97706;--amber-bg:#fffbeb;--amber-bd:#fde68a;--red:#dc2626;--red-bg:#fef2f2;--red-bd:#fecaca;--code-bg:#f3f4f6;}
+[data-theme="dark"]{--bg:#0f1115;--surface:#16181d;--surface-2:#1d2026;--border:#2a2e37;--border-strong:#3a3f4b;--ink:#f4f4f5;--ink-2:#d4d4d8;--muted:#9ca3af;--accent:#60a5fa;--good:#34d399;--good-bg:#06281f;--good-bd:#0f5132;--amber:#fbbf24;--amber-bg:#2a2010;--amber-bd:#5c4310;--red:#f87171;--red-bg:#2a1212;--red-bd:#5c1d1d;--code-bg:#1d2026;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Geist',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased}
+.mono{font-family:'Geist Mono',monospace}
+.wrap{max-width:880px;margin:0 auto;padding:44px 28px 90px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:6px}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:29px;font-weight:600;letter-spacing:-.025em;margin:8px 0 12px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--ink-2)}
+.meta b{color:var(--ink)}
+.theme-toggle{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;flex-shrink:0}
+.theme-toggle button{font-family:'Geist Mono',monospace;font-size:11px;background:var(--surface);color:var(--muted);border:none;padding:6px 10px;cursor:pointer;border-right:1px solid var(--border)}
+.theme-toggle button:last-child{border-right:none}
+.theme-toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.summary-bar{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 8px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:13px}
+.stat b{font-size:20px;font-weight:600;display:block}
+h2.section{font-size:13px;font-family:'Geist Mono',monospace;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:34px 0 12px;display:flex;align-items:center;gap:10px}
+h2.section .count{background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:1px 9px;font-size:11px;color:var(--ink-2)}
+details.item{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+details.item[open]{border-color:var(--border-strong)}
+details.item>summary{list-style:none;cursor:pointer;padding:13px 18px;display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+details.item>summary::-webkit-details-marker{display:none}
+.chev{width:14px;flex-shrink:0;color:var(--muted);transition:transform .2s;font-family:'Geist Mono',monospace;font-size:12px}
+details.item[open] .chev{transform:rotate(90deg)}
+details.item>summary h3{font-size:15px;font-weight:500;letter-spacing:-.01em;flex:1;min-width:180px}
+.badge{font-family:'Geist Mono',monospace;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.badge.id{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--border)}
+.badge.effort,.badge.prio{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--border)}
+.badge.st.backlog{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
+.badge.st.review{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+.badge.st.done{background:var(--good-bg);color:var(--good);border:1px solid var(--good-bd)}
+.badge.st.cancel{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);text-decoration:line-through}
+.item-body{padding:4px 18px 18px;border-top:1px solid var(--border)}
+.files{font-family:'Geist Mono',monospace;font-size:12px;margin:12px 0 8px}
+.files a{color:var(--accent);text-decoration:none}
+pre.desc{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow-x:auto;font-family:'Geist Mono',monospace;font-size:12px;line-height:1.55;color:var(--ink-2);white-space:pre-wrap;word-break:break-word}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+@media(max-width:600px){.wrap{padding:28px 16px 60px}h1{font-size:23px}header{flex-direction:column}}
+@media print{body{background:#fff;color:#000}.theme-toggle{display:none}details.item>.item-body{display:block!important}details.item{break-inside:avoid;border-color:#ccc}.wrap{max-width:100%;padding:0}}
+</style></head><body>
+<div class="wrap">
+<header>
+  <div>
+    <div class="eyebrow">Elastofirm Profiler · Phase 3</div>
+    <h1>Full task list &amp; roadmap</h1>
+    <div class="meta"><span><b>Project</b> Elastofirm Profiler — Phase 3</span><span><b>Source</b> Linear (team Incredicorp)</span><span><b>Generated</b> 2026-06-07</span></div>
+  </div>
+  <div class="theme-toggle" role="group" aria-label="Theme"><button data-set="light" aria-pressed="true">Light</button><button data-set="dark" aria-pressed="false">Dark</button><button data-set="system" aria-pressed="false">System</button></div>
+</header>
+<div class="summary-bar">
+  <div class="stat"><b>63</b>total issues</div>
+  <div class="stat"><b>30</b>in review</div>
+  <div class="stat"><b>32</b>backlog</div>
+  <div class="stat"><b>9</b>milestones</div>
+</div>
+<p class="eyebrow" style="margin:14px 0 6px">Click any task to read the full spec (why · code analysis · steps · challenges · diagram)</p>
+<h2 class="section">1 · Rollen en toegang <span class="count">5</span></h2>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-78</span><h3>Rolgebaseerde flags voor tekening downloaden en klantnaam zien</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-78/rolgebaseerde-flags-voor-tekening-downloaden-en-klantnaam-zien" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Rollen en toegang  ·  **Inschatting:** M
+
+### Waarom
+
+Bijna alle verschillen tussen rollen komen neer op twee instellingen: mag iemand de tekening downloaden, en mag iemand de klantnaam zien. Door dit als losse flags per rol te bouwen kun je later schuiven zonder het rolmodel opnieuw te ontwerpen.
+
+### Detail
+
+De klantnaam moet verdwijnen uit zowel de list view als de detail view, maar filteren op klant blijft wel mogelijk. Downloa… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-79</span><h3>Gebruikersbeheer view met enable/disable</h3><span class="badge effort">5 Points</span><span class="badge st cancel">Canceled</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-79/gebruikersbeheer-view-met-enabledisable" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Rollen en toegang  ·  **Inschatting:** L
+
+### Waarom
+
+Lassfom IT schoont vertrekkende medewerkers niet altijd netjes op, dus de PO wil zelf kunnen zien wie toegang heeft en accounts kunnen uitzetten. Aanmaken blijft bij IT via Entra, maar zichtbaarheid en disable komen in de tool.
+
+### Detail
+
+De lijst toont naam, e-mail, rol, bron (intern of gast), laatste login en status. Gasten van externe tenants zoals Cimaboll en Cinobol staan… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-80</span><h3>Aparte Customer Service rol</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-80/aparte-customer-service-rol" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Rollen en toegang  ·  **Inschatting:** S
+
+### Waarom
+
+Customer Service krijgt voorlopig dezelfde rechten als de accountmanagers, maar de PO wil het toch als aparte rol omdat hij verwacht de rechten later te willen aanpassen.
+
+&gt; “Misschien later anders, omdat ik misschien later de rechten wil aanpassen.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Roles are free-form strings parsed from the Azure &#x27;roles&#x27; claim (api/main.py … (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-81</span><h3>Volledige rolmatrix: Engineering, Sales Support, Sales, Customer Service, Beheer</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-81/volledige-rolmatrix-engineering-sales-support-sales-customer-service" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Rollen en toegang  ·  **Inschatting:** M
+
+### Waarom
+
+De vijf rollen zijn in de eerste sessie vastgesteld. Engineering mag alles, Sales Support mag alles behalve tekeningen downloaden, Sales ziet geen klantnaam, Customer Service spiegelt Sales, en Beheer krijgt statistieken en gebruikersbeheer.
+
+### Detail
+
+Entra ID blijft de identiteitsbron. De rolmatrix wordt binnen de tool toegepast bovenop de Entra-accounts.
+
+### Code-analyse
+
+… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-140</span><h3>Terms &amp; Conditions accreditering bij inloggen (per-clausule vinkjes + accept all)</h3><span class="badge effort">5 Points</span><span class="badge prio">High</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-140/terms-and-conditions-accreditering-bij-inloggen-per-clausule-vinkjes" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Rollen en toegang  ·  **Inschatting:** L  ·  **Bron:** e-mail Koen &amp; Marco (rollout User Management)
+
+### Waarom
+
+In relatie tot User Management is één aspect vergeten. In fase 1 is hiervoor al een knop gemaakt maar niet uitgewerkt. Nu de tool verder uitgerold wordt, is het belangrijk dat de Terms &amp; Conditions accreditering geregeld wordt. Destijds zijn er een aantal Poppe-medewerkers aan de tool toegevoegd die hiervoor een individ… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<h2 class="section">2 · Gebruiksstatistieken <span class="count">3</span></h2>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-82</span><h3>Login en sessietellingen per gebruiker over 7/30/90 dagen</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-82/login-en-sessietellingen-per-gebruiker-over-73090-dagen" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Gebruiksstatistieken  ·  **Inschatting:** M
+
+### Waarom
+
+De PO wil onderbouwd het gesprek aan kunnen gaan met afdelingen over tool-adoptie. Sales gebruikt de tool nog niet (logisch, ze hebben er geen doel op), en de engineers zijn jong en onervaren en zoeken te weinig voordat ze ontwerpen.
+
+### Detail
+
+Het gaat niet om controle maar om bewijs. De PO noemt het verleidelijk om er statistieken bij te houden.
+
+&gt; “Wekelijks constateer i… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-83</span><h3>Zoekintensiteit indicator (searches per sessie, filters toegepast)</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-83/zoekintensiteit-indicator-searches-per-sessie-filters-toegepast" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Gebruiksstatistieken  ·  **Inschatting:** M
+
+### Waarom
+
+Alleen inloggen zegt weinig, want als je inlogt en niets doet heb je toch uren staan. De PO wil onderscheid tussen openen en echt gebruiken.
+
+&gt; “Als je inlogt en je doet niks dan heb je natuurlijk heel veel uren.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Searches are driven from app/page.tsx: searchProfiles() (line 336) calls GET /api/profiles, getProfilesCount() … (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-84</span><h3>CSV export van usage data</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-84/csv-export-van-usage-data" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Gebruiksstatistieken  ·  **Inschatting:** S
+
+### Waarom
+
+Zodat beheer de cijfers kan delen en bewaren. De PO benadrukt dat de inhoud van zoekopdrachten niet hoeft te worden opgeslagen, alleen wie en hoe vaak.
+
+&gt; “Wil je dus ook kunnen zien wat ze zoeken of niet? Nee. Dat maakt je niet uit? Nee.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+There is an existing CSV download pattern at /download-csv (api/main.py line 2541) us… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<h2 class="section">3 · Data hygiëne <span class="count">3</span></h2>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-85</span><h3>Filter knop &quot;incomplete data records&quot;</h3><span class="badge effort">3 Points</span><span class="badge prio">High</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-85/filter-knop-incomplete-data-records" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Data hygiëne  ·  **Inschatting:** M
+
+### Waarom
+
+De PO doet dit nu handmatig en stuurt lijstjes naar Simon. Hij wil één knop die alle records met ontbrekende datavelden selecteert, klaar voor export naar engineering.
+
+&gt; “Knop: selecteer incomplete records op data. Ga naar export van incomplete Excel data.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+get_profiles and get_profiles_count in api/main.py build a dynamic WHERE a… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-86</span><h3>Filter knop &quot;incomplete image records&quot;</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-86/filter-knop-incomplete-image-records" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Data hygiëne  ·  **Inschatting:** M
+
+### Waarom
+
+Zelfde patroon maar voor ontbrekende of gebroken afbeeldingen. De PO vond laatst een hele batch artikelen waarvan de images wel in [mondeel.com](&lt;http://mondeel.com&gt;) stonden maar niet gearchiveerd waren.
+
+&gt; “Knop druk voor incomplete image, stuur ik vervolgens de lijst naar engineering, ik maak die images.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+At runtime image presen… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-87</span><h3>Excel export van geselecteerde records</h3><span class="badge effort">3 Points</span><span class="badge prio">High</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-87/excel-export-van-geselecteerde-records" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Data hygiëne  ·  **Inschatting:** M
+
+### Waarom
+
+De brug tussen het opsporen van incomplete records en het doorzetten naar engineering of Simon. Eén klik, geen instellingen-menu.
+
+### Detail
+
+Foutopschoning blijft nog een tijdje aan de hand, dus de PO wil hier iets degelijks voor.
+
+### Code-analyse
+
+handleExportToExcel already exists in app/page.tsx (\~line 1829) using the XLSX library and building exportData from filteredProfiles,… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<h2 class="section">4 · Zoeken en similarity <span class="count">12</span></h2>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-88</span><h3>Gewicht en proces standaard in list view</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-88/gewicht-en-proces-standaard-in-list-view" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** S
+
+### Waarom
+
+Zodat je in één oogopslag onzin-matches herkent. Op dit moment kan een profiel van 147 gram naast een van 12 kilo verschijnen omdat ze er qua silhouet op lijken.
+
+&gt; “Deze weegt 147 gram en deze weegt 12 kilo. Dat is ook wel vervelend.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+The list view in app/page.tsx (the non-grid branch starting around line 3201) currently r… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-89</span><h3>Similarity sorteren op oppervlakte in plaats van gewicht</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-89/similarity-sorteren-op-oppervlakte-in-plaats-van-gewicht" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** M
+
+### Waarom
+
+De PO test compounds met een lagere dichtheid (1,32 in plaats van 1,5) om dure polymeren te besparen. Daardoor verandert het metergewicht bij gelijke geometrie. Oppervlakte is de geometrie-echte ankermaat, metergewicht is afgeleid (oppervlakte maal dichtheid).
+
+&gt; “Als ik het metergewicht op basis neem en ik wil op geometrie zoeken, dan moet ik de oppervlakte pakken en niet he… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-90</span><h3>Doorselecteer knop op elk resultaat</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-90/doorselecteer-knop-op-elk-resultaat" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** M
+
+### Waarom
+
+In plaats van blind een schuifbalk instellen, kies je eerst één record als ankerwaarde en zet je daar een range omheen. Veel intuïtiever dan vooraf abstract filteren.
+
+&gt; “Jij kan dan als je er een kiest vult hij die als ankerwaarde in en dan kun je er omheen rangen.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Result cards in app/page.tsx (grid near line 3050, list n… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-91</span><h3>Doorselecteer menu met image, drill-through, download DXF</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-91/doorselecteer-menu-met-image-drill-through-download-dxf" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** M
+
+### Waarom
+
+De doorselecteer-knop opent een klein menu, herbruikbaar voor meerdere functies. De PO ziet het niet alleen voor het ankeren maar ook om de DXF te downloaden of de image groot te bekijken.
+
+&gt; “Misschien kunnen we die ook nog ergens anders voor gebruiken, dat je een klein menu krijgt met ook dat je de DXF kan downloaden vanuit hier.” — *Product owner, uit transcript*
+
+### Code… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-92</span><h3>Anker-gebaseerde range filters na drill-through</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-92/anker-gebaseerde-range-filters-na-drill-through" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** M
+
+### Waarom
+
+Na het kiezen van een anker verschijnen sliders rond de ankerwaarden (oppervlakte, gewicht, proces, compound). De resultaten krimpen of groeien pas als je de slider loslaat, niet tijdens het schuiven.
+
+&gt; “Knoppen, en dan groeit die het. Maar niet tijdens het schuiven.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Range filter state exists (meterWeightMin/Max via parse… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-93</span><h3>Filter op proces (LCM / autoclaaf)</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-93/filter-op-proces-lcm-autoclaaf" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** S
+
+### Waarom
+
+Profielen worden op verschillende processen gemaakt. Twee visueel vergelijkbare profielen kunnen op een andere manier geproduceerd worden, en dan wil je ze kunnen scheiden. Proces is binair en categoriaal, dus makkelijk te filteren.
+
+&gt; “Deze wordt gemaakt op de LCM-module en die wordt gemaakt op de autoclaaf.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Process filte… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-94</span><h3>Filter op compound 1 en compound 2</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-94/filter-op-compound-1-en-compound-2" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** M
+
+### Waarom
+
+Compound 2 is nodig voor coextrusie-producten (koolstructuur, kleurhuidjes). Nu zit dat nog niet goed in de tool. Het moet uiteindelijk ook in SAP komen.
+
+### Detail
+
+Op het moment dat de data wordt uitgebreid groeien de filters mee.
+
+### Code-analyse
+
+The DB elastofirm.db has only a single Compoundcode column; there is no compound2/second compound column. /api/profiles mater… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-95</span><h3>Filter op silicone, talk, AFM behandelingen</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-95/filter-op-silicone-talk-afm-behandelingen" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** M
+
+### Waarom
+
+Als de dataset wordt uitgebreid met behandelingsdata, wil de PO daarop kunnen filteren. Bijvoorbeeld alleen profielen die gesiliconeerd zijn of voorzien van talk.
+
+&gt; “Ik wil alleen maar datgene zien wat gesiliconeerd wordt. Of wat voorzien wordt van talk.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+No treatment columns exist in elastofirm.db (columns confirmed: Klan… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-96</span><h3>Filter op verpakkingsconfiguraties per klant</h3><span class="badge effort">5 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-96/filter-op-verpakkingsconfiguraties-per-klant" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** L
+
+### Waarom
+
+Voor sales is het waardevol om te zien welke verpakkingseenheden al eerder voor een klant zijn gebruikt of beschikbaar zijn, gekoppeld aan het artikelnummer. Sluit aan op het streven naar standaardisatie.
+
+&gt; “Welke verpakkingseenheden heb ik voor een klant al een keer eerder gebruikt.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+No packaging columns exist in elastofi… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-97</span><h3>Coextrusie similarity met compound swap herkenning</h3><span class="badge effort">8 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-97/coextrusie-similarity-met-compound-swap-herkenning" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** XL
+
+### Waarom
+
+Bij coextrusie wil je dat twee profielen met dezelfde geometrie maar omgewisselde kleurhuidjes nog steeds matchen. Dit is algoritme-werk en vraagt waarschijnlijk eerst een spike.
+
+### Detail
+
+De PO verwacht dat je dit straks anders gaat willen dan nu, met echte coextrusie-matching op elkaar.
+
+### Code-analyse
+
+Current similarity is pure HOG geometry cosine in api/image_searc… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-98</span><h3>Fix: zoeken op alleen industrie geeft nu &quot;no products found&quot;</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-98/fix-zoeken-op-alleen-industrie-geeft-nu-no-products-found" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** S
+
+### Waarom
+
+Live gereproduceerde bug. Zoeken op alleen industrie geeft niets terug, maar zodra je een extra criterium toevoegt komen er wel resultaten. Dat is niet logisch.
+
+&gt; “Industrie, agri, en dan zegt hij helemaal niks. Als ik nog iets toevoeg dan krijg ik ze wel. Dat is niet logisch.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+At SQL level industry-only works: LOWER(TRIM(… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-99</span><h3>Fix: lege-staat-melding verschijnt voor eerste zoekopdracht</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-99/fix-lege-staat-melding-verschijnt-voor-eerste-zoekopdracht" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Zoeken en similarity  ·  **Inschatting:** S
+
+### Waarom
+
+Bij het openen toont de tool al &quot;no products found&quot; terwijl er nog geen zoekopdracht is gegeven. De lege staat moet onderscheid maken tussen nog-niet-gezocht en geen-resultaten.
+
+&gt; “Dat moet eigenlijk niet staan no products found. Want ik heb nog geen zoekopdracht gegeven.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+app/page.tsx already has hasSearched state (line 7… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<h2 class="section">5 · Datamodel uitbreiding <span class="count">11</span></h2>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-100</span><h3>Oppervlakte veld toevoegen</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-100/oppervlakte-veld-toevoegen" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** S
+
+### Waarom
+
+De geometrie-echte maat die nodig is voor zowel similarity-sortering als de kostprijsberekening. Het metergewicht volgt uit oppervlakte maal dichtheid.
+
+### Detail
+
+Bron: berekend uit de tekening of uit SAP, te bevestigen.
+
+### Code-analyse
+
+Oppervlakte bestaat al deels: de importer-tabel in data/import_csv.py heeft kolommen area REAL, stam_oppervlakte REAL, en de live DB he… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-101</span><h3>Ingeschreven cirkel berekend en zichtbaar</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-101/ingeschreven-cirkel-berekend-en-zichtbaar" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** M
+
+### Waarom
+
+De ingeschreven cirkel is 2 maal de wanddikte op het diepste punt en bepaalt hoe lang een profiel moet vulkaniseren. Kernen tellen als isolator, dus de warmte moet daar omheen.
+
+&gt; “De ingeschreven cirkel is 2 maal radius. Die warmte moet hier in het centrum komen.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+De ingeschreven-cirkel-berekening bestaat al in het protot… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-102</span><h3>Vouwigheid (1, 2, of 4)</h3><span class="badge effort">1 Point</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-102/vouwigheid-1-2-of-4" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** S
+
+### Waarom
+
+Het aantal strengen dat tegelijk geproduceerd wordt. 4 is eigenlijk 2 keer 2 (twee matrijzen met elk twee geometrieën). Komt uit SAP en is gerelateerd aan het artikel.
+
+&gt; “De verhouding is 1, 2 of 4. 4 hangt af van de productiestraat.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Vouwigheid (aantal gelijktijdig geproduceerde strengen) bestaat nog niet in het schema. … (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-103</span><h3>Productiesnelheid in m/min</h3><span class="badge effort">1 Point</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-103/productiesnelheid-in-mmin" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** S
+
+### Waarom
+
+Onderdeel van de stamkaart die nu al in SAP staat. Nodig voor de kostprijs- en lijnberekeningen.
+
+### Code-analyse
+
+Productiesnelheid staat al in SAP als onderdeel van de stamkaart maar niet in de tool. Geen kolom in data/import_csv.py noch in de live DB. Nodig voor kostprijs- en lijnberekeningen. Doel: nieuw REAL-veld production_speed_m_min, ingelezen uit SAP, toonbaar in d… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-104</span><h3>Afkniplengte</h3><span class="badge effort">1 Point</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-104/afkniplengte" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** S
+
+### Waarom
+
+Heeft grote impact op efficiency en prijs. Bij 200 meter op een haspel draait een order vlot, maar bij bosjes van 15 meter explodeert de doorlooptijd door de wisseltijd.
+
+&gt; “Als die klant nou bosjes wil hebben van 15 meter, dan werd die doorlooptijd van 5 uur 45 uur.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Afkniplengte (cut length) bestaat nog niet in het schem… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-105</span><h3>Compound 1, compound 2, dichtheid</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-105/compound-1-compound-2-dichtheid" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** M
+
+### Waarom
+
+Compound 2 is voor coextrusie-producten. Dichtheid is cruciaal omdat de PO bezig is met goedkopere compounds met lagere dichtheid, wat het metergewicht beïnvloedt.
+
+### Detail
+
+Moet uiteindelijk ook in SAP ingevuld worden, voor TPP zodra die op SAP overgaat.
+
+### Code-analyse
+
+Er is nu een enkel compound-veld: compound_code/Compoundcode gemapt naar Profile.compound en stam_m… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-106</span><h3>Silicone, talk, AFM montage hulpmiddel (ja/nee)</h3><span class="badge effort">1 Point</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-106/silicone-talk-afm-montage-hulpmiddel-janee" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** S
+
+### Waarom
+
+Behandelingsdata die nu nog niet in de tool zit. AFM is een montage hulpmiddel, talk een glijmiddel. Nodig om gericht te kunnen filteren en vergelijken.
+
+### Code-analyse
+
+Behandelingsdata (silicone, talk glijmiddel, AFM montagehulpmiddel) zit nog niet in de tool. Geen kolommen in import_csv.py of de live DB. Doel: drie boolean-velden toevoegen die filterbaar en vergelijkbaa… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-107</span><h3>Haspeltype, haspeldoos, palletconfiguratie</h3><span class="badge effort">1 Point</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-107/haspeltype-haspeldoos-palletconfiguratie" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** S
+
+### Waarom
+
+Bron-gerelateerde verpakkingsdata die de PO uiteindelijk in de tool wil. Komt deels uit een 1-kaart of 0-kaart in het systeem.
+
+&gt; “Haspel type, haspel doos, pallet. Dat zijn bron gerelateerde dingen die ik straks ook wil.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Verpakkingsdata (haspeltype, haspeldoos, palletconfiguratie) ontbreekt in het schema; bron is deels e… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-108</span><h3>Plastic zakje (ja/nee), splice (ja/nee), stuks per pallet</h3><span class="badge effort">1 Point</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-108/plastic-zakje-janee-splice-janee-stuks-per-pallet" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** S
+
+### Waarom
+
+Verdere verpakkingsdetails. Of een product aan elkaar gesplitst wordt of niet, of er een plastic zakje omheen zit, en hoeveel stuks op een pallet passen (bijvoorbeeld 32 dozen).
+
+### Code-analyse
+
+Verdere verpakkingsdetails: plastic zakje (boolean), splice (boolean of een product aan elkaar gesplitst wordt), stuks per pallet (integer, bv 32 dozen). Niet in schema. Doel: twee… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-109</span><h3>Tabbladen in detail view: stamkaart, compound, proces en BOM</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-109/tabbladen-in-detail-view-stamkaart-compound-proces-en-bom" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** M
+
+### Waarom
+
+Omdat er veel velden bijkomen wil de PO ze groeperen in tabbladen, zodat het overzichtelijk blijft. Tabblad 1 stamkaart, 2 compound, 3 proces en BOM.
+
+&gt; “Dan zou ik denken om hier een soort van tabbladen in te doen.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+De detail-view is nu een platte specs-grid in de Dialog van app/page.tsx (regel 3468-3480, DialogContent me… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-110</span><h3>Migratie historische data uit Filemaker via Access export</h3><span class="badge effort">5 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-110/migratie-historische-data-uit-filemaker-via-access-export" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Datamodel uitbreiding  ·  **Inschatting:** L
+
+### Waarom
+
+De actuele data komt uit SAP, maar de historie zit nog in het oude Filemaker-systeem van Vound. Die moet via een Access-export meegenomen worden met alle nieuwe velden.
+
+### Detail
+
+Open vraag: nu doen of wachten op de TPP/koolstrucy SAP-migratie over ongeveer een half jaar.
+
+### Code-analyse
+
+Actuele data komt uit SAP, maar de historie zit in het oude Filemaker-systeem van … (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<h2 class="section">6 · Toepassing en omschrijving <span class="count">9</span></h2>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-111</span><h3>Veld &quot;toepassing&quot; met dropdown plus vrije invoer</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-111/veld-toepassing-met-dropdown-plus-vrije-invoer" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Toepassing en omschrijving  ·  **Inschatting:** M
+
+### Waarom
+
+De PO wil producten kunnen koppelen aan een toepassing of industrie, bijvoorbeeld industriedeuren of ramen en deuren. Een combinatie van bestaande waarden (dropdown) en het toevoegen van nieuwe.
+
+&gt; “Dit is een voor ramen en deuren. Hoort bij ramen en deuren.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+The live `profiles` table (queried in api/main.py around li… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-112</span><h3>Veld &quot;omschrijving&quot; met dropdown plus vrije invoer</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-112/veld-omschrijving-met-dropdown-plus-vrije-invoer" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Toepassing en omschrijving  ·  **Inschatting:** S
+
+### Waarom
+
+Naast toepassing een tweede classificatieveld voor de omschrijving, bijvoorbeeld indrukrubber, vastbeglazing, contactlijst of onder rubber. Hetzelfde patroon van dropdown plus vrije invoer.
+
+&gt; “Onder rubber maak je aan, dan kun je daarna allemaal onder rubber aanklikken voor de rest.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Identical pattern to the toepassi… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-113</span><h3>Engelse equivalenten van beide velden</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-113/engelse-equivalenten-van-beide-velden" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Toepassing en omschrijving  ·  **Inschatting:** M
+
+### Waarom
+
+De PO is de Engelse benamingen aan het verzinnen omdat de classificatie ook in het Engels beschikbaar moet zijn.
+
+&gt; “En dan het Engelse woord voor applicatie en omschrijven.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+The PO wants English equivalents of toepassing/omschrijving so classification is bilingual. Nothing bilingual exists today; all column names and… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-114</span><h3>Click om te selecteren in plaats van detail te openen</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-114/click-om-te-selecteren-in-plaats-van-detail-te-openen" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Toepassing en omschrijving  ·  **Inschatting:** S
+
+### Waarom
+
+Nu opent een klik de details. De PO wil dat een klik het record selecteert, zodat je snel veel records kunt aanvinken voor bulk-bewerking. Details krijgen een eigen knop.
+
+&gt; “Wat fijner zou zijn, als je erop klikt dan selecteer je hem.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+In app/page.tsx the profile card onClick (grid \~line 3058 and list \~line 3212) c… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-115</span><h3>Shift-klik voor multi-select</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-115/shift-klik-voor-multi-select" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Toepassing en omschrijving  ·  **Inschatting:** S
+
+### Waarom
+
+Voor power-gebruik: shift-klik om een reeks records in één keer te selecteren. De PO kent shift-klik en accepteert dat het iets voor de handige gebruiker is.
+
+&gt; “Shift klik voor multi-select? Ja, oké.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Building on click-to-select, the PO wants shift-click range selection. The card list is rendered from the results arr… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-116</span><h3>&quot;Select all in result set&quot; knop</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-116/select-all-in-result-set-knop" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Toepassing en omschrijving  ·  **Inschatting:** M
+
+### Waarom
+
+Bij ongeveer 124 gevonden records wil de PO ze allemaal in één keer kunnen selecteren en dezelfde benaming en rubricering geven.
+
+&gt; “Hij vindt 124. Dan wil ik die records selecteren en gelijk allemaal in 1 keer dezelfde benaming geven.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+At \~124 found records the PO wants to select the entire result set in one click. … (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-117</span><h3>Bulk-apply panel voor toepassing/omschrijving</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-117/bulk-apply-panel-voor-toepassingomschrijving" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Toepassing en omschrijving  ·  **Inschatting:** M
+
+### Waarom
+
+Het paneel waarmee je op de geselecteerde records in één actie de toepassing en omschrijving zet. Het handwerk dat de PO nu profiel-voor-profiel doet wordt zo een bulk-actie.
+
+### Code-analyse
+
+This is the action surface for the selection: apply toepassing and omschrijving to all selected records at once. Today there is no write endpoint at all in [main.py](&lt;http://main… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-118</span><h3>Data management modus toggle (capability flag)</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-118/data-management-modus-toggle-capability-flag" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Toepassing en omschrijving  ·  **Inschatting:** M
+
+### Waarom
+
+De velden zijn voor iedereen zichtbaar maar alleen onder beheer bewerkbaar. De PO wil een modus die de bewerkbare velden en bulk-acties tevoorschijn haalt, geïmplementeerd als capability flag, niet als aparte rol.
+
+&gt; “Ik kan iemand de rol geven, data view mode. Of een capability dat hij op die optioneel.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+The editable… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-119</span><h3>Periodieke upstream sync naar SAP custom fields</h3><span class="badge effort">5 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-119/periodieke-upstream-sync-naar-sap-custom-fields" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Toepassing en omschrijving  ·  **Inschatting:** L
+
+### Waarom
+
+In SAP staan al twee custom velden gereserveerd. De classificatie die in de tool wordt aangebracht moet periodiek terug naar SAP, zodat SAP het systeem van waarheid blijft.
+
+### Detail
+
+De SAP-contactpersoon is drie maanden met vakantie, dus eerst registreren in de tool en de import later met SAP afstemmen.
+
+### Code-analyse
+
+Two SAP custom fields are reserved; the toep… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<h2 class="section">7 · Indicatieve prijsstelling <span class="count">6</span></h2>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-120</span><h3>Materiaalkost veld per artikel (oppervlakte maal dichtheid maal actuele compound prijs)</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-120/materiaalkost-veld-per-artikel-oppervlakte-maal-dichtheid-maal-actuele" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Indicatieve prijsstelling  ·  **Inschatting:** M
+
+### Waarom
+
+In sessie 3 is besloten niet de laatste verkoopprijs te gebruiken maar de materiaalkost. Die bereken je uit oppervlakte maal dichtheid maal de actuele compound-prijs per kilo. Dat geeft een verdedigbare kostbasis.
+
+&gt; “Wat is je actuele kostprijs van die compound, maal soortelijk gewicht, maal kilogram.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+The DB already … (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-121</span><h3>Marge tier configuratie per klantklasse (A/B/C)</h3><span class="badge effort">3 Points</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-121/marge-tier-configuratie-per-klantklasse-abc" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Indicatieve prijsstelling  ·  **Inschatting:** M
+
+### Waarom
+
+Op de materiaalkost komt een marge. De PO noemt vaste tiers: A-klant 50%, B-klant 60%, C-klant 70%, plus categorieën als high-volume low-complex 40% en high-volume mid-complex 43%.
+
+&gt; “Normaal staat hier a klanten 50, b klanten 60, c klanten 70 procent marge.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+There is no margin or customer-class concept in the schema … (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-122</span><h3>Indicatieve prijs berekening en weergave</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-122/indicatieve-prijs-berekening-en-weergave" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Indicatieve prijsstelling  ·  **Inschatting:** S
+
+### Waarom
+
+Materiaalkost maal marge geeft de indicatieve verkoopprijs. Bedoeld voor een snelle indicatie bij een klantgesprek of beurs, niet als definitieve offerte.
+
+&gt; “Dan een prijs denken van 2 euro zoveel. Maar dat wordt verfijnd.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+This is the composition of the prior two tasks: indicative_price = material_cost \* (1 + margin… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-123</span><h3>UI label &quot;indicatief&quot; prominent zichtbaar, geen &quot;quote&quot;</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-123/ui-label-indicatief-prominent-zichtbaar-geen-quote" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Indicatieve prijsstelling  ·  **Inschatting:** S
+
+### Waarom
+
+De laatste verkoopprijs is bewust losgelaten omdat een match toevallig een Condor-product met de laagste marges kan zijn, en dan zou sales op die prijs gaan zitten. De indicatie moet duidelijk als indicatie gelabeld zijn.
+
+&gt; “Het is toevallig een product van Condor. Die laagste marges daar is. En dan gaan ze die prijs gebruiken.” — *Product owner, uit transcript*
+
+### Co… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-124</span><h3>Live koppeling naar BI voor actuele compound prijzen</h3><span class="badge effort">5 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-124/live-koppeling-naar-bi-voor-actuele-compound-prijzen" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Indicatieve prijsstelling  ·  **Inschatting:** L
+
+### Waarom
+
+De compound-prijzen worden al maandelijks geactualiseerd in de BI-laag voor SQL. De tool leest die uit in plaats van een eigen kopie bij te houden.
+
+&gt; “Want die compoundprijs zit in de BI. Gaan we hem daar gewoon uitlezen.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+The compound price lookup introduced in task one is a placeholder; this task replaces the local … (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-125</span><h3>Staleness indicator op compound prijs</h3><span class="badge effort">1 Point</span><span class="badge st review">In Review</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-125/staleness-indicator-op-compound-prijs" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Indicatieve prijsstelling  ·  **Inschatting:** S
+
+### Waarom
+
+De olieprijs beweegt per dag en Shell kondigde achter elkaar verhogingen van 42% en 45% aan. Maandelijks bijwerken kan te oud zijn, dus een zichtbare indicator over de versheid van de prijs.
+
+### Detail
+
+Open vraag: maandelijks blijven of naar dagelijks. De PO vindt dagelijks aantrekkelijk maar erkent dat het complex is.
+
+### Code-analyse
+
+Oil price moves daily and Shell… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<h2 class="section">8 · Heatmap module <span class="count">9</span></h2>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-126</span><h3>Profile upload (SVG/DXF/image)</h3><span class="badge effort">5 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-126/profile-upload-svgdxfimage" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Heatmap module (apart product)  ·  **Inschatting:** L
+
+### Waarom
+
+De ingang van de stroomingsleer-tool. Je uploadt een profiel-doorsnede waarop de heatmap berekend wordt. Er bestaat al een werkend prototype.
+
+&gt; “Je kan zeggen van upload een profieltje.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+A working prototype already exists at artifacts/heatmap-designer.html: loadFile() uses createImageBitmap + an offscreen canvas,… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-127</span><h3>Heatmap overlay rood-naar-blauw</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-127/heatmap-overlay-rood-naar-blauw" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Heatmap module (apart product)  ·  **Inschatting:** M
+
+### Waarom
+
+Visualiseert waar de rubberstroom het snelst is. Rood waar veel rubber omheen zit en de stroom snel is, blauw waar het dun is en de stroom zwak. De matrijs moet dat inverse compenseren: rood knijpen, blauw openen.
+
+&gt; “Rood is dan waar de flow van de rubber het snelst is. Waar het zo blauw mogelijk is moet je het vergroten.” — *Product owner, uit transcript*
+
+### Cod… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-128</span><h3>Outer contour in wit getekend</h3><span class="badge effort">1 Point</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-128/outer-contour-in-wit-getekend" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Heatmap module (apart product)  ·  **Inschatting:** S
+
+### Waarom
+
+De buitencontour van het profiel moet in het wit zichtbaar zijn, omdat de huidige weergave dat nog niet goed laat zien.
+
+&gt; “Eigenlijk zou je hierin nog in het wit de buitencontour willen zien.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+This is already partially built. recompute() in heatmap-designer.html (lines \~1037-1059) has an outline overlay gated by… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-129</span><h3>Ingeschreven cirkel berekenen en tonen</h3><span class="badge effort">1 Point</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-129/ingeschreven-cirkel-berekenen-en-tonen" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Heatmap module (apart product)  ·  **Inschatting:** S
+
+### Waarom
+
+De ingeschreven cirkel laat zien waar de warmte het langst over doet om de kern te bereiken. Verschuift mee als je kernen plaatst.
+
+&gt; “Doordat de ingeschreven cirkel, dan kan ik zien dat als je hem hier plaatst dat de ingeschreven cirkel verplaatst.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Fully prototyped already. In recompute() the maximum of the dist… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-130</span><h3>Kern plaatsen via klik</h3><span class="badge effort">1 Point</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-130/kern-plaatsen-via-klik" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Heatmap module (apart product)  ·  **Inschatting:** S
+
+### Waarom
+
+Je kunt kernen aan het profiel toevoegen om te zien hoe dat de stroming en de ingeschreven cirkel beïnvloedt. Een kern werkt als isolator in de warmteverdeling.
+
+### Code-analyse
+
+Already implemented in the prototype. The mode-toggle has an Add core button (data-mode=add), state.coreRadius is set by #core-size slider, and the overlayCanvas mousedown handler (lines \… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-131</span><h3>Kern verplaatsen via slepen, heatmap update mee</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-131/kern-verplaatsen-via-slepen-heatmap-update-mee" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Heatmap module (apart product)  ·  **Inschatting:** M
+
+### Waarom
+
+Interactief de kern heen en weer bewegen, groter of kleiner maken, en live zien wat dat met de heatmap doet. Zo kun je placement-beslissingen visueel afwegen.
+
+&gt; “Ik kan hem heen en weer bewegen, ik kan hem groter maken, kleiner maken.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Already implemented. Move core mode (data-mode=move) plus findCoreAt() hit-tes… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-132</span><h3>Asymmetrisch profiel detectie</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-132/asymmetrisch-profiel-detectie" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Heatmap module (apart product)  ·  **Inschatting:** M
+
+### Waarom
+
+Bij een asymmetrisch profiel komt ongeveer 50% van de klantorders omgedraaid binnen. Dat maakt het matrijsontwerp complex omdat de stroming aan beide kanten anders is.
+
+&gt; “Ik krijg dus 50 procent van de orders zo geleverd. Dan moet ik mijn ene zeemaat omdraaien.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Nothing exists for this yet. shape_extractor.py has… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-133</span><h3>Suggestie symmetrische matrijs truc voor asymmetrische profielen</h3><span class="badge effort">5 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-133/suggestie-symmetrische-matrijs-truc-voor-asymmetrische-profielen" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Heatmap module (apart product)  ·  **Inschatting:** L
+
+### Waarom
+
+De oplossing die de PO toepast: een symmetrische matrijs met een kruis erin, zodat het profiel altijd op dezelfde manier van de haspel komt, ongeacht rotatie.
+
+&gt; “Als ik hier een kruis inzet dan is dit en dit gelijk, en als ik hem oprolt komt hij 2 keer dezelfde manier.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Net new feature, depends on the asymmetry d… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-134</span><h3>Lip oriëntatie advies ten opzichte van inloopband</h3><span class="badge effort">5 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-134/lip-orientatie-advies-ten-opzichte-van-inloopband" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Heatmap module (apart product)  ·  **Inschatting:** L
+
+### Waarom
+
+Een lip kan vervormen als het profiel verkeerd op de inloopband ligt. Het model moet waarschuwen en steunpunten kunnen suggereren.
+
+&gt; “Als ik hem met deze kant op de inloopband leg, ga ik die lip heel erg deformeren.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Net new feature, no existing code. The PO warns that a lip vervormt if the profile verkeerd op de… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<h2 class="section">9 · Productielijn calculator <span class="count">5</span></h2>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-135</span><h3>Excel lijn-allocatie model port</h3><span class="badge effort">5 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-135/excel-lijn-allocatie-model-port" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Productielijn calculator (alleen voor operations)  ·  **Inschatting:** L
+
+### Waarom
+
+De PO heeft een Excel-model dat uitrekent welke productielijn een artikel het efficiëntst kan draaien. Hij ziet dit als de perfecte AI-case omdat er te veel variabelen zijn voor mensen om over de dagelijkse 7 tot 25 producten te optimaliseren.
+
+&gt; “Dit is een perfecte AI case om dit gewoon op maximale utilisatie door te rekenen.” — *Product owner, … (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-136</span><h3>Per lijn: max output, doorlooptijd, afval, voorkeur ranking</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-136/per-lijn-max-output-doorlooptijd-afval-voorkeur-ranking" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Productielijn calculator (alleen voor operations)  ·  **Inschatting:** M
+
+### Waarom
+
+Het model geeft per lijn de maximale output, doorlooptijd, het afval en een voorkeursranking, zodat operations de beste lijn kan kiezen. De PO zag iemand op lijn 8 draaien wat veel beter op lijn 9 had gekund.
+
+&gt; “Welke lijn kan dit product meest efficiënt draaien.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+This is the output contract of… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-137</span><h3>Begrensing op vulkanisatie tijd, extruder capaciteit, operator handling</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-137/begrensing-op-vulkanisatie-tijd-extruder-capaciteit-operator-handling" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Productielijn calculator (alleen voor operations)  ·  **Inschatting:** M
+
+### Waarom
+
+De output wordt begrensd door drie factoren: de vulkanisatietijd, de maximale extruder-output en hoeveel een operator aankan (1, 2 of 4 strengen). De laagste van de drie is bindend.
+
+&gt; “Wat is mijn begrenzing op vulkaniseren, wat is mijn begrenzing op output. Ik werk met de laagste waarde.” — *Product owner, uit transcript*
+
+### Code-analyse
+
+Outp… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-138</span><h3>Strikte rolbeperking: sales en customer service zien dit niet</h3><span class="badge effort">3 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-138/strikte-rolbeperking-sales-en-customer-service-zien-dit-niet" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Productielijn calculator (alleen voor operations)  ·  **Inschatting:** M
+
+### Waarom
+
+Cruciale commerciële keuze uit sessie 3. Sales calculeert alles op 160 kuub per uur (de duurste versie), operations doet de optimalisatie daarna. Als sales de echte lijn-efficiency zou zien, geven ze de marge weg.
+
+&gt; “Wij verkopen alles op dit level. Als ik dit niveau vrijgeef aan sales, dan heb ik maar 1 lijn waar ik geld kan verdienen.” — *Produ… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<details class="item">
+  <summary><span class="chev">&#9654;</span><span class="badge id">INC-139</span><h3>Optioneel later: dagelijkse order allocation recommender</h3><span class="badge effort">8 Points</span><span class="badge st backlog">Backlog</span></summary>
+  <div class="item-body">
+    <p class="files"><a href="https://linear.app/incredicorp/issue/INC-139/optioneel-later-dagelijkse-order-allocation-recommender" target="_blank" rel="noreferrer">Open in Linear &rarr;</a></p>
+    <pre class="desc">&gt; **Sectie:** Productielijn calculator (alleen voor operations)  ·  **Inschatting:** XL
+
+### Waarom
+
+De volgende stap zou zijn om de hele dagelijkse order-intake over alle lijnen te verdelen voor maximale gemiddelde utilisatie. Dat vereist wel live planningsdata om te weten welke lijnen vrij zijn.
+
+### Detail
+
+Zonder integratie met het planningssysteem blijft het een calculator, geen recommender.
+
+### Code-analyse
+
+The future step distributes th… (truncated, use `get_issue` for full description)</pre>
+  </div>
+</details>
+<footer>Elastofirm Profiler · Phase 3 · 63 issues across 9 milestones · mirror of the Linear project, grouped by milestone.</footer>
+</div>
+<script>
+const root=document.documentElement,btns=[...document.querySelectorAll('.theme-toggle button')],mq=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(m){root.setAttribute('data-theme',m==='system'?(mq.matches?'dark':'light'):m);btns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.set===m)))}
+btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.set)));mq.addEventListener('change',()=>{const a=btns.find(b=>b.getAttribute('aria-pressed')==='true');if(a&&a.dataset.set==='system')apply('system')});apply('light');
+</script>
+</body></html>
