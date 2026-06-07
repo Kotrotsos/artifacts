@@ -443,3 +443,4 @@
 | 2026-06-07 | content | reports | [draft.md](projects/content/reports/draft.md) | Autocomplete to Delegation workflow article: draft.md |
 | 2026-06-07 | content | reports | [draft.html](projects/content/reports/draft.html) | Autocomplete to Delegation workflow article: draft.html |
 | 2026-06-07 | content | images | [hero.png](projects/content/images/hero.png) | Autocomplete to Delegation workflow article: hero.png |
+| 2026-06-07 | content | images | [diagram-shift.png](projects/content/images/diagram-shift.png) | Autocomplete to Delegation workflow article: diagram-shift.png |

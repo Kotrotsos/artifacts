@@ -220,3 +220,4 @@
 | 2026-06-07 | reports | [draft.md](reports/draft.md) | Autocomplete to Delegation workflow article: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/draft.md |
 | 2026-06-07 | reports | [draft.html](reports/draft.html) | Autocomplete to Delegation workflow article: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/draft.html |
 | 2026-06-07 | images | [hero.png](images/hero.png) | Autocomplete to Delegation workflow article: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/hero.png |
+| 2026-06-07 | images | [diagram-shift.png](images/diagram-shift.png) | Autocomplete to Delegation workflow article: diagram-shift.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/diagram-shift.png |
