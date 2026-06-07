@@ -223,3 +223,4 @@
 | 2026-06-07 | images | [diagram-shift.png](images/diagram-shift.png) | Autocomplete to Delegation workflow article: diagram-shift.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/diagram-shift.png |
 | 2026-06-07 | images | [diagram-handoff-map.png](images/diagram-handoff-map.png) | Autocomplete to Delegation workflow article: diagram-handoff-map.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/diagram-handoff-map.png |
 | 2026-06-07 | images | [screenshot-issue.png](images/screenshot-issue.png) | Autocomplete to Delegation workflow article: screenshot-issue.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/screenshot-issue.png |
+| 2026-06-07 | images | [diagram-gates.png](images/diagram-gates.png) | Autocomplete to Delegation workflow article: diagram-gates.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/diagram-gates.png |

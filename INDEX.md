@@ -446,3 +446,4 @@
 | 2026-06-07 | content | images | [diagram-shift.png](projects/content/images/diagram-shift.png) | Autocomplete to Delegation workflow article: diagram-shift.png |
 | 2026-06-07 | content | images | [diagram-handoff-map.png](projects/content/images/diagram-handoff-map.png) | Autocomplete to Delegation workflow article: diagram-handoff-map.png |
 | 2026-06-07 | content | images | [screenshot-issue.png](projects/content/images/screenshot-issue.png) | Autocomplete to Delegation workflow article: screenshot-issue.png |
+| 2026-06-07 | content | images | [diagram-gates.png](projects/content/images/diagram-gates.png) | Autocomplete to Delegation workflow article: diagram-gates.png |
