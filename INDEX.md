@@ -441,3 +441,4 @@
 | 2026-06-06 | agentlog | reports | [how-agentlog-works.html](projects/agentlog/reports/how-agentlog-works.html) | Visual explainer of how agentlog works, with SVG diagrams and light/dark theme |
 | 2026-06-06 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board — INC-82/83/84 usage statistics module (28/28) |
 | 2026-06-07 | content | reports | [draft.md](projects/content/reports/draft.md) | Autocomplete to Delegation workflow article: draft.md |
+| 2026-06-07 | content | reports | [draft.html](projects/content/reports/draft.html) | Autocomplete to Delegation workflow article: draft.html |

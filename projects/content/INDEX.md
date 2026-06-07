@@ -218,3 +218,4 @@
 | 2026-06-06 | images | [chart-demand-range.png](images/chart-demand-range.png) | AI environment balanced piece (workflow-researched, fact-checked): chart-demand-range.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-environment-right-argument/chart-demand-range.png |
 | 2026-06-06 | images | [chart-concentration.png](images/chart-concentration.png) | AI environment balanced piece (workflow-researched, fact-checked): chart-concentration.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-environment-right-argument/chart-concentration.png |
 | 2026-06-07 | reports | [draft.md](reports/draft.md) | Autocomplete to Delegation workflow article: draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/draft.md |
+| 2026-06-07 | reports | [draft.html](reports/draft.html) | Autocomplete to Delegation workflow article: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/draft.html |
