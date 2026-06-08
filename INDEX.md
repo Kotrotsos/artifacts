@@ -457,3 +457,4 @@
 | 2026-06-08 | kyssbook-kdp | reports | [kdp-submission.html](projects/kyssbook-kdp/reports/kdp-submission.html) | KDP submission playbook for Claude Code Unstoppable (ebook + 8x10 paperback) |
 | 2026-06-08 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board — heatmap module + datamodel scaffolding (30/30) |
 | 2026-06-08 | elastofirm-profiler | reports | [phase3-feature-screenshots.html](projects/elastofirm-profiler/reports/phase3-feature-screenshots.html) | Phase 3 feature screenshots — current UI (heatmap tab, stats dialog, datamodel) |
+| 2026-06-08 | elastofirm-profiler | reports | [phase3-status-blockers.html](projects/elastofirm-profiler/reports/phase3-status-blockers.html) | Phase 3 status & blockers — what's done and what each remaining item needs |

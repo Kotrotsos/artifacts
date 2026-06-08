@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elastofirm Profiler — Phase 3 · Status &amp; Blockers</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f9fafb;--surface:#fff;--surface-2:#f3f4f6;--border:#e5e7eb;--border-strong:#d1d5db;--ink:#18181b;--ink-2:#3f3f46;--muted:#71717a;--accent:#2563eb;--good:#059669;--good-bg:#ecfdf5;--good-bd:#a7f3d0;--amber:#b45309;--amber-bg:#fffbeb;--amber-bd:#fde68a;--blue:#1d4ed8;--blue-bg:#eff6ff;--blue-bd:#bfdbfe;--gray:#52525b;--gray-bg:#f4f4f5;--gray-bd:#e4e4e7}
+[data-theme=dark]{--bg:#0f1115;--surface:#16181d;--surface-2:#1d2026;--border:#2a2e37;--border-strong:#3a3f4b;--ink:#f4f4f5;--ink-2:#d4d4d8;--muted:#9ca3af;--accent:#60a5fa;--good:#34d399;--good-bg:#06281f;--good-bd:#0f5132;--amber:#fbbf24;--amber-bg:#2a2010;--amber-bd:#5c4310;--blue:#93c5fd;--blue-bg:#10213f;--blue-bd:#1e3a5f;--gray:#a1a1aa;--gray-bg:#1d2026;--gray-bd:#2a2e37}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Geist,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:44px 28px 90px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:29px;font-weight:600;letter-spacing:-.025em;margin:8px 0 14px}
+.theme-toggle{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;flex-shrink:0}
+.theme-toggle button{font-family:'Geist Mono',monospace;font-size:11px;background:var(--surface);color:var(--muted);border:none;padding:6px 10px;cursor:pointer;border-right:1px solid var(--border)}
+.theme-toggle button:last-child{border-right:none}.theme-toggle button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 6px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;font-size:13px}
+.stat b{font-size:22px;font-weight:600;display:block}
+.done-note{background:var(--good-bg);border:1px solid var(--good-bd);border-radius:12px;padding:14px 18px;margin:18px 0 8px;font-size:13.5px;color:var(--ink-2)}
+.done-note b{color:var(--ink)} .done-note .ids{font-family:'Geist Mono',monospace;font-size:11.5px;color:var(--muted);display:block;margin-top:6px;line-height:1.7}
+.lead{font-size:14.5px;color:var(--ink-2);margin:14px 0 26px;max-width:74ch}
+section.cat{background:var(--surface);border:1px solid var(--border);border-left-width:4px;border-radius:12px;padding:18px 20px;margin-bottom:18px}
+section.amber{border-left-color:var(--amber)} section.blue{border-left-color:var(--blue)} section.gray{border-left-color:var(--gray-bd)} section.good{border-left-color:var(--good)}
+section.cat h2{font-size:16px;font-weight:600;display:flex;align-items:center;gap:10px}
+.cnt{font-family:'Geist Mono',monospace;font-size:11px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:1px 9px;color:var(--ink-2)}
+.blurb{font-size:13px;color:var(--muted);margin:6px 0 12px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--border)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.id a{font-family:'Geist Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;white-space:nowrap}
+td.ti{color:var(--ink);width:30%} td.need{color:var(--ink-2)}
+footer{margin-top:36px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+@media(max-width:640px){td.ti{width:auto}.wrap{padding:28px 16px 60px}header{flex-direction:column}}
+@media print{body{background:#fff;color:#000}.theme-toggle{display:none}section.cat{break-inside:avoid}}
+</style></head><body><div class="wrap">
+<header><div><div class="eyebrow">Elastofirm Profiler · Phase 3</div><h1>Status &amp; blockers</h1></div>
+<div class="theme-toggle" role="group" aria-label="Theme"><button data-set="light" aria-pressed="true">Light</button><button data-set="dark" aria-pressed="false">Dark</button><button data-set="system" aria-pressed="false">System</button></div></header>
+<div class="stats">
+  <div class="stat"><b>34</b>shipped (In Review)</div>
+  <div class="stat"><b>28</b>remaining</div>
+  <div class="stat"><b>1</b>cancelled</div>
+  <div class="stat"><b>63</b>total</div>
+</div>
+<div class="done-note"><b>Shipped this phase (34 issues, all In Review):</b> roles &amp; access, T&amp;C gate, usage statistics, search/result fixes, the classify cluster, detail-view tabs, indicative pricing + staleness, and datamodel scaffolding.
+<span class="ids">INC-78, INC-80, INC-81, INC-82, INC-83, INC-84, INC-87, INC-88, INC-89, INC-90, INC-91, INC-92, INC-93, INC-98, INC-99, INC-100, INC-102, INC-103, INC-105, INC-109, INC-111, INC-112, INC-113, INC-114, INC-115, INC-116, INC-117, INC-118, INC-120, INC-121, INC-122, INC-123, INC-125, INC-140</span></div>
+<p class="lead">The remaining 28 issues are grouped by <b>what's actually stopping them</b>. Almost everything left needs either a data source (a file you export, or a system connection) or a product decision — not more code against empty columns. The heatmap module was built as a first pass and pulled for rework. Each row says exactly what unblocks it.</p>
+<section class="cat amber">
+  <h2>You provide a file <span class="cnt">2</span></h2>
+  <p class="blurb">Work is ready the moment the source data arrives — these are the real unblockers.</p>
+  <table><thead><tr><th>Issue</th><th>Title</th><th>What it needs to proceed</th></tr></thead><tbody><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-110/migratie-historische-data-uit-filemaker-via-access-export" target="_blank" rel="noreferrer">INC-110</a></td>
+<td class="ti">Migratie historische data uit Filemaker via Access export</td><td class="need">The Filemaker historical data, exported via Access. This is the keystone: it fills the scaffolded datamodel columns and unblocks the filter cluster below.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-135/excel-lijn-allocatie-model-port" target="_blank" rel="noreferrer">INC-135</a></td>
+<td class="ti">Excel lijn-allocatie model port</td><td class="need">The Excel line-allocation model (the spreadsheet sales/planning use today) to port its logic.</td></tr></tbody></table>
+</section><section class="cat amber">
+  <h2>Needs external system access <span class="cnt">2</span></h2>
+  <p class="blurb">Depend on a live connection / credentials someone has to set up.</p>
+  <table><thead><tr><th>Issue</th><th>Title</th><th>What it needs to proceed</th></tr></thead><tbody><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-119/periodieke-upstream-sync-naar-sap-custom-fields" target="_blank" rel="noreferrer">INC-119</a></td>
+<td class="ti">Periodieke upstream sync naar SAP custom fields</td><td class="need">SAP custom-field access + the SAP contact (the PO noted they were unavailable) to push toepassing/omschrijving upstream.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-124/live-koppeling-naar-bi-voor-actuele-compound-prijzen" target="_blank" rel="noreferrer">INC-124</a></td>
+<td class="ti">Live koppeling naar BI voor actuele compound prijzen</td><td class="need">A BI / data-warehouse feed for live compound prices. Until then the price is the documented €2,85/kg placeholder (INC-125 staleness chip already wired for when it lands).</td></tr></tbody></table>
+</section><section class="cat blue">
+  <h2>Needs a product decision <span class="cnt">2</span></h2>
+  <p class="blurb">One answer from the PO and these become small, well-scoped builds.</p>
+  <table><thead><tr><th>Issue</th><th>Title</th><th>What it needs to proceed</th></tr></thead><tbody><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-85/filter-knop-incomplete-data-records" target="_blank" rel="noreferrer">INC-85</a></td>
+<td class="ti">Filter knop &quot;incomplete data records&quot;</td><td class="need">Definition of “incomplete data”: which fields are mandatory, and whether sentinels (‘-’, ‘not found’, ‘csv_record’) count as missing. Reverted earlier pending this.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-86/filter-knop-incomplete-image-records" target="_blank" rel="noreferrer">INC-86</a></td>
+<td class="ti">Filter knop &quot;incomplete image records&quot;</td><td class="need">Definition of “incomplete image” (missing file vs failed indexing). More objective than INC-85 — buildable on existing image_index columns once confirmed.</td></tr></tbody></table>
+</section><section class="cat gray">
+  <h2>Blocked downstream (unblocked by the imports above) <span class="cnt">10</span></h2>
+  <p class="blurb">The columns are empty or absent; the build is trivial once INC-110/119 provide values.</p>
+  <table><thead><tr><th>Issue</th><th>Title</th><th>What it needs to proceed</th></tr></thead><tbody><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-94/filter-op-compound-1-en-compound-2" target="_blank" rel="noreferrer">INC-94</a></td>
+<td class="ti">Filter op compound 1 en compound 2</td><td class="need">Filter on compound 1/2 — compound_2 column scaffolded but empty.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-95/filter-op-silicone-talk-afm-behandelingen" target="_blank" rel="noreferrer">INC-95</a></td>
+<td class="ti">Filter op silicone, talk, AFM behandelingen</td><td class="need">Filter on silicone/talk/AFM — needs INC-106 + data.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-96/filter-op-verpakkingsconfiguraties-per-klant" target="_blank" rel="noreferrer">INC-96</a></td>
+<td class="ti">Filter op verpakkingsconfiguraties per klant</td><td class="need">Filter on packaging config — needs INC-107/108 + data.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-97/coextrusie-similarity-met-compound-swap-herkenning" target="_blank" rel="noreferrer">INC-97</a></td>
+<td class="ti">Coextrusie similarity met compound swap herkenning</td><td class="need">Coextrusie similarity — needs compound_2 data; also a sizeable algorithm.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-104/afkniplengte" target="_blank" rel="noreferrer">INC-104</a></td>
+<td class="ti">Afkniplengte</td><td class="need">Afkniplengte — column scaffold-ready; values from import.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-106/silicone-talk-afm-montage-hulpmiddel-janee" target="_blank" rel="noreferrer">INC-106</a></td>
+<td class="ti">Silicone, talk, AFM montage hulpmiddel (ja/nee)</td><td class="need">Silicone/talk/AFM (ja/nee) — scaffold-ready; values from import.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-107/haspeltype-haspeldoos-palletconfiguratie" target="_blank" rel="noreferrer">INC-107</a></td>
+<td class="ti">Haspeltype, haspeldoos, palletconfiguratie</td><td class="need">Haspeltype/haspeldoos/palletconfig — scaffold-ready; values from import.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-108/plastic-zakje-janee-splice-janee-stuks-per-pallet" target="_blank" rel="noreferrer">INC-108</a></td>
+<td class="ti">Plastic zakje (ja/nee), splice (ja/nee), stuks per pallet</td><td class="need">Plastic zakje/splice/stuks per pallet — scaffold-ready; values from import.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-136/per-lijn-max-output-doorlooptijd-afval-voorkeur-ranking" target="_blank" rel="noreferrer">INC-136</a></td>
+<td class="ti">Per lijn: max output, doorlooptijd, afval, voorkeur ranking</td><td class="need">Per-line config (max output, doorlooptijd, afval, ranking) — from the Excel model (INC-135).</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-137/begrensing-op-vulkanisatie-tijd-extruder-capaciteit-operator-handling" target="_blank" rel="noreferrer">INC-137</a></td>
+<td class="ti">Begrensing op vulkanisatie tijd, extruder capaciteit, operator handling</td><td class="need">Vulcanisation/extruder/operator constraints — from the Excel model (INC-135).</td></tr></tbody></table>
+</section><section class="cat gray">
+  <h2>Heatmap module — deferred for rework <span class="cnt">10</span></h2>
+  <p class="blurb">Pulled from the app this session. Revisit on top of the richer prototype (artifacts/heatmap-designer.html).</p>
+  <table><thead><tr><th>Issue</th><th>Title</th><th>What it needs to proceed</th></tr></thead><tbody><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-101/ingeschreven-cirkel-berekend-en-zichtbaar" target="_blank" rel="noreferrer">INC-101</a></td>
+<td class="ti">Ingeschreven cirkel berekend en zichtbaar</td><td class="need">Inscribed circle as a stored field — same geometry as the heatmap; needs px→mm scale.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-126/profile-upload-svgdxfimage" target="_blank" rel="noreferrer">INC-126</a></td>
+<td class="ti">Profile upload (SVG/DXF/image)</td><td class="need">Profile upload — needs DXF→filled-silhouette + reliable masks across drawing formats.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-127/heatmap-overlay-rood-naar-blauw" target="_blank" rel="noreferrer">INC-127</a></td>
+<td class="ti">Heatmap overlay rood-naar-blauw</td><td class="need">Red→blue overlay — inverse-compensation advice needs material-flow constants.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-128/outer-contour-in-wit-getekend" target="_blank" rel="noreferrer">INC-128</a></td>
+<td class="ti">Outer contour in wit getekend</td><td class="need">Outer contour — trivial, ships with the rework.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-129/ingeschreven-cirkel-berekenen-en-tonen" target="_blank" rel="noreferrer">INC-129</a></td>
+<td class="ti">Ingeschreven cirkel berekenen en tonen</td><td class="need">Inscribed circle — needs px→mm scale + core-aware recompute.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-130/kern-plaatsen-via-klik" target="_blank" rel="noreferrer">INC-130</a></td>
+<td class="ti">Kern plaatsen via klik</td><td class="need">Core placement by click.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-131/kern-verplaatsen-via-slepen-heatmap-update-mee" target="_blank" rel="noreferrer">INC-131</a></td>
+<td class="ti">Kern verplaatsen via slepen, heatmap update mee</td><td class="need">Core drag, heatmap follows.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-132/asymmetrisch-profiel-detectie" target="_blank" rel="noreferrer">INC-132</a></td>
+<td class="ti">Asymmetrisch profiel detectie</td><td class="need">Asymmetric-profile detection.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-133/suggestie-symmetrische-matrijs-truc-voor-asymmetrische-profielen" target="_blank" rel="noreferrer">INC-133</a></td>
+<td class="ti">Suggestie symmetrische matrijs truc voor asymmetrische profielen</td><td class="need">Symmetric-mold-trick suggestion (complex).</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-134/lip-orientatie-advies-ten-opzichte-van-inloopband" target="_blank" rel="noreferrer">INC-134</a></td>
+<td class="ti">Lip oriëntatie advies ten opzichte van inloopband</td><td class="need">Lip-orientation advice (complex).</td></tr></tbody></table>
+</section><section class="cat good">
+  <h2>Buildable now <span class="cnt">2</span></h2>
+  <p class="blurb">No blocker — just sequencing.</p>
+  <table><thead><tr><th>Issue</th><th>Title</th><th>What it needs to proceed</th></tr></thead><tbody><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-138/strikte-rolbeperking-sales-en-customer-service-zien-dit-niet" target="_blank" rel="noreferrer">INC-138</a></td>
+<td class="ti">Strikte rolbeperking: sales en customer service zien dit niet</td><td class="need">Strict role restriction so Sales/Customer Service can&#x27;t see the line calculator. Uses the existing role matrix (INC-81); best built alongside INC-135–137 so there&#x27;s a view to gate.</td></tr><tr><td class="id"><a href="https://linear.app/incredicorp/issue/INC-139/optioneel-later-dagelijkse-order-allocation-recommender" target="_blank" rel="noreferrer">INC-139</a></td>
+<td class="ti">Optioneel later: dagelijkse order allocation recommender</td><td class="need">Daily order-allocation recommender — PO marked optional/later; depends on the line model.</td></tr></tbody></table>
+</section>
+<footer>Elastofirm Profiler · Phase 3 · generated 2026-06-08 · grouped by blocker, not by milestone. The single highest-leverage unblock is <b>INC-110</b> (the Filemaker/Access export) — it cascades into the datamodel + filter cluster.</footer>
+</div>
+<script>const root=document.documentElement,btns=[...document.querySelectorAll('.theme-toggle button')],mq=window.matchMedia('(prefers-color-scheme: dark)');function apply(m){root.setAttribute('data-theme',m==='system'?(mq.matches?'dark':'light'):m);btns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.set===m)))}btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.set)));mq.addEventListener('change',()=>{const a=btns.find(b=>b.getAttribute('aria-pressed')==='true');if(a&&a.dataset.set==='system')apply('system')});apply('light');</script>
+</body></html>
