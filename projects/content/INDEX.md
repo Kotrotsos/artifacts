@@ -225,3 +225,4 @@
 | 2026-06-07 | images | [screenshot-issue.png](images/screenshot-issue.png) | Autocomplete to Delegation workflow article: screenshot-issue.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/screenshot-issue.png |
 | 2026-06-07 | images | [diagram-gates.png](images/diagram-gates.png) | Autocomplete to Delegation workflow article: diagram-gates.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/autocomplete-to-delegation/diagram-gates.png |
 | 2026-06-08 | reports | [draft.md](reports/draft.md) | Two years ago we coded by hand (light look-back): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/two-years-ago-coded-by-hand/draft.md |
+| 2026-06-08 | reports | [draft.html](reports/draft.html) | Two years ago we coded by hand (light look-back): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/two-years-ago-coded-by-hand/draft.html |

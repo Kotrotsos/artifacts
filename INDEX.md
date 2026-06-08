@@ -449,3 +449,4 @@
 | 2026-06-07 | content | images | [diagram-gates.png](projects/content/images/diagram-gates.png) | Autocomplete to Delegation workflow article: diagram-gates.png |
 | 2026-06-07 | elastofirm-profiler | reports | [phase3-full-task-list.html](projects/elastofirm-profiler/reports/phase3-full-task-list.html) | Phase 3 full task list — all 63 Linear issues grouped by milestone, openable specs |
 | 2026-06-08 | content | reports | [draft.md](projects/content/reports/draft.md) | Two years ago we coded by hand (light look-back): draft.md |
+| 2026-06-08 | content | reports | [draft.html](projects/content/reports/draft.html) | Two years ago we coded by hand (light look-back): draft.html |
