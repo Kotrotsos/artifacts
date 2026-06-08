@@ -452,3 +452,4 @@
 | 2026-06-08 | content | reports | [draft.html](projects/content/reports/draft.html) | Two years ago we coded by hand (light look-back): draft.html |
 | 2026-06-08 | content | images | [hero.png](projects/content/images/hero.png) | Two years ago we coded by hand (light look-back): hero.png |
 | 2026-06-08 | content | images | [in-memoriam.png](projects/content/images/in-memoriam.png) | Two years ago we coded by hand (light look-back): in-memoriam.png |
+| 2026-06-08 | elastofirm-profiler | reports | [phase3-feature-screenshots.html](projects/elastofirm-profiler/reports/phase3-feature-screenshots.html) | Phase 3 feature screenshots — 13 live captures of shipped components |
