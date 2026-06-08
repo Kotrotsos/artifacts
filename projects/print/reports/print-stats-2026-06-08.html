@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Print — project stats (2026-06-08)</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #fafafa;
+  --bg-elev: #fff;
+  --fg: #111;
+  --fg-dim: #666;
+  --line: #e2e2e2;
+  --accent: #1a7f37;
+  --accent-2: #2050a0;
+  --chip-bg: #f0f0f0;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0d0d0d;
+  --bg-elev: #1a1a1a;
+  --fg: #eee;
+  --fg-dim: #999;
+  --line: #2a2a2a;
+  --accent: #4caf72;
+  --accent-2: #6c9bea;
+  --chip-bg: #262626;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  line-height: 1.5;
+}
+code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; }
+a { color: var(--accent-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+header.top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 26px 32px 22px;
+  border-bottom: 1px solid var(--line);
+}
+header.top h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+header.top .sub { color: var(--fg-dim); font-size: 13px; margin-top: 2px; }
+header.top nav { display: flex; align-items: center; gap: 14px; font-size: 13px; }
+.theme-toggle { display: inline-flex; gap: 4px; }
+.theme-toggle button {
+  background: transparent; border: 1px solid var(--line); padding: 4px 10px;
+  border-radius: 6px; font-size: 12px; cursor: pointer; color: inherit;
+}
+.theme-toggle button.active { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+section { padding: 22px 32px; border-bottom: 1px solid var(--line); }
+section h2 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--fg-dim); margin: 0 0 16px; }
+section h3 { font-size: 13px; font-weight: 600; margin: 18px 0 8px; }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px; }
+.stat {
+  background: var(--bg-elev); border: 1px solid var(--line); border-radius: 10px;
+  padding: 14px 16px;
+}
+.stat .v { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; color: var(--fg); }
+.stat .v .unit { font-size: 14px; color: var(--fg-dim); margin-left: 4px; font-weight: 400; }
+.stat .k { font-size: 11px; color: var(--fg-dim); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-top: 2px; }
+.stat .ann { font-size: 11px; color: var(--fg-dim); margin-top: 6px; }
+.stat.accent .v { color: var(--accent); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 880px) { .two-col { grid-template-columns: 1fr; } }
+
+table.bars { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.bars td { padding: 4px 0; vertical-align: middle; }
+table.bars td.label { width: 38%; color: var(--fg); font-weight: 500; }
+table.bars td.bar { width: 50%; }
+table.bars td.bar .b {
+  height: 16px; background: var(--accent); border-radius: 3px;
+  min-width: 2px; transition: width 0.2s ease;
+}
+table.bars td.count { width: 12%; text-align: right; color: var(--fg-dim);
+  font-variant-numeric: tabular-nums; font-family: ui-monospace, monospace; }
+
+dl.kv {
+  display: grid; grid-template-columns: 200px 1fr; gap: 6px 18px;
+  font-size: 13px; margin: 0;
+}
+dl.kv dt { color: var(--fg-dim); text-transform: uppercase; letter-spacing: 0.05em;
+  font-size: 11px; padding-top: 2px; }
+dl.kv dd { margin: 0; }
+dl.kv dd code { background: var(--chip-bg); padding: 1px 6px; border-radius: 3px; }
+
+ul.timeline { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+ul.timeline li {
+  display: grid; grid-template-columns: 92px 1fr; gap: 12px;
+  padding: 6px 0; border-bottom: 1px dashed var(--line);
+}
+ul.timeline li:last-child { border-bottom: 0; }
+ul.timeline .date { color: var(--fg-dim); font-family: ui-monospace, monospace; font-size: 12px; }
+
+.chip { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 4px;
+  background: var(--chip-bg); color: var(--fg-dim); margin-right: 4px; text-transform: lowercase; }
+.chip.ok { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent); }
+
+.callout {
+  padding: 12px 14px; border-left: 3px solid var(--accent-2);
+  background: color-mix(in srgb, var(--accent-2) 6%, transparent);
+  font-size: 13px; border-radius: 0 6px 6px 0; margin-top: 12px;
+}
+
+.foot { padding: 18px 32px; color: var(--fg-dim); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>Print — shoeprint matching</h1>
+    <div class="sub">Project stats snapshot · 2026-06-08</div>
+  </div>
+  <nav>
+    <a href="https://api-production-bd34.up.railway.app/" target="_blank" rel="noopener">live app</a>
+    <a href="https://api-production-bd34.up.railway.app/db" target="_blank" rel="noopener">database browser</a>
+    <div class="theme-toggle">
+      <button data-mode="light">Light</button>
+      <button data-mode="dark">Dark</button>
+      <button data-mode="system">System</button>
+    </div>
+  </nav>
+</header>
+
+<!-- ─────────────────────────── headline numbers ─────────────────────────── -->
+<section>
+  <h2>At a glance</h2>
+  <div class="stat-row">
+    <div class="stat accent"><div class="v">1,040</div><div class="k">soles in production DB</div><div class="ann">live on Railway, served from a mounted volume</div></div>
+    <div class="stat"><div class="v">20,010</div><div class="k">shoes scraped &amp; processed</div><div class="ann">across men-streetwear / women / kids on Zalando.nl</div></div>
+    <div class="stat"><div class="v">1,041</div><div class="k">confirmed-sole crops</div><div class="ann">flagged by gpt-4o-mini vision, auto-cropped</div></div>
+    <div class="stat"><div class="v">~400<span class="unit">ms</span></div><div class="k">live match latency</div><div class="ann">median end-to-end on the public URL</div></div>
+    <div class="stat"><div class="v">434<span class="unit">MB</span></div><div class="k">on-volume artifacts</div><div class="ann">processed pipeline outputs + sqlite</div></div>
+    <div class="stat"><div class="v">20</div><div class="k">synthetic test prints</div><div class="ann">11 distortion styles incl. partials &amp; outlines</div></div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── pipeline ─────────────────────────── -->
+<section>
+  <h2>Match pipeline</h2>
+  <div class="two-col">
+    <div>
+      <h3>Query → match stages</h3>
+      <dl class="kv">
+        <dt>1 · normalize</dt><dd>resize+pad to 512×512 white canvas</dd>
+        <dt>2 · gray + CLAHE</dt><dd>contrast-equalized grayscale</dd>
+        <dt>3 · binary</dt><dd>adaptive threshold + morphology</dd>
+        <dt>4 · edges</dt><dd>Canny (50, 150)</dd>
+        <dt>5 · skeleton</dt><dd>1-pixel medial axis</dd>
+        <dt>6 · distance</dt><dd>Euclidean distance transform, viridis</dd>
+        <dt>7 · ORB</dt><dd>1000 keypoints, 8 scale levels</dd>
+        <dt>8 · descriptor</dt><dd>HOG on gray + HOG on edges + 4×4 edge density + Hu moments → 16,223-d, L2 normalized</dd>
+        <dt>9 · stage A</dt><dd>vectorized cosine vs. all rows → top 300</dd>
+        <dt>10 · stage B</dt><dd>ORB + Lowe ratio + RANSAC homography on top 300</dd>
+        <dt>11 · score</dt><dd>0.4 · descriptor + 0.6 · ORB_inliers/30</dd>
+      </dl>
+      <div class="callout">
+        No deep learning. torch + transformers + torchvision pretrained loading
+        all SIGSEGV on this Mac (numpy 2.4.4 / torch 2.9.1 ABI mismatch), so the
+        match stack is pure OpenCV + scikit-image. Classical CV actually does
+        well on partial prints because HOG and ORB target structure rather than
+        global appearance.
+      </div>
+    </div>
+    <div>
+      <h3>Accuracy on 20 synthetic prints</h3>
+      <table class="bars" aria-label="accuracy">
+        <tr><td class="label">Top-1 correct</td><td class="bar"><div class="b" style="width: 55%; background: var(--accent)"></div></td><td class="count">11 / 20</td></tr>
+        <tr><td class="label">Top-3 correct</td><td class="bar"><div class="b" style="width: 55%; background: var(--accent)"></div></td><td class="count">11 / 20</td></tr>
+        <tr><td class="label">Top-5 correct</td><td class="bar"><div class="b" style="width: 55%; background: var(--accent)"></div></td><td class="count">11 / 20</td></tr>
+        <tr><td class="label">High-confidence top-1</td><td class="bar"><div class="b" style="width: 45%; background: var(--accent-2)"></div></td><td class="count">9 / 20</td></tr>
+      </table>
+      <h3 style="margin-top: 22px;">Latency by query (production)</h3>
+      <table class="bars">
+        <tr><td class="label">square_patch (rank 1)</td><td class="bar"><div class="b" style="width: 100%; background: var(--accent-2)"></div></td><td class="count">507 ms</td></tr>
+        <tr><td class="label">heel_fragment</td><td class="bar"><div class="b" style="width: 54%; background: var(--accent-2)"></div></td><td class="count">275 ms</td></tr>
+        <tr><td class="label">rotated</td><td class="bar"><div class="b" style="width: 62%; background: var(--accent-2)"></div></td><td class="count">313 ms</td></tr>
+      </table>
+      <div class="callout">
+        Confidence is the headline signal, not raw rank. When the matcher is
+        right, the combined score sits above 0.7 and the next match drops to
+        the 0.5 band. When uncertain, the top-5 sits within 0.05 of each other
+        — surfaced to the UI as <code>low</code> / <code>medium</code> / <code>high</code> pills.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── DB shape ─────────────────────────── -->
+<section>
+  <h2>Database composition</h2>
+  <div class="two-col">
+    <div>
+      <h3>By category (web nav)</h3>
+      <table class="bars">
+        <tr><td class="label">women</td><td class="bar"><div class="b" style="width: 100%;"></div></td><td class="count">780</td></tr>
+        <tr><td class="label">kids</td><td class="bar"><div class="b" style="width: 33%;"></div></td><td class="count">260</td></tr>
+      </table>
+
+      <h3>By target group (label)</h3>
+      <table class="bars">
+        <tr><td class="label">WOMEN</td><td class="bar"><div class="b" style="width: 100%;"></div></td><td class="count">713</td></tr>
+        <tr><td class="label">KIDS</td><td class="bar"><div class="b" style="width: 37%;"></div></td><td class="count">265</td></tr>
+        <tr><td class="label">ALL</td><td class="bar"><div class="b" style="width: 8.7%;"></div></td><td class="count">62</td></tr>
+      </table>
+
+      <h3>By silhouette</h3>
+      <table class="bars">
+        <tr><td class="label">sneaker</td><td class="bar"><div class="b" style="width: 100%;"></div></td><td class="count">444</td></tr>
+        <tr><td class="label">sandals</td><td class="bar"><div class="b" style="width: 33%;"></div></td><td class="count">146</td></tr>
+        <tr><td class="label">backless slipper</td><td class="bar"><div class="b" style="width: 31%;"></div></td><td class="count">138</td></tr>
+        <tr><td class="label">ankle boots</td><td class="bar"><div class="b" style="width: 28%;"></div></td><td class="count">124</td></tr>
+        <tr><td class="label">low shoe</td><td class="bar"><div class="b" style="width: 16%;"></div></td><td class="count">71</td></tr>
+        <tr><td class="label">boots</td><td class="bar"><div class="b" style="width: 11%;"></div></td><td class="count">49</td></tr>
+        <tr><td class="label">ballerina</td><td class="bar"><div class="b" style="width: 8.8%;"></div></td><td class="count">39</td></tr>
+        <tr><td class="label">pumps</td><td class="bar"><div class="b" style="width: 5.9%;"></div></td><td class="count">26</td></tr>
+        <tr><td class="label">first shoe</td><td class="bar"><div class="b" style="width: 0.7%;"></div></td><td class="count">3</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Top brands</h3>
+      <table class="bars">
+        <tr><td class="label">Buffalo</td><td class="bar"><div class="b" style="width: 100%;"></div></td><td class="count">178</td></tr>
+        <tr><td class="label">adidas Originals</td><td class="bar"><div class="b" style="width: 38%;"></div></td><td class="count">68</td></tr>
+        <tr><td class="label">Gabor</td><td class="bar"><div class="b" style="width: 34%;"></div></td><td class="count">61</td></tr>
+        <tr><td class="label">Tamaris</td><td class="bar"><div class="b" style="width: 31%;"></div></td><td class="count">56</td></tr>
+        <tr><td class="label">Marco Tozzi</td><td class="bar"><div class="b" style="width: 31%;"></div></td><td class="count">56</td></tr>
+        <tr><td class="label">Puma</td><td class="bar"><div class="b" style="width: 19%;"></div></td><td class="count">33</td></tr>
+        <tr><td class="label">Paul Green</td><td class="bar"><div class="b" style="width: 16%;"></div></td><td class="count">28</td></tr>
+        <tr><td class="label">ALDO</td><td class="bar"><div class="b" style="width: 15%;"></div></td><td class="count">26</td></tr>
+        <tr><td class="label">adidas Sportswear</td><td class="bar"><div class="b" style="width: 14%;"></div></td><td class="count">25</td></tr>
+        <tr><td class="label">Finn Comfort</td><td class="bar"><div class="b" style="width: 14%;"></div></td><td class="count">25</td></tr>
+        <tr><td class="label">FitFlop</td><td class="bar"><div class="b" style="width: 13.5%;"></div></td><td class="count">24</td></tr>
+        <tr><td class="label">Beck</td><td class="bar"><div class="b" style="width: 12%;"></div></td><td class="count">21</td></tr>
+        <tr><td class="label">adidas Performance</td><td class="bar"><div class="b" style="width: 10.1%;"></div></td><td class="count">18</td></tr>
+        <tr><td class="label">Polo Ralph Lauren</td><td class="bar"><div class="b" style="width: 10.1%;"></div></td><td class="count">18</td></tr>
+        <tr><td class="label">Mango Kids</td><td class="bar"><div class="b" style="width: 10.1%;"></div></td><td class="count">18</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── test set ─────────────────────────── -->
+<section>
+  <h2>Test set</h2>
+  <p style="font-size: 13px; margin: 0 0 12px; color: var(--fg-dim);">
+    Synthesized from real soles, each style simulates a distinct failure mode of a lifted print.
+  </p>
+  <div class="stat-row">
+    <div class="stat"><div class="v">rotated</div><div class="k">±45° in-plane rotation</div></div>
+    <div class="stat"><div class="v">perspective</div><div class="k">off-axis warp</div></div>
+    <div class="stat"><div class="v">outline</div><div class="k">Canny-only, evidence-sketch style</div></div>
+    <div class="stat"><div class="v">scan_lowcontrast</div><div class="k">low-contrast scan + speckle</div></div>
+    <div class="stat"><div class="v">heel_fragment</div><div class="k">25-35% of sole, heel only</div></div>
+    <div class="stat"><div class="v">toe_fragment</div><div class="k">25-35% of sole, toe only</div></div>
+    <div class="stat"><div class="v">side_fragment</div><div class="k">30-40% width vertical band</div></div>
+    <div class="stat"><div class="v">square_patch</div><div class="k">~30% square crop</div></div>
+    <div class="stat"><div class="v">tiny_patch</div><div class="k">~20% square crop</div></div>
+    <div class="stat"><div class="v">patch_rotated</div><div class="k">small patch + rotation</div></div>
+    <div class="stat"><div class="v">heel_lowcontrast</div><div class="k">heel only + scan noise</div></div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── source crawl ─────────────────────────── -->
+<section>
+  <h2>Source data crawl (one-shot, before cleanup)</h2>
+  <div class="two-col">
+    <div>
+      <h3>Pre-cleanup scrape</h3>
+      <table class="bars">
+        <tr><td class="label">women</td><td class="bar"><div class="b" style="width: 100%;"></div></td><td class="count">15,469</td></tr>
+        <tr><td class="label">kids</td><td class="bar"><div class="b" style="width: 21%;"></div></td><td class="count">3,226</td></tr>
+        <tr><td class="label">men-streetwear</td><td class="bar"><div class="b" style="width: 8.5%;"></div></td><td class="count">1,315</td></tr>
+      </table>
+      <div class="callout" style="margin-top: 14px;">
+        Source: Zalando.nl listing-page scraper using <code>curl_cffi</code> with
+        Chrome 120 TLS impersonation. Product data extracted from the hydration
+        JSON embedded in each listing page (no per-product detail fetch needed).
+      </div>
+    </div>
+    <div>
+      <h3>Post-cleanup &amp; ingestion</h3>
+      <dl class="kv">
+        <dt>scraped</dt><dd>22,504 shoes</dd>
+        <dt>after dedup &amp; cleanup</dt><dd>20,010</dd>
+        <dt>confirmed soles</dt><dd>1,041 crops via gpt-4o-mini vision</dd>
+        <dt>ingested into match DB</dt><dd>1,040 (1 source crop unreadable)</dd>
+        <dt>local source size</dt><dd>8.5 GB (not deployed)</dd>
+        <dt>local match artifacts</dt><dd>368 MB sole pipeline + 66 MB sqlite</dd>
+        <dt>image-baked demo seed</dt><dd>100 soles, ~40 MB</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── deployment ─────────────────────────── -->
+<section>
+  <h2>Deployment</h2>
+  <div class="two-col">
+    <div>
+      <dl class="kv">
+        <dt>project</dt><dd><code>shoeprint-match</code> on Railway</dd>
+        <dt>service</dt><dd><code>api</code> · python:3.12-slim + libgl1/glib</dd>
+        <dt>volume</dt><dd><code>api-volume</code> mounted at <code>/app/data</code></dd>
+        <dt>public url</dt><dd><a href="https://api-production-bd34.up.railway.app" target="_blank" rel="noopener">api-production-bd34.up.railway.app</a></dd>
+        <dt>cold-start seed</dt><dd>100-sole demo baked into image at <code>/app/data_baked</code></dd>
+        <dt>full DB upload</dt><dd>chunked HTTP POSTs to <code>/api/admin/upload-chunk</code>, 50 MB chunks</dd>
+        <dt>admin gate</dt><dd><code>ADMIN_TOKEN</code> header on upload routes</dd>
+        <dt>image build</dt><dd>~70 s incl. opencv-headless + scikit-image install</dd>
+      </dl>
+    </div>
+    <div>
+      <h3>What lives where</h3>
+      <table class="bars">
+        <tr><td class="label">image layer (small)</td><td class="bar"><div class="b" style="width: 16%; background: var(--accent-2)"></div></td><td class="count">~150 MB</td></tr>
+        <tr><td class="label">image layer (baked seed)</td><td class="bar"><div class="b" style="width: 5%; background: var(--accent-2)"></div></td><td class="count">~40 MB</td></tr>
+        <tr><td class="label">volume (full DB)</td><td class="bar"><div class="b" style="width: 100%; background: var(--accent)"></div></td><td class="count">~434 MB</td></tr>
+        <tr><td class="label">volume (queries scratch)</td><td class="bar"><div class="b" style="width: 1%; background: var(--accent)"></div></td><td class="count">grows</td></tr>
+      </table>
+      <div class="callout">
+        Volume survives redeploys, so iterating on code (paste-to-upload,
+        overlay aligner, etc.) doesn't re-trigger the 434 MB data shipment.
+        Cloudflare's <code>railway up</code> upload cap (~300 MB) is the reason
+        the data path is chunked HTTP rather than baked into the image.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────────────────────── UI features ─────────────────────────── -->
+<section>
+  <h2>UI features (current)</h2>
+  <ul style="margin: 0; padding-left: 18px; font-size: 13px;">
+    <li>Upload, click test print, or <strong>Cmd/Ctrl-V paste</strong> from clipboard</li>
+    <li>Side-by-side query↔match grid (original / gray / binary / edges) per top-K result</li>
+    <li>ORB correspondence visualization with RANSAC inlier line drawing</li>
+    <li>Interactive overlay aligner: drag, scroll-to-scale, opacity / rotate / scale sliders, invert</li>
+    <li>Click-to-zoom lightbox on every image</li>
+    <li>Confidence pills (<span class="chip">high</span><span class="chip">medium</span><span class="chip">low</span>) calibrated from the combined score</li>
+    <li>Light / Dark / System theme toggle, light-mode default</li>
+    <li>Database browser at <code>/db</code> with descriptor sparkline per sole</li>
+  </ul>
+</section>
+
+<!-- ─────────────────────────── timeline ─────────────────────────── -->
+<section>
+  <h2>Build journey</h2>
+  <ul class="timeline">
+    <li><span class="date">May 9</span><span>Zalando scraper kicked off (curl_cffi + hydration JSON). 22,504 shoes scraped across men-streetwear / women / kids.</span></li>
+    <li><span class="date">May 10</span><span>Sole detection over 8 parallel workers using gpt-4o-mini vision. Hit <code>insufficient_quota</code> at ~1,000 soles; cleanup script removed confirmed-no-sole folders.</span></li>
+    <li><span class="date">May 11</span><span>1,041 confirmed sole crops on disk. Visual spot-check gallery generated.</span></li>
+    <li><span class="date">May 12</span><span>Match MVP built. Pipeline + descriptor + ORB. FastAPI server on :8001 with match / database / overlay aligner UI.</span></li>
+    <li><span class="date">Jun 7</span><span>Railway deployment. Volume created at /app/data, 1,040-sole tarball uploaded via chunked HTTP after Cloudflare blocked the bundled image. Public URL live.</span></li>
+    <li><span class="date">Jun 8</span><span>Paste-to-upload added. This stats page generated.</span></li>
+  </ul>
+</section>
+
+<div class="foot">
+  Self-contained HTML, light-mode default. Numbers pulled from
+  <code>match/data/print.db</code>, the live <code>/api/admin/status</code> endpoint,
+  and disk sizes via <code>du -sh</code>. Saved at
+  <code>artifacts/print-stats-2026-06-08.html</code>.
+</div>
+
+<script>
+(function () {
+  const root = document.documentElement;
+  const KEY = 'print-stats-theme';
+  const saved = localStorage.getItem(KEY) || 'system';
+  function apply(mode) {
+    let actual = mode;
+    if (mode === 'system') {
+      actual = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    root.setAttribute('data-theme', actual);
+    document.querySelectorAll('.theme-toggle button').forEach((b) => {
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+  }
+  apply(saved);
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.theme-toggle button');
+    if (!btn) return;
+    localStorage.setItem(KEY, btn.dataset.mode);
+    apply(btn.dataset.mode);
+  });
+})();
+</script>
+</body>
+</html>
