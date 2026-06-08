@@ -456,3 +456,4 @@
 | 2026-06-08 | print | reports | [print-stats-2026-06-08.html](projects/print/reports/print-stats-2026-06-08.html) | Project stats snapshot - 1040 soles in prod, match pipeline + DB breakdown + deployment |
 | 2026-06-08 | kyssbook-kdp | reports | [kdp-submission.html](projects/kyssbook-kdp/reports/kdp-submission.html) | KDP submission playbook for Claude Code Unstoppable (ebook + 8x10 paperback) |
 | 2026-06-08 | elastofirm-profiler | reports | [phase3-quickwins-verification.html](projects/elastofirm-profiler/reports/phase3-quickwins-verification.html) | Phase 3 board — heatmap module + datamodel scaffolding (30/30) |
+| 2026-06-08 | elastofirm-profiler | reports | [phase3-feature-screenshots.html](projects/elastofirm-profiler/reports/phase3-feature-screenshots.html) | Phase 3 feature screenshots — current UI (heatmap tab, stats dialog, datamodel) |
