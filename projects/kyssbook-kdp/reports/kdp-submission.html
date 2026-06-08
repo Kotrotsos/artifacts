@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Code Unstoppable — KDP Submission Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+ --canvas:#ffffff; --ink:#1d1d22; --primary:#17171c; --soft:#fafaf8; --card:#ffffff;
+ --green:#003c33; --green-ink:#0a4a40; --coral:#ff7759; --blue:#1863dc;
+ --hairline:#e3e3e6; --rule:#eeeeee; --muted:#7c7c88; --slate:#5a5a68;
+ --ok:#1f7a4d; --okbg:#eaf7f0; --warn:#9a5b12; --warnbg:#fdf3e6;
+ --display:'Space Grotesk',system-ui,sans-serif; --body:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+ --shadow:0 1px 2px rgba(16,16,20,.04),0 8px 24px rgba(16,16,20,.04);
+}
+html[data-theme="dark"]{
+ --canvas:#101014; --ink:#e8e8ec; --primary:#f4f4f6; --soft:#17171d; --card:#16161c;
+ --green:#5fd0bb; --green-ink:#7adcc9; --coral:#ff8e74; --blue:#6ea0ff;
+ --hairline:#2a2a33; --rule:#22222a; --muted:#9494a2; --slate:#b6b6c2;
+ --ok:#5fd09a; --okbg:#13241c; --warn:#e0a35a; --warnbg:#241a0e;
+ --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+}
+@media(prefers-color-scheme:dark){
+ html[data-theme="system"]{
+  --canvas:#101014; --ink:#e8e8ec; --primary:#f4f4f6; --soft:#17171d; --card:#16161c;
+  --green:#5fd0bb; --green-ink:#7adcc9; --coral:#ff8e74; --blue:#6ea0ff;
+  --hairline:#2a2a33; --rule:#22222a; --muted:#9494a2; --slate:#b6b6c2;
+  --ok:#5fd09a; --okbg:#13241c; --warn:#e0a35a; --warnbg:#241a0e;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+ }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--canvas);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:880px;margin:0 auto;padding:0 24px 100px}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--canvas) 86%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--hairline)}
+.topbar .inner{max-width:880px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.brand b{color:var(--ink);font-weight:600}
+.toggle{display:inline-flex;border:1px solid var(--hairline);border-radius:999px;overflow:hidden;background:var(--card)}
+.toggle button{font-family:var(--body);font-size:12px;font-weight:500;color:var(--muted);background:transparent;border:0;padding:6px 12px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--green);color:#fff}
+html[data-theme="dark"] .toggle button[aria-pressed="true"]{color:#08120f}
+
+/* hero */
+header.hero{padding:54px 0 10px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--coral);font-weight:500}
+h1{font-family:var(--display);font-weight:500;font-size:46px;line-height:1.02;letter-spacing:-1.6px;color:var(--primary);margin:12px 0 8px}
+.sub{font-size:18px;color:var(--slate);max-width:60ch;margin:0}
+
+/* status row */
+.status{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:30px 0 10px}
+.scard{border:1px solid var(--hairline);border-radius:14px;padding:16px 18px;background:var(--card);box-shadow:var(--shadow)}
+.scard .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.scard .val{font-family:var(--display);font-size:20px;font-weight:500;color:var(--primary);margin-top:3px}
+.pill{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:500;padding:2px 9px;border-radius:999px;margin-top:8px}
+.pill.ok{color:var(--ok);background:var(--okbg)}
+.pill.warn{color:var(--warn);background:var(--warnbg)}
+
+section{margin-top:46px}
+h2{font-family:var(--display);font-weight:500;font-size:27px;letter-spacing:-.5px;color:var(--primary);margin:0 0 4px;padding-top:8px;border-top:1px solid var(--rule)}
+h2 .n{font-family:var(--mono);font-size:13px;color:var(--coral);margin-right:10px;letter-spacing:0}
+.lede{color:var(--slate);font-size:16px;margin:6px 0 18px;max-width:64ch}
+h3{font-family:var(--display);font-weight:500;font-size:18px;color:var(--primary);margin:26px 0 8px}
+
+/* tables */
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:10px 0}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td code,code.inl{font-family:var(--mono);font-size:13px;background:var(--soft);border:1px solid var(--hairline);border-radius:5px;padding:1px 6px}
+td .path{font-family:var(--mono);font-size:12.5px;color:var(--green-ink)}
+
+/* steps */
+ol.steps{list-style:none;counter-reset:s;margin:0;padding:0}
+ol.steps>li{counter-increment:s;position:relative;padding:0 0 16px 44px;margin:0}
+ol.steps>li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:-1px;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--green-ink);width:30px;height:30px;border:1px solid var(--hairline);border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card)}
+ol.steps>li::after{content:"";position:absolute;left:14px;top:30px;bottom:2px;width:1px;background:var(--rule)}
+ol.steps>li:last-child::after{display:none}
+ol.steps b{color:var(--primary);font-weight:600}
+ol.steps .hint{color:var(--slate);font-size:14px}
+
+/* callout */
+.box{border:1px solid var(--hairline);border-radius:14px;padding:18px 20px;background:var(--card);box-shadow:var(--shadow);margin:16px 0}
+.box.decide{border-left:3px solid var(--coral)}
+.box.note{border-left:3px solid var(--blue)}
+.box h3{margin-top:0}
+.opt{display:grid;grid-template-columns:120px 1fr;gap:4px 16px;padding:12px 0;border-top:1px solid var(--rule)}
+.opt:first-of-type{border-top:0}
+.opt .tag{font-family:var(--mono);font-size:12px;font-weight:600}
+.opt .tag.green{color:var(--green-ink)} .opt .tag.amber{color:var(--warn)} .opt .tag.grey{color:var(--muted)}
+.opt .d{font-size:14.5px;color:var(--slate)}
+.opt .d b{color:var(--primary)}
+
+/* copy field */
+.field{border:1px solid var(--hairline);border-radius:12px;background:var(--card);margin:12px 0;overflow:hidden}
+.field .fh{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--soft);border-bottom:1px solid var(--hairline)}
+.field .fh .name{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.copybtn{font-family:var(--body);font-size:12px;font-weight:500;color:var(--blue);background:transparent;border:1px solid var(--hairline);border-radius:7px;padding:4px 10px;cursor:pointer}
+.copybtn:hover{border-color:var(--blue)}
+.copybtn.done{color:var(--ok);border-color:var(--ok)}
+.field .fb{padding:12px 14px;font-size:14.5px;white-space:pre-wrap}
+.field .fb.mono{font-family:var(--mono);font-size:13px}
+ul.kw{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+ul.kw li{font-family:var(--mono);font-size:12.5px;background:var(--soft);border:1px solid var(--hairline);border-radius:999px;padding:5px 12px}
+
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:10px 28px;margin:8px 0}
+.spec .row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--rule);font-size:14.5px}
+.spec .row .k{color:var(--slate)}
+.spec .row .v{font-family:var(--mono);font-size:13px;color:var(--primary);text-align:right}
+.check{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--rule);font-size:15px}
+.check .mark{color:var(--ok);font-weight:700;font-family:var(--mono)}
+.muted{color:var(--muted)}
+footer{margin-top:54px;padding-top:18px;border-top:1px solid var(--hairline);font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+@media(max-width:680px){
+ .status{grid-template-columns:1fr}.spec{grid-template-columns:1fr}
+ h1{font-size:36px}.opt{grid-template-columns:1fr}
+}
+@media print{
+ .topbar{display:none}.box,.scard,.field{box-shadow:none}
+ body{font-size:11.5pt}.wrap{max-width:none;padding:0}
+ h2{break-after:avoid}section,.box,.field,table,ol.steps>li{break-inside:avoid}
+ a{color:var(--ink);text-decoration:none}
+ header.hero{padding-top:0}
+}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="inner">
+  <span class="brand"><b>KDP Playbook</b> &nbsp;·&nbsp; Claude Code Unstoppable</span>
+  <div class="toggle" role="group" aria-label="Color theme">
+    <button data-theme-set="light" aria-pressed="true">Light</button>
+    <button data-theme-set="dark" aria-pressed="false">Dark</button>
+    <button data-theme-set="system" aria-pressed="false">System</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+<header class="hero">
+  <p class="kicker">Kindle Direct Publishing · Submission Playbook</p>
+  <h1>Publishing Claude Code Unstoppable</h1>
+  <p class="sub">Everything to upload, every field to paste, and the one print decision that sets your price. Two products: the Kindle ebook and the 8 × 10 paperback.</p>
+</header>
+
+<div class="status">
+  <div class="scard">
+    <div class="lbl">Kindle eBook</div>
+    <div class="val">Ready to upload</div>
+    <span class="pill ok">epubcheck clean · 0 errors</span>
+  </div>
+  <div class="scard">
+    <div class="lbl">Paperback</div>
+    <div class="val">Ready (Black &amp; White)</div>
+    <span class="pill ok">trim · fonts · margins · cover verified</span>
+  </div>
+</div>
+
+<!-- FILES -->
+<section id="files">
+  <h2><span class="n">01</span>Files to upload</h2>
+  <p class="lede">All four files live in <code class="inl">book05/build/dist/</code>. Nothing here is auto-submitted; you upload each one by hand in KDP.</p>
+  <table>
+    <thead><tr><th>Product</th><th>What</th><th>File</th></tr></thead>
+    <tbody>
+      <tr><td>Paperback</td><td>Interior (page-numbered, 613 pp)</td><td class="path">claude-code-unstoppable-interior.pdf</td></tr>
+      <tr><td>Paperback</td><td>Full cover wrap (back · spine · front)</td><td class="path">paperback-cover.pdf</td></tr>
+      <tr><td>Kindle</td><td>Reflowable ebook</td><td class="path">claude-code-unstoppable.epub</td></tr>
+      <tr><td>Kindle</td><td>Cover image (1600 × 2560)</td><td class="path">cover-ebook.jpg</td></tr>
+    </tbody>
+  </table>
+  <p class="muted" style="font-size:13.5px">Four volume PDFs also exist in the same folder if you ever want to sell the volumes separately. Ignore them for the single-book listing.</p>
+</section>
+
+<!-- DECISION -->
+<section id="print-decision">
+  <h2><span class="n">02</span>The one decision: ink &amp; paper</h2>
+  <p class="lede">The interior is designed in color (green section bands, blue links, syntax-highlighted code). At 8 × 10 with 613 pages this matters, because KDP's color tiers cap page count and color print costs are steep. Pick a lane before you start the paperback.</p>
+  <div class="box decide">
+    <div class="opt">
+      <span class="tag green">Recommended</span>
+      <span class="d"><b>Black &amp; white interior, white paper.</b> Upload the same color PDF; KDP prints it in grayscale (code stays readable, shades stand in for syntax color). No page-count limit issue (max 828 pp). Lowest cost, sellable at ~$34.99. The cover spine is already built for this.</span>
+    </div>
+    <div class="opt">
+      <span class="tag amber">Premium colour</span>
+      <span class="d"><b>Full color print.</b> The only color tier that allows 613 pages (Standard Color caps at 600 at this trim). Per-copy print cost runs into the tens of dollars, forcing a high minimum list price. Choose only if color print is essential, and confirm the price on KDP's calculator first.</span>
+    </div>
+    <div class="opt">
+      <span class="tag grey">Standard colour</span>
+      <span class="d"><b>Not available.</b> 8 × 10 Standard Color is capped at 600 pages; this book is 613. To use it you would shrink the concept banners to drop under 600 (ask and I will do it).</span>
+    </div>
+  </div>
+  <div class="box note">
+    <h3>Cover spine check</h3>
+    <p style="margin:0;font-size:14.5px;color:var(--slate)">The wrap is built at <code class="inl">1.380"</code> spine (white paper, 0.002252 in/page × 613). That is correct for Black &amp; White and for Premium Color on white paper. Before final submit, drop <b>8 × 10, your chosen paper, 613 pages</b> into the <a href="https://kdp.amazon.com/cover-calculator">KDP Cover Calculator</a>; if its spine differs by even 0.01", tell me and I will regenerate the wrap.</p>
+  </div>
+</section>
+
+<!-- KINDLE FLOW -->
+<section id="kindle">
+  <h2><span class="n">03</span>Flow A — Kindle eBook</h2>
+  <p class="lede">KDP Bookshelf → <b>Create</b> → <b>Kindle eBook</b>. Three tabs: Details, Content, Pricing.</p>
+  <ol class="steps">
+    <li><b>Language</b> English. <b>Book Title</b> and <b>Subtitle</b> from the metadata below. <span class="hint">Paste exactly; the subtitle is a separate field.</span></li>
+    <li><b>Author</b> Marco Kotrotsos. Leave contributors empty.</li>
+    <li><b>Description</b> paste the listing copy below. <span class="hint">KDP accepts light HTML, but plain paragraphs are fine.</span></li>
+    <li><b>Publishing rights</b> "I own the copyright and hold the rights."</li>
+    <li><b>Keywords</b> paste the seven below, one per box.</li>
+    <li><b>Categories</b> pick the three listed below (Computers / AI, Programming, Software Dev Tools).</li>
+    <li><b>Age range / pre-order</b> leave blank · No pre-order.</li>
+    <li><b>Content → Manuscript</b> upload <code class="inl">claude-code-unstoppable.epub</code>. <span class="hint">No need to enable DRM; your call.</span></li>
+    <li><b>Content → Cover</b> upload <code class="inl">cover-ebook.jpg</code>. <span class="hint">The EPUB already embeds it; uploading the JPG sets the catalog thumbnail.</span></li>
+    <li><b>Preview</b> open the online previewer, spot-check a code page and a chapter opener, then Save.</li>
+    <li><b>ISBN</b> none needed for Kindle (Amazon assigns an ASIN).</li>
+    <li><b>Pricing</b> $9.99 at the 70% royalty plan, all territories. <span class="hint">KDP Select enrollment is optional.</span></li>
+    <li><b>Publish</b> review and submit. Live in up to 72 hours.</li>
+  </ol>
+</section>
+
+<!-- PAPERBACK FLOW -->
+<section id="paperback">
+  <h2><span class="n">04</span>Flow B — Paperback</h2>
+  <p class="lede">From the ebook's "+" menu choose <b>Create Paperback</b> so the two link on one product page. Same three tabs.</p>
+  <ol class="steps">
+    <li><b>Reuse the metadata</b> title, subtitle, author, description, keywords, categories all match the ebook.</li>
+    <li><b>ISBN</b> "Get a free KDP ISBN." <span class="hint">The wrap already reserves the back-cover barcode area; KDP overlays the barcode.</span></li>
+    <li><b>Print options → Ink and paper</b> select <b>Black &amp; white interior with white paper</b> (see decision above). <span class="hint">Switch to Premium Color only if you accept the higher price.</span></li>
+    <li><b>Trim size</b> 8 × 10 in. <b>Bleed</b> "No bleed." <b>Cover finish</b> matte (suits the flat design) or glossy.</li>
+    <li><b>Manuscript</b> upload <code class="inl">claude-code-unstoppable-interior.pdf</code>.</li>
+    <li><b>Cover</b> choose "Upload a cover you already have (PDF)" and upload <code class="inl">paperback-cover.pdf</code>.</li>
+    <li><b>Launch Previewer</b> let KDP run its checks. Confirm no margin or spine warnings, then approve.</li>
+    <li><b>Pricing</b> $34.99 (US). KDP shows the printing cost and royalty live; adjust other marketplaces as you like.</li>
+    <li><b>Proof first</b> order a printed proof before going live (see final checklist).</li>
+    <li><b>Publish.</b></li>
+  </ol>
+</section>
+
+<!-- METADATA -->
+<section id="metadata">
+  <h2><span class="n">05</span>Listing metadata (copy-paste)</h2>
+  <p class="lede">Identical for both formats. Use the copy buttons.</p>
+
+  <div class="field">
+    <div class="fh"><span class="name">Title</span><button class="copybtn" data-copy="#m-title">Copy</button></div>
+    <div class="fb" id="m-title">Claude Code Unstoppable</div>
+  </div>
+  <div class="field">
+    <div class="fh"><span class="name">Subtitle</span><button class="copybtn" data-copy="#m-sub">Copy</button></div>
+    <div class="fb" id="m-sub">A Field Guide to Building on Claude, in Four Volumes</div>
+  </div>
+  <div class="field">
+    <div class="fh"><span class="name">Author</span><button class="copybtn" data-copy="#m-author">Copy</button></div>
+    <div class="fb" id="m-author">Marco Kotrotsos</div>
+  </div>
+  <div class="field">
+    <div class="fh"><span class="name">Description</span><button class="copybtn" data-copy="#m-desc">Copy</button></div>
+    <div class="fb" id="m-desc">Four volumes. Thirty-three chapters. One continuous path from your first API call to running agents, governing an organization, and everything in between.
+
+Volume I builds on the Messages API: streaming, context, caching, thinking, and tools. Volume II covers managed agents that run in sandboxes and stream events. Volume III is the visibility layer: admin, usage, cost, compliance, and keys. Volume IV is the rest of the platform, the tool catalog, agent skills, MCP, and cloud deployment.
+
+Every code example is shown the way you see it on your own machine. Read it start to finish, or jump straight to the chapter you need.
+
+If you build on Claude, this is the reference that reads like a book.</div>
+  </div>
+
+  <h3>Keywords (7 slots)</h3>
+  <ul class="kw">
+    <li>Claude API</li><li>Anthropic API</li><li>building AI agents</li>
+    <li>LLM application development</li><li>prompt caching and tool use</li>
+    <li>Messages API guide</li><li>AI engineering reference</li>
+  </ul>
+
+  <h3>Categories (choose 3)</h3>
+  <table>
+    <tbody>
+      <tr><td>1</td><td>COMPUTERS / Artificial Intelligence / General</td></tr>
+      <tr><td>2</td><td>COMPUTERS / Programming / General</td></tr>
+      <tr><td>3</td><td>COMPUTERS / Software Development &amp; Engineering / Tools</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Pricing (suggested)</h3>
+  <table>
+    <thead><tr><th>Format</th><th>List (US)</th><th>Plan</th><th>Approx. royalty</th></tr></thead>
+    <tbody>
+      <tr><td>Paperback · B&amp;W</td><td>$34.99</td><td>60% minus print</td><td>~$12.60 (print ~$8.40)</td></tr>
+      <tr><td>Kindle eBook</td><td>$9.99</td><td>70%</td><td>~$6.40</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- SPECS -->
+<section id="specs">
+  <h2><span class="n">06</span>Verified specs</h2>
+  <p class="lede">What I measured on the actual files, against KDP's requirements for a 600+ page book.</p>
+  <div class="spec">
+    <div class="row"><span class="k">Trim size</span><span class="v">8 × 10 in (supported)</span></div>
+    <div class="row"><span class="k">Interior pages</span><span class="v">613, page-numbered</span></div>
+    <div class="row"><span class="k">Inner / gutter margin</span><span class="v">1.00 in (min 0.875)</span></div>
+    <div class="row"><span class="k">Outer margin</span><span class="v">1.00 in (min 0.25)</span></div>
+    <div class="row"><span class="k">Top margin</span><span class="v">0.88 in (min 0.25)</span></div>
+    <div class="row"><span class="k">Bottom margin</span><span class="v">0.36 in (min 0.25)</span></div>
+    <div class="row"><span class="k">Fonts</span><span class="v">all embedded</span></div>
+    <div class="row"><span class="k">Interior bleed</span><span class="v">none (not needed)</span></div>
+    <div class="row"><span class="k">Cover wrap</span><span class="v">17.64 × 10.25 in</span></div>
+    <div class="row"><span class="k">Spine</span><span class="v">1.380 in · 0.125 bleed</span></div>
+    <div class="row"><span class="k">EPUB</span><span class="v">epubcheck: 0 / 0 / 0</span></div>
+    <div class="row"><span class="k">eBook cover</span><span class="v">1600 × 2560 px</span></div>
+  </div>
+</section>
+
+<!-- FINAL -->
+<section id="before">
+  <h2><span class="n">07</span>Before you hit publish</h2>
+  <div class="check"><span class="mark">01</span><span><b>Order a printed proof.</b> Check the grayscale code screenshots read well and the spine text sits centered. This is the single most useful step.</span></div>
+  <div class="check"><span class="mark">02</span><span><b>Confirm the spine</b> in the KDP Cover Calculator for your chosen paper. If it differs from 1.380", ping me to regenerate <code class="inl">paperback-cover.pdf</code>.</span></div>
+  <div class="check"><span class="mark">03</span><span><b>Run Kindle Previewer</b> on the EPUB once more after upload; flip to a code page and a chapter opener.</span></div>
+  <div class="check"><span class="mark">04</span><span><b>Link the two editions</b> so the paperback and Kindle share one product page (create the paperback from the ebook's menu).</span></div>
+  <div class="check" style="border-bottom:0"><span class="mark">05</span><span><b>Hold the price line.</b> If B&amp;W, $34.99 clears a healthy royalty. If you switch to color, recheck the minimum allowed list price before publishing.</span></div>
+</section>
+
+<footer>
+  Claude Code Unstoppable · KDP submission playbook · generated from the verified build in book05/build/dist/.
+  Files are not auto-submitted; every step is a manual action in the KDP dashboard.
+</footer>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement, btns=[].slice.call(document.querySelectorAll('[data-theme-set]'));
+  var saved=null; try{saved=localStorage.getItem('kdp-theme');}catch(e){}
+  function apply(t){
+    root.setAttribute('data-theme',t);
+    btns.forEach(function(b){b.setAttribute('aria-pressed', b.getAttribute('data-theme-set')===t ? 'true':'false');});
+    try{localStorage.setItem('kdp-theme',t);}catch(e){}
+  }
+  apply(saved||'light');
+  btns.forEach(function(b){b.addEventListener('click',function(){apply(b.getAttribute('data-theme-set'));});});
+
+  document.querySelectorAll('.copybtn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var el=document.querySelector(btn.getAttribute('data-copy'));
+      if(!el) return;
+      var txt=el.innerText;
+      navigator.clipboard.writeText(txt).then(function(){
+        var old=btn.textContent; btn.textContent='Copied'; btn.classList.add('done');
+        setTimeout(function(){btn.textContent=old; btn.classList.remove('done');},1400);
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

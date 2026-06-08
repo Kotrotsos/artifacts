@@ -454,3 +454,4 @@
 | 2026-06-08 | content | images | [in-memoriam.png](projects/content/images/in-memoriam.png) | Two years ago we coded by hand (light look-back): in-memoriam.png |
 | 2026-06-08 | elastofirm-profiler | reports | [phase3-feature-screenshots.html](projects/elastofirm-profiler/reports/phase3-feature-screenshots.html) | Phase 3 feature screenshots — 13 live captures of shipped components |
 | 2026-06-08 | print | reports | [print-stats-2026-06-08.html](projects/print/reports/print-stats-2026-06-08.html) | Project stats snapshot - 1040 soles in prod, match pipeline + DB breakdown + deployment |
+| 2026-06-08 | kyssbook-kdp | reports | [kdp-submission.html](projects/kyssbook-kdp/reports/kdp-submission.html) | KDP submission playbook for Claude Code Unstoppable (ebook + 8x10 paperback) |
