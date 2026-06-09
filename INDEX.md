@@ -460,3 +460,4 @@
 | 2026-06-08 | elastofirm-profiler | reports | [phase3-status-blockers.html](projects/elastofirm-profiler/reports/phase3-status-blockers.html) | Phase 3 status & blockers — what's done and what each remaining item needs |
 | 2026-06-09 | content | reports | [draft.md](projects/content/reports/draft.md) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): draft.md |
 | 2026-06-09 | content | reports | [draft.html](projects/content/reports/draft.html) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): draft.html |
+| 2026-06-09 | content | images | [hero.png](projects/content/images/hero.png) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): hero.png |
