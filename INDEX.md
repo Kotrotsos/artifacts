@@ -475,3 +475,4 @@
 | 2026-06-09 | content | reports | [draft.html](projects/content/reports/draft.html) | WTF Is a Loop final: all code blocks as dark terminals, deduped loop image |
 | 2026-06-09 | elastofirm-profiler | reports | [phase3-full-task-list.html](projects/elastofirm-profiler/reports/phase3-full-task-list.html) | Phase 3 full task list — rendered specs + proof screenshots, all 63 issues |
 | 2026-06-09 | elastofirm-profiler | reports | [phase3-full-task-list.html](projects/elastofirm-profiler/reports/phase3-full-task-list.html) | Phase 3 full task list — rendered diagrams + customer verify steps + proof screenshots |
+| 2026-06-09 | elastofirm-profiler | reports | [phase3-full-task-list.html](projects/elastofirm-profiler/reports/phase3-full-task-list.html) | Phase 3 full task list — now with search + sort (status/points/id) |
