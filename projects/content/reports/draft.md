@@ -1,79 +1,166 @@
-# Two Short Years Ago, We Coded by Hand
+# WTF Is a Loop? Peter Steinberger vs. Boris Cherny
 
-*A look back at a craft that aged out in 24 months. The Stack Overflow tab, the half-remembered parameter order, the copied snippet you did not understand and shipped anyway. Pour one out.*
+*The most repeated sentence in AI coding this week is six words long, and almost nobody saying it can define it. One tweet had the entire timeline in a chokehold this week, so I ran /last30days on the word everyone was fighting about. The answer is real, it has a five-year lineage, and the punchline is that the loop, not the model, is now the expensive part.*
 
-![An isometric split scene: on the left a dusty old desk with a worn-down TAB key, a coffee-stained printout of a code answer, and a teetering stack of folders marked deprecated. On the right a tidy conductor's podium with a small baton and three little agent-players arranged like an orchestra](hero.png)
+![An isometric scene: a circular loop track with an abstract teal agent at its center deciding the next move each tick, a coral cron clock driving the cycle on a schedule, and a small budget meter and a stop valve on the rim showing the guardrails](hero.png)
 
-It was two years ago. Genuinely. Not a decade, not "back in my day." Two trips around the sun, and the entire daily practice of writing software has been replaced so thoroughly that the people who did it for a living sometimes struggle to describe it to someone who started last month.
+## The tweet that has the timeline in a chokehold
 
-Let me try to describe it, while I still remember.
+One tweet has had the entire AI-coding timeline obsessed this week. Peter Steinberger posted it on June 7, it cleared 2.2 million views, and the replies turned into a brawl over what it actually meant.
 
-**Three things to hold onto, lightly:**
+> "Here's your monthly reminder that you shouldn't be prompting coding agents anymore. You should be designing loops that prompt your agents."
+>
+> @steipete, June 7, 2026
 
-- We used to write software the way you'd assemble furniture with missing instructions and a forum thread from 2014. It worked, mostly, and we were proud of it, which in hindsight is the funny part.
-- The change did not take a generation. It took about a year and a half, which is not long enough to retrain a workforce or rethink a hiring ladder, and you can feel that everywhere right now.
-- If you still have the job, you probably either love it or hate it, and the reason is the same for both camps: it is not the job you trained for. You conduct now. You do not play.
+That is the sentence everyone is quoting. The most telling reply came from Varadh Jain, who asked the only question that mattered: what does this look like in practice? And the answer that became the whole mood was Matthew Berman's.
 
-## The rituals, fondly mocked
+> "nobody knows but him and boris."
+>
+> @MatthewBerman, June 7, 2026
 
-Picture the workday, two years gone.
+That is the real story. Not that loops are the future, but that a six-word phrase hit two million views while the people boosting it argued in the replies about what it meant. I did not roll my eyes, because I run a loop every night that opens pull requests across roughly thirty open-source repos while I sleep. Ninety seconds of research handed back fifteen Reddit threads, twenty-one X posts, and one uncomfortable pattern: the loudest idea in AI coding is one most people repeating it cannot explain. One camp shouted that prompt engineering is dead. Another camp, the one with their hands actually on a keyboard, was more careful.
 
-You would hit a problem and Google the error message, verbatim, including the part with your own file path in it, and somehow still get results. You would open a Stack Overflow tab, the eternal tab, the one that was always already open. You would scroll past the accepted answer, because the accepted answer was from 2013 and the real answer was the one three down with a comment that said "for anyone in 2021, this is deprecated, do this instead." You would do this instead. You would not fully understand why.
+> "It's not ralph/goal loops, that's old hat by now. It's probably some kind of continuous orchestration loop that oversees other threads/agents."
+>
+> @trashpandaemoji, June 7, 2026
 
-You would copy a snippet. You would paste it. You would change two variable names and pray. When it worked you felt like a wizard, and when it did not you would add a `console.log`, which was our species' entire debugging strategy, and we built banks on it.
+That reply is the closest thing to a correct answer anyone posted. Hold onto it.
 
-You memorized things. Function names. The order of arguments, because `splice` and `slice` were different and getting them backwards cost you twenty minutes. You learned, by heart, which library wanted camelCase and which wanted snake_case, the way a sommelier learns regions. When you changed jobs you learned a new language, on purpose, over months, and you put it on your CV like a hunting trophy.
+## What a loop actually is
 
-You read documentation. Out loud, sometimes. You kept a folder of bookmarks called "useful" that you never opened again. You had opinions about tabs versus spaces that you would defend at a wedding.
+Boris Cherny created Claude Code as a side project in September 2024. It now reportedly sits behind close to four percent of all public commits on GitHub. On stage at the Acquired Unplugged event hosted by WorkOS on June 2, he gave the cleanest definition of a loop you will find.
 
-It was, and I say this with love, completely insane, and we called it being a professional.
+> "Now it's actually leveled up, I think, again, to the next wave of abstraction where I don't prompt Claude anymore. I have loops that are running. They're the ones that are prompting Claude and figuring out what to do. My job is to write loops."
+>
+> Boris Cherny, WorkOS Acquired Unplugged, June 2, 2026
 
-![An in-memoriam card with six tombstones for the dead rituals of coding: the Stack Overflow tab, console.log, the memorized parameter order, copy-paste-and-pray, learning a new language over months, and tabs versus spaces, each with a wry one-line eulogy, survived by the conductor's podium and the token bill](in-memoriam.png)
+So here is the plain version. A loop is a small program you write that prompts the coding agent for you, reads what it produced, decides whether it is done, and if not, prompts it again. You stop being the thing inside the loop typing prompts. You become the author of the loop. The model becomes a subroutine.
 
-## And then, fast
+Boris tells it as three stages, and placing yourself on his ladder is the fastest way to get it. A year ago he wrote code by hand with autocomplete. Then he ran five to ten Claude sessions in parallel and prompted each one. Now he does not prompt at all. He writes the loops that prompt Claude, and a couple hundred agents read his GitHub, Slack, and Twitter and decide what to build next. He has the receipt.
 
-Then the tab key stopped finishing your line and something started finishing your thought. Then it stopped finishing your thought and started finishing your task. Then it stopped finishing your task and started finishing your weekend project before you had made coffee.
+> "In the last 30 days, 100% of my contributions to Claude Code were written by Claude Code. I landed 259 PRs."
+>
+> Boris Cherny, via Simon Willison, December 27, 2025
 
-The numbers that used to mean something stopped meaning it. A feature that was three days became an afternoon. An afternoon became "while I read the rest of my email." A whole app, the kind you would once scope as a quarter of work and a small team, became a single long session and a bill for tokens. Months to hours, and not as a slogan, as a Tuesday.
+He deleted his IDE in November and has not opened it since. The nuance the prompt-engineering-is-dead crowd skips: he is not saying engineers are obsolete. Someone still has to decide what to build, talk to customers, and coordinate teams, and he says great engineers matter more than ever. The job did not vanish. It moved up an altitude, from writing the code to writing the thing that writes the code.
 
-The Stack Overflow tab is still open somewhere, out of habit, like a light left on in a house nobody lives in. We do not go there now. We ask the thing in the editor, and it does not link us to a 2014 thread, it just does the thing, and it does not make us feel like a wizard, which is its own small loss.
+## The spectrum: from ReAct to orchestration
 
-## The people walking in the door now
+The replies were a mess because loop hides at least five different things. Here is the ladder, oldest to newest, so you can stop talking past people.
 
-Here is where the tongue comes partway out of the cheek, because this part is real.
+![A five-stage timeline ladder of the loop, oldest to newest. Stage one, ReAct 2022, the academic while-loop, one model reasons, calls a tool, repeats, a human watching. Stage two, AutoGPT 2023, given a goal and left to prompt itself, famous for spinning forever. Stage three, ralph 2025, a bash one-liner piping the same prompt file in, resetting context each time. Stage four, slash-goal spring 2026, the ralph loop productized with a validator. Stage five, orchestration now, loops supervising loops on a schedule with durable git-backed state](diagram-ladder.png)
 
-If you are coming into this industry right now, you have it either spectacularly good or genuinely bad, and which one is mostly not up to you.
+Stage one is the academic while-loop. The 2022 ReAct paper formalized it: the model reasons, calls a tool, reads the result, repeats until done. One model, one loop, a human watching. Stage two is AutoGPT in 2023, which gave it a goal and let it prompt itself, and which became famous for spinning forever doing nothing. That failure seeded years of agents are a toy.
 
-Good: you can build and ship a real product in your first week, the kind of thing that used to require a team and a year and somebody's savings. You never had to memorize the argument order of `splice`. You never learned a single thing you will have to unlearn. You started at a level the rest of us spent five years climbing to, and you do not even know it because you have nothing to compare it against.
+Stage three is the one Trash Panda called old hat: the ralph loop, published by Geoffrey Huntley in July 2025. It is almost insultingly simple, a bash one-liner that pipes the same prompt file into the agent over and over. Its real innovation was discipline: every iteration resets the context to a fixed set of anchor files instead of letting the conversation grow. Huntley built an entire programming language with it for about 297 dollars. Stage four productized that: in spring 2026 both Codex and Claude Code shipped a /goal command that runs the ralph loop until a small validator model confirms the task is done.
 
-Bad: the bottom rung you would have climbed is gone. The grunt work that used to be a junior's apprenticeship, the tickets, the small fixes, the unglamorous plumbing, is exactly the work that got handed to the agents first. The ladder lost its first three rungs, and "just get an entry-level job and learn" is advice from a world that closed. Not finding work is not a character flaw right now. It is a structural fact, and it is landing hardest on the people who did everything they were told to do.
+Stage five is what Boris and Steinberger actually mean, and it is genuinely new, not just renamed. Four things changed. The loop became the unit of work, not the task. Loops started supervising other loops, concurrently and on a schedule. Scheduling replaced the human kickoff, so the loop runs on infrastructure time instead of your attention. And durability became explicit, with git-backed state and crash recovery, because these things have to survive a restart. Ralph assumed your terminal stayed open. The 2026 version assumes it does not. So Trash Panda was right twice: the single-agent ralph loop is old hat, and the multi-agent orchestration loop on top of it is the new thing.
 
-Both of those are true at once, and one true thing is so much more shareable than two, so people pick the one that fits their mood and argue about it online instead.
+## It's just a cron job with a hat on
 
-## If you kept the job, you became a conductor
+The best skeptic line in the entire corpus was four words, posted under someone gushing that loops is where it will go.
 
-And if you are still in it, still employed, still shipping, congratulations and condolences, because the job changed underneath you and nobody asked.
+> "Cronjobs have funny re-branding rn."
+>
+> X reply, loops discourse, June 2026
 
-You used to play an instrument. You wrote the lines yourself, badly sometimes, but they were yours, and there was a particular pleasure in the act of it, the small craft of making a function come out clean. Now you stand at the podium. You wave the baton. The agents play, several at once, faster and more in tune than you ever were, and your job is to know what the piece should sound like and to stop the section that has wandered off.
+This deserves a straight answer, not a dodge, because it is half right. Yes, the scheduling layer is cron. Boris literally runs his on cron. The /loop command in Claude Code uses cron under the hood. If your whole definition of a loop is a thing that runs on a timer, then yes, we invented that in 1975 and you can go home.
 
-Some people took to the podium like they were born for it. They were never that attached to the violin. They wanted the music, the finished thing, the product, and conducting gets them there ten times over, and they feel like gods.
+What cron never had is the part in the middle. A cron job runs a fixed script. A loop runs a model that looks at the current state, decides what to do next, does it, checks whether it worked, and decides whether to keep going. The decision is the agent's, not yours, and not a hardcoded branch. Stack those, let one loop dispatch and supervise others, give them durable shared state, and you have something cron cannot express.
 
-And some people miss the violin. They became conductors and they are good at it and they go home a little hollow, because the thing they actually loved was the playing, the flow of writing code that does what you meant, and that part is mostly gone, delegated, reviewed at altitude, merged. You can love the results and grieve the craft in the same afternoon. A lot of good engineers are quietly doing exactly that.
+![A side-by-side of a cron job versus a loop. The cron job is a clock driving a fixed script that always runs the same steps. The loop is the same clock driving a body that holds a decision-maker: look at the state, decide the next action, do it, check if it worked, decide whether to keep going. The label reads "a loop is cron plus a decision-maker in the body"](diagram-cron-vs-loop.png)
 
-## Pour one out
+The honest framing is not that loops are new magic and not that loops are just cron. It is that loops are cron plus a decision-maker in the body, and the interesting engineering is everything you wrap around that decision so it does not run off a cliff.
 
-We are not going back. Mostly we should not want to, because a great deal of what we are nostalgic for was friction we mistook for skill, and the world has real things to build that the old pace could never reach.
+## What it looks like when you actually build one
 
-But it is allowed to be a little wistful. The Stack Overflow tab carried us further than it had any right to. The `console.log` debugged production systems that handled your money. We memorized parameter orders like scripture and learned languages like pilgrimages, and it was ridiculous, and it was ours.
+Enough theory. The on-ramp is one line. Claude Code shipped /loop, and Boris's own example is the canonical starter. Paste this and change the nouns.
 
-It was two years ago. Do you even remember how we did it? Soon, neither will anyone else.
+```
+/loop babysit all my PRs. Auto-fix build issues, and when
+comments come in, use a worktree agent to fix them.
+```
+
+And here is his fuller recipe. Days later, Boris posted five tips for running Opus autonomously for hours or days.
+
+> Five tips, in his words: use auto mode for permissions so Claude doesn't ask for approval; use dynamic workflows to have Claude orchestrate hundreds or thousands of agents to get a task done; use /goal or /loop to nudge Claude to keep going until it's done; use Claude Code in the cloud so you can close your laptop; and make sure Claude has a way to self-verify its work end to end.
+>
+> @bcherny, June 2026
+
+Tip five is the one the hype skips and the practitioners obsess over: a loop is only as trustworthy as its ability to check its own work.
+
+![A dark Claude Code terminal showing the /loop starter command "babysit all my PRs, auto-fix build issues, and when comments come in use a worktree agent to fix them," then Boris's five tips for running autonomously for days: auto mode for permissions, dynamic workflows to orchestrate hundreds of agents, /goal or /loop to keep going, Claude Code in the cloud, and a way to self-verify end to end, with the last tip highlighted](screenshot-loop.png)
+
+That is the whole idea in miniature. You did not write the steps. You wrote the intent and the stopping behavior, and the loop prompts the agent each tick. On TikTok the framing landed cleanly for a general audience.
+
+> "Loop mode is one of the clearest signs that AI coding is moving from one-off prompts to background operations."
+>
+> @ai.native.founder on TikTok, June 2026
+
+The deep end is Steve Yegge's Gas Town, launched in January: twenty to thirty Claude Code instances coordinated by a Mayor agent, with patrol agents that run continuous loops and state stored in git so work survives a crash. That is the continuous orchestration loop that oversees other threads Trash Panda was reaching for, shipped and open source.
+
+But the most practical lesson in the research is that a loop is only as good as its ability to check itself. The fastest-growing sub-theme was not orchestration, it was verification.
+
+> "Your coding agent can move fast, but bad commits compound fast too."
+>
+> @DanKornas, June 2026
+
+Kornas is shipping roborev, a tool that reviews every commit in the background and feeds the findings back into the agent while the context is still fresh. An open loop that writes code with no feedback is a machine for generating confident mistakes. A loop that writes, runs, reads the result, and corrects is the thing that actually works. The loop is not the magic. The feedback inside it is.
+
+## The plot twist: the loop is now the expensive part
+
+Here is where the research turned from philosophy to a finance problem. The sharpest deflation of the whole agents mythology came from a working engineer.
+
+> "Every ai agent i shipped this year is a for-loop, an llm call, and a try/catch around the json parsing. The only thing agentic about it is the anthropic bill at the end of the month."
+>
+> @rohit_jsfreaky, June 2026
+
+That bill is not a joke. The receipt of the month: Uber capped its engineers at 1,500 dollars per person per tool per month for Claude Code and Cursor after burning its annual AI budget in four months. Once the model writes the code for almost nothing, the cost moves to the loop running it.
+
+> "The costliest thing in AI coding is no longer writing code, it's managing the agent loop."
+>
+> @runes_leo, June 2026
+
+And the failure mode everyone in production is scared of is the loop that does not stop.
+
+> "Without guardrails, you get infinite loops and billing surprises orders of magnitude over budget."
+>
+> @cv_usk, June 2026
+
+Which is why every serious 2026 write-up on loops converges on the same three hard stops: a maximum iteration count, no-progress detection, and a token or dollar budget ceiling. The romantic version of loops is that you write the loops and a thousand agents build your company overnight. The production version is that you write the loops, and most of your job is making sure they halt. Gartner puts agentic AI at the peak of inflated expectations, with only about seventeen percent of organizations actually deploying agents. The gap between the timeline and the receipts is the real state of play.
+
+## It's not loops. It's skills.
+
+Here is my own take, and it is where I land after a week of watching this. The loop is plumbing. The asset is the skill it calls.
+
+Steinberger's other recurring point pairs with the loops one and is the more durable half: if you do something more than once, turn it into an automated skill, and if you do something hard, turn it into a skill afterward so next time is free. A loop with no reusable skills inside it is just a while-true around a stranger. A loop that calls a library of sharp, tested, named skills is a system that compounds. The Reddit practitioner who is actually converting said it best.
+
+> "A lot of people are rolling their eyes on Twitter, but my ears are perked up."
+>
+> r/ChatGPTCoding, June 2026
+
+So the answer to WTF is a loop is not a hot take about prompt engineering dying. It is this: stop being the thing in the loop. Write the loop once, give it skills worth calling and feedback so it can check itself, cap it so it halts, and let it run on cron while you go decide what to build next. Steinberger and Boris are describing the same animal from two sides. The only people who truly know are the ones who have already built one. The good news is that, as of this month, the on-ramp is a single slash command.
+
+## Key Patterns from the Research
+
+- A loop is cron plus a decision-maker in the body: the model, not a hardcoded branch, picks the next action each tick.
+- The lineage is real: ReAct in 2022, AutoGPT in 2023, ralph in 2025, /goal in spring 2026, orchestration loops now. Single-agent ralph is old hat; multi-agent supervision is the new layer.
+- The loop is only as good as its feedback. Continuous review and validation gates are what make a loop trustworthy.
+- The expensive resource shifted from tokens to loop management. Cap iterations, detect no-progress, set a dollar budget.
+- The reusable unit inside the loop is a skill, not a prompt. Loops that call sharp named skills compound; loops that re-derive everything just burn money.
+
+## All Agents Reported Back
+
+- **Reddit:** 17 voices (r/ClaudeAI, r/AI_Agents, r/ExperiencedDevs), 47 threads, 34k upvotes
+- **X:** 21 voices (steipete, bcherny, runes_leo), 56 posts, 175 reposts
+- **YouTube:** 4 voices (WorkOS, Lenny's Podcast, Y Combinator), talk transcripts
+- **TikTok:** 6 voices (ai.native.founder, nikpolale), 34 clips
+- **Instagram:** 4 voices (sequenzy_com, ai.builders), 14 reels
+- **Hacker News:** 12 voices, 54 stories, 1k comments
+- **GitHub:** 6 repos (gastownhall/gastown, NousResearch/hermes), steipete 259+ PRs
+
+Top voices: steipete, bcherny, runes_leo, rohit_jsfreaky, MatthewBerman. Compiled from /last30days runs on 2026-06-07. Facets: designing loops that prompt coding agents, ai loops, coding loops.
 
 ---
 
-*Marco Kotrotsos, specializing in practical AI implementation for organizations ready to close the gap between AI hype and AI value. With 30 years of IT experience now focused purely on AI deployment, he works hands-on with companies to turn AI potential into measurable business outcomes.*
-
-*This article is published in [Autocomplete](https://medium.com/autocomplete-real-world-ai), a Medium publication about real-world AI for practitioners and decision-makers. We're always looking for writers. If you're building with AI and have something worth sharing, reach out.*
-
-*My free Substack newsletter, also called Autocomplete, can be found here: https://acdigest.substack.com.*
-
-*My books on Amazon: [Claude Code for Everyone Else](https://www.amazon.com/dp/B0H35YY851) and [From Vibe to Production](https://www.amazon.com/dp/B0H34GK9VW).*
+*Co-founded a self-driving oven company (acquired by Weber) and the company that became Lyft. Building again, more soon. I run loops that ship open-source PRs while I sleep, and I write them with /last30days research running in the background.*

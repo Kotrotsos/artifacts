@@ -228,3 +228,4 @@
 | 2026-06-08 | reports | [draft.html](reports/draft.html) | Two years ago we coded by hand (light look-back): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/two-years-ago-coded-by-hand/draft.html |
 | 2026-06-08 | images | [hero.png](images/hero.png) | Two years ago we coded by hand (light look-back): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/two-years-ago-coded-by-hand/hero.png |
 | 2026-06-08 | images | [in-memoriam.png](images/in-memoriam.png) | Two years ago we coded by hand (light look-back): in-memoriam.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/two-years-ago-coded-by-hand/in-memoriam.png |
+| 2026-06-09 | reports | [draft.md](reports/draft.md) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): draft.md | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/draft.md |
