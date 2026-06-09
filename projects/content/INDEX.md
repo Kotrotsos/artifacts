@@ -238,3 +238,4 @@
 | 2026-06-09 | images | [diagram-anatomy.png](images/diagram-anatomy.png) | Production loop anatomy diagram: loop body plus three hard stops | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/diagram-anatomy.png |
 | 2026-06-09 | images | [screenshot-ralph.png](images/screenshot-ralph.png) | WTF Is a Loop terminal: screenshot-ralph | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/screenshot-ralph.png |
 | 2026-06-09 | images | [screenshot-goal-condition.png](images/screenshot-goal-condition.png) | WTF Is a Loop terminal: screenshot-goal-condition | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/screenshot-goal-condition.png |
+| 2026-06-09 | images | [screenshot-goal-run.png](images/screenshot-goal-run.png) | WTF Is a Loop terminal: screenshot-goal-run | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/screenshot-goal-run.png |
