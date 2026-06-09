@@ -461,3 +461,4 @@
 | 2026-06-09 | content | reports | [draft.md](projects/content/reports/draft.md) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): draft.md |
 | 2026-06-09 | content | reports | [draft.html](projects/content/reports/draft.html) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): draft.html |
 | 2026-06-09 | content | images | [hero.png](projects/content/images/hero.png) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): hero.png |
+| 2026-06-09 | content | images | [diagram-ladder.png](projects/content/images/diagram-ladder.png) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): diagram-ladder.png |
