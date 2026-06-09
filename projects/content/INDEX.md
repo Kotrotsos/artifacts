@@ -242,3 +242,4 @@
 | 2026-06-09 | images | [screenshot-verify.png](images/screenshot-verify.png) | WTF Is a Loop terminal: screenshot-verify | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/screenshot-verify.png |
 | 2026-06-09 | images | [screenshot-guardrails.png](images/screenshot-guardrails.png) | WTF Is a Loop terminal: screenshot-guardrails | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/screenshot-guardrails.png |
 | 2026-06-09 | reports | [draft.html](reports/draft.html) | WTF Is a Loop, code blocks now dark-terminal screenshots for Substack | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/draft.html |
+| 2026-06-09 | reports | [draft.html](reports/draft.html) | WTF Is a Loop final: all code blocks as dark terminals, deduped loop image | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/draft.html |
