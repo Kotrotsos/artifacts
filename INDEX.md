@@ -466,3 +466,4 @@
 | 2026-06-09 | content | images | [screenshot-loop.png](projects/content/images/screenshot-loop.png) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): screenshot-loop.png |
 | 2026-06-09 | content | reports | [draft.html](projects/content/reports/draft.html) | WTF Is a Loop practical guide: build a loop this week, /goal /loop self-verify guardrails |
 | 2026-06-09 | content | images | [diagram-anatomy.png](projects/content/images/diagram-anatomy.png) | Production loop anatomy diagram: loop body plus three hard stops |
+| 2026-06-09 | content | images | [screenshot-ralph.png](projects/content/images/screenshot-ralph.png) | WTF Is a Loop terminal: screenshot-ralph |
