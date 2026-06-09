@@ -470,3 +470,4 @@
 | 2026-06-09 | content | images | [screenshot-goal-condition.png](projects/content/images/screenshot-goal-condition.png) | WTF Is a Loop terminal: screenshot-goal-condition |
 | 2026-06-09 | content | images | [screenshot-goal-run.png](projects/content/images/screenshot-goal-run.png) | WTF Is a Loop terminal: screenshot-goal-run |
 | 2026-06-09 | content | images | [screenshot-verify.png](projects/content/images/screenshot-verify.png) | WTF Is a Loop terminal: screenshot-verify |
+| 2026-06-09 | content | images | [screenshot-guardrails.png](projects/content/images/screenshot-guardrails.png) | WTF Is a Loop terminal: screenshot-guardrails |
