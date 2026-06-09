@@ -234,3 +234,4 @@
 | 2026-06-09 | images | [diagram-ladder.png](images/diagram-ladder.png) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): diagram-ladder.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/diagram-ladder.png |
 | 2026-06-09 | images | [diagram-cron-vs-loop.png](images/diagram-cron-vs-loop.png) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): diagram-cron-vs-loop.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/diagram-cron-vs-loop.png |
 | 2026-06-09 | images | [screenshot-loop.png](images/screenshot-loop.png) | WTF Is a Loop article (Steinberger vs Cherny, /last30days): screenshot-loop.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/screenshot-loop.png |
+| 2026-06-09 | reports | [draft.html](reports/draft.html) | WTF Is a Loop practical guide: build a loop this week, /goal /loop self-verify guardrails | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/draft.html |
