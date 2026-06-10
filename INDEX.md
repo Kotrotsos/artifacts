@@ -480,3 +480,4 @@
 | 2026-06-10 | elastofirm-profiler | reports | [print-matcher-analysis.html](projects/elastofirm-profiler/reports/print-matcher-analysis.html) | Print-matcher integration analysis — two-stage ORB+RANSAC hybrid recommendation |
 | 2026-06-10 | content | reports | [review.html](projects/content/reports/review.html) | Claude Fable 5 researched review: benchmarks, real-world use, coding, cost and value, balanced pros and cons |
 | 2026-06-10 | content | images | [hero.png](projects/content/images/hero.png) | Fable 5 review article visual: hero.png |
+| 2026-06-10 | content | images | [diagram-benchmarks.png](projects/content/images/diagram-benchmarks.png) | Fable 5 review article visual: diagram-benchmarks.png |

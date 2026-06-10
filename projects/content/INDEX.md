@@ -245,3 +245,4 @@
 | 2026-06-09 | reports | [draft.html](reports/draft.html) | WTF Is a Loop final: all code blocks as dark terminals, deduped loop image | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/draft.html |
 | 2026-06-10 | reports | [review.html](reports/review.html) | Claude Fable 5 researched review: benchmarks, real-world use, coding, cost and value, balanced pros and cons | /Users/marcokotrotsos/PERSONAL/Content/drafts/fable-5-review/review.html |
 | 2026-06-10 | images | [hero.png](images/hero.png) | Fable 5 review article visual: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/fable-5-review/hero.png |
+| 2026-06-10 | images | [diagram-benchmarks.png](images/diagram-benchmarks.png) | Fable 5 review article visual: diagram-benchmarks.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/fable-5-review/diagram-benchmarks.png |
