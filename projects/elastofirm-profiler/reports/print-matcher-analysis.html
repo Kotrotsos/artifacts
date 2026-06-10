@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Print-Matcher × Elastofirm — Integration Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f9fafb;--surface:#fff;--surface-2:#f3f4f6;--border:#e5e7eb;--border-strong:#d1d5db;--ink:#18181b;--ink-2:#3f3f46;--muted:#71717a;--accent:#2563eb;--good:#059669;--good-bg:#ecfdf5;--good-bd:#a7f3d0;--amber:#b45309;--amber-bg:#fffbeb;--amber-bd:#fde68a;--red:#dc2626;--red-bg:#fef2f2;--red-bd:#fecaca;--code-bg:#f3f4f6}
+[data-theme=dark]{--bg:#0f1115;--surface:#16181d;--surface-2:#1d2026;--border:#2a2e37;--border-strong:#3a3f4b;--ink:#f4f4f5;--ink-2:#d4d4d8;--muted:#9ca3af;--accent:#60a5fa;--good:#34d399;--good-bg:#06281f;--good-bd:#0f5132;--amber:#fbbf24;--amber-bg:#2a2010;--amber-bd:#5c4310;--red:#f87171;--red-bg:#2a1212;--red-bd:#5c1d1d;--code-bg:#1d2026}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Geist,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;padding:44px 28px 90px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:29px;font-weight:600;letter-spacing:-.025em;margin:8px 0 12px}
+h2{font-size:18px;font-weight:600;margin:36px 0 10px}
+h3{font-size:14px;font-weight:600;margin:18px 0 8px}
+p{font-size:14px;color:var(--ink-2);margin:8px 0}
+.theme-toggle{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;flex-shrink:0}
+.theme-toggle button{font-family:'Geist Mono',monospace;font-size:11px;background:var(--surface);color:var(--muted);border:none;padding:6px 10px;cursor:pointer;border-right:1px solid var(--border)}
+.theme-toggle button:last-child{border-right:none}.theme-toggle button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+code{font-family:'Geist Mono',monospace;font-size:12.5px;background:var(--code-bg);padding:1px 6px;border-radius:5px;color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0 4px}
+th{text-align:left;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:7px 10px;border-bottom:1px solid var(--border-strong)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink-2)}
+td.k{font-weight:600;color:var(--ink);white-space:nowrap}
+.pill{font-family:'Geist Mono',monospace;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.pill.good{background:var(--good-bg);color:var(--good);border:1px solid var(--good-bd)}
+.pill.warn{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+.pill.bad{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0}
+.card.accent{border-left:4px solid var(--accent)}
+.card.warn{border-left:4px solid var(--amber)}
+.card.good{border-left:4px solid var(--good)}
+.card.bad{border-left:4px solid var(--red)}
+ul.tight{margin:6px 0 6px 20px}ul.tight li{font-size:13.5px;color:var(--ink-2);margin:4px 0}
+ol.tight{margin:6px 0 6px 20px}ol.tight li{font-size:13.5px;color:var(--ink-2);margin:5px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0;font-family:'Geist Mono',monospace;font-size:12px}
+.flow .step{background:var(--surface);border:1px solid var(--border-strong);border-radius:9px;padding:8px 13px;color:var(--ink-2)}
+.flow .step.new{border-color:var(--good-bd);background:var(--good-bg);color:var(--good);font-weight:600}
+.flow .arr{color:var(--muted)}
+.verdict{background:var(--surface);border:1px solid var(--good-bd);border-left:4px solid var(--good);border-radius:12px;padding:16px 20px;margin:14px 0}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+@media print{body{background:#fff;color:#000}.theme-toggle{display:none}.card,table{break-inside:avoid}}
+</style></head><body><div class="wrap">
+
+<header><div>
+<div class="eyebrow">Elastofirm Profiler · Algorithm analysis · 2026-06-10</div>
+<h1>Can the print-matcher power Elastofirm's image search?</h1>
+</div>
+<div class="theme-toggle" role="group" aria-label="Theme"><button data-set="light" aria-pressed="true">Light</button><button data-set="dark" aria-pressed="false">Dark</button><button data-set="system" aria-pressed="false">System</button></div>
+</header>
+
+<p>Comparison of the shoe-print matching service (<code>~/personal/print</code>) against Elastofirm's current profile matcher, and a concrete integration proposal. Short version: <b>yes — as a second stage, not a replacement.</b> The print-matcher's ORB + RANSAC rescoring is what buys partial-image matching and could cut Elastofirm's search latency by an order of magnitude; its global descriptor is a sidegrade. One real technical risk needs a pilot before committing.</p>
+
+<h2>1 · The two algorithms side by side</h2>
+<div class="card"><table>
+<thead><tr><th></th><th>Elastofirm (today)</th><th>Print-matcher</th></tr></thead><tbody>
+<tr><td class="k">Canvas</td><td>128×128 grayscale, pad-to-square, blur</td><td>512×512, CLAHE contrast, adaptive threshold, Canny edges, morphology</td></tr>
+<tr><td class="k">Global descriptor</td><td>HOG only — 8,100 dims → PCA 256</td><td>HOG(gray) + HOG(edges) + 4×4 edge-density + Hu moments — 16,223 dims, no PCA</td></tr>
+<tr><td class="k">Ranking</td><td>Single stage: cosine over all 12,186 items</td><td><b>Two stages:</b> cosine over 1,961 items → <b>ORB keypoints + Lowe ratio + RANSAC homography on top-300</b>, blended 0.4/0.6</td></tr>
+<tr><td class="k">Rotation</td><td>Brute force at query time: 24 angles × 3 flips = 72 searches (coarse-to-fine)</td><td>Intrinsic: Hu moments are rotation/scale-invariant; ORB is rotation-aware; RANSAC finds the alignment</td></tr>
+<tr><td class="k">Partial images</td><td><span class="pill bad">none</span> — padding + global HOG collapse on crops</td><td><span class="pill good">native</span> — local keypoints + geometric consistency need no full overlap</td></tr>
+<tr><td class="k">Latency</td><td>2–15 s (dominated by the 72-rotation loop)</td><td>0.1–0.3 s end-to-end</td></tr>
+<tr><td class="k">Index</td><td>451 MB / 12,186 items (~34 KB each)</td><td>124 MB / 1,961 items (~65 KB embedding + ORB sidecar)</td></tr>
+<tr><td class="k">Dependencies</td><td>opencv, scikit-learn, numpy</td><td>opencv, scikit-image, numpy (+ optional OpenAI for print isolation) — <b>CPU only, no model weights</b></td></tr>
+<tr><td class="k">Swappability</td><td>Tightly coupled: API → ImageSearcher → ProfileMatcher, hardcoded DB path, no interface</td><td>Clean library: <code>match_query(rgb, top_k)</code>, <code>process()</code>, <code>descriptor()</code> importable</td></tr>
+</tbody></table></div>
+
+<h2>2 · Why the print-matcher can match partial prints (and Elastofirm can't)</h2>
+<div class="grid2">
+<div class="card bad"><h3>Elastofirm: one global fingerprint</h3>
+<p>The whole image becomes a single 8,100-dim HOG vector. Crop away half the profile and the vector changes everywhere — the gradient histogram of "the full cross-section" and "the left half, zero-padded" are simply different fingerprints. Cosine similarity has no notion of "this region matches".</p></div>
+<div class="card good"><h3>Print-matcher: many local fingerprints + geometry</h3>
+<p>ORB extracts hundreds of local keypoints; each describes a small patch. A partial query still produces keypoints for the region it does have. RANSAC then demands the matched keypoints agree on one geometric transform — so a half-print that genuinely aligns with part of a database item scores high, while coincidental patch matches are discarded. Overlap with the full image is not required.</p></div>
+</div>
+<p>The print project's own evaluation: on 6 synthetic partial prints, raw matching scored 1/6 top-1; with an LLM-based isolation pre-step, 3/6 top-1. <b>Honest caveat: n=6 is anecdote, not proof</b> — and the isolation step is an OpenAI API dependency that Elastofirm queries (clean drawings/scans, not muddy floor photos) largely won't need.</p>
+
+<h2>3 · The one real technical risk</h2>
+<div class="card warn">
+<h3>ORB keypoint density on silhouettes</h3>
+<p>Shoe soles are <b>texture-rich</b>: tread patterns give ORB hundreds of distinctive corners. Elastofirm profile drawings are <b>near-binary silhouettes</b> — large smooth black regions with information only along the contour. ORB on such images finds far fewer, less distinctive keypoints (corners of the cross-section, lip tips, hollow chambers). It may still be plenty — rubber profiles are geometrically intricate — but this is exactly the kind of thing that looks fine in theory and fails on real data.</p>
+<p><b>Mitigations if density is low:</b> run ORB on the Canny edge map instead of gray (the print pipeline already computes it); raise ORB's nfeatures and lower its FAST threshold; or swap ORB for contour-sampled descriptors. All cheap to test.</p>
+<p><b>This is why the recommendation starts with a pilot eval, not an integration.</b></p>
+</div>
+
+<h2>4 · Integration options</h2>
+<div class="card"><table>
+<thead><tr><th>Option</th><th>What changes</th><th>Partial support</th><th>Reindex?</th><th>Effort</th><th>Risk</th></tr></thead><tbody>
+<tr><td class="k">A · Two-stage hybrid <span class="pill good">recommended</span></td><td>Keep today's HOG+PCA as stage 1 (recall). Add ORB+RANSAC rescoring of the top-300 as stage 2. Store ORB descriptors per profile at index time (sidecar, ~+200–300 MB for 12k items).</td><td>Yes</td><td>Incremental — one ORB pass over already-downloaded images; rides on the existing delta pipeline + new CLI guards</td><td>M</td><td>Keypoint-density risk (pilot first)</td></tr>
+<tr><td class="k">B · Port the full embedder</td><td>Replace the 8,100-dim HOG with the 16,223-dim combined descriptor (HOG gray + HOG edges + edge grid + Hu). Keep PCA. Hu's invariance lets the 72-rotation loop shrink.</td><td>No (stage 1 is still global)</td><td>Full rebuild (guarded via <code>elastofirm index run --full</code>)</td><td>M–L</td><td>Sidegrade until proven better on profile data</td></tr>
+<tr><td class="k">C · Cherry-pick cheap wins</td><td>Add Hu moments + edge-density to the current vector; adopt CLAHE/adaptive-threshold preprocessing.</td><td>No</td><td>Full rebuild</td><td>S</td><td>Low — but also low ceiling</td></tr>
+<tr><td class="k">D · Isolation pre-step</td><td>Port the gpt-image-2 query-isolation idea for messy photo queries.</td><td>Indirect</td><td>No</td><td>S</td><td>External API dependency; Elastofirm queries are usually already clean — skip for now</td></tr>
+</tbody></table></div>
+
+<div class="card accent"><h3>Why A beats B as the starting point</h3>
+<ul class="tight">
+<li><b>No migration risk:</b> the existing 451 MB index keeps working untouched; stage 2 is additive.</li>
+<li><b>It's where the new capability lives:</b> partial matching comes from ORB+RANSAC, not from the bigger global descriptor.</li>
+<li><b>It kills the latency problem:</b> ORB is rotation-aware, so the 72-rotation brute force can drop to the 4 cardinal angles (or none) — from 2–15 s towards well under a second, on CPU.</li>
+<li><b>Better precision for "doorselecteer"-style work:</b> RANSAC inlier counts give an interpretable "geometrically consistent match" signal the UI could even visualise (the print app draws the matched keypoints).</li>
+</ul></div>
+
+<h2>5 · Proposed shape (option A)</h2>
+<div class="flow">
+<span class="step">query image</span><span class="arr">→</span>
+<span class="step">existing preprocess + HOG + PCA</span><span class="arr">→</span>
+<span class="step">cosine vs 12,186 (stage 1)</span><span class="arr">→</span>
+<span class="step new">top-300 → ORB + RANSAC rescore (stage 2)</span><span class="arr">→</span>
+<span class="step new">blend + rank</span><span class="arr">→</span>
+<span class="step">same API response</span>
+</div>
+<ul class="tight">
+<li><b>Decoupling first:</b> introduce a small matcher interface (the audit confirmed the endpoint is hardcoded to ProfileMatcher) and a <code>MATCHER=legacy|hybrid</code> env flag — instant rollback, A/B-able.</li>
+<li><b>Index side:</b> extend the index build to also store ORB keypoints/descriptors per profile; the new <code>elastofirm index</code> commands (delta, backup, lock) make the rebuild safe and resumable.</li>
+<li><b>API contract unchanged:</b> same endpoint, same response shape (<code>query_rotation</code> becomes the RANSAC angle).</li>
+</ul>
+
+<h2>6 · Recommended plan</h2>
+<div class="card"><ol class="tight">
+<li><b>Pilot eval (1–2 days, go/no-go):</b> offline script on ~50 indexed profiles — generate synthetic partials (40–70% crops, rotated), measure top-1/top-5 for (a) current matcher, (b) ORB+RANSAC prototype. Explicitly measure ORB keypoint counts on profile drawings vs the edge-map variant. <i>Produces real numbers instead of the print project's n=6.</i></li>
+<li><b>Phase A (if pilot passes):</b> matcher interface + feature flag → ORB store in the index (delta rebuild) → two-stage search → regression suite + eval report. The latency win (dropping the 72-rotation loop) lands here too.</li>
+<li><b>Phase B (optional, data-driven):</b> trial the combined 16k descriptor as stage 1 on the eval set; adopt only if it beats HOG+PCA on profile data. Full guarded reindex.</li>
+<li><b>Product check:</b> confirm with the PO that partial-profile queries are a real workflow (photo of a profile fragment, cropped scan) — worth a Linear issue; this also closes the open question of whether to surface a "partial match" indicator in the UI.</li>
+</ol></div>
+
+<div class="verdict"><b>Verdict:</b> incorporate it — as a <b>second-stage rescorer</b> behind the existing index, gated by a 1–2 day pilot on real profile drawings. The architecture transfers cleanly (same CPU/OpenCV stack, importable functions, two-stage design made for exactly this), the payoff is partial-image matching plus a large latency cut, and the only material unknown — ORB keypoint quality on silhouettes — is cheap to measure before committing. Don't port the global embedder or the OpenAI isolation step until the data says so.</div>
+
+<h2>7 · Source references</h2>
+<div class="card"><ul class="tight">
+<li>Print-matcher: <code>~/personal/print/match/{matcher.py, embedder.py, pipeline.py, build_db.py, app.py}</code> · DB <code>match/data/print.db</code> (1,961 items) · eval <code>eval_isolation.json</code></li>
+<li>Elastofirm: <code>image_search.py</code>, ProfileMatcher (HOG 8,100 → PCA 256, cosine, 24×3 rotation loop), index <code>elastofirm-index-128.db</code> (12,186 items, 451 MB), endpoint <code>/api/profiles/search-by-image</code></li>
+<li>Current coverage note: 12,186 of 19,696 profiles indexed; 7,510 pending (many without drawings) — any stage-2 index pass should ride along with closing that gap.</li>
+</ul></div>
+
+<footer>Elastofirm Profiler · print-matcher integration analysis · sources surveyed 2026-06-10 · recommendation: pilot, then two-stage hybrid (option A).</footer>
+</div>
+<script>
+const root=document.documentElement,btns=[...document.querySelectorAll('.theme-toggle button')],mq=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(m){root.setAttribute('data-theme',m==='system'?(mq.matches?'dark':'light'):m);btns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.set===m)))}
+btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.set)));
+mq.addEventListener('change',()=>{const a=btns.find(b=>b.getAttribute('aria-pressed')==='true');if(a&&a.dataset.set==='system')apply('system')});
+apply('light');
+</script>
+</body></html>
