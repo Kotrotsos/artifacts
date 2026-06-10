@@ -243,3 +243,4 @@
 | 2026-06-09 | images | [screenshot-guardrails.png](images/screenshot-guardrails.png) | WTF Is a Loop terminal: screenshot-guardrails | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/screenshot-guardrails.png |
 | 2026-06-09 | reports | [draft.html](reports/draft.html) | WTF Is a Loop, code blocks now dark-terminal screenshots for Substack | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/draft.html |
 | 2026-06-09 | reports | [draft.html](reports/draft.html) | WTF Is a Loop final: all code blocks as dark terminals, deduped loop image | /Users/marcokotrotsos/PERSONAL/Content/drafts/wtf-is-a-loop/draft.html |
+| 2026-06-10 | reports | [review.html](reports/review.html) | Claude Fable 5 researched review: benchmarks, real-world use, coding, cost and value, balanced pros and cons | /Users/marcokotrotsos/PERSONAL/Content/drafts/fable-5-review/review.html |
