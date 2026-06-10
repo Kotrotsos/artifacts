@@ -482,3 +482,4 @@
 | 2026-06-10 | content | images | [hero.png](projects/content/images/hero.png) | Fable 5 review article visual: hero.png |
 | 2026-06-10 | content | images | [diagram-benchmarks.png](projects/content/images/diagram-benchmarks.png) | Fable 5 review article visual: diagram-benchmarks.png |
 | 2026-06-10 | content | images | [diagram-when.png](projects/content/images/diagram-when.png) | Fable 5 review article visual: diagram-when.png |
+| 2026-06-10 | content | reports | [draft.html](projects/content/reports/draft.html) | Fable 5 review as Autocomplete article, ready to paste, hero plus benchmark and decision visuals |

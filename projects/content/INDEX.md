@@ -247,3 +247,4 @@
 | 2026-06-10 | images | [hero.png](images/hero.png) | Fable 5 review article visual: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/fable-5-review/hero.png |
 | 2026-06-10 | images | [diagram-benchmarks.png](images/diagram-benchmarks.png) | Fable 5 review article visual: diagram-benchmarks.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/fable-5-review/diagram-benchmarks.png |
 | 2026-06-10 | images | [diagram-when.png](images/diagram-when.png) | Fable 5 review article visual: diagram-when.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/fable-5-review/diagram-when.png |
+| 2026-06-10 | reports | [draft.html](reports/draft.html) | Fable 5 review as Autocomplete article, ready to paste, hero plus benchmark and decision visuals | /Users/marcokotrotsos/PERSONAL/Content/drafts/fable-5-review/draft.html |
