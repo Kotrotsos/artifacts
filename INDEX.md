@@ -484,3 +484,4 @@
 | 2026-06-10 | content | images | [diagram-when.png](projects/content/images/diagram-when.png) | Fable 5 review article visual: diagram-when.png |
 | 2026-06-10 | content | reports | [draft.html](projects/content/reports/draft.html) | Fable 5 review as Autocomplete article, ready to paste, hero plus benchmark and decision visuals |
 | 2026-06-10 | elastofirm-profiler | reports | [matcher-eval-baseline.html](projects/elastofirm-profiler/reports/matcher-eval-baseline.html) | Matcher baseline eval — 25 profiles x 7 variants, crops 0%, rot15 48% |
+| 2026-06-10 | elastofirm-profiler | reports | [matcher-judge-baseline.html](projects/elastofirm-profiler/reports/matcher-judge-baseline.html) | Claude-vision judge over matcher baseline — visual report, 95 queries |
