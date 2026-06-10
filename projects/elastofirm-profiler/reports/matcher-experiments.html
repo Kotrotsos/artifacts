@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matcher optimization experiments</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f9fafb;--surface:#fff;--surface-2:#f3f4f6;--border:#e5e7eb;--border-strong:#d1d5db;--ink:#18181b;--ink-2:#3f3f46;--muted:#71717a;--accent:#2563eb;--good:#059669;--good-bg:#ecfdf5;--good-bd:#a7f3d0;--amber:#b45309;--amber-bg:#fffbeb;--amber-bd:#fde68a;--red:#dc2626}
+[data-theme=dark]{--bg:#0f1115;--surface:#16181d;--surface-2:#1d2026;--border:#2a2e37;--border-strong:#3a3f4b;--ink:#f4f4f5;--ink-2:#d4d4d8;--muted:#9ca3af;--accent:#60a5fa;--good:#34d399;--good-bg:#06281f;--good-bd:#0f5132;--amber:#fbbf24;--amber-bg:#2a2010;--amber-bd:#5c4310;--red:#f87171}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Geist,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:44px 28px 90px}
+header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:28px;font-weight:600;letter-spacing:-.025em;margin:8px 0 12px}
+h2{font-size:17px;font-weight:600;margin:34px 0 8px}
+p{font-size:14px;color:var(--ink-2);margin:8px 0}
+.theme-toggle{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;flex-shrink:0}
+.theme-toggle button{font-family:'Geist Mono',monospace;font-size:11px;background:var(--surface);color:var(--muted);border:none;padding:6px 10px;cursor:pointer;border-right:1px solid var(--border)}
+.theme-toggle button:last-child{border-right:none}.theme-toggle button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+code{font-family:'Geist Mono',monospace;font-size:12.5px;background:var(--surface-2);padding:1px 6px;border-radius:5px}
+table{border-collapse:collapse;font-size:13px;margin:10px 0;background:var(--surface);border:1px solid var(--border)}
+th{text-align:left;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:8px 12px;border-bottom:1px solid var(--border-strong)}
+td{padding:7px 12px;border-bottom:1px solid var(--border);color:var(--ink-2);font-family:'Geist Mono',monospace;font-size:12.5px}
+td.k{font-weight:600;color:var(--ink)}
+td.best{background:var(--good-bg);color:var(--good);font-weight:600}
+.mrr{display:block;font-size:10px;color:var(--muted)}
+tr.lat td{border-top:2px solid var(--border-strong);color:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin:12px 0}
+.card.good{border-left:4px solid var(--good)} .card.warn{border-left:4px solid var(--amber)}
+ul{margin:6px 0 6px 20px} li{font-size:13.5px;color:var(--ink-2);margin:4px 0}
+.verdict{background:var(--good-bg);border:1px solid var(--good-bd);border-radius:12px;padding:14px 18px;margin:14px 0;font-size:14px;color:var(--ink-2)}
+footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+@media print{.theme-toggle{display:none}}
+</style></head><body><div class="wrap">
+<header><div><div class="eyebrow">Elastofirm Profiler · Matcher optimization · 2026-06-10 09:45 UTC</div>
+<h1>Experiment results — canonicalization wins</h1></div>
+<div class="theme-toggle"><button data-set="light" aria-pressed="true">Light</button><button data-set="dark" aria-pressed="false">Dark</button><button data-set="system" aria-pressed="false">System</button></div></header>
+
+<p>Five candidate pipelines evaluated on a throwaway mini-index (rig validated: the base arm's
+descriptors are <b>cosine&nbsp;1.0 identical</b> to vectors stored in the production index), then the
+winner re-validated against all <b>11,978</b> indexed profiles. Cells show top-1/top-5 (MRR below);
+green = best in row. Production index untouched throughout.</p>
+
+<h2>1 · Production baseline (12,186 items, the real pipeline)</h2>
+<table><thead><tr><th>variant</th><th>production</th></tr></thead><tbody><tr><td class='k'>identity</td><td>84%/100%<span class='mrr'>0.900</span></td></tr><tr><td class='k'>rot15</td><td>48%/52%<span class='mrr'>0.492</span></td></tr><tr><td class='k'>rot90</td><td>80%/96%<span class='mrr'>0.873</span></td></tr><tr><td class='k'>scale75</td><td>84%/100%<span class='mrr'>0.900</span></td></tr><tr><td class='k'>noise</td><td>60%/76%<span class='mrr'>0.684</span></td></tr><tr><td class='k'>crop60</td><td>0%/0%<span class='mrr'>0.000</span></td></tr><tr><td class='k'>crop40</td><td>0%/0%<span class='mrr'>0.000</span></td></tr></tbody></table>
+
+<h2>2 · Arm comparison — mini-index (25 eval profiles + 975 distractors)</h2>
+<table><thead><tr><th>variant</th><th>base</th><th>bbox</th><th>canon</th><th>dt</th><th>canon_dt</th></tr></thead><tbody><tr><td class='k'>identity</td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td></tr><tr><td class='k'>rot15</td><td class=''>40%/48%<span class='mrr'>0.437</span></td><td class=''>44%/52%<span class='mrr'>0.470</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class=''>36%/56%<span class='mrr'>0.442</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td></tr><tr><td class='k'>rot90</td><td class=''>84%/100%<span class='mrr'>0.907</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class=''>92%/100%<span class='mrr'>0.947</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td></tr><tr><td class='k'>scale75</td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td></tr><tr><td class='k'>noise</td><td class=''>92%/96%<span class='mrr'>0.930</span></td><td class=''>80%/92%<span class='mrr'>0.847</span></td><td class=''>96%/96%<span class='mrr'>0.960</span></td><td class=''>96%/100%<span class='mrr'>0.980</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td></tr><tr><td class='k'>crop60</td><td class=''>0%/0%<span class='mrr'>0.020</span></td><td class=''>0%/0%<span class='mrr'>0.020</span></td><td class=''>0%/16%<span class='mrr'>0.068</span></td><td class=''>0%/4%<span class='mrr'>0.029</span></td><td class=''>0%/8%<span class='mrr'>0.042</span></td></tr><tr><td class='k'>crop40</td><td class=''>0%/0%<span class='mrr'>0.006</span></td><td class=''>0%/0%<span class='mrr'>0.000</span></td><td class=''>0%/0%<span class='mrr'>0.000</span></td><td class=''>0%/0%<span class='mrr'>0.005</span></td><td class=''>0%/0%<span class='mrr'>0.004</span></td></tr><tr class='lat'><td class='k'>ms/query</td><td>19.3 ms</td><td>20.1 ms</td><td>17.7 ms</td><td>20.9 ms</td><td>16.7 ms</td></tr></tbody></table>
+<div class="card"><ul>
+<li><b>canon</b> (orientation canonicalization at full resolution, 4 lossless query variants instead of 18 lossy ones) fixes rotation outright: rot15 40%→100%.</li>
+<li><b>dt</b> (HOG on the distance transform) adds noise robustness but does nothing for rotation.</li>
+<li><b>canon_dt</b> combines both: 100% top-1 on every non-partial variant.</li>
+<li><b>bbox</b> alone is not worth it (slightly hurts noise) — subsumed by canonicalization.</li>
+<li><b>crops stay ~0% in every arm</b>: no global descriptor fixes partial queries. That is the ORB/RANSAC stage-2 track.</li>
+</ul></div>
+
+<h2>3 · Full-scale validation (25 eval profiles vs 11,978 distractors)</h2>
+<table><thead><tr><th>variant</th><th>base</th><th>canon_dt</th></tr></thead><tbody><tr><td class='k'>identity</td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class='best'>100%/100%<span class='mrr'>1.000</span></td></tr><tr><td class='k'>rot15</td><td class=''>36%/40%<span class='mrr'>0.370</span></td><td class='best'>92%/100%<span class='mrr'>0.960</span></td></tr><tr><td class='k'>rot90</td><td class=''>56%/84%<span class='mrr'>0.706</span></td><td class='best'>88%/100%<span class='mrr'>0.940</span></td></tr><tr><td class='k'>scale75</td><td class='best'>100%/100%<span class='mrr'>1.000</span></td><td class=''>88%/100%<span class='mrr'>0.940</span></td></tr><tr><td class='k'>noise</td><td class=''>68%/88%<span class='mrr'>0.770</span></td><td class='best'>92%/100%<span class='mrr'>0.960</span></td></tr><tr><td class='k'>crop60</td><td class=''>0%/0%<span class='mrr'>0.000</span></td><td class=''>0%/0%<span class='mrr'>0.000</span></td></tr><tr><td class='k'>crop40</td><td class=''>0%/0%<span class='mrr'>0.000</span></td><td class=''>0%/0%<span class='mrr'>0.000</span></td></tr><tr class='lat'><td class='k'>ms/query</td><td>21.0 ms</td><td>17.5 ms</td></tr></tbody></table>
+<div class="card good"><ul>
+<li><b>rot15: 36% → 92% top-1 (top-5 40% → 100%)</b> — the headline fix holds at production scale.</li>
+<li><b>rot90: 56% → 88%</b>, <b>noise: 68% → 92%</b>, both with 100% top-5.</li>
+<li><b>canon_dt top-5 = 100% on every non-partial variant</b> — the right answer is always on screen.</li>
+<li>Honest trade-off: scale75 top-1 dips 100% → 88% (angle estimation is slightly less stable after downscaling); top-5 stays 100%.</li>
+<li>Latency: 4 query variants instead of 18 — and the variants are lossless flips/180s, so quality and speed improve together.</li>
+</ul></div>
+
+<h2>4 · Side-findings</h2>
+<div class="card warn"><ul>
+<li><b>Index/image drift:</b> some profiles' current <code>processed/</code> PNGs differ from what was indexed in March (parity cosine 0.75–0.88 for e.g. EG-00012). The rig (drift-free) scores identity at 100%, production at 84% — part of production's identity misses is stale index data, not algorithm weakness. A rebuild fixes this for free.</li>
+<li><b>Near-duplicates</b> (judged identical at 10/10, e.g. RP-76251/76252) cap any matcher's measurable top-1. They are catalog reality, not error.</li>
+</ul></div>
+
+<h2>5 · Recommendation</h2>
+<div class="verdict"><b>Productionize <code>canon_dt</code></b> behind a version flag: build <code>elastofirm-index-128-v2.db</code> from current images with canonicalized preprocessing + DT-HOG (one shared preprocess function for index and query), switch via <code>MATCHER_VERSION=v2</code>, keep v1 untouched for instant rollback. Acceptance: re-run <code>elastofirm eval matcher</code> (expect rot15 ≥ 90% top-1, top-5 100% on non-crops), the 31-test regression suite, and a judge spot-check. Then start the ORB/RANSAC stage-2 pilot for the crop 0% — the only remaining failure mode.</div>
+
+<footer>Sources: eval/exp-results.json · eval/exp-results-fullscale.json · eval/matcher-eval-baseline.json · rig: scripts/exp_matcher.py (seed 42, PCA-256, top-k 10)</footer>
+</div>
+<script>
+const root=document.documentElement,btns=[...document.querySelectorAll('.theme-toggle button')],mq=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(m){root.setAttribute('data-theme',m==='system'?(mq.matches?'dark':'light'):m);btns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.set===m)))}
+btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.set)));
+mq.addEventListener('change',()=>{const a=btns.find(b=>b.getAttribute('aria-pressed')==='true');if(a&&a.dataset.set==='system')apply('system')});apply('light');
+</script></body></html>
