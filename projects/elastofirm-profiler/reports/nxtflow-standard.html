@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nxtflow — the delivery standard</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f9fafb;--surface:#fff;--surface-2:#f3f4f6;--border:#e5e7eb;--border-strong:#d1d5db;--ink:#18181b;--ink-2:#3f3f46;--muted:#71717a;--accent:#2563eb;--good:#059669;--good-bg:#ecfdf5;--good-bd:#a7f3d0;--amber:#b45309;--amber-bg:#fffbeb;--amber-bd:#fde68a;--red:#dc2626;--red-bg:#fef2f2;--red-bd:#fecaca;--code-bg:#f3f4f6}
+[data-theme=dark]{--bg:#0f1115;--surface:#16181d;--surface-2:#1d2026;--border:#2a2e37;--border-strong:#3a3f4b;--ink:#f4f4f5;--ink-2:#d4d4d8;--muted:#9ca3af;--accent:#60a5fa;--good:#34d399;--good-bg:#06281f;--good-bd:#0f5132;--amber:#fbbf24;--amber-bg:#2a2010;--amber-bd:#5c4310;--red:#f87171;--red-bg:#2a1212;--red-bd:#5c1d1d;--code-bg:#1d2026}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Geist,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:44px 28px 90px}
+header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:30px;font-weight:600;letter-spacing:-.025em;margin:8px 0 12px}
+h2{font-size:18px;font-weight:600;margin:36px 0 10px}
+h3{font-size:14px;font-weight:600;margin:18px 0 6px}
+p{font-size:14px;color:var(--ink-2);margin:8px 0}
+.theme-toggle{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;flex-shrink:0}
+.theme-toggle button{font-family:'Geist Mono',monospace;font-size:11px;background:var(--surface);color:var(--muted);border:none;padding:6px 10px;cursor:pointer;border-right:1px solid var(--border)}
+.theme-toggle button:last-child{border-right:none}.theme-toggle button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+code{font-family:'Geist Mono',monospace;font-size:12.5px;background:var(--code-bg);padding:1px 6px;border-radius:5px;color:var(--ink-2)}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:13px 15px;overflow-x:auto;font-family:'Geist Mono',monospace;font-size:12px;line-height:1.6;color:var(--ink-2);margin:10px 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0}
+.card.accent{border-left:4px solid var(--accent)}
+.card.good{border-left:4px solid var(--good)}
+.card.warn{border-left:4px solid var(--amber)}
+ul.tight{margin:6px 0 6px 20px}ul.tight li{font-size:13.5px;color:var(--ink-2);margin:4px 0}
+ol.tight{margin:6px 0 6px 20px}ol.tight li{font-size:13.5px;color:var(--ink-2);margin:5px 0}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0;font-family:'Geist Mono',monospace;font-size:12px}
+.flow .step{background:var(--surface);border:1px solid var(--border-strong);border-radius:9px;padding:8px 13px;color:var(--ink-2)}
+.flow .step.hot{border-color:var(--good-bd);background:var(--good-bg);color:var(--good);font-weight:600}
+.flow .arr{color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+th{text-align:left;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:7px 10px;border-bottom:1px solid var(--border-strong)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink-2)}
+td.k{font-weight:600;color:var(--ink);white-space:nowrap}
+.badge{font-family:'Geist Mono',monospace;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.badge.good{background:var(--good-bg);color:var(--good);border:1px solid var(--good-bd)}
+.badge.amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+.badge.grey{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+@media print{body{background:#fff;color:#000}.theme-toggle{display:none}.card,table{break-inside:avoid}}
+</style></head><body><div class="wrap">
+
+<header><div>
+<div class="eyebrow">nxtflow · delivery standard · v1.0</div>
+<h1>nxtflow — how we ship</h1>
+</div>
+<div class="theme-toggle" role="group" aria-label="Theme"><button data-set="light" aria-pressed="true">Light</button><button data-set="dark" aria-pressed="false">Dark</button><button data-set="system" aria-pressed="false">System</button></div>
+</header>
+
+<p><b>One sentence:</b> small verified batches, an always-current living report, honest write-backs to the tracker, and never optimize or destroy anything without a measured baseline and a rollback. Distilled from the Elastofirm Profiler build (38 stories shipped, a 31-test regression suite, a safe CLI, a measured matcher-optimization cycle) into a portable skill + CLAUDE.md + plugin.</p>
+
+<h2>1 · The Loop</h2>
+<div class="flow">
+<span class="step">pick 2-3 stories</span><span class="arr">→</span>
+<span class="step">branch per batch</span><span class="arr">→</span>
+<span class="step">build (+version bump)</span><span class="arr">→</span>
+<span class="step hot">extend + run regression suite</span><span class="arr">→</span>
+<span class="step hot">verify LIVE (screenshot = proof)</span><span class="arr">→</span>
+<span class="step">living board + deploy + share</span><span class="arr">→</span>
+<span class="step hot">tracker write-back, honest</span><span class="arr">→</span>
+<span class="step">commit</span>
+</div>
+<div class="card"><ul class="tight">
+<li><b>Pick:</b> surface the most <i>shippable</i> items (blockers checked first), offer them as option cards with previews; the human picks. If the backlog is mostly blocked, produce a blockers report instead of building stubs.</li>
+<li><b>Verify live:</b> drive the real running app with browser automation; the screenshot showing the component working becomes the proof image on the board and in reports.</li>
+<li><b>Living board:</b> one self-contained HTML, always current: in-development expanded, verified collapsed with a "Show proof image" button, flagged items with their open questions, and the full still-ahead backlog with rendered specs. PIN-gated deploy so stakeholders see truth, not promises.</li>
+<li><b>Honest write-back:</b> a story reaches In Review only with a comment naming what shipped, what deviates from the spec, what is explicitly NOT done, and the caveats. Scaffolding is labelled scaffolding. Reverts are labelled reverts.</li>
+</ul></div>
+
+<h2>2 · Honesty norms</h2>
+<div class="card good"><ul class="tight">
+<li>Never claim more than was verified — and say <i>how</i> it was verified.</li>
+<li>Requirements unclear? Build nothing: revert, flag the story, list the questions. (Cheaper than shipping the wrong thing.)</li>
+<li>Feature not good enough? Pull it from the app, mark it "not done — revisit", return it to the backlog everywhere.</li>
+<li>Source data missing? Scaffold end-to-end with a subtle <span class="badge grey">na</span> pill so everything lights up the moment data arrives.</li>
+<li>Security findings get fixed AND pinned shut with a regression test in the same batch.</li>
+</ul></div>
+
+<h2>3 · Output standard</h2>
+<div class="grid2">
+<div class="card"><h3>Every readable artifact is HTML</h3>
+<ul class="tight">
+<li>Single self-contained file, inline CSS, in <code>artifacts/</code></li>
+<li>Light default + Light/Dark/System toggle, Geist fonts, print CSS</li>
+<li>Collapsible story cards with id/estimate/status badges</li>
+<li>Proof screenshots behind click-to-reveal buttons (never inline)</li>
+<li>Mermaid diagrams rendered client-side (source as fallback)</li>
+<li>Search + sort bar on long lists (status / points / id / text)</li>
+<li>Archived centrally + pushed to the artifact platform as a new version</li>
+</ul></div>
+<div class="card"><h3>The report family</h3>
+<ul class="tight">
+<li><b>Verification board</b> — the living "what is done &amp; how to check it"</li>
+<li><b>Full task list</b> — every story rendered: why, code analysis, steps, challenges, drawn diagram, customer verify steps, proof image</li>
+<li><b>Status &amp; blockers</b> — remaining work grouped by <i>what unblocks it</i>, naming the single highest-leverage unblocker</li>
+<li><b>Feature screenshot gallery</b> — one card per shipped component</li>
+<li>Generated by the <code>task-report</code> skill from Linear / transcript / Notion; verify steps written back to the tracker idempotently</li>
+</ul></div>
+</div>
+
+<h2>4 · Tracker conventions</h2>
+<div class="card"><ul class="tight">
+<li>Numbered milestones (<code>1 · Rollen en toegang</code>); stories carry: <b>Waarom</b> (PO quote), <b>Code-analyse</b> (against the real code), <b>Implementatie stappen</b>, <b>Mogelijke uitdagingen</b>, and a mermaid <b>Diagram</b>.</li>
+<li>Statuses: <span class="badge grey">Backlog</span> → <span class="badge amber">In Review</span> (shipped + verified, with the honest comment) → done; cancelled stays visible with its reason.</li>
+<li>Verification steps live on the story as a single marker-tagged comment (<code>**How to verify** · _task-report_</code>) — updated on regeneration, never duplicated.</li>
+<li>List APIs truncate long descriptions: fetch per-story for full text (delegated to a subagent writing a file).</li>
+</ul></div>
+
+<h2>5 · Eval-before-optimize</h2>
+<div class="flow">
+<span class="step">baseline harness (seeded, production code path)</span><span class="arr">→</span>
+<span class="step">blind LLM-as-judge</span><span class="arr">→</span>
+<span class="step">experiment rig (parity-checked)</span><span class="arr">→</span>
+<span class="step">full-scale validation</span><span class="arr">→</span>
+<span class="step hot">flag-gated rollout, instant rollback</span>
+</div>
+<div class="card"><ul class="tight">
+<li>No tuning without a number that will move. Identity-variant below 100% is itself a finding (near-duplicates, index drift).</li>
+<li>The judge sees query + candidates <b>blind</b> (shuffled, no ids, no ground truth); structured outputs; visual report with every judgment eyeball-able.</li>
+<li>The rig is only valid after a <b>parity check</b> (its base arm reproduces production vectors at cosine ~1.0) — then arms compare relative to base.</li>
+<li>Winners ship as <b>new artifact files behind an env-var version switch</b>; the old pipeline stays untouched; rollback is flip + restart.</li>
+<li>Proof from the source project: rot15 retrieval 36% → 92% top-1 (100% top-5), validated against 11,978 distractors, before a single production file changed.</li>
+</ul></div>
+
+<h2>6 · Safe project CLI</h2>
+<div class="card warn"><ul class="tight">
+<li>One entry point (<code>&lt;project&gt; &lt;group&gt; &lt;command&gt;</code>): status · data · index · export · eval · db · admin. Stdlib argparse, importing existing modules.</li>
+<li><b>Read-only unless <code>--apply</code></b> (dry-run prints the exact delta) · auto-backup before destructive writes · typed confirmations (<code>--yes</code> skips prompts, never backups) · lock file · history log · read-only DB connections · merge-don't-replace ingestion · <code>--overwrite</code> required to clobber exports · exit codes 0/1/2/3.</li>
+<li>Deny paths are smoke-tested explicitly; destructive logic is proven on a copy of the database first.</li>
+</ul></div>
+
+<h2>7 · Agent working style</h2>
+<div class="card accent"><ul class="tight">
+<li>Bulk fetches and wide surveys → <b>subagents that write files</b>; the main context stays lean.</li>
+<li>Long computations → background tasks, reported on completion. Independent questions → parallel agents.</li>
+<li>Big builds start with an <b>HTML plan artifact</b> (parameter-level, with open questions) and an explicit wait for go.</li>
+<li>Direction forks → 2-4 concrete option cards with previews, not essays.</li>
+<li>Environment traps (alias-corrupted heredocs, stale dev servers, Radix pointer events, shadowed <code>Image</code>, CORS-tainted canvases, argparse flag hoisting …) are codified in <code>references/gotchas.md</code> — read once per project.</li>
+</ul></div>
+
+<h2>8 · Adopting nxtflow</h2>
+<div class="card"><table>
+<thead><tr><th>Route</th><th>How</th><th>When</th></tr></thead><tbody>
+<tr><td class="k">Skill</td><td>copy <code>skills/nxtflow/</code> → <code>~/.claude/skills/nxtflow/</code>, then "use nxtflow"</td><td>simplest; on-demand guidance</td></tr>
+<tr><td class="k">CLAUDE.md</td><td>copy <code>nxtflow/CLAUDE.md</code> into the project root (or merge)</td><td>make the standard ambient for a project</td></tr>
+<tr><td class="k">Plugin</td><td>the folder is a plugin root (<code>.claude-plugin/plugin.json</code> + <code>skills/</code>) — add to a marketplace or install from path</td><td>versioned distribution across machines/teams</td></tr>
+</tbody></table>
+<p>Companion: the <code>task-report</code> skill (house-style reports from Linear/transcript/Notion + tracker write-back).</p></div>
+
+<footer>nxtflow v1.0 · distilled 2026-06-10 from the Elastofirm Profiler build · skill: skills/nxtflow/SKILL.md · references: flow · html-style · linear · eval · cli · gotchas</footer>
+</div>
+<script>
+const root=document.documentElement,btns=[...document.querySelectorAll('.theme-toggle button')],mq=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(m){root.setAttribute('data-theme',m==='system'?(mq.matches?'dark':'light'):m);btns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.set===m)))}
+btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.set)));
+mq.addEventListener('change',()=>{const a=btns.find(b=>b.getAttribute('aria-pressed')==='true');if(a&&a.dataset.set==='system')apply('system')});apply('light');
+</script>
+</body></html>
