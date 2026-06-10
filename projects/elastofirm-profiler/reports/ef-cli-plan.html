@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elastofirm CLI — Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f9fafb;--surface:#fff;--surface-2:#f3f4f6;--border:#e5e7eb;--border-strong:#d1d5db;--ink:#18181b;--ink-2:#3f3f46;--muted:#71717a;--accent:#2563eb;--good:#059669;--good-bg:#ecfdf5;--good-bd:#a7f3d0;--amber:#b45309;--amber-bg:#fffbeb;--amber-bd:#fde68a;--red:#dc2626;--red-bg:#fef2f2;--red-bd:#fecaca;--code-bg:#f3f4f6}
+[data-theme=dark]{--bg:#0f1115;--surface:#16181d;--surface-2:#1d2026;--border:#2a2e37;--border-strong:#3a3f4b;--ink:#f4f4f5;--ink-2:#d4d4d8;--muted:#9ca3af;--accent:#60a5fa;--good:#34d399;--good-bg:#06281f;--good-bd:#0f5132;--amber:#fbbf24;--amber-bg:#2a2010;--amber-bd:#5c4310;--red:#f87171;--red-bg:#2a1212;--red-bd:#5c1d1d;--code-bg:#1d2026}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Geist,system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;font-size:15px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:920px;margin:0 auto;padding:44px 28px 90px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:29px;font-weight:600;letter-spacing:-.025em;margin:8px 0 12px}
+h2{font-size:18px;font-weight:600;margin:36px 0 10px}
+h3{font-size:14px;font-weight:600;margin:20px 0 8px}
+p{font-size:14px;color:var(--ink-2);margin:8px 0}
+.theme-toggle{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;flex-shrink:0}
+.theme-toggle button{font-family:'Geist Mono',monospace;font-size:11px;background:var(--surface);color:var(--muted);border:none;padding:6px 10px;cursor:pointer;border-right:1px solid var(--border)}
+.theme-toggle button:last-child{border-right:none}.theme-toggle button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+code,.mono{font-family:'Geist Mono',monospace;font-size:12.5px;background:var(--code-bg);padding:1px 6px;border-radius:5px;color:var(--ink-2)}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:13px 15px;overflow-x:auto;font-family:'Geist Mono',monospace;font-size:12px;line-height:1.6;color:var(--ink-2);margin:10px 0}
+pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0 4px}
+th{text-align:left;font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:7px 10px;border-bottom:1px solid var(--border-strong)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--ink-2)}
+td.cmd{font-family:'Geist Mono',monospace;font-size:12px;color:var(--ink);white-space:nowrap}
+td .flag{font-family:'Geist Mono',monospace;font-size:11.5px;background:var(--code-bg);border:1px solid var(--border);border-radius:5px;padding:0 5px;white-space:nowrap;display:inline-block;margin:1px 2px 1px 0}
+.pill{font-family:'Geist Mono',monospace;font-size:10px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.pill.safe{background:var(--good-bg);color:var(--good);border:1px solid var(--good-bd)}
+.pill.write{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
+.pill.danger{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin:12px 0}
+.card.accent{border-left:4px solid var(--accent)}
+.card.warn{border-left:4px solid var(--amber)}
+.card.good{border-left:4px solid var(--good)}
+ul.tight{margin:6px 0 6px 20px}ul.tight li{font-size:13.5px;color:var(--ink-2);margin:4px 0}
+ol.tight{margin:6px 0 6px 20px}ol.tight li{font-size:13.5px;color:var(--ink-2);margin:4px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:680px){.grid2{grid-template-columns:1fr}}
+.qs{background:var(--surface);border:1px solid var(--amber-bd);border-radius:12px;padding:16px 20px;margin:12px 0}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+@media print{body{background:#fff;color:#000}.theme-toggle{display:none}.card,table{break-inside:avoid}}
+</style></head><body><div class="wrap">
+
+<header><div>
+<div class="eyebrow">Elastofirm Profiler · Plan · awaiting go/no-go</div>
+<h1>ef — the Elastofirm CLI</h1>
+</div>
+<div class="theme-toggle" role="group" aria-label="Theme"><button data-set="light" aria-pressed="true">Light</button><button data-set="dark" aria-pressed="false">Dark</button><button data-set="system" aria-pressed="false">System</button></div>
+</header>
+
+<p>One intuitive, safe command-line tool replacing today's ~20 loose scripts. Subcommand structure (<code>ef &lt;group&gt; &lt;command&gt;</code>), read-only by default, destructive operations gated behind <code>--apply</code> with automatic backups. This is the plan only — nothing is built yet.</p>
+
+<h2>1 · What exists today (inventory)</h2>
+<div class="card">
+<table>
+<thead><tr><th>Area</th><th>Current scripts</th><th>State</th></tr></thead>
+<tbody>
+<tr><td><b>Azure exploration</b></td><td class="mono" style="background:none">ef.py --rf/--path/--ls/--visualize/--scan</td><td>Works; flat flags, no subcommands</td></tr>
+<tr><td><b>Ingestion</b></td><td class="mono" style="background:none">ef.py --ingest-all · data/import_csv.py · import_legacy_excels.py · combine_csv.py · import_data.sh</td><td>Fragmented; <code>--force</code> overwrites DB without backup</td></tr>
+<tr><td><b>Indexing</b></td><td class="mono" style="background:none">elastofirm-index.py (+ -optimized) · index_images.sh · sync-tracking-columns.py · compute_smart_delta.py</td><td><code>--force</code> deletes the whole feature DB; delta logic exists but not integrated</td></tr>
+<tr><td><b>Reading / reporting</b></td><td class="mono" style="background:none">ef.py --data · check_csv.py · orphaned_files.py · ef.py --sanity</td><td>Solid, scattered entry points</td></tr>
+<tr><td><b>Export</b></td><td class="mono" style="background:none">orphaned_files --csv · app-side xlsx · API usage-export</td><td>No general DB export from the shell</td></tr>
+<tr><td><b>Eval / tests</b></td><td class="mono" style="background:none">test_image_search.py · test_early_stopping.py · test_security.py · pytest quickwins (31 tests)</td><td>Each invoked differently; no single entry</td></tr>
+<tr><td><b>Admin</b></td><td class="mono" style="background:none">backup_before_reindex.sh · cleanup_vm_root.sh · deploy_ui.sh · verify-environment.py · verify_entra_config.py</td><td>Shell-only; cleanup is irreversible</td></tr>
+</tbody></table>
+<p style="margin-top:8px"><b>Databases:</b> <code>elastofirm.db</code> (the API's live DB), <code>elastofirm-index-{64,128,256}.db</code> + <code>elastofirm-pca-*.pkl</code> (HOG feature index), <code>data/profiles.db</code> (import staging). The biggest risk today: index <code>--force</code> and import <code>--force</code> destroy data with no automatic backup, and usage/classification history lives in <code>elastofirm.db</code> — a careless re-import wipes it.</p>
+</div>
+
+<h2>2 · Design principles</h2>
+<div class="grid2">
+<div class="card good"><h3>Safe by default</h3>
+<ul class="tight">
+<li><b>Read-only unless <code>--apply</code>.</b> Every mutating command runs as a dry-run first: it prints exactly what would change (rows, files, sizes) and exits.</li>
+<li><b>Auto-backup before destructive writes</b> (ingest, full reindex, restore, vacuum) to <code>~/backups/&lt;timestamp&gt;/</code> — refuses to run if backup fails.</li>
+<li><b>Typed confirmation</b> for irreversible ops (<code>type 'reindex' to continue</code>), skippable with <code>--yes</code> for automation.</li>
+<li><b>Lock file</b> (<code>.ef.lock</code>) so two ingest/index runs can't collide.</li>
+<li><b>Protected columns:</b> ingest never drops <code>toepassing/omschrijving</code>, tracking columns, scaffolded datamodel columns, or <code>usage_events</code>/<code>tos_acceptances</code> tables — it merges instead of replacing.</li>
+</ul></div>
+<div class="card accent"><h3>Intuitive &amp; scriptable</h3>
+<ul class="tight">
+<li><b>One entry point:</b> <code>ef &lt;group&gt; &lt;command&gt;</code>; <code>ef</code> alone shows grouped help; every level has <code>-h</code> with examples.</li>
+<li><b><code>ef status</code></b> as the front door: one screen with DB counts, index coverage, Azure + API connectivity.</li>
+<li><b><code>--json</code></b> on every command for scripting; meaningful exit codes (0 ok · 1 error · 2 validation · 3 locked).</li>
+<li><b>Stdlib only for the CLI core</b> (argparse): no new dependencies; reuses the project's existing pandas/azure/opencv stack via imports.</li>
+<li><b>Back-compat:</b> old <code>ef.py --rf …</code> flags keep working for one release, printing the new equivalent (<code>→ use: ef blob find …</code>).</li>
+</ul></div>
+</div>
+
+<h2>3 · Command tree &amp; parameters</h2>
+
+<h3>Global options (every command)</h3>
+<div class="card"><table>
+<thead><tr><th>Flag</th><th>Default</th><th>Meaning</th></tr></thead><tbody>
+<tr><td class="cmd">--db PATH</td><td><code>./elastofirm.db</code></td><td>Live profiles database</td></tr>
+<tr><td class="cmd">--env PATH</td><td><code>./.env</code></td><td>Env file (Azure connection string, etc.)</td></tr>
+<tr><td class="cmd">--json</td><td>off</td><td>Machine-readable output</td></tr>
+<tr><td class="cmd">--yes</td><td>off</td><td>Skip confirmations (for automation; still backs up)</td></tr>
+<tr><td class="cmd">-v / -q</td><td>normal</td><td>Verbose / quiet</td></tr>
+<tr><td class="cmd">--version</td><td>—</td><td>CLI + schema version</td></tr>
+</tbody></table></div>
+
+<h3>ef status <span class="pill safe">read-only</span></h3>
+<div class="card"><p>The front door. One screen: profiles count, classification coverage, index coverage per size (vs tracking columns), pending delta, Azure reachability, API health (:3000), web (:3001), last backup age.</p>
+<pre>ef status [--size 128] [--json]</pre></div>
+
+<h3>ef blob — Azure exploration <span class="pill safe">read-only</span></h3>
+<div class="card"><table>
+<thead><tr><th>Command</th><th>Parameters</th><th>Replaces</th></tr></thead><tbody>
+<tr><td class="cmd">ef blob find REF</td><td><span class="flag">--images-only</span></td><td>ef.py --rf [--image]</td></tr>
+<tr><td class="cmd">ef blob info PATH</td><td>—</td><td>ef.py --path</td></tr>
+<tr><td class="cmd">ef blob ls FOLDER</td><td><span class="flag">--limit N</span></td><td>ef.py --ls</td></tr>
+<tr><td class="cmd">ef blob tree FOLDER</td><td><span class="flag">--depth N</span></td><td>ef.py --visualize</td></tr>
+<tr><td class="cmd">ef blob get PATH</td><td><span class="flag">--out FILE</span> <span class="flag">--overwrite</span></td><td>ef.py --download (generalised)</td></tr>
+<tr><td class="cmd">ef blob scan FOLDER</td><td><span class="flag">--out DIR</span></td><td>ef.py --scan (writes CSV inventories)</td></tr>
+</tbody></table></div>
+
+<h3>ef data — ingestion <span class="pill write">writes with --apply</span></h3>
+<div class="card"><table>
+<thead><tr><th>Command</th><th>Parameters</th><th>Notes / replaces</th></tr></thead><tbody>
+<tr><td class="cmd">ef data show CSV</td><td><span class="flag">--local</span> <span class="flag">--download --out FILE</span></td><td>ef.py --data — summary or download</td></tr>
+<tr><td class="cmd">ef data check</td><td><span class="flag">--local FILE</span></td><td>scripts/check_csv.py — validate source CSV columns</td></tr>
+<tr><td class="cmd">ef data sanity</td><td><span class="flag">--out FILE</span></td><td>ef.py --sanity — DB vs Azure, both directions</td></tr>
+<tr><td class="cmd">ef data ingest CSV</td><td><span class="flag">--local</span> <span class="flag">--apply</span> <span class="flag">--no-backup</span></td><td>ef.py --ingest-all — <b>dry-run by default</b>: prints row delta, new/changed/removed; <code>--apply</code> backs up then <b>merges</b> (protected columns survive)</td></tr>
+<tr><td class="cmd">ef data combine</td><td><span class="flag">--results F</span> <span class="flag">--stam F</span> <span class="flag">--out F</span></td><td>data/combine_csv.py</td></tr>
+<tr><td class="cmd">ef data import-legacy</td><td><span class="flag">--dir DIR</span> <span class="flag">--apply</span></td><td>data/import_legacy_excels.py</td></tr>
+<tr><td class="cmd">ef data pipeline</td><td><span class="flag">--apply</span> <span class="flag">--size 128</span></td><td>ef.py --headless — sanity → ingest → index delta → sync, with backup + lock; dry-run shows the whole plan first</td></tr>
+</tbody></table></div>
+
+<h3>ef index — safe indexing <span class="pill danger">guarded</span></h3>
+<div class="card"><table>
+<thead><tr><th>Command</th><th>Parameters</th><th>Notes / replaces</th></tr></thead><tbody>
+<tr><td class="cmd">ef index status</td><td><span class="flag">--size 128</span></td><td>Coverage: indexed / pending / failed (tracking columns vs index DB)</td></tr>
+<tr><td class="cmd">ef index delta</td><td><span class="flag">--size 128</span></td><td>compute_smart_delta.py — list exactly what a run would (re)index</td></tr>
+<tr><td class="cmd">ef index run</td><td><span class="flag">--size 64|128|256</span> <span class="flag">--delta</span> (default) <span class="flag">--full</span> <span class="flag">--apply</span> <span class="flag">--workers N</span></td><td>elastofirm-index-optimized.py — <b>--delta is the default</b> (only missing/changed); <code>--full</code> = rebuild, requires <code>--apply</code> + typed confirm + auto-backup of index DB &amp; PCA pickle</td></tr>
+<tr><td class="cmd">ef index sync</td><td><span class="flag">--size 128</span> <span class="flag">--apply</span></td><td>sync-tracking-columns.py — write tracking columns back to elastofirm.db</td></tr>
+<tr><td class="cmd">ef index verify</td><td><span class="flag">--size 128</span></td><td>Count + spot-check index DB vs profiles; flags drift</td></tr>
+</tbody></table></div>
+
+<h3>ef export — getting data out <span class="pill safe">read-only</span></h3>
+<div class="card"><table>
+<thead><tr><th>Command</th><th>Parameters</th><th>Notes</th></tr></thead><tbody>
+<tr><td class="cmd">ef export profiles</td><td><span class="flag">--format xlsx|csv|json</span> <span class="flag">--out FILE</span> <span class="flag">--where "industry=Agri"</span> <span class="flag">--columns a,b,c</span></td><td>Full DB export incl. toepassing/omschrijving + scaffolded fields; same column mapping as the app's “Exporteer alle”</td></tr>
+<tr><td class="cmd">ef export usage</td><td><span class="flag">--out FILE</span></td><td>Counts-only usage CSV (same privacy guarantee as the app: never query content)</td></tr>
+<tr><td class="cmd">ef export orphans</td><td><span class="flag">--images-only</span> <span class="flag">--drawings-only</span> <span class="flag">--out FILE</span></td><td>scripts/orphaned_files.py</td></tr>
+<tr><td class="cmd">ef export schema</td><td><span class="flag">--out FILE</span></td><td>Tables + columns + row counts (documentation / handover)</td></tr>
+</tbody></table><p>Exports refuse to overwrite an existing file unless <span class="flag">--overwrite</span>.</p></div>
+
+<h3>ef eval — quality &amp; tests <span class="pill safe">read-only</span></h3>
+<div class="card"><table>
+<thead><tr><th>Command</th><th>Parameters</th><th>Notes / replaces</th></tr></thead><tbody>
+<tr><td class="cmd">ef eval regression</td><td><span class="flag">--base-url http://localhost:3000</span></td><td>pytest scripts/test/test_phase3_quickwins.py (31 tests), nice summary</td></tr>
+<tr><td class="cmd">ef eval search</td><td><span class="flag">--samples N</span> <span class="flag">--base-url</span></td><td>test_image_search.py — image-search quality sample</td></tr>
+<tr><td class="cmd">ef eval perf</td><td><span class="flag">--size 128</span></td><td>test_early_stopping.py — matcher latency benchmark</td></tr>
+<tr><td class="cmd">ef eval security</td><td><span class="flag">--base-url</span></td><td>test_security.py — endpoint security probes</td></tr>
+<tr><td class="cmd">ef eval all</td><td><span class="flag">--report artifacts/eval.html</span></td><td>Run everything, write one HTML report (house style)</td></tr>
+</tbody></table></div>
+
+<h3>ef db — database admin <span class="pill danger">guarded</span></h3>
+<div class="card"><table>
+<thead><tr><th>Command</th><th>Parameters</th><th>Notes / replaces</th></tr></thead><tbody>
+<tr><td class="cmd">ef db backup</td><td><span class="flag">--out DIR</span></td><td>backup_before_reindex.sh — elastofirm.db + index DBs + PCA pickles, timestamped</td></tr>
+<tr><td class="cmd">ef db restore DIR</td><td><span class="flag">--apply</span></td><td>Dry-run lists what would be replaced; <code>--apply</code> backs up current state first, then restores</td></tr>
+<tr><td class="cmd">ef db tables</td><td>—</td><td>Tables + row counts</td></tr>
+<tr><td class="cmd">ef db query "SQL"</td><td><span class="flag">--write</span> <span class="flag">--limit 50</span></td><td><b>Read-only connection by default</b>; <code>--write</code> + confirmation for mutations</td></tr>
+<tr><td class="cmd">ef db vacuum</td><td><span class="flag">--apply</span></td><td>VACUUM after backup</td></tr>
+</tbody></table></div>
+
+<h3>ef admin — environment &amp; services <span class="pill write">writes with --apply</span></h3>
+<div class="card"><table>
+<thead><tr><th>Command</th><th>Parameters</th><th>Notes / replaces</th></tr></thead><tbody>
+<tr><td class="cmd">ef admin verify</td><td><span class="flag">--entra</span></td><td>verify-environment.py (+ verify_entra_config.py with --entra)</td></tr>
+<tr><td class="cmd">ef admin serve</td><td><span class="flag">--api-only</span> <span class="flag">--web-only</span></td><td>Start uvicorn :3000 / next dev :3001 (the start-dev*.py family)</td></tr>
+<tr><td class="cmd">ef admin stop</td><td>—</td><td>Stop only processes ef started / the known ports, with a list of what it kills</td></tr>
+<tr><td class="cmd">ef admin cleanup</td><td><span class="flag">--apply</span></td><td>cleanup_vm_root.sh — dry-run lists every file it would move</td></tr>
+</tbody></table></div>
+
+<h2>4 · Safety model (summary)</h2>
+<div class="card warn">
+<table><thead><tr><th>Operation</th><th>Default</th><th>To execute</th><th>Backup</th><th>Confirm</th></tr></thead><tbody>
+<tr><td>blob / status / export / eval / db query</td><td>runs</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td>data ingest / import-legacy / index sync</td><td>dry-run</td><td><code>--apply</code></td><td>automatic</td><td>summary y/N</td></tr>
+<tr><td>index run --delta</td><td>dry-run (lists delta)</td><td><code>--apply</code></td><td>—</td><td>summary y/N</td></tr>
+<tr><td>index run --full / db restore / db query --write</td><td>dry-run</td><td><code>--apply</code></td><td>automatic</td><td><b>typed word</b></td></tr>
+<tr><td>data pipeline</td><td>prints full plan</td><td><code>--apply</code></td><td>automatic</td><td>typed word (once)</td></tr>
+</tbody></table>
+<p><code>--yes</code> replaces interactive confirmation for cron/automation — it never skips the backup. A run log (<code>~/.ef/history.log</code>) records every <code>--apply</code> with timestamp, command and backup location.</p>
+</div>
+
+<h2>5 · Architecture &amp; rollout</h2>
+<div class="grid2">
+<div class="card"><h3>Structure</h3>
+<pre>cli/
+  ef/
+    __main__.py     # arg tree, dispatch
+    _safety.py      # dry-run, backup, lock,
+                    # confirm, history log
+    _output.py      # tables, --json, colors
+    blob.py  data.py  index.py
+    export.py  evalcmd.py  db.py  admin.py
+ef            # 2-line launcher: python -m cli.ef
+ef.py         # back-compat shim (1 release)</pre>
+<p>Thin commands; heavy lifting stays in the existing modules (<code>image_search</code>, <code>data/import_csv.py</code>, …) imported as libraries — no logic duplicated.</p></div>
+<div class="card"><h3>Phases</h3>
+<ol class="tight">
+<li><b>Skeleton + safety rails</b> — arg tree, <code>_safety.py</code>, <code>ef status</code>, <code>ef blob *</code>, <code>ef db backup/tables/query</code></li>
+<li><b>Data path</b> — <code>ef data *</code> (merge-ingest with protected columns), <code>ef export *</code></li>
+<li><b>Index path</b> — <code>ef index *</code> with delta-by-default + guarded <code>--full</code></li>
+<li><b>Eval + admin + shim</b> — <code>ef eval *</code>, <code>ef admin *</code>, deprecation forwarding in ef.py, README</li>
+</ol>
+<p>Each phase: implement → regression suite → live verify → board/Linear per the established flow.</p></div>
+</div>
+
+<h2>6 · Open questions before I build</h2>
+<div class="qs"><ol class="tight">
+<li><b>Dependencies:</b> plan assumes stdlib <code>argparse</code> (zero new deps). OK, or do you prefer <code>typer</code>+<code>rich</code> for prettier output at the cost of two new packages?</li>
+<li><b>Merge-ingest:</b> today's ingest replaces the table; the plan changes it to <b>merge</b> (preserving classifications, tracking, usage). That's a behaviour change to INC-110/119 territory — confirm that's the intent.</li>
+<li><b>ef admin serve/stop:</b> in scope, or keep process management with the existing npm/python scripts?</li>
+<li><b>Default export format:</b> <code>xlsx</code> (matches the app's export) or <code>csv</code>?</li>
+<li><b>Cleanup of superseded scripts:</b> after the shim release, delete the old loose scripts or keep them indefinitely?</li>
+</ol></div>
+
+<footer>Elastofirm Profiler · ef CLI plan · status: <b>awaiting approval</b> — no code written. Sources inventoried: 20+ scripts across root, scripts/, data/.</footer>
+</div>
+<script>
+const root=document.documentElement,btns=[...document.querySelectorAll('.theme-toggle button')],mq=window.matchMedia('(prefers-color-scheme: dark)');
+function apply(m){root.setAttribute('data-theme',m==='system'?(mq.matches?'dark':'light'):m);btns.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.set===m)))}
+btns.forEach(b=>b.addEventListener('click',()=>apply(b.dataset.set)));
+mq.addEventListener('change',()=>{const a=btns.find(b=>b.getAttribute('aria-pressed')==='true');if(a&&a.dataset.set==='system')apply('system')});
+apply('light');
+</script>
+</body></html>

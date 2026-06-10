@@ -476,3 +476,4 @@
 | 2026-06-09 | elastofirm-profiler | reports | [phase3-full-task-list.html](projects/elastofirm-profiler/reports/phase3-full-task-list.html) | Phase 3 full task list — rendered specs + proof screenshots, all 63 issues |
 | 2026-06-09 | elastofirm-profiler | reports | [phase3-full-task-list.html](projects/elastofirm-profiler/reports/phase3-full-task-list.html) | Phase 3 full task list — rendered diagrams + customer verify steps + proof screenshots |
 | 2026-06-09 | elastofirm-profiler | reports | [phase3-full-task-list.html](projects/elastofirm-profiler/reports/phase3-full-task-list.html) | Phase 3 full task list — now with search + sort (status/points/id) |
+| 2026-06-10 | elastofirm-profiler | reports | [ef-cli-plan.html](projects/elastofirm-profiler/reports/ef-cli-plan.html) | ef CLI plan — unified safe command-line tool, command tree + safety model |
