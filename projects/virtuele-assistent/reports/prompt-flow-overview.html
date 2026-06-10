@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prompt flow en assemblage, virtuele assistent</title>
+<style>
+  :root{
+    --bg:#ffffff;--fg:#1a1a1a;--muted:#586069;--card:#f6f8fa;--border:#d8dee4;
+    --accent:#01689b;--accent-soft:#e6f0f7;--stripe:#ffb612;
+    --live:#1d6b2f;--live-soft:#e6f4ea;--flight:#8a5a00;--flight-soft:#fff6e0;
+    --arrow:#9aa4af;--code:#0b3a52;
+    --font:"RO Sans","Source Sans Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  [data-theme="dark"]{
+    --bg:#14181d;--fg:#e7ebf0;--muted:#9aa4af;--card:#1c2128;--border:#2d343c;
+    --accent:#5db0e0;--accent-soft:#16242e;--live:#7bd494;--live-soft:#15251a;
+    --flight:#e0b25a;--flight-soft:#2a2310;--arrow:#4b5560;--code:#cfe6f2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:62rem;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+  header.page{border-bottom:4px solid var(--stripe);padding-bottom:1.1rem;margin-bottom:1.4rem;display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+  h1{font-size:1.8rem;margin:0 0 .3rem;line-height:1.2}
+  h2{font-size:1.25rem;margin:2.4rem 0 .3rem;display:flex;align-items:center;gap:.5rem}
+  h2 .n{display:inline-flex;align-items:center;justify-content:center;width:1.6rem;height:1.6rem;border-radius:6px;background:var(--accent);color:#fff;font-size:.9rem;font-weight:700}
+  .sub{color:var(--muted);margin:.1rem 0 0}
+  p{margin:.5rem 0}
+  code{font-family:var(--mono);font-size:.84em;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:.06em .36em;color:var(--code)}
+  a{color:var(--accent)}
+  .legend{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0 .5rem}
+  .tag{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;font-weight:700;padding:.18rem .6rem;border-radius:999px;border:1px solid var(--border)}
+  .tag.live{background:var(--live-soft);color:var(--live)}
+  .tag.flight{background:var(--flight-soft);color:var(--flight)}
+  .tag .dot{width:.55rem;height:.55rem;border-radius:50%}
+  .tag.live .dot{background:var(--live)}
+  .tag.flight .dot{background:var(--flight)}
+
+  .flow{display:flex;flex-direction:column;align-items:stretch;gap:0;margin:1rem 0}
+  .box{border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;background:var(--card)}
+  .box .t{font-weight:700;font-size:.98rem;margin:0 0 .2rem}
+  .box .d{color:var(--muted);font-size:.86rem;margin:0}
+  .box.accent{border-left:5px solid var(--accent)}
+  .box.live{border-left:5px solid var(--live)}
+  .box.flight{border-left:5px solid var(--flight);background:var(--flight-soft)}
+  .arrow{align-self:center;color:var(--arrow);font-size:1.3rem;line-height:1;margin:.35rem 0}
+  .arrow small{display:block;font-size:.7rem;color:var(--muted);text-align:center;font-family:var(--mono)}
+
+  .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.7rem;margin:.4rem 0}
+  @media(max-width:720px){.row{grid-template-columns:1fr}}
+  .mini{border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;background:var(--bg)}
+  .mini .t{font-weight:700;font-size:.88rem}
+  .mini .d{color:var(--muted);font-size:.8rem;margin-top:.15rem}
+  .mini code{font-size:.78em}
+
+  .chain{border:1px dashed var(--border);border-radius:10px;padding:.9rem 1rem;background:var(--bg);margin:.5rem 0}
+  .chain ol{margin:.3rem 0 0;padding-left:1.2rem}
+  .chain li{margin:.3rem 0;font-size:.9rem}
+  .chain .first{font-weight:700;color:var(--accent)}
+
+  table{border-collapse:collapse;width:100%;margin:.7rem 0 1rem;font-size:.86rem}
+  th,td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-weight:700;border-bottom:2px solid var(--border)}
+  tbody tr:last-child td{border-bottom:none}
+  .note{font-size:.84rem;color:var(--muted);margin:.4rem 0}
+  .toggle{background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:999px;padding:.4rem .85rem;font-size:.82rem;cursor:pointer;font-family:inherit;white-space:nowrap}
+  .toggle:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  footer{margin-top:2.6rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
+  @media print{.toggle{display:none}body{background:#fff;color:#000}.wrap{max-width:none;padding:0}.box,.mini,.chain,table{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="page">
+    <div>
+      <h1>Prompt flow en assemblage</h1>
+      <p class="sub">Hoe een gebruikersvraag de prompts opbouwt en door de agent stroomt</p>
+    </div>
+    <button class="toggle" id="themeBtn" type="button" aria-label="Wissel licht/donker">Donker</button>
+  </header>
+
+  <div class="legend">
+    <span class="tag live"><span class="dot"></span>Live op test</span>
+    <span class="tag flight"><span class="dot"></span>In ontwikkeling (MR open)</span>
+  </div>
+  <p class="note">Twee assemblage-routes bestaan naast elkaar. De generieke route (sjabloon + variabelen) draait nu op <code>test</code>. De refactor-route (<code>refactor/system-prompt-main</code> met content-blokken) zit op <code>prompt_hygiene</code> / MR !173 en is per tenant selecteerbaar. De <code>[[STEPS]]</code>/<code>[[FOLLOWUPS]]</code>-UI zit op <code>feature/steps-followups-ui</code>.</p>
+
+  <h2><span class="n">1</span> End-to-end data flow</h2>
+  <div class="flow">
+    <div class="box accent">
+      <p class="t">Gebruiker typt een vraag, agent-frontend</p>
+      <p class="d">De chat-client onderschept de POST en stuurt de body eerst langs <code>/ai/redact</code> (PII-redactie) voordat hij naar de backend gaat.</p>
+    </div>
+    <div class="arrow">&darr;<small>POST /ai/stream/chat/{tenant}/chat (via nginx)</small></div>
+    <div class="box accent">
+      <p class="t">agent-backend, ChatHttpRoute</p>
+      <p class="d">Parseert de berichten in twee delen:
+        <code>conversationHistory()</code> = eerdere turns als gestructureerde user/assistant-berichten, en
+        <code>lastUserMessage</code> = de huidige vraag (split op de laatste user-turn).</p>
+    </div>
+    <div class="arrow">&darr;<small>systeemprompt opbouwen</small></div>
+    <div class="box accent">
+      <p class="t">PromptAssemblyService, systeemprompt</p>
+      <p class="d">Bouwt de systeemprompt (zie sectie 2), daarna injecteert <code>PromptUtils.injectDateTime</code> de runtime-waarden <code>{{CURRENT_DATE}}</code>, <code>{{CURRENT_TIME}}</code>, <code>{{CURRENT_DATETIME}}</code>.</p>
+    </div>
+    <div class="arrow">&darr;<small>agent.run(lastUserMessage) + systeemprompt + ConversationHistory + tools</small></div>
+    <div class="box accent">
+      <p class="t">Agent-strategie (Koog), nodes</p>
+      <p class="d">classify, dan PROCEED / DISAMBIGUATE / REDIRECT, tool-aanroepen (RAG) en antwoordgeneratie. Per node een eigen prompt (zie sectie 3).</p>
+    </div>
+    <div class="arrow">&darr;<small>antwoord streamt terug (data-stream frames)</small></div>
+    <div class="box flight">
+      <p class="t">agent-frontend, StructuredAnswerText</p>
+      <p class="d">Parseert <code>[[STEPS]]</code> en <code>[[FOLLOWUPS]]</code> uit de antwoordtekst: proza als markdown, stappen als genummerde lijst, vervolgvragen als klikbare chips (klik = volgende user-turn). Zie sectie 4.</p>
+    </div>
+  </div>
+
+  <h2><span class="n">2</span> Systeemprompt-assemblage</h2>
+  <p class="note"><code>assembleSystemPrompt(tenantId, label = EnvironmentConfig.promptLabel, directPrompt)</code>. <code>label</code> = <code>production</code> in prod, <code>test</code> elders.</p>
+
+  <div class="flow">
+    <div class="box">
+      <p class="t">directPrompt = true?</p>
+      <p class="d">Ja: haal <code>{tenant}_systemprompt</code> vers uit Langfuse (geen cache, geen sjabloon). Bedoeld voor live prompt-bewerking tijdens demo's.</p>
+    </div>
+    <div class="arrow">&darr;<small>nee</small></div>
+    <div class="box">
+      <p class="t">Per-tenant variabelen uit DB (<code>tenant_configurations</code>)?</p>
+      <p class="d">Geen variabelen gezet, dan legacy <code>{tenant}_systemprompt</code> uit Langfuse. Wel variabelen, dan sjabloon + substitutie:</p>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="mini" style="border-left:4px solid var(--live)">
+      <p class="t">Sjabloon kiezen</p>
+      <p class="d"><span class="tag live" style="padding:.05rem .4rem">live</span> <code>generic_system_prompt_v3</code> (fallback <code>v2</code>).</p>
+      <p class="d"><span class="tag flight" style="padding:.05rem .4rem">!173</span> als tenant <code>refactor/system-prompt-main</code> heeft gekozen (allow-list), die eerst.</p>
+    </div>
+    <div class="mini">
+      <p class="t">Basis-variabelen</p>
+      <p class="d"><code>{{bot_name}}</code>, <code>{{email}}</code>, <code>{{phone}}</code>, <code>{{address}}</code>, schrijfstijl, perspectief enz. uit <code>TenantPromptVariables</code> (derived map).</p>
+    </div>
+    <div class="mini">
+      <p class="t">Fallback bij fout</p>
+      <p class="d">Lukt het sjabloon laden of substitueren niet, dan terug naar legacy <code>{tenant}_systemprompt</code>.</p>
+    </div>
+  </div>
+
+  <div class="chain">
+    <p class="t" style="font-weight:700;margin:0 0 .2rem">Content-blokken (alleen refactor-sjabloon) <span class="tag flight" style="padding:.05rem .4rem">!173</span></p>
+    <p class="d note" style="margin:0">Elk <code>{{*_block}}</code> wordt alleen opgehaald als het sjabloon het echt bevat. Resolutie per blok, in volgorde:</p>
+    <ol>
+      <li><span class="first">per-tenant override</span> uit het beheerscherm (alleen <code>identity_block</code> en <code>answer_block</code>), anders</li>
+      <li>het live Langfuse-fragment, anders</li>
+      <li>de hardcoded fallback-constante (<code>RefactorTemplateDefaults</code>), zodat assemblage nooit breekt als Langfuse plat ligt.</li>
+    </ol>
+    <table>
+      <thead><tr><th>Blok</th><th>Override</th><th>Langfuse-fragment</th><th>Fallback</th></tr></thead>
+      <tbody>
+        <tr><td><code>{{identity_block}}</code></td><td>identityBlock</td><td><code>refactor/shared-identity</code></td><td>DEFAULT_IDENTITY_BLOCK</td></tr>
+        <tr><td><code>{{answer_block}}</code></td><td>answerBlock</td><td><code>refactor/shared-answer</code></td><td>DEFAULT_ANSWER_BLOCK</td></tr>
+        <tr><td><code>{{style_block}}</code></td><td>vast</td><td><code>refactor/shared-style</code></td><td>DEFAULT_STYLE_BLOCK</td></tr>
+        <tr><td><code>{{topic_rules_block}}</code></td><td>vast</td><td><code>refactor/topic-specific-rules</code></td><td>DEFAULT_TOPIC_RULES_BLOCK</td></tr>
+        <tr><td><code>{{examples_block}}</code></td><td>vast</td><td><code>refactor/few-shot-examples</code></td><td>DEFAULT_EXAMPLES_BLOCK</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin:.3rem 0 0">Per-tenant extra regels gaan in <code>{{extra_topic_rules}}</code>. Geneste <code>{{vars}}</code> in een blok worden daarna tegen dezelfde variabele-map opgelost.</p>
+  </div>
+
+  <h2><span class="n">3</span> Agent-strategie en per-node prompts</h2>
+  <p class="note">Alle node-prompts komen uit Langfuse via <code>StrategyPromptService</code> (label = <code>promptLabel</code>, 5-min cache). Naast de systeemprompt krijgt elke node-aanroep de <code>ConversationHistory</code> (gestructureerde turns) mee.</p>
+  <div class="flow">
+    <div class="box accent">
+      <p class="t">nodeClassify, <code>classify_prompt</code></p>
+      <p class="d">Klein model (GPT-4.1-mini), temperatuur 0, org-systeemprompt eraf. Bepaalt de route.</p>
+    </div>
+    <div class="arrow">&darr;<small>routing-beslissing</small></div>
+  </div>
+  <div class="row">
+    <div class="mini" style="border-left:4px solid var(--accent)">
+      <p class="t">PROCEED</p>
+      <p class="d">nodeCallLLM, <code>toolcall_prompt</code> &rarr; RAG-tools &rarr; nodeHandleToolResults, <code>answer_prompt</code> (of <code>answer_forced_prompt</code>; <code>retry_prompt</code> bij tool-fout) &rarr; antwoord streamt.</p>
+    </div>
+    <div class="mini">
+      <p class="t">DISAMBIGUATE</p>
+      <p class="d">nodeDisambiguate, <code>disambiguate_prompt</code> &rarr; streamt een verhelderende vraag, geen tools.</p>
+    </div>
+    <div class="mini">
+      <p class="t">REDIRECT</p>
+      <p class="d">nodeRedirect, <code>redirect_prompt</code> &rarr; verwijst door / buiten scope.</p>
+    </div>
+  </div>
+  <p class="note">Feedback-lus bij tool-gedrag: <code>giveFeedbackToCallTools</code> met <code>feedback_prompt</code>. Los daarvan: <code>pii_warning_instruction</code>. NB: review op !173 merkte op dat <code>system(...)</code> in deze nodes na <code>user(message)</code> staat (niet-canoniek); bewust uitgesteld naar een eval-gedekte MR.</p>
+
+  <h2><span class="n">4</span> Antwoord-markers naar UI <span class="tag flight" style="font-size:.7rem;padding:.1rem .5rem">in ontwikkeling</span></h2>
+  <p class="note">Het <code>answer_prompt</code> instrueert het model om (optioneel) twee markerblokken in de platte antwoordtekst te zetten. De frontend (<code>StructuredAnswerText</code>) verwerkt ze:</p>
+  <div class="row">
+    <div class="mini"><p class="t">proza</p><p class="d">Tekst vóór de eerste marker, gerenderd als markdown (links, vet enz.).</p></div>
+    <div class="mini"><p class="t"><code>[[STEPS]]</code></p><p class="d">Eén actie per regel (alleen procedureel) &rarr; genummerde "stappen"-lijst, de UI nummert.</p></div>
+    <div class="mini"><p class="t"><code>[[FOLLOWUPS]]</code></p><p class="d">1 tot 3 vragen, altijd als laatste &rarr; klikbare chips, klik = volgende user-turn.</p></div>
+  </div>
+  <p class="note">Rauwe markers worden uit de proza gestript; een half-gestreamde marker flitst niet. Vervolgvragen worden pas klikbaar als het bericht klaar is. Let op: nog geen enkel Langfuse-prompt zendt deze markers, dus live verschijnen ze pas als het answer-prompt in Langfuse staat.</p>
+
+  <h2><span class="n">5</span> Prompt-inventaris</h2>
+  <table>
+    <thead><tr><th>Prompt</th><th>Rol</th><th>Bron</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><code>generic_system_prompt_v3</code> / <code>v2</code></td><td>Generiek systeemprompt-sjabloon</td><td>Langfuse</td><td><span class="tag live" style="padding:.05rem .4rem">live</span></td></tr>
+      <tr><td><code>{tenant}_systemprompt</code></td><td>Legacy per-tenant prompt + directPrompt + fallback</td><td>Langfuse</td><td><span class="tag live" style="padding:.05rem .4rem">live</span></td></tr>
+      <tr><td><code>refactor/system-prompt-main</code></td><td>Schone variabele-skelet (selecteerbaar)</td><td>Langfuse</td><td><span class="tag flight" style="padding:.05rem .4rem">!173</span></td></tr>
+      <tr><td><code>refactor/shared-*</code>, <code>topic-specific-rules</code>, <code>few-shot-examples</code></td><td>Content-blokken</td><td>Langfuse (+ hardcoded fallback)</td><td><span class="tag flight" style="padding:.05rem .4rem">!173</span></td></tr>
+      <tr><td><code>classify_prompt</code></td><td>Routing</td><td>Langfuse</td><td><span class="tag live" style="padding:.05rem .4rem">live</span></td></tr>
+      <tr><td><code>toolcall_prompt</code></td><td>Tool-aanroep (PROCEED)</td><td>Langfuse</td><td><span class="tag live" style="padding:.05rem .4rem">live</span></td></tr>
+      <tr><td><code>answer_prompt</code> / <code>answer_forced_prompt</code></td><td>Antwoordgeneratie (krijgt straks de markers)</td><td>Langfuse</td><td><span class="tag live" style="padding:.05rem .4rem">live</span></td></tr>
+      <tr><td><code>disambiguate_prompt</code>, <code>redirect_prompt</code>, <code>retry_prompt</code>, <code>feedback_prompt</code></td><td>Per-node instructies</td><td>Langfuse</td><td><span class="tag live" style="padding:.05rem .4rem">live</span></td></tr>
+      <tr><td><code>eval/context-relevance</code>, <code>eval/groundedness</code>, <code>eval/answer-relevance</code></td><td>RAG-triad LLM-as-judge (los van de chat-flow)</td><td>Langfuse</td><td><span class="tag live" style="padding:.05rem .4rem">live</span></td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    Sanity-check momentopname op basis van PromptAssemblyService, StrategyPromptService, PromptUtils, ChatHttpRoute, AgentStrategy en de frontend StructuredAnswerText. Twee assemblage-routes naast elkaar: generiek (live op test) en refactor (MR !173). Bron-waar: refactor-blokken en selecteerbaar sjabloon op prompt_hygiene; markers-UI op feature/steps-followups-ui.
+  </footer>
+</div>
+<script>
+  (function(){var b=document.getElementById('themeBtn'),r=document.documentElement;
+   b.addEventListener('click',function(){var d=r.getAttribute('data-theme')==='dark';
+   if(d){r.removeAttribute('data-theme');b.textContent='Donker';}else{r.setAttribute('data-theme','dark');b.textContent='Licht';}});})();
+</script>
+</body>
+</html>

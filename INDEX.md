@@ -486,3 +486,4 @@
 | 2026-06-10 | elastofirm-profiler | reports | [matcher-eval-baseline.html](projects/elastofirm-profiler/reports/matcher-eval-baseline.html) | Matcher baseline eval — 25 profiles x 7 variants, crops 0%, rot15 48% |
 | 2026-06-10 | elastofirm-profiler | reports | [matcher-judge-baseline.html](projects/elastofirm-profiler/reports/matcher-judge-baseline.html) | Claude-vision judge over matcher baseline — visual report, 95 queries |
 | 2026-06-10 | elastofirm-profiler | reports | [matcher-experiments.html](projects/elastofirm-profiler/reports/matcher-experiments.html) | Matcher optimization experiments — canon_dt wins, validated at 12k scale |
+| 2026-06-10 | virtuele-assistent | reports | [prompt-flow-overview.html](projects/virtuele-assistent/reports/prompt-flow-overview.html) | Diagram of system-prompt assembly + data flow (generic vs refactor route, agent nodes, STEPS/FOLLOWUPS markers) |
