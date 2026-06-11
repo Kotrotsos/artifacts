@@ -6,3 +6,4 @@
 | 2026-06-11 | reports | [temple-deck.html](reports/temple-deck.html) | Temple 12-slide deck: stop renting interfaces, architecture, business case, revenue projections | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck.html |
 | 2026-06-11 | reports | [temple-glossary.html](reports/temple-glossary.html) | Glossary of terms from Datadog Tempor / machine-tool-for-Claude-Code talk | /Users/marcokotrotsos/projects/temple/artifacts/temple-glossary.html |
 | 2026-06-11 | reports | [temple-one-pager.html](reports/temple-one-pager.html) | Temple one-pager, Incredicorp brand: dual-canvas cream + console, business case + year-1 revenue | /Users/marcokotrotsos/projects/temple/artifacts/temple-one-pager.html |
+| 2026-06-11 | reports | [temple-deck.html](reports/temple-deck.html) | Temple 12-slide deck, Incredicorp brand: cream story + console technical slides + revenue | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck.html |

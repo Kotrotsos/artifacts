@@ -3,116 +3,115 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Temple — Nxt Phase AI deck</title>
-<link rel="stylesheet" href="brand/colors_and_type.css">
+<title>Temple — Incredicorp deck</title>
+<link rel="stylesheet" href="incredicorp-brand/tokens.css">
 <style>
-  *{box-sizing:border-box}
-  html,body{margin:0;height:100%}
-  body{background:#2a2620;font-family:var(--font-body);overflow:hidden}
-  /* stage scales 1280x720 to viewport */
+  *{box-sizing:border-box} html,body{margin:0;height:100%}
+  body{background:#0e0b09;font-family:var(--font-body);overflow:hidden}
   #stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
   #deck{width:1280px;height:720px;position:relative;transform-origin:center center}
-  .slide{position:absolute;inset:0;background:var(--bg-1);color:var(--off-black);
-    padding:64px 84px;display:none;flex-direction:column;overflow:hidden}
+  .slide{position:absolute;inset:0;background:var(--canvas);color:var(--ink);padding:64px 84px;display:none;flex-direction:column;overflow:hidden}
   .slide.on{display:flex}
   .slide.pad-lg{padding:72px 96px}
 
-  /* shared chrome */
-  .s-logo{height:22px}
-  .ovl{font-family:var(--font-body);font-weight:500;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--stone)}
+  .ovl{font-family:var(--font-body);font-weight:500;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-subtle)}
   .foot{position:absolute;left:84px;right:84px;bottom:40px;display:flex;align-items:center;justify-content:space-between}
-  .foot .pg{font-size:12px;color:var(--stone);letter-spacing:0.06em}
-  .disp{font-family:var(--font-display);font-weight:400;letter-spacing:-0.015em;line-height:1.0;color:var(--off-black);margin:0}
+  .foot .pg,.foot .wm{font-size:12px;color:var(--ink-subtle);letter-spacing:0.06em}
+  .disp{font-family:var(--font-display);font-weight:400;letter-spacing:-0.015em;line-height:1.0;color:var(--ink);margin:0}
   .it{font-style:italic}
-  .num{font-family:var(--font-display);font-style:italic;color:var(--signal-orange)}
-  .muted{color:var(--stone)}
-  .rule{height:2px;width:40px;background:var(--off-black);margin-bottom:18px}
+  .num{font-family:var(--font-display);font-style:italic;color:var(--orange)}
+  .muted{color:var(--ink-subtle)}
+  .rule{height:2px;width:40px;background:var(--ink);margin-bottom:18px}
   .fill{flex:1}
   .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 
+  /* wordmark */
+  .wm-lock{font-family:var(--font-body);font-weight:600;font-size:18px;letter-spacing:-0.01em;color:var(--ink);display:inline-flex;align-items:center;gap:8px;line-height:1}
+  .wm-lock svg{width:20px;height:20px;flex:none}
+  .wm-lock .bar{fill:var(--ink)} .wm-lock .acc{fill:var(--green)}
+
+  /* console slide */
+  .console{background:var(--con-canvas);color:var(--con-ink)}
+  .console .disp{color:var(--con-ink)} .console .ovl{color:var(--con-ink-subtle)}
+  .console .rule{background:var(--con-ink)} .console .muted{color:var(--con-ink-subtle)}
+  .console .foot .pg,.console .foot .wm{color:var(--con-ink-subtle)}
+  .console .wm-lock{color:var(--con-ink)} .console .wm-lock .bar{fill:var(--con-ink)}
+
   /* title */
   .t-h{font-size:78px;max-width:17ch;margin-top:18px}
-  .t-sub{font-size:21px;color:var(--stone);max-width:48ch;margin-top:26px}
+  .t-sub{font-size:21px;color:var(--ink-muted);max-width:48ch;margin-top:26px}
 
   /* divider (green) */
-  .divider{background:var(--signal-green);color:#fff;justify-content:flex-end}
-  .divider .ovl{color:rgba(255,255,255,0.72)}
-  .divider .disp{color:#fff}
+  .divider{background:var(--green);color:#fff;justify-content:flex-end}
+  .divider .ovl{color:rgba(255,255,255,0.72)} .divider .disp{color:#fff}
   .divider .bn{font-family:var(--font-display);font-style:italic;font-size:150px;line-height:0.8;color:rgba(255,255,255,0.9)}
-  .divider .foot .pg,.divider .foot span{color:rgba(255,255,255,0.72)}
+  .divider .foot .pg,.divider .foot .wm{color:rgba(255,255,255,0.72)}
+  .divider .wm-lock{color:#fff} .divider .wm-lock .bar{fill:#fff} .divider .wm-lock .acc{fill:#fff}
 
-  /* generic heading block */
   .head h2{font-family:var(--font-display);font-weight:400;font-size:46px;line-height:1.05;margin:12px 0 0;max-width:20ch}
-  .lead{font-size:20px;color:var(--stone);max-width:60ch;margin:22px 0 0;line-height:1.5}
+  .console .head h2{color:var(--con-ink)}
+  .lead{font-size:20px;color:var(--ink-muted);max-width:60ch;margin:22px 0 0;line-height:1.5}
+  .console .lead{color:var(--con-ink-subtle)}
 
-  /* 2-col */
   .cols2{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:auto}
   .panel{border:1px solid var(--hairline-strong);border-radius:var(--r-lg);padding:30px 32px;background:transparent}
   .panel h3{font-family:var(--font-display);font-weight:400;font-size:26px;margin:0 0 16px}
+  .console .panel{border-color:var(--con-hair-strong)} .console .panel h3{color:var(--con-ink)}
   ul.clean{list-style:none;margin:0;padding:0}
   ul.clean li{position:relative;padding-left:22px;margin:0 0 12px;font-size:17px;line-height:1.45}
-  ul.clean li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--signal-green)}
-  .panel.dark{background:var(--off-black);color:var(--cream);border-color:var(--off-black)}
-  .panel.dark h3{color:var(--cream)}
-  .panel.dark .small{color:rgba(245,240,232,0.7)}
+  ul.clean li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:var(--green)}
+  .panel.dark{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+  .panel.dark h3{color:var(--canvas)} .panel.dark .small{color:rgba(245,240,232,0.7)}
   .small{font-size:15px}
 
-  /* 3-col problem */
   .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:44px;margin-top:auto}
-  .c3 .num{font-size:38px}
-  .c3 .cr{border-top:2px solid var(--off-black);width:34px;margin:0 0 14px}
+  .c3 .num{font-size:38px} .c3 .cr{border-top:2px solid var(--ink);width:34px;margin:0 0 14px}
   .c3 h3{font-family:var(--font-display);font-weight:400;font-size:25px;line-height:1.1;margin:10px 0 10px}
-  .c3 p{font-size:16px;color:var(--stone);line-height:1.5;margin:0}
+  .c3 p{font-size:16px;color:var(--ink-subtle);line-height:1.5;margin:0}
 
-  /* pillars */
   .pills{display:flex;gap:16px;margin-top:auto}
   .pill{flex:1;border:1px solid var(--hairline-strong);border-radius:var(--r-lg);padding:26px 22px}
-  .pill.active{background:var(--off-black);color:var(--cream);border-color:var(--off-black)}
-  .pill .pn{font-family:var(--font-display);font-style:italic;font-size:22px;color:var(--stone)}
-  .pill.active .pn{color:var(--signal-green)}
+  .pill.active{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
+  .pill .pn{font-family:var(--font-display);font-style:italic;font-size:22px;color:var(--ink-subtle)}
+  .pill.active .pn{color:var(--green)}
   .pill .pt{font-family:var(--font-display);font-size:24px;margin:14px 0 8px}
-  .pill p{font-size:14px;color:var(--stone);line-height:1.45;margin:0}
+  .pill p{font-size:14px;color:var(--ink-subtle);line-height:1.45;margin:0}
   .pill.active p{color:rgba(245,240,232,0.72)}
 
-  /* stats */
   .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:44px;margin-top:auto;align-items:end}
-  .stat .n{font-family:var(--font-display);font-size:96px;line-height:0.85;color:var(--off-black)}
-  .stat .n em{font-style:italic;color:var(--signal-orange)}
-  .stat .l{font-size:16px;color:var(--stone);margin-top:16px;max-width:20ch}
+  .stat .n{font-family:var(--font-display);font-size:96px;line-height:0.85;color:var(--ink)}
+  .stat .n em{font-style:italic;color:var(--orange)}
+  .stat .l{font-size:16px;color:var(--ink-subtle);margin-top:16px;max-width:20ch}
 
-  /* mock cards */
-  .mock{background:var(--surface-1);border:1px solid var(--hairline-strong);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-md)}
-  .mbar{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid var(--hairline)}
-  .mdot{width:9px;height:9px;border-radius:50%;background:var(--hairline-strong)}
-  .mbt{margin-left:10px;font-size:12px;color:var(--stone);letter-spacing:0.04em}
+  /* console mock cards */
+  .mock{background:var(--con-1);border:1px solid var(--con-hair-strong);border-radius:var(--r-xl);overflow:hidden;color:var(--con-ink)}
+  .mbar{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid var(--con-hair)}
+  .mdot{width:9px;height:9px;border-radius:50%;background:var(--con-hair-strong)}
+  .mbt{margin-left:10px;font-size:12px;color:var(--con-ink-subtle);letter-spacing:0.04em;font-family:var(--font-mono)}
   .mbody{padding:22px 24px}
-  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;letter-spacing:0.04em;padding:5px 11px;border-radius:var(--r-pill);border:1px solid rgba(62,155,93,0.35);background:rgba(62,155,93,0.10);color:var(--green-deep)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:500;letter-spacing:0.04em;padding:5px 11px;border-radius:var(--r-pill);border:1px solid rgba(62,155,93,0.45);background:rgba(62,155,93,0.16);color:#7fd39b}
   .kv{display:grid;grid-template-columns:118px 1fr;gap:8px 16px;margin:14px 0 0;font-size:14px}
-  .kv dt{color:var(--stone)} .kv dd{margin:0}
+  .kv dt{color:var(--con-ink-subtle)} .kv dd{margin:0;color:var(--con-ink)}
   .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
-  .btn{font-size:12px;padding:8px 13px;border-radius:var(--r-md);border:1px solid var(--hairline-strong);color:var(--off-black)}
-  .btn.primary{background:var(--signal-green);border-color:var(--signal-green);color:#fff}
-  .btn.locked{color:var(--stone);border-style:dashed}
-  pre.spec{font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.7;margin:0;white-space:pre-wrap;color:var(--off-black)}
+  .btn{font-size:12px;padding:8px 13px;border-radius:var(--r-md);border:1px solid var(--con-hair-strong);color:var(--con-ink)}
+  .btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+  .btn.locked{color:var(--con-ink-subtle);border-style:dashed}
+  pre.spec{font-family:var(--font-mono);font-size:12px;line-height:1.7;margin:0;white-space:pre-wrap;color:var(--con-ink)}
 
-  /* fin table */
   table.fin{width:100%;border-collapse:collapse;font-size:15px}
   table.fin th,table.fin td{text-align:right;padding:10px 10px;border-bottom:1px solid var(--hairline)}
   table.fin th:first-child,table.fin td:first-child{text-align:left}
-  table.fin thead th{font-weight:500;color:var(--stone);font-size:11px;letter-spacing:0.08em;text-transform:uppercase}
+  table.fin thead th{font-weight:500;color:var(--ink-subtle);font-size:11px;letter-spacing:0.08em;text-transform:uppercase}
   table.fin tfoot td{font-weight:600;border-top:2px solid var(--hairline-strong);border-bottom:0}
-  table.fin .g{color:var(--signal-green)}
+  table.fin .g{color:var(--green)}
 
   blockquote{margin:0;font-family:var(--font-display);font-size:52px;line-height:1.12;letter-spacing:-0.015em;max-width:20ch}
 
-  /* nav */
-  #ctrl{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;
-    background:rgba(20,17,13,0.72);backdrop-filter:blur(8px);border-radius:var(--r-pill);padding:7px 10px;z-index:10}
-  #ctrl button{font-family:var(--font-body);font-size:13px;border:0;background:transparent;color:#F5F0E8;
-    width:30px;height:30px;border-radius:50%;cursor:pointer}
+  #ctrl{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:rgba(23,19,16,0.82);backdrop-filter:blur(8px);border-radius:var(--r-pill);padding:7px 10px;z-index:10}
+  #ctrl button{font-family:var(--font-body);font-size:13px;border:0;background:transparent;color:#F5F0E8;width:30px;height:30px;border-radius:50%;cursor:pointer}
   #ctrl button:hover{background:rgba(245,240,232,0.14)}
   #ctrl .count{color:#F5F0E8;font-size:12px;letter-spacing:0.08em;padding:0 6px;min-width:54px;text-align:center}
-  .hint{position:fixed;bottom:22px;right:22px;color:rgba(245,240,232,0.5);font-size:11px;letter-spacing:0.06em;z-index:10}
+  .hint{position:fixed;bottom:22px;right:22px;color:rgba(245,240,232,0.45);font-size:11px;letter-spacing:0.06em;z-index:10}
 </style>
 </head>
 <body>
@@ -121,7 +120,7 @@
   <!-- 1 TITLE -->
   <section class="slide on">
     <div class="top">
-      <img class="s-logo" src="brand/assets/logos/logo-off-black.svg" alt="Nxt Phase AI">
+      <span class="wm-lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect class="bar" x="3" y="3.5" width="18" height="2.4" rx="1.2"/><rect class="bar" x="6" y="8.3" width="14" height="2.4" rx="1.2"/><rect class="bar" x="9" y="13.1" width="10" height="2.4" rx="1.2"/><rect class="acc" x="3" y="18" width="18" height="2.6" rx="1.3"/></svg>incredicorp</span>
       <span class="ovl">Strategy &middot; 2026</span>
     </div>
     <div class="fill" style="display:flex;flex-direction:column;justify-content:center">
@@ -129,7 +128,7 @@
       <h1 class="disp t-h">Stop renting interfaces you <span class="it">no longer open</span>.</h1>
       <p class="t-sub">Enterprise SaaS is a screen over a database. When agents do the work, the screen goes dark, but the subscription keeps billing. Temple collapses the stack into one owned, governed data layer.</p>
     </div>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">01</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">01</span></div>
   </section>
 
   <!-- 2 DIVIDER -->
@@ -137,174 +136,146 @@
     <span class="ovl">The premise</span>
     <div class="bn">01</div>
     <h2 class="disp" style="font-size:54px;max-width:22ch;margin-top:10px">Every tool you stopped opening is just a database wearing a UI.</h2>
-    <div class="foot"><span>Nxt Phase AI</span><span class="pg">02</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">02</span></div>
   </section>
 
-  <!-- 3 PROBLEM 3col -->
+  <!-- 3 PROBLEM -->
   <section class="slide">
-    <div class="head"><div class="rule"></div><span class="ovl">The obstacle</span>
-      <h2 class="disp" style="font-size:42px;max-width:24ch">You configure the tool once. Then the agent lives there, not you.</h2></div>
+    <div class="head"><div class="rule"></div><span class="ovl">The obstacle</span><h2 class="disp" style="font-size:42px;max-width:24ch">You configure the tool once. Then the agent lives there, not you.</h2></div>
     <div class="cols3">
       <div class="c3"><div class="num">01</div><div class="cr"></div><h3>The UI was built for human attention</h3><p>Routes, forms, boards, permissions, all shaped around a person navigating a screen all day.</p></div>
       <div class="c3"><div class="num">02</div><div class="cr"></div><h3>The agent does not need any of it</h3><p>It reads and writes structured state directly. The interface is dead weight between intent and data.</p></div>
       <div class="c3"><div class="num">03</div><div class="cr"></div><h3>You still pay, per seat, every month</h3><p>Linear, Jira, Confluence, Notion, SharePoint, CRM, ERP. Rent on screens nobody opens.</p></div>
     </div>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">03</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">03</span></div>
   </section>
 
   <!-- 4 collapses vs keep -->
   <section class="slide">
-    <div class="head"><div class="rule"></div><span class="ovl">The test</span>
-      <h2 class="disp" style="font-size:40px;max-width:26ch">Not "is it a database". It is "does a human other than an agent need the surface".</h2></div>
+    <div class="head"><div class="rule"></div><span class="ovl">The test</span><h2 class="disp" style="font-size:40px;max-width:26ch">Not "is it a database". It is "does a human other than an agent need the surface".</h2></div>
     <div class="cols2">
-      <div class="panel"><h3>Collapses to schema</h3>
-        <ul class="clean">
-          <li>Project tracking, Linear &amp; Jira</li>
-          <li>Docs &amp; wiki, Notion, Confluence, SharePoint</li>
-          <li>CRM and large parts of ERP</li>
-        </ul>
-        <p class="small muted" style="margin-top:16px">Pure control-logic-over-a-database. Drop the subscription, keep the data.</p>
-      </div>
-      <div class="panel dark"><h3>Worth paying for</h3>
-        <ul class="clean">
-          <li>Capture, where a bot must attend, Fireflies</li>
-          <li>External data &amp; enrichment networks</li>
-          <li>The rare human moment, rendered on demand</li>
-        </ul>
-        <p class="small" style="margin-top:16px">You buy capability, not an interface.</p>
-      </div>
+      <div class="panel"><h3>Collapses to schema</h3><ul class="clean"><li>Project tracking, Linear &amp; Jira</li><li>Docs &amp; wiki, Notion, Confluence, SharePoint</li><li>CRM and large parts of ERP</li></ul><p class="small muted" style="margin-top:16px">Pure control-logic-over-a-database. Drop the subscription, keep the data.</p></div>
+      <div class="panel dark"><h3>Worth paying for</h3><ul class="clean"><li>Capture, where a bot must attend, Fireflies</li><li>External data &amp; enrichment networks</li><li>The rare human moment, rendered on demand</li></ul><p class="small" style="margin-top:16px">You buy capability, not an interface.</p></div>
     </div>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">04</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">04</span></div>
   </section>
 
-  <!-- 5 ARCHITECTURE -->
-  <section class="slide">
-    <div class="head"><div class="rule"></div><span class="ovl">How it works</span>
-      <h2 class="disp" style="font-size:40px;max-width:26ch">One owned data layer. One bouncer. Verified blueprints.</h2></div>
+  <!-- 5 ARCHITECTURE (console) -->
+  <section class="slide console">
+    <div class="head"><div class="rule"></div><span class="ovl">How it works</span><h2 class="disp" style="font-size:40px;max-width:26ch">One owned data layer. One bouncer. Verified blueprints.</h2></div>
     <div class="fill" style="display:flex;align-items:center">
       <svg viewBox="0 0 1080 300" width="100%" role="img" aria-label="Architecture diagram">
         <defs>
           <style>
-            .lbl{font-family:'Switzer',sans-serif;font-size:13px;fill:var(--off-black)}
-            .sub{font-family:'Switzer',sans-serif;font-size:11px;fill:var(--stone)}
-            .ttl{font-family:'PP Editorial New',serif;font-size:17px;fill:var(--off-black)}
-            .ov{font-family:'Switzer',sans-serif;font-size:10px;letter-spacing:0.12em;fill:var(--stone)}
+            .lbl{font-family:'Switzer',sans-serif;font-size:13px;fill:var(--con-ink)}
+            .sub{font-family:'Switzer',sans-serif;font-size:11px;fill:var(--con-ink-subtle)}
+            .ttl{font-family:'PP Editorial New',serif;font-size:17px;fill:var(--con-ink)}
+            .ov{font-family:'Switzer',sans-serif;font-size:10px;letter-spacing:0.12em;fill:var(--con-ink-subtle)}
+            .nm{font-family:'PP Editorial New',serif;font-style:italic;fill:var(--orange)}
+            .bx{fill:var(--con-2);stroke:var(--con-hair-strong)} .st{fill:var(--con-canvas);stroke:var(--con-hair)}
+            .mn{font-family:var(--font-mono)}
           </style>
-          <marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" style="fill:var(--stone)"/></marker>
+          <marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" style="fill:var(--con-ink-subtle)"/></marker>
         </defs>
-        <rect x="10" y="95" width="160" height="110" rx="16" style="fill:var(--surface-2);stroke:var(--hairline-strong)"/>
+        <rect x="10" y="95" width="160" height="110" rx="16" class="bx"/>
         <text x="30" y="125" class="ov">CLAUDE</text><text x="30" y="150" class="ttl">Agent</text>
         <text x="30" y="174" class="sub">proposes the next</text><text x="30" y="190" class="sub">legal action</text>
-        <line x1="172" y1="150" x2="318" y2="150" stroke-width="1.5" marker-end="url(#a2)" style="stroke:var(--stone)"/>
-        <text x="190" y="140" class="sub">request_transition()</text>
-        <rect x="325" y="20" width="430" height="260" rx="16" stroke-width="1.5" style="fill:var(--surface-1);stroke:var(--signal-green)"/>
-        <text x="347" y="48" class="ov" style="fill:var(--green-deep)">MCP SERVER &middot; THE BOUNCER</text>
-        <g>
-          <rect x="347" y="60" width="386" height="38" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/><text x="364" y="84" class="lbl"><tspan class="num" style="font-size:15px">1</tspan>&#160;&#160;Authenticate &rarr; role</text>
-          <rect x="347" y="104" width="386" height="38" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/><text x="364" y="128" class="lbl"><tspan class="num" style="font-size:15px">2</tspan>&#160;&#160;Policy gate &mdash; who may act</text>
-          <rect x="347" y="148" width="386" height="38" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/><text x="364" y="172" class="lbl"><tspan class="num" style="font-size:15px">3</tspan>&#160;&#160;Guard + invariant check</text>
-          <rect x="347" y="192" width="386" height="38" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/><text x="364" y="216" class="lbl"><tspan class="num" style="font-size:15px">4</tspan>&#160;&#160;Run typed effects / WASM</text>
-          <rect x="347" y="236" width="386" height="38" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/><text x="364" y="260" class="lbl"><tspan class="num" style="font-size:15px">5</tspan>&#160;&#160;Write audit &rarr; apply state</text>
-        </g>
-        <line x1="757" y1="150" x2="903" y2="150" stroke-width="1.5" marker-end="url(#a2)" style="stroke:var(--stone)"/>
-        <rect x="910" y="95" width="160" height="110" rx="16" style="fill:var(--surface-2);stroke:var(--hairline-strong)"/>
+        <line x1="172" y1="150" x2="318" y2="150" style="stroke:var(--con-ink-subtle)" stroke-width="1.5" marker-end="url(#a2)"/>
+        <text x="190" y="140" class="sub mn">request_transition()</text>
+        <rect x="325" y="20" width="430" height="260" rx="16" style="fill:var(--con-1);stroke:var(--green)" stroke-width="1.5"/>
+        <text x="347" y="48" class="ov" style="fill:#7fd39b">MCP SERVER &middot; THE BOUNCER</text>
+        <rect x="347" y="60" width="386" height="38" rx="9" class="st"/><text x="364" y="84" class="lbl"><tspan class="nm" style="font-size:15px">1</tspan>&#160;&#160;Authenticate &rarr; role</text>
+        <rect x="347" y="104" width="386" height="38" rx="9" class="st"/><text x="364" y="128" class="lbl"><tspan class="nm" style="font-size:15px">2</tspan>&#160;&#160;Policy gate &mdash; who may act</text>
+        <rect x="347" y="148" width="386" height="38" rx="9" class="st"/><text x="364" y="172" class="lbl"><tspan class="nm" style="font-size:15px">3</tspan>&#160;&#160;Guard + invariant check</text>
+        <rect x="347" y="192" width="386" height="38" rx="9" class="st"/><text x="364" y="216" class="lbl"><tspan class="nm" style="font-size:15px">4</tspan>&#160;&#160;Run typed effects / WASM</text>
+        <rect x="347" y="236" width="386" height="38" rx="9" class="st"/><text x="364" y="260" class="lbl"><tspan class="nm" style="font-size:15px">5</tspan>&#160;&#160;Write audit &rarr; apply state</text>
+        <line x1="757" y1="150" x2="903" y2="150" style="stroke:var(--con-ink-subtle)" stroke-width="1.5" marker-end="url(#a2)"/>
+        <rect x="910" y="95" width="160" height="110" rx="16" class="bx"/>
         <text x="930" y="125" class="ov">POSTGRES</text><text x="930" y="150" class="ttl">Owned data</text>
         <text x="930" y="174" class="sub">records + append-</text><text x="930" y="190" class="sub">only audit log</text>
       </svg>
     </div>
     <p class="small muted" style="margin:0">Permissions sit above a deliberately dumb database. The blueprint is versioned data the agent changes safely, never freeform code.</p>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">05</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">05</span></div>
   </section>
 
-  <!-- 6 defensible part -->
+  <!-- 6 moat -->
   <section class="slide">
-    <div class="head"><div class="rule"></div><span class="ovl">The insight</span>
-      <h2 class="disp" style="font-size:44px;max-width:24ch">The schema is trivial. The <span class="it">state machine</span> is the moat.</h2></div>
+    <div class="head"><div class="rule"></div><span class="ovl">The insight</span><h2 class="disp" style="font-size:44px;max-width:24ch">The schema is trivial. The <span class="it">state machine</span> is the moat.</h2></div>
     <p class="lead">Anyone can copy a table of fields. What Salesforce and SAP actually sell, hidden under the UI, is the operational logic: which states are legal, who may move between them, what must always hold. Temple makes that explicit, and verifies it.</p>
     <div class="cols2" style="margin-top:36px">
-      <div class="panel"><h3>What you don't sell</h3>
-        <p class="muted small" style="margin:0">A <code>deals</code> table. CRUD. Claude writes it in an afternoon. No defensibility, no value.</p>
-      </div>
-      <div class="panel"><h3>What you do sell</h3>
-        <p class="muted small" style="margin:0">A verified blueprint: states, transitions, invariants, policy, and a multi-level verifier that proves they hold against messy real data.</p>
-      </div>
+      <div class="panel"><h3>What you don't sell</h3><p class="muted small" style="margin:0">A <span class="mono">deals</span> table. CRUD. Claude writes it in an afternoon. No defensibility, no value.</p></div>
+      <div class="panel"><h3>What you do sell</h3><p class="muted small" style="margin:0">A verified blueprint: states, transitions, invariants, policy, and a multi-level verifier that proves they hold against messy real data.</p></div>
     </div>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">06</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">06</span></div>
   </section>
 
-  <!-- 7 product preview -->
-  <section class="slide">
-    <div class="head"><div class="rule"></div><span class="ovl">Product preview</span>
-      <h2 class="disp" style="font-size:40px;max-width:26ch">The human surface, only when a human needs it.</h2></div>
+  <!-- 7 product preview (console) -->
+  <section class="slide console">
+    <div class="head"><div class="rule"></div><span class="ovl">Product preview</span><h2 class="disp" style="font-size:40px;max-width:26ch">The human surface, only when a human needs it.</h2></div>
     <div class="cols2" style="margin-top:30px;align-items:stretch">
       <div class="mock">
-        <div class="mbar"><span class="mdot"></span><span class="mdot"></span><span class="mdot"></span><span class="mbt">Temple &middot; Deal</span></div>
+        <div class="mbar"><span class="mdot"></span><span class="mdot"></span><span class="mdot"></span><span class="mbt">temple · deal</span></div>
         <div class="mbody">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <h3 style="font-family:var(--font-display);font-weight:400;font-size:24px;margin:0">Meridian Logistics</h3>
-            <span class="chip"><span style="width:7px;height:7px;border-radius:50%;background:var(--signal-green)"></span>negotiation</span>
-          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="font-family:var(--font-display);font-weight:400;font-size:24px;margin:0;color:var(--con-ink)">Meridian Logistics</h3><span class="chip"><span style="width:7px;height:7px;border-radius:50%;background:var(--green)"></span>negotiation</span></div>
           <dl class="kv"><dt>Owner</dt><dd>Marco</dd><dt>Amount</dt><dd>&euro;84,000 / yr</dd><dt>Meeting</dt><dd>Fireflies, transcript linked</dd><dt>Audit</dt><dd>7 transitions logged</dd></dl>
           <div class="acts"><span class="btn primary">Enter negotiation &check;</span><span class="btn">Mark won</span><span class="btn locked">Send proposal &middot; agent locked</span></div>
         </div>
       </div>
       <div class="mock">
-        <div class="mbar"><span class="mdot"></span><span class="mdot"></span><span class="mdot"></span><span class="mbt">Temple &middot; Blueprint</span></div>
+        <div class="mbar"><span class="mdot"></span><span class="mdot"></span><span class="mdot"></span><span class="mbt">temple · blueprint</span></div>
         <div class="mbody">
-          <span class="ovl" style="display:block;margin-bottom:10px">deal-lifecycle &middot; v4 &middot; verified</span>
+          <span class="ovl" style="display:block;margin-bottom:10px;color:var(--con-ink-subtle)">deal-lifecycle &middot; v4 &middot; verified</span>
 <pre class="spec">new &rarr; qualifying &rarr; meeting_held
-  &rarr; proposal_sent &rarr; negotiation &rarr; <span style="color:var(--green-deep)">won</span>
+  &rarr; proposal_sent &rarr; negotiation &rarr; <span style="color:#7fd39b">won</span>
 
-<span style="color:var(--stone)">invariant I3</span>  no won without a transcript
-<span style="color:var(--stone)">policy</span>      operator_agent: advance only
-<span style="color:var(--stone)">verifier</span>    L1 algebra &middot; L2 reachability
+<span style="color:var(--con-ink-subtle)">invariant I3</span>  no won without a transcript
+<span style="color:var(--con-ink-subtle)">policy</span>      operator_agent: advance only
+<span style="color:var(--con-ink-subtle)">verifier</span>    L1 algebra &middot; L2 reachability
              L3 fault &middot; L4 property &check;</pre>
           <div style="margin-top:14px"><span class="chip">4 / 4 checks passed &middot; safe to load</span></div>
         </div>
       </div>
     </div>
-    <p class="small muted" style="margin:14px 0 0">Illustrative. One blueprint powers both the agent path and this on-demand view.</p>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">07</span></div>
+    <p class="small muted" style="margin:14px 0 0">Illustrative Temple console. One blueprint powers both the agent path and this on-demand view.</p>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">07</span></div>
   </section>
 
-  <!-- 8 offering pillars -->
+  <!-- 8 offering -->
   <section class="slide">
-    <div class="head"><div class="rule"></div><span class="ovl">The offering</span>
-      <h2 class="disp" style="font-size:42px;max-width:24ch">Sold the way Nxt Phase already works.</h2></div>
+    <div class="head"><div class="rule"></div><span class="ovl">The offering</span><h2 class="disp" style="font-size:42px;max-width:24ch">Sold the way Incredicorp works.</h2></div>
     <div class="pills">
       <div class="pill"><div class="pn">01</div><div class="pt">Educate</div><p>Show which subscriptions are pure interface, and what owning the data layer changes.</p></div>
       <div class="pill"><div class="pn">02</div><div class="pt">Prioritise</div><p>Map one lifecycle to an explicit, verified blueprint. Fixed-fee.</p></div>
       <div class="pill active"><div class="pn">03</div><div class="pt">Build</div><p>Stand up the owned layer and MCP bouncer. Migrate core workflows off SaaS.</p></div>
       <div class="pill"><div class="pn">04</div><div class="pt">Run</div><p>Host, maintain, govern. Recurring, plus the blueprint library.</p></div>
     </div>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">08</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">08</span></div>
   </section>
 
-  <!-- 9 business case stats -->
+  <!-- 9 business case -->
   <section class="slide">
-    <div class="head"><div class="rule"></div><span class="ovl">The business case</span>
-      <h2 class="disp" style="font-size:42px;max-width:24ch">The buyer over-pays for screens nobody opens.</h2></div>
+    <div class="head"><div class="rule"></div><span class="ovl">The business case</span><h2 class="disp" style="font-size:42px;max-width:24ch">The buyer over-pays for screens nobody opens.</h2></div>
     <div class="stats">
       <div class="stat"><div class="n"><em>&euro;90k</em></div><div class="l">Typical annual spend on tools an agent now drives</div></div>
       <div class="stat"><div class="n"><em>&lt;12</em></div><div class="l">Months to pay back a build from cut subscriptions</div></div>
       <div class="stat"><div class="n"><em>1</em></div><div class="l">Auth model and audit trail, not one per vendor</div></div>
     </div>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">09</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">09</span></div>
   </section>
 
   <!-- 10 numbers -->
   <section class="slide">
-    <div class="head"><div class="rule"></div><span class="ovl">Year one &middot; base case</span>
-      <h2 class="disp" style="font-size:38px;max-width:26ch">A new revenue line, built on existing motion.</h2></div>
+    <div class="head"><div class="rule"></div><span class="ovl">Year one &middot; base case</span><h2 class="disp" style="font-size:38px;max-width:26ch">A new revenue line, built on existing motion.</h2></div>
     <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:40px;margin-top:24px;flex:1;align-items:center">
       <svg viewBox="0 0 520 280" width="100%" role="img" aria-label="Quarterly revenue chart base case">
-        <defs><style>.ax{stroke:var(--hairline);stroke-width:1}.qt{font-family:'Switzer',sans-serif;font-size:12px;fill:var(--stone)}.qv{font-family:'PP Editorial New',serif;font-size:15px;fill:var(--off-black)}.yl{font-family:'Switzer',sans-serif;font-size:10px;fill:var(--stone)}</style></defs>
+        <defs><style>.ax{stroke:var(--hairline)}.qt{font-family:'Switzer',sans-serif;font-size:12px;fill:var(--ink-subtle)}.qv{font-family:'PP Editorial New',serif;font-size:15px;fill:var(--ink)}.yl{font-family:'Switzer',sans-serif;font-size:10px;fill:var(--ink-subtle)}</style></defs>
         <line x1="46" y1="220" x2="510" y2="220" class="ax"/><line x1="46" y1="160" x2="510" y2="160" class="ax"/><line x1="46" y1="100" x2="510" y2="100" class="ax"/><line x1="46" y1="40" x2="510" y2="40" class="ax"/>
         <text x="40" y="224" class="yl" text-anchor="end">0</text><text x="40" y="164" class="yl" text-anchor="end">100k</text><text x="40" y="104" class="yl" text-anchor="end">200k</text><text x="40" y="44" class="yl" text-anchor="end">300k</text>
-        <rect x="78" y="202" width="80" height="18" rx="4" style="fill:var(--surface-2);stroke:var(--hairline-strong)"/><text x="118" y="196" class="qv" text-anchor="middle" style="font-size:11px;fill:var(--stone)">30k</text><text x="118" y="244" class="qt" text-anchor="middle">Q1</text>
-        <rect x="190" y="90" width="80" height="130" rx="4" style="fill:var(--surface-2);stroke:var(--hairline-strong)"/><text x="230" y="84" class="qv" text-anchor="middle">216k</text><text x="230" y="244" class="qt" text-anchor="middle">Q2</text>
-        <rect x="302" y="76" width="80" height="144" rx="4" style="fill:var(--surface-2);stroke:var(--hairline-strong)"/><text x="342" y="70" class="qv" text-anchor="middle">240k</text><text x="342" y="244" class="qt" text-anchor="middle">Q3</text>
-        <rect x="414" y="24" width="80" height="196" rx="4" style="fill:var(--signal-green)"/><text x="454" y="18" class="qv" text-anchor="middle">327k</text><text x="454" y="244" class="qt" text-anchor="middle">Q4</text>
+        <rect x="78" y="202" width="80" height="18" rx="4" style="fill:var(--surface-3);stroke:var(--hairline-strong)"/><text x="118" y="196" text-anchor="middle" style="font-size:11px;fill:var(--ink-subtle);font-family:Switzer">30k</text><text x="118" y="244" class="qt" text-anchor="middle">Q1</text>
+        <rect x="190" y="90" width="80" height="130" rx="4" style="fill:var(--surface-3);stroke:var(--hairline-strong)"/><text x="230" y="84" class="qv" text-anchor="middle">216k</text><text x="230" y="244" class="qt" text-anchor="middle">Q2</text>
+        <rect x="302" y="76" width="80" height="144" rx="4" style="fill:var(--surface-3);stroke:var(--hairline-strong)"/><text x="342" y="70" class="qv" text-anchor="middle">240k</text><text x="342" y="244" class="qt" text-anchor="middle">Q3</text>
+        <rect x="414" y="24" width="80" height="196" rx="4" style="fill:var(--green)"/><text x="454" y="18" class="qv" text-anchor="middle">327k</text><text x="454" y="244" class="qt" text-anchor="middle">Q4</text>
       </svg>
       <table class="fin">
         <thead><tr><th>Line</th><th>Cons.</th><th>Base</th><th>Up</th></tr></thead>
@@ -318,48 +289,39 @@
       </table>
     </div>
     <p class="small muted" style="margin:0">Illustrative. ~60% blended gross margin. Exit run-rate &asymp; &euro;264k recurring ARR into year two.</p>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">10</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">10</span></div>
   </section>
 
   <!-- 11 why now -->
   <section class="slide">
-    <div class="head"><div class="rule"></div><span class="ovl">Why now</span>
-      <h2 class="disp" style="font-size:42px;max-width:24ch">A Datadog VP showed the same idea on stage.</h2></div>
+    <div class="head"><div class="rule"></div><span class="ovl">Why now</span><h2 class="disp" style="font-size:42px;max-width:24ch">A Datadog VP showed the same idea on stage.</h2></div>
     <p class="lead">At Anthropic's conference, Datadog presented "Tempor", a machine tool where agents emit a verified state-machine spec instead of improvised code. Same first principle, reached independently: most software is just control logic around a database. They built it as infrastructure. The productised, governed offering for regulated mid-market is open.</p>
     <div class="cols2" style="margin-top:34px">
       <div class="panel"><h3>They proved the engine</h3><p class="muted small" style="margin:0">Declarative blueprint, compiler outside the LLM, multi-level verifier, hot-reload into a hardened runtime.</p></div>
       <div class="panel"><h3>We own the wedge</h3><p class="muted small" style="margin:0">GDPR-ready, audit-clean, mid-market, sold as Educate, Prioritise, Build, Run. The part nobody is chasing.</p></div>
     </div>
-    <div class="foot"><span class="pg">Nxt Phase AI</span><span class="pg">11</span></div>
+    <div class="foot"><span class="wm">incredicorp</span><span class="pg">11</span></div>
   </section>
 
-  <!-- 12 closing -->
-  <section class="slide divider" style="justify-content:center">
+  <!-- 12 close (console) -->
+  <section class="slide console" style="justify-content:center">
     <span class="ovl">The close</span>
-    <blockquote style="margin-top:18px">Own the data, not the dashboard.</blockquote>
-    <p style="font-size:20px;color:rgba(255,255,255,0.82);max-width:46ch;margin-top:26px">We never sell a vision we can't build. This one we can ship, one lifecycle at a time.</p>
-    <div class="foot"><span>Nxt Phase AI &middot; nxtphase.ai</span><span class="pg">12</span></div>
+    <blockquote style="margin-top:18px;color:var(--con-ink)">Own the data, not the dashboard.</blockquote>
+    <p style="font-size:20px;color:var(--con-ink-subtle);max-width:46ch;margin-top:26px">We never sell a vision we can't build. This one we can ship, one lifecycle at a time.</p>
+    <div class="foot"><span class="wm-lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect class="bar" x="3" y="3.5" width="18" height="2.4" rx="1.2"/><rect class="bar" x="6" y="8.3" width="14" height="2.4" rx="1.2"/><rect class="bar" x="9" y="13.1" width="10" height="2.4" rx="1.2"/><rect class="acc" x="3" y="18" width="18" height="2.6" rx="1.3"/></svg>incredicorp</span><span class="pg">12</span></div>
   </section>
 
 </div></div>
 
-<div id="ctrl">
-  <button id="prev" aria-label="Previous">&larr;</button>
-  <span class="count" id="count">01 / 12</span>
-  <button id="next" aria-label="Next">&rarr;</button>
-</div>
+<div id="ctrl"><button id="prev" aria-label="Previous">&larr;</button><span class="count" id="count">01 / 12</span><button id="next" aria-label="Next">&rarr;</button></div>
 <div class="hint">&larr; &rarr; to navigate &middot; F fullscreen</div>
 
 <script>
   const slides=[...document.querySelectorAll('.slide')];
   let i=0; const count=document.getElementById('count');
-  function pad(n){return String(n).padStart(2,'0')}
-  function show(n){ i=Math.max(0,Math.min(slides.length-1,n));
-    slides.forEach((s,k)=>s.classList.toggle('on',k===i));
-    count.textContent=pad(i+1)+' / '+pad(slides.length);
-  }
-  function fit(){ const s=Math.min(window.innerWidth/1280, window.innerHeight/720);
-    document.getElementById('deck').style.transform='scale('+s+')'; }
+  const pad=n=>String(n).padStart(2,'0');
+  function show(n){ i=Math.max(0,Math.min(slides.length-1,n)); slides.forEach((s,k)=>s.classList.toggle('on',k===i)); count.textContent=pad(i+1)+' / '+pad(slides.length); }
+  function fit(){ const s=Math.min(window.innerWidth/1280,window.innerHeight/720); document.getElementById('deck').style.transform='scale('+s+')'; }
   document.getElementById('next').onclick=()=>show(i+1);
   document.getElementById('prev').onclick=()=>show(i-1);
   window.addEventListener('keydown',e=>{
