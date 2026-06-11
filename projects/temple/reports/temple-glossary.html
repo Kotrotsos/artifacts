@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary — Datadog's "machine tool for Claude Code"</title>
+<link rel="stylesheet" href="brand/colors_and_type.css">
+<style>
+  *{box-sizing:border-box} html,body{margin:0}
+  body{background:var(--bg-1);color:var(--fg-1);font-family:var(--font-body);line-height:1.55;-webkit-font-smoothing:antialiased}
+  [data-theme="dark"]{--bg-1:#171310;--surface-1:#1F1A15;--surface-2:#241E18;--fg-1:#F5F0E8;--fg-2:#B7AFA4;--hairline:rgba(245,240,232,0.12);--hairline-strong:rgba(245,240,232,0.20)}
+
+  .wrap{max-width:920px;margin:0 auto;padding:64px 40px 96px}
+  header.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:52px}
+  .top img{height:24px}
+  .theme{display:flex;gap:2px;border:1px solid var(--hairline-strong);border-radius:var(--r-pill);padding:3px}
+  .theme button{font-family:var(--font-body);font-size:12px;letter-spacing:0.04em;border:0;background:transparent;color:var(--fg-2);padding:6px 12px;border-radius:var(--r-pill);cursor:pointer;transition:all var(--dur) var(--ease)}
+  .theme button[aria-pressed="true"]{background:var(--off-black);color:var(--cream)}
+  [data-theme="dark"] .theme button[aria-pressed="true"]{background:var(--signal-green);color:#fff}
+
+  .eyebrow{font-weight:500;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--fg-2)}
+  h1{font-family:var(--font-display);font-weight:400;font-size:clamp(36px,5vw,58px);line-height:1.02;letter-spacing:-0.015em;margin:14px 0 0;max-width:20ch}
+  .dek{font-size:var(--lead);color:var(--fg-2);max-width:62ch;margin:22px 0 0}
+  .src{font-size:14px;color:var(--fg-2);margin-top:18px}
+  .src a{color:var(--signal-green)}
+
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin:40px 0 0}
+  .toc a{font-size:13px;color:var(--fg-1);border:1px solid var(--hairline-strong);border-radius:var(--r-pill);padding:7px 14px;text-decoration:none}
+  .toc a:hover{border-color:var(--signal-green);color:var(--green-deep)}
+  [data-theme="dark"] .toc a:hover{color:#7fd39b}
+
+  section.grp{margin-top:64px}
+  .rule{height:2px;width:38px;background:var(--off-black);margin-bottom:16px}
+  [data-theme="dark"] .rule{background:var(--cream)}
+  h2{font-family:var(--font-display);font-weight:400;font-size:32px;line-height:1.1;margin:8px 0 4px}
+  .grp > p.intro{color:var(--fg-2);font-size:16px;max-width:64ch;margin:0 0 8px}
+
+  .term{padding:24px 0;border-bottom:1px solid var(--hairline)}
+  .term:last-child{border-bottom:0}
+  .term h3{font-family:var(--font-display);font-weight:400;font-size:23px;margin:0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .tag{font-family:var(--font-body);font-weight:500;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--fg-2);border:1px solid var(--hairline-strong);border-radius:var(--r-pill);padding:3px 9px}
+  .tag.dd{color:var(--green-deep);border-color:rgba(62,155,93,0.4)}
+  [data-theme="dark"] .tag.dd{color:#7fd39b}
+  .term p{font-size:16px;margin:12px 0 0}
+  .term .why{font-size:15px;color:var(--fg-2);margin-top:10px;padding-left:16px;border-left:2px solid var(--signal-green)}
+  .term .why b{color:var(--fg-1);font-weight:600}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:0.9em;background:var(--surface-2);padding:1px 6px;border-radius:6px}
+
+  footer{margin-top:80px;padding-top:24px;border-top:1px solid var(--hairline);display:flex;justify-content:space-between;font-size:13px;color:var(--fg-2)}
+  @media(max-width:680px){.wrap{padding:40px 22px 64px}}
+  @media print{.theme,.toc{display:none}body{background:#fff}.wrap{max-width:none}.term{break-inside:avoid}a{color:inherit}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <img src="brand/assets/logos/logo-off-black.svg" alt="Nxt Phase AI" class="logo-light">
+    <div class="theme" role="group" aria-label="Theme">
+      <button data-set="light" aria-pressed="true">Light</button>
+      <button data-set="dark" aria-pressed="false">Dark</button>
+      <button data-set="system" aria-pressed="false">System</button>
+    </div>
+  </header>
+
+  <div class="eyebrow">Reference &middot; Glossary</div>
+  <h1>The vocabulary of agent-built software.</h1>
+  <p class="dek">Terms and ideas worth keeping from Sesh Nalla's talk, "How Datadog built a universal machine tool for Claude Code." Two tags below: <span class="tag dd" style="display:inline">Datadog</span> marks something specific to their work, an untagged term is a general concept you can reuse.</p>
+  <p class="src">Source: Datadog (Sesh Nalla, VP Engineering), Anthropic conference talk. Captured for the Temple project.</p>
+
+  <nav class="toc">
+    <a href="#metaphor">The central metaphor</a>
+    <a href="#lineage">Datadog's lineage</a>
+    <a href="#mechanism">The Tempor mechanism</a>
+    <a href="#verify">Verification</a>
+    <a href="#runtime">Runtimes</a>
+    <a href="#human">The human shift</a>
+  </nav>
+
+  <!-- METAPHOR -->
+  <section class="grp" id="metaphor">
+    <div class="rule"></div><div class="eyebrow">01</div>
+    <h2>The central metaphor</h2>
+    <p class="intro">The frame the whole talk hangs on: borrowing from manufacturing to describe what agents now need.</p>
+
+    <div class="term"><h3>Machine tool</h3>
+      <p>In manufacturing, a tool (jig, fixture, gauge, mill) that produces precise, repeatable parts which assemble into larger machines, engines, aircraft, reactors. The breakthrough of industrialisation, because it enabled scale through interchangeability, standardisation and precision.</p>
+      <p class="why">Applied to software: instead of an agent improvising a one-off tool for every local need, it produces a <b>precise specification</b> that can be run repeatably. The metaphor is the spine of the entire Temple idea.</p>
+    </div>
+    <div class="term"><h3>Mechanisation vs. industrialisation</h3>
+      <p>Mechanisation means agents simply do more of the work. Industrialisation means the work itself becomes <b>repeatable, verifiable, controllable and scalable</b>, the actual jump that matters.</p>
+      <p class="why">Temple is an industrialisation play, not a "let the agent do more" play. The difference is governance and verification, not raw output.</p>
+    </div>
+    <div class="term"><h3>Dark factory</h3>
+      <p>A term popularised by Simon Willison. A software process where agents keep working on the virtual factory floor without humans present, you can "turn off the lights." The human role shifts to <b>designing the factory</b>: the constraints, the outcomes, and the verification loop, so it can run for hours, days or weeks unattended.</p>
+      <p class="why">This is the operating model Temple sells: the client stops working tools and starts designing the factory that runs them.</p>
+    </div>
+    <div class="term"><h3>Directed evolution &middot; cultivating software</h3>
+      <p>The closing idea: software built this way behaves less like a built artefact and more like an <b>organism you grow</b> through feedback, selection and adaptation. Closer to agriculture than construction, you choose the direction the software evolves in.</p>
+    </div>
+  </section>
+
+  <!-- LINEAGE -->
+  <section class="grp" id="lineage">
+    <div class="rule"></div><div class="eyebrow">02</div>
+    <h2>Datadog's lineage</h2>
+    <p class="intro">Four projects, each of which exposed the bottleneck for the next.</p>
+
+    <div class="term"><h3>Courier <span class="tag dd">Datadog</span></h3>
+      <p>A distributed queuing system built from scratch in 2024, entirely by hand, before agents. Rigorous formal modelling and simulation. Took roughly <b>a year</b>. The baseline against which agent-era speed is measured.</p>
+    </div>
+    <div class="term"><h3>Bits Evolve <span class="tag dd">Datadog</span></h3>
+      <p>A closed-loop evolutionary optimisation harness (September 2025), inspired by DeepMind's AlphaEvolve. A council of models, large and small, generate code variants for "hot" functions; a cascade of benchmarks, tests and production observability decides what survives. Natural selection for code.</p>
+      <p class="why">Key lesson: <b>evolution is only as good as the environment it adapts within.</b> Bad benchmarks breed bad code; weak observability yields shallow gains.</p>
+    </div>
+    <div class="term"><h3>Helix <span class="tag dd">Datadog</span></h3>
+      <p>A Kafka-comparable streaming service built mostly by Claude Code with one human steering, working in <b>days</b>, not the year Courier took. Shadowing real production workloads, and in places looks 2&ndash;5&times; cheaper than the current solution.</p>
+      <p class="why">Proved agents can build large systems fast. Also exposed the next wall: getting from "works" to production-trusted.</p>
+    </div>
+    <div class="term"><h3>AlphaEvolve</h3>
+      <p>DeepMind's evolutionary code-optimisation system, the cited inspiration for Bits Evolve. Models propose, an automated evaluator selects.</p>
+    </div>
+  </section>
+
+  <!-- MECHANISM -->
+  <section class="grp" id="mechanism">
+    <div class="rule"></div><div class="eyebrow">03</div>
+    <h2>The Tempor mechanism</h2>
+    <p class="intro">How the machine tool actually works. This is the part Temple adopts most directly.</p>
+
+    <div class="term"><h3>Tempor <span class="tag dd">Datadog</span></h3>
+      <p>Datadog's machine tool. Instead of an agent inventing disconnected tools, it produces a precise specification of intent and domain, which a deterministic layer compiles, verifies and deploys into a runtime. Used three ways: an agent control plane, a way for agents to build their own small tools, and a control API for Helix.</p>
+      <p class="why">Near-namesake of this project, <b>Temple</b>. Same engine, reframed as a product for regulated mid-market.</p>
+    </div>
+    <div class="term"><h3>Blueprint</h3>
+      <p>The declarative artefact the agent produces over several turns, its "plan mode" output, but precise rather than a markdown file. It declares: what the states are, which transitions are legal, who may request them, what effects are allowed, what invariants must hold, and what happens when a tool call fails.</p>
+    </div>
+    <div class="term"><h3>Transition table</h3>
+      <p>The compiled blueprint. The critical control logic rendered as <b>data, not spaghetti code</b>, interchangeable, checkable, and not hidden inside an improvised chain of service methods. Agents can change it dynamically with safety.</p>
+    </div>
+    <div class="term"><h3>Formal state transitions</h3>
+      <p>Representing the application's shape as a precise transition system. "Formal" here does <b>not</b> mean every property is mathematically proven; it means the basic shape is explicit and precise, far better for both humans and agents to reason about than arbitrary code.</p>
+    </div>
+    <div class="term"><h3>Compiler outside the LLM</h3>
+      <p>The agent generates a structured description; a deterministic compilation step, <b>not the LLM</b>, turns it into the runtime shape and verifies it. Analogy: you write Rust, the Rust compiler checks it. The abstraction is raised so the model never emits arbitrary application code directly.</p>
+    </div>
+    <div class="term"><h3>Effect system &middot; typed effects</h3>
+      <p>Deliberately small, typed operations (popular in typed runtimes). Keeping effects small prevents the state machine from becoming a <b>backdoor for arbitrary behaviour</b>.</p>
+    </div>
+    <div class="term"><h3>WASM modules</h3>
+      <p>Where genuinely arbitrary, LLM-generated code is allowed to live, in one narrow, inspectable place, when a typed effect is not enough. Contains the blast radius.</p>
+    </div>
+    <div class="term"><h3>Policy gates</h3>
+      <p>Because the transition table is data, who-may-do-what is evaluated <b>together with</b> the transitions: which actions an operator agent may take, which are forbidden to a builder agent, whether a completed rollout can run again. Permissions as data, not scattered code.</p>
+    </div>
+  </section>
+
+  <!-- VERIFICATION -->
+  <section class="grp" id="verify">
+    <div class="rule"></div><div class="eyebrow">04</div>
+    <h2>Verification</h2>
+    <p class="intro">"Verification is basically the bottleneck right now for pretty much everything." The most reusable section of the talk.</p>
+
+    <div class="term"><h3>Verifier &middot; the Swiss-cheese pattern</h3>
+      <p>A multi-level gate run <b>before</b> a transition table loads into the runtime. No single level needs to catch everything; layered, their gaps do not line up. The agent can judge how many levels a given change needs.</p>
+    </div>
+    <div class="term"><h3>The four levels</h3>
+      <p><b>L1 algebra</b>, check the algebra of the automaton. <b>L2 model-check</b>, explore the reachable state graph, can any path reach a bad state? <b>L3 fault injection</b>, run schedules and inject failures, do the invariants survive bad timing? <b>L4 property tests</b>, randomised action sequences, the technique the speaker most encourages teams to learn.</p>
+    </div>
+    <div class="term"><h3>Invariants</h3>
+      <p>Properties that must hold in every reachable state (e.g. "a deal cannot reach 'won' without a linked transcript"). The thing the verifier proves, and the thing a missing-condition bug violates.</p>
+    </div>
+    <div class="term"><h3>Model checking</h3>
+      <p>Exhaustively exploring the reachable states of the system to prove no path reaches a forbidden state. Borrowed from high-assurance systems engineering.</p>
+    </div>
+    <div class="term"><h3>Property testing</h3>
+      <p>Generating random but legal action sequences and asserting invariants survive all of them, instead of hand-writing individual test cases.</p>
+    </div>
+    <div class="term"><h3>Verification cascade</h3>
+      <p>The staged gate from Bits Evolve, benchmarks, then tests, then production observability, that decides which generated variant survives. The ancestor of the verifier.</p>
+    </div>
+    <div class="term"><h3>Idempotent vs. non-idempotent effects</h3>
+      <p>An idempotent effect can be re-run safely (a read). A non-idempotent one cannot, the talk's example is patching a Kubernetes stateful set, which needs a <b>callback</b> to confirm success or fail, and a compensation path.</p>
+    </div>
+    <div class="term"><h3>Mileage <span class="tag dd">Datadog</span></h3>
+      <p>The operational track record a system must <b>earn</b> before production: proof it can run, and that multiple people, not just its builder, can operate it. Helix had capability but lacked mileage.</p>
+    </div>
+    <div class="term"><h3>Proof-carrying change</h3>
+      <p>A change that arrives <b>with</b> the evidence of its own safety, so a human does not have to review every candidate the system generates. The compounding mechanism that lets the factory run unattended.</p>
+    </div>
+  </section>
+
+  <!-- RUNTIMES -->
+  <section class="grp" id="runtime">
+    <div class="rule"></div><div class="eyebrow">05</div>
+    <h2>Runtimes</h2>
+    <p class="intro">The prior art Tempor stands on, decades-old, high-assurance, suddenly relevant again.</p>
+
+    <div class="term"><h3>Erlang &middot; BEAM &middot; OTP</h3>
+      <p>An actor runtime with <b>hot code loading</b> and high-assurance heritage (telecoms). The precedent for deploying a new transition table into a running system without a full deploy cycle. The speaker calls hot-deploying into BEAM a "creative way of using runtimes hardened over high-assurance systems for agents to work with."</p>
+    </div>
+    <div class="term"><h3>Temporal &middot; durable execution</h3>
+      <p>Workflow engines and durable-execution runtimes that popularised a precise runtime for "invincible" applications, ones that survive crashes and resume. Same family of idea: make the operational model explicit and the runtime guarantee it.</p>
+    </div>
+    <div class="term"><h3>Hot reload / hot deploy</h3>
+      <p>Loading a changed transition table into the live runtime without going through CI and deployment. Lets an agent working overnight make real, safe progress without a human in the deploy loop.</p>
+    </div>
+    <div class="term"><h3>Control plane vs. data plane</h3>
+      <p>The control plane manages lifecycle, sessions, roles and policy; the data plane does the actual high-throughput work. Tempor served as a control API around the Helix data plane.</p>
+    </div>
+    <div class="term"><h3>Agent control plane</h3>
+      <p>Using the machine tool to manage cloud-managed agent sessions, their roles, the work they take, and their operational lifecycle, precisely, rather than ad hoc.</p>
+    </div>
+  </section>
+
+  <!-- HUMAN SHIFT -->
+  <section class="grp" id="human">
+    <div class="rule"></div><div class="eyebrow">06</div>
+    <h2>The human shift</h2>
+    <p class="intro">What changes for the people, the disorientation, and where the bottleneck keeps running to.</p>
+
+    <div class="term"><h3>Bottleneck moving</h3>
+      <p>The throughline. Courier's bottleneck was construction; Bits Evolve moved it to the feedback loop; Helix moved it again to <b>humans coordinating to ship</b> agent-built work to production through human-shaped tools.</p>
+    </div>
+    <div class="term"><h3>Amdahl's law</h3>
+      <p>Cited via Dario: the serial part of a process caps how much the parallel part can speed it up. When agents are fast, the slow human-coordination step becomes the dominant limit, hence the push to industrialise it away.</p>
+    </div>
+    <div class="term"><h3>Opus 4.5 inflection point <span class="tag dd">Datadog</span></h3>
+      <p>The moment, around late 2025, when the speaker's ambition curve bent upward and he began trusting Claude with larger, more ambiguous, system-scoped work, even databases. Progressive, earned through many experiments, not sudden.</p>
+    </div>
+    <div class="term"><h3>Shaping the work</h3>
+      <p>The new mode of engineering. You no longer write the code; you decide what the agent sees, what tools it has, what success means, and how failure is detected.</p>
+    </div>
+    <div class="term"><h3>Altitude of working</h3>
+      <p>The rising abstraction level. "Everyone's promoted three levels up the management chain," disorienting, "pushed against gravity very fast," especially for engineers who love reading code.</p>
+    </div>
+    <div class="term"><h3>The seven stages of grief</h3>
+      <p>The speaker's wry name for engineers adjusting to <b>not seeing code</b> day to day. He has made his peace; many have not.</p>
+    </div>
+    <div class="term"><h3>Judgment-bearing roles</h3>
+      <p>Cloud-managed agents that no longer just follow instructions but <b>make their own decisions</b>, run for hours or days, and construct their own tools mid-session.</p>
+    </div>
+    <div class="term"><h3>False progress</h3>
+      <p>The failure mode of unmanaged agents: lots of fast output, some useful, some illusory, and a <b>blur</b> between throwaway session tooling and the actual product. The problem the machine tool exists to remove.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Nxt Phase AI &middot; Temple glossary</span>
+    <span>Captured from the Datadog talk</span>
+  </footer>
+
+</div>
+
+<script>
+  const root=document.documentElement, btns=[...document.querySelectorAll('.theme button')];
+  const mq=window.matchMedia('(prefers-color-scheme: dark)');
+  function apply(mode){
+    const dark=mode==='dark'||(mode==='system'&&mq.matches);
+    root.setAttribute('data-theme',dark?'dark':'light');
+    document.querySelector('.logo-light').src=dark?'brand/assets/logos/logo-cream.svg':'brand/assets/logos/logo-off-black.svg';
+    btns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.set===mode));
+  }
+  btns.forEach(b=>b.addEventListener('click',()=>{localStorage.setItem('temple-theme',b.dataset.set);apply(b.dataset.set);}));
+  mq.addEventListener('change',()=>{if((localStorage.getItem('temple-theme')||'light')==='system')apply('system');});
+  apply(localStorage.getItem('temple-theme')||'light');
+</script>
+</body>
+</html>

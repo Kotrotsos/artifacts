@@ -493,3 +493,4 @@
 | 2026-06-11 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | What Claude Skills Actually Are, Substack-ready HTML with all code as screenshots |
 | 2026-06-11 | temple | reports | [temple-one-pager.html](projects/temple/reports/temple-one-pager.html) | Temple one-pager: agent-native data layer replacing SaaS, NxtPhase brand, business case + year-1 revenue |
 | 2026-06-11 | temple | reports | [temple-deck.html](projects/temple/reports/temple-deck.html) | Temple 12-slide deck: stop renting interfaces, architecture, business case, revenue projections |
+| 2026-06-11 | temple | reports | [temple-glossary.html](projects/temple/reports/temple-glossary.html) | Glossary of terms from Datadog Tempor / machine-tool-for-Claude-Code talk |
