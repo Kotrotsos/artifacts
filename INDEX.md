@@ -490,3 +490,4 @@
 | 2026-06-10 | elastofirm-profiler | reports | [nxtflow-standard.html](projects/elastofirm-profiler/reports/nxtflow-standard.html) | nxtflow — the delivery standard distilled from this project (skill + CLAUDE.md + plugin) |
 | 2026-06-11 | elastofirm-profiler | reports | [nxtflow-standard.html](projects/elastofirm-profiler/reports/nxtflow-standard.html) | nxtflow standard v1.1 — adds transcript-stories skill + story anatomy section |
 | 2026-06-11 | content | images | [skill-frontmatter.png](projects/content/images/skill-frontmatter.png) | SKILL.md frontmatter terminal screenshot for skills article Substack version |
+| 2026-06-11 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | What Claude Skills Actually Are, Substack-ready HTML with all code as screenshots |
