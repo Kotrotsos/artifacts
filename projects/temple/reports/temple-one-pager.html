@@ -3,287 +3,203 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Temple — Stop renting interfaces you no longer open</title>
-<link rel="stylesheet" href="brand/colors_and_type.css">
+<title>Temple — Stop renting interfaces you no longer open · Incredicorp</title>
+<link rel="stylesheet" href="incredicorp-brand/tokens.css">
 <style>
   :root{ --maxw: 980px; }
-  *{box-sizing:border-box}
-  html,body{margin:0}
-  body{
-    background:var(--bg-1); color:var(--fg-1);
-    font-family:var(--font-body); line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-  }
-  /* ---- dark theme (on-brand: cream on espresso) ---- */
-  [data-theme="dark"]{
-    --bg-1:#171310; --surface-1:#1F1A15; --surface-2:#241E18;
-    --fg-1:#F5F0E8; --fg-2:#B7AFA4;
-    --hairline:rgba(245,240,232,0.12); --hairline-strong:rgba(245,240,232,0.20);
-    --espresso:#0E0B09;
-  }
-  [data-theme="dark"] .card,[data-theme="dark"] .mock{background:var(--surface-1)}
-  [data-theme="dark"] .ink-panel{background:#0E0B09}
+  *{box-sizing:border-box} html,body{margin:0}
+  body{background:var(--canvas); color:var(--ink); font-family:var(--font-body); line-height:1.55; -webkit-font-smoothing:antialiased}
 
-  .wrap{max-width:var(--maxw); margin:0 auto; padding:64px 40px 96px}
-  header.top{display:flex; align-items:center; justify-content:space-between; margin-bottom:56px}
-  .top img{height:24px}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:60px 40px 96px}
+  header.top{display:flex; align-items:center; justify-content:space-between; margin-bottom:54px}
   .theme{display:flex; gap:2px; border:1px solid var(--hairline-strong); border-radius:var(--r-pill); padding:3px}
-  .theme button{font-family:var(--font-body); font-size:12px; letter-spacing:0.04em; border:0; background:transparent;
-    color:var(--fg-2); padding:6px 12px; border-radius:var(--r-pill); cursor:pointer; transition:all var(--dur) var(--ease)}
-  .theme button[aria-pressed="true"]{background:var(--off-black); color:var(--cream)}
-  [data-theme="dark"] .theme button[aria-pressed="true"]{background:var(--signal-green); color:#fff}
+  .theme button{font-family:var(--font-body); font-size:12px; letter-spacing:0.04em; border:0; background:transparent; color:var(--ink-subtle); padding:6px 12px; border-radius:var(--r-pill); cursor:pointer; transition:all var(--dur) var(--ease)}
+  .theme button[aria-pressed="true"]{background:var(--ink); color:var(--canvas)}
 
-  .eyebrow{font-weight:500; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--fg-2)}
-  .accent-num{font-family:var(--font-display); font-style:italic; color:var(--signal-orange)}
-
-  h1.hero{font-family:var(--font-display); font-weight:400; font-size:clamp(40px,6vw,72px); line-height:1.0;
-    letter-spacing:-0.015em; margin:14px 0 0; max-width:18ch}
+  h1.hero{font-family:var(--font-display); font-weight:400; font-size:clamp(40px,6vw,72px); line-height:1.0; letter-spacing:-0.015em; margin:14px 0 0; max-width:18ch}
   .hero .em-italic{font-style:italic}
-  .dek{font-size:var(--lead); color:var(--fg-2); max-width:60ch; margin:24px 0 0}
+  .dek{font-size:19px; color:var(--ink-muted); max-width:60ch; margin:24px 0 0}
 
-  section{margin-top:64px}
-  h2{font-family:var(--font-display); font-weight:400; font-size:clamp(27px,3.4vw,40px); line-height:1.08;
-    letter-spacing:-0.01em; margin:14px 0 18px}
+  section{margin-top:62px}
+  h2{font-family:var(--font-display); font-weight:400; font-size:clamp(27px,3.4vw,40px); line-height:1.08; letter-spacing:-0.01em; margin:14px 0 18px}
   h3{font-family:var(--font-display); font-weight:400; font-size:23px; margin:0 0 8px; line-height:1.1}
   p{font-size:17px; margin:0 0 14px}
-  .lead-p{font-size:var(--lead)}
+  .lead-p{font-size:19px; color:var(--ink-muted)}
+  .rule{height:2px; width:38px; background:var(--ink); margin:0 0 18px}
 
-  .rule{height:2px; width:38px; background:var(--off-black); margin:0 0 18px}
-  [data-theme="dark"] .rule{background:var(--cream)}
-
-  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--hairline);
-    border:1px solid var(--hairline); border-radius:var(--r-lg); overflow:hidden; margin-top:8px}
-  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:24px}
-  .cell{background:var(--bg-1); padding:26px 28px}
-  .card{background:var(--surface-1); border:1px solid var(--hairline); border-radius:var(--r-lg);
-    padding:26px 28px; box-shadow:var(--shadow-sm)}
-  .muted{color:var(--fg-2)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--hairline); border:1px solid var(--hairline); border-radius:var(--r-lg); overflow:hidden; margin-top:8px}
+  .cell{background:var(--canvas); padding:26px 28px}
   .small{font-size:15px}
 
   ul.clean{list-style:none; padding:0; margin:0}
   ul.clean li{position:relative; padding-left:22px; margin:0 0 10px; font-size:16px}
-  ul.clean li::before{content:""; position:absolute; left:0; top:9px; width:6px; height:6px; border-radius:50%;
-    background:var(--signal-green)}
+  ul.clean li::before{content:""; position:absolute; left:0; top:9px; width:6px; height:6px; border-radius:50%; background:var(--green)}
 
   .pillars{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:8px}
   .pillar{border:1px solid var(--hairline-strong); border-radius:var(--r-lg); padding:22px 20px}
-  .pillar .pn{font-family:var(--font-display); font-style:italic; font-size:22px; color:var(--fg-2)}
+  .pillar .pn{font-family:var(--font-display); font-style:italic; font-size:22px; color:var(--ink-subtle)}
   .pillar h3{font-size:21px; margin-top:12px}
-  .pillar p{font-size:14.5px; color:var(--fg-2); margin:0}
+  .pillar p{font-size:14.5px; color:var(--ink-subtle); margin:0}
 
-  /* numbers */
   .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:36px; align-items:end; margin-top:8px}
-  .stat .num{font-family:var(--font-display); font-size:64px; line-height:0.85; color:var(--fg-1)}
-  .stat .num em{font-style:italic; color:var(--signal-orange)}
-  .stat .lab{font-size:15px; color:var(--fg-2); margin-top:12px; max-width:22ch}
+  .stat .num{font-family:var(--font-display); font-size:64px; line-height:0.85; color:var(--ink)}
+  .stat .num em{font-style:italic; color:var(--orange)}
+  .stat .lab{font-size:15px; color:var(--ink-subtle); margin-top:12px; max-width:22ch}
 
   table.fin{width:100%; border-collapse:collapse; margin-top:14px; font-size:15px}
   table.fin th,table.fin td{text-align:right; padding:11px 12px; border-bottom:1px solid var(--hairline)}
   table.fin th:first-child,table.fin td:first-child{text-align:left}
-  table.fin thead th{font-weight:500; color:var(--fg-2); font-size:11px; letter-spacing:0.08em; text-transform:uppercase}
+  table.fin thead th{font-weight:500; color:var(--ink-subtle); font-size:11px; letter-spacing:0.08em; text-transform:uppercase}
   table.fin tfoot td{font-weight:600; border-top:2px solid var(--hairline-strong); border-bottom:0}
-  table.fin .g{color:var(--signal-green)}
+  table.fin .g{color:var(--green)}
 
-  .figure{margin-top:8px; border:1px solid var(--hairline); border-radius:var(--r-lg); padding:24px;
-    background:var(--surface-1); overflow:hidden}
-  .figcap{font-size:13px; color:var(--fg-2); margin-top:14px; letter-spacing:0.02em}
+  .figure{margin-top:8px; border-radius:var(--r-xl); padding:24px; overflow:hidden}
+  /* console-framed technical figure (Incredicorp product surface) */
+  .figure.console{background:var(--con-canvas); border:1px solid var(--con-hair-strong)}
+  .figcap{font-size:13px; color:var(--ink-subtle); margin-top:14px; letter-spacing:0.02em}
+  .figure.console + .figcap, .console-cap{color:var(--ink-subtle)}
 
-  /* product mock */
-  .mock{background:var(--surface-1); border:1px solid var(--hairline-strong); border-radius:var(--r-lg);
-    overflow:hidden; box-shadow:var(--shadow-md)}
-  .mock .bar{display:flex; align-items:center; gap:7px; padding:11px 14px; border-bottom:1px solid var(--hairline)}
-  .mock .dot{width:9px;height:9px;border-radius:50%;background:var(--hairline-strong)}
-  .mock .bt{margin-left:10px; font-size:12px; color:var(--fg-2); letter-spacing:0.04em}
+  /* console product mock cards */
+  .mock{background:var(--con-1); border:1px solid var(--con-hair-strong); border-radius:var(--r-xl); overflow:hidden; color:var(--con-ink)}
+  .mock .bar{display:flex; align-items:center; gap:7px; padding:11px 14px; border-bottom:1px solid var(--con-hair)}
+  .mock .dot{width:9px;height:9px;border-radius:50%;background:var(--con-hair-strong)}
+  .mock .bt{margin-left:10px; font-size:12px; color:var(--con-ink-subtle); letter-spacing:0.04em; font-family:var(--font-mono)}
   .mock .body{padding:22px 24px}
-  .chip{display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:500; letter-spacing:0.04em;
-    padding:5px 11px; border-radius:var(--r-pill); border:1px solid var(--hairline-strong); color:var(--fg-2)}
-  .chip.live{background:rgba(62,155,93,0.10); border-color:rgba(62,155,93,0.35); color:var(--green-deep)}
-  [data-theme="dark"] .chip.live{color:#7fd39b}
+  .mock h3{color:var(--con-ink)}
+  .chip{display:inline-flex; align-items:center; gap:7px; font-size:12px; font-weight:500; letter-spacing:0.04em; padding:5px 11px; border-radius:var(--r-pill); background:rgba(62,155,93,0.16); border:1px solid rgba(62,155,93,0.45); color:#7fd39b}
   .kv{display:grid; grid-template-columns:130px 1fr; gap:8px 18px; margin:16px 0 0; font-size:14.5px}
-  .kv dt{color:var(--fg-2)} .kv dd{margin:0}
+  .kv dt{color:var(--con-ink-subtle)} .kv dd{margin:0; color:var(--con-ink)}
   .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:18px}
-  .btn{font-family:var(--font-body); font-size:13px; padding:8px 14px; border-radius:var(--r-md);
-    border:1px solid var(--hairline-strong); background:transparent; color:var(--fg-1); cursor:default}
-  .btn.primary{background:var(--signal-green); border-color:var(--signal-green); color:#fff}
-  .btn.locked{color:var(--fg-2); border-style:dashed}
+  .btn{font-family:var(--font-body); font-size:13px; padding:8px 14px; border-radius:var(--r-md); border:1px solid var(--con-hair-strong); background:transparent; color:var(--con-ink); cursor:default}
+  .btn.primary{background:var(--green); border-color:var(--green); color:#fff}
+  .btn.locked{color:var(--con-ink-subtle); border-style:dashed}
+  pre.spec{font-family:var(--font-mono); font-size:12.5px; line-height:1.7; margin:0; white-space:pre-wrap; color:var(--con-ink)}
 
   blockquote{margin:0; font-family:var(--font-display); font-size:26px; line-height:1.25; letter-spacing:-0.01em}
   blockquote .em-italic{font-style:italic}
 
-  footer{margin-top:80px; padding-top:24px; border-top:1px solid var(--hairline); display:flex;
-    justify-content:space-between; align-items:center; font-size:13px; color:var(--fg-2)}
+  /* console closing banner */
+  .cta{margin-top:62px; background:var(--con-canvas); border-radius:var(--r-xl); padding:48px; color:var(--con-ink)}
+  .cta blockquote{color:var(--con-ink)}
+  .cta .sub{color:var(--con-ink-subtle); font-size:17px; margin-top:18px}
 
-  @media (max-width:760px){
-    .grid2,.grid3,.pillars,.stats{grid-template-columns:1fr}
-    .wrap{padding:40px 22px 64px}
-  }
-  @media print{
-    .theme{display:none}
-    body{background:#fff}
-    .wrap{max-width:none; padding:0 14mm}
-    section{break-inside:avoid; margin-top:30px}
-    .figure,.card,.mock{box-shadow:none}
-    a{color:inherit; text-decoration:none}
-  }
+  footer{margin-top:42px; padding-top:24px; border-top:1px solid var(--hairline); display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--ink-subtle)}
+
+  @media (max-width:760px){ .grid2,.pillars,.stats{grid-template-columns:1fr} .wrap{padding:40px 22px 64px} }
+  @media print{ .theme{display:none} .wrap{max-width:none; padding:0 14mm} section{break-inside:avoid; margin-top:30px} a{color:inherit} }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <header class="top">
-    <img src="brand/assets/logos/logo-off-black.svg" alt="Nxt Phase AI" class="logo-light">
+    <span class="wordmark"><svg class="mk" viewBox="0 0 24 24" aria-hidden="true"><rect class="bar" x="3" y="3.5" width="18" height="2.4" rx="1.2"/><rect class="bar" x="6" y="8.3" width="14" height="2.4" rx="1.2"/><rect class="bar" x="9" y="13.1" width="10" height="2.4" rx="1.2"/><rect class="acc" x="3" y="18" width="18" height="2.6" rx="1.3"/></svg>incredicorp</span>
     <div class="theme" role="group" aria-label="Theme">
       <button data-set="light" aria-pressed="true">Light</button>
-      <button data-set="dark" aria-pressed="false">Dark</button>
+      <button data-set="dark" aria-pressed="false">Console</button>
       <button data-set="system" aria-pressed="false">System</button>
     </div>
   </header>
 
-  <div class="eyebrow">Strategy brief &middot; Nxt Phase AI</div>
+  <div class="overline">Strategy brief &middot; Incredicorp</div>
   <h1 class="hero">Stop renting interfaces you <span class="em-italic">no longer open</span>.</h1>
   <p class="dek">Enterprise SaaS is an opinionated interface over a database. When agents do the work, nobody opens the interface, yet the subscription still bills for it every month. Temple collapses the stack into one owned data layer, governed by verified blueprints, driven by Claude.</p>
 
-  <!-- THE SHIFT -->
   <section>
-    <div class="rule"></div>
-    <div class="eyebrow">The shift</div>
+    <div class="rule"></div><div class="overline">The shift</div>
     <h2>The UI was for humans. The humans left.</h2>
     <p class="lead-p">Linear, Jira, Confluence, Notion, SharePoint, the CRM, the ERP: each is a workflow enforced through a screen, sitting on a database. You configure it once, then your agents read and write it. The screen becomes dead weight you pay rent on.</p>
     <div class="grid2">
       <div class="cell">
         <h3>What collapses to schema</h3>
-        <ul class="clean">
-          <li>Project tracking (Linear, Jira)</li>
-          <li>Docs &amp; wiki (Notion, Confluence, SharePoint)</li>
-          <li>CRM and large parts of ERP</li>
-        </ul>
+        <ul class="clean"><li>Project tracking (Linear, Jira)</li><li>Docs &amp; wiki (Notion, Confluence, SharePoint)</li><li>CRM and large parts of ERP</li></ul>
         <p class="small muted" style="margin-top:14px">Pure control-logic-over-a-database. The interface is incidental once an agent drives it.</p>
       </div>
       <div class="cell">
         <h3>What you keep paying for</h3>
-        <ul class="clean">
-          <li>Capture, where a bot must be present (Fireflies)</li>
-          <li>External data &amp; enrichment, the vendor's network is the value</li>
-          <li>The rare human-facing moment, rendered on demand</li>
-        </ul>
+        <ul class="clean"><li>Capture, where a bot must be present (Fireflies)</li><li>External data &amp; enrichment, the vendor's network is the value</li><li>The rare human-facing moment, rendered on demand</li></ul>
         <p class="small muted" style="margin-top:14px">The test is not "is it a database underneath". It is "does a human other than an agent need to touch the surface".</p>
       </div>
     </div>
   </section>
 
-  <!-- ARCHITECTURE -->
   <section>
-    <div class="rule"></div>
-    <div class="eyebrow">How it works</div>
+    <div class="rule"></div><div class="overline">How it works</div>
     <h2>One owned data layer. One bouncer. Verified blueprints.</h2>
     <p>The agent never writes a row. It proposes a transition; a deterministic layer authenticates, checks policy, guards, invariants, runs typed effects, then writes an immutable audit row. The valuable, defensible part is not the schema, it is the explicit, verified operational state machine.</p>
-    <div class="figure">
+    <div class="figure console">
       <svg viewBox="0 0 920 360" width="100%" role="img" aria-label="Architecture: agent proposes transitions to an MCP server that gates them before writing to Postgres">
         <defs>
           <style>
-            .lbl{font-family:'Switzer',sans-serif; font-size:13px; fill:var(--fg-1)}
-            .sub{font-family:'Switzer',sans-serif; font-size:11px; fill:var(--fg-2)}
-            .ttl{font-family:'PP Editorial New',serif; font-size:17px; fill:var(--fg-1)}
-            .ovl{font-family:'Switzer',sans-serif; font-size:10px; letter-spacing:0.12em; fill:var(--fg-2)}
-            .boxf{fill:var(--surface-2)}
+            .lbl{font-family:'Switzer',sans-serif; font-size:13px; fill:var(--con-ink)}
+            .sub{font-family:'Switzer',sans-serif; font-size:11px; fill:var(--con-ink-subtle)}
+            .ttl{font-family:'PP Editorial New',serif; font-size:17px; fill:var(--con-ink)}
+            .ov{font-family:'Switzer',sans-serif; font-size:10px; letter-spacing:0.12em; fill:var(--con-ink-subtle)}
+            .nm{font-family:'PP Editorial New',serif; font-style:italic; fill:var(--orange)}
+            .bx{fill:var(--con-2); stroke:var(--con-hair-strong)}
+            .st{fill:var(--con-1); stroke:var(--con-hair)}
           </style>
-          <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-            <path d="M0 0 L9 4.5 L0 9 z" style="fill:var(--fg-2)"/>
-          </marker>
+          <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" style="fill:var(--con-ink-subtle)"/></marker>
         </defs>
-        <!-- agent -->
-        <rect x="20" y="120" width="150" height="120" rx="16" class="boxf" style="stroke:var(--hairline-strong)"/>
-        <text x="38" y="152" class="ovl">CLAUDE</text>
-        <text x="38" y="178" class="ttl">Agent</text>
-        <text x="38" y="202" class="sub">proposes the</text>
-        <text x="38" y="218" class="sub">next legal action</text>
-        <!-- arrow -->
-        <line x1="172" y1="180" x2="300" y2="180" stroke-width="1.5" marker-end="url(#arr)" style="stroke:var(--fg-2)"/>
-        <text x="186" y="170" class="sub">request_transition()</text>
-        <!-- MCP server (bouncer) -->
-        <rect x="305" y="40" width="320" height="280" rx="16" stroke-width="1.5" style="fill:var(--surface-1);stroke:var(--signal-green)"/>
-        <text x="325" y="72" class="ovl" style="fill:var(--green-deep)">MCP SERVER &middot; THE BOUNCER</text>
-        <g>
-          <rect x="325" y="86" width="280" height="34" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/>
-          <text x="340" y="108" class="lbl"><tspan style="font-family:'PP Editorial New',serif; fill:var(--signal-orange); font-style:italic">1</tspan>&#160;&#160;Authenticate &rarr; role</text>
-          <rect x="325" y="126" width="280" height="34" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/>
-          <text x="340" y="148" class="lbl"><tspan style="font-family:'PP Editorial New',serif; fill:var(--signal-orange); font-style:italic">2</tspan>&#160;&#160;Policy gate (who may act)</text>
-          <rect x="325" y="166" width="280" height="34" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/>
-          <text x="340" y="188" class="lbl"><tspan style="font-family:'PP Editorial New',serif; fill:var(--signal-orange); font-style:italic">3</tspan>&#160;&#160;Guard + invariant check</text>
-          <rect x="325" y="206" width="280" height="34" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/>
-          <text x="340" y="228" class="lbl"><tspan style="font-family:'PP Editorial New',serif; fill:var(--signal-orange); font-style:italic">4</tspan>&#160;&#160;Run typed effects / WASM</text>
-          <rect x="325" y="246" width="280" height="34" rx="9" style="fill:var(--bg-1);stroke:var(--hairline)"/>
-          <text x="340" y="268" class="lbl"><tspan style="font-family:'PP Editorial New',serif; fill:var(--signal-orange); font-style:italic">5</tspan>&#160;&#160;Write audit &rarr; apply state</text>
-        </g>
-        <!-- arrow to db -->
-        <line x1="627" y1="180" x2="755" y2="180" stroke-width="1.5" marker-end="url(#arr)" style="stroke:var(--fg-2)"/>
-        <!-- postgres -->
-        <rect x="760" y="120" width="140" height="120" rx="16" class="boxf" style="stroke:var(--hairline-strong)"/>
-        <text x="778" y="152" class="ovl">POSTGRES</text>
-        <text x="778" y="178" class="ttl">Owned data</text>
-        <text x="778" y="202" class="sub">records + append-</text>
-        <text x="778" y="218" class="sub">only audit log</text>
-        <!-- fireflies feed -->
-        <rect x="20" y="276" width="285" height="58" rx="12" style="fill:var(--bg-1);stroke:var(--hairline)"/>
-        <text x="38" y="300" class="ovl">CAPTURE</text>
-        <text x="38" y="322" class="sub">Fireflies transcripts feed the data layer</text>
-        <line x1="160" y1="276" x2="300" y2="200" stroke-width="1" stroke-dasharray="3 3" style="stroke:var(--hairline-strong)"/>
+        <rect x="20" y="120" width="150" height="120" rx="16" class="bx"/>
+        <text x="38" y="152" class="ov">CLAUDE</text><text x="38" y="178" class="ttl">Agent</text>
+        <text x="38" y="202" class="sub">proposes the</text><text x="38" y="218" class="sub">next legal action</text>
+        <line x1="172" y1="180" x2="300" y2="180" style="stroke:var(--con-ink-subtle)" stroke-width="1.5" marker-end="url(#arr)"/>
+        <text x="186" y="170" class="sub mono">request_transition()</text>
+        <rect x="305" y="40" width="320" height="280" rx="16" style="fill:var(--con-1);stroke:var(--green)" stroke-width="1.5"/>
+        <text x="325" y="72" class="ov" style="fill:#7fd39b">MCP SERVER &middot; THE BOUNCER</text>
+        <rect x="325" y="86" width="280" height="34" rx="9" class="st"/><text x="340" y="108" class="lbl"><tspan class="nm">1</tspan>&#160;&#160;Authenticate &rarr; role</text>
+        <rect x="325" y="126" width="280" height="34" rx="9" class="st"/><text x="340" y="148" class="lbl"><tspan class="nm">2</tspan>&#160;&#160;Policy gate (who may act)</text>
+        <rect x="325" y="166" width="280" height="34" rx="9" class="st"/><text x="340" y="188" class="lbl"><tspan class="nm">3</tspan>&#160;&#160;Guard + invariant check</text>
+        <rect x="325" y="206" width="280" height="34" rx="9" class="st"/><text x="340" y="228" class="lbl"><tspan class="nm">4</tspan>&#160;&#160;Run typed effects / WASM</text>
+        <rect x="325" y="246" width="280" height="34" rx="9" class="st"/><text x="340" y="268" class="lbl"><tspan class="nm">5</tspan>&#160;&#160;Write audit &rarr; apply state</text>
+        <line x1="627" y1="180" x2="755" y2="180" style="stroke:var(--con-ink-subtle)" stroke-width="1.5" marker-end="url(#arr)"/>
+        <rect x="760" y="120" width="140" height="120" rx="16" class="bx"/>
+        <text x="778" y="152" class="ov">POSTGRES</text><text x="778" y="178" class="ttl">Owned data</text>
+        <text x="778" y="202" class="sub">records + append-</text><text x="778" y="218" class="sub">only audit log</text>
       </svg>
-      <p class="figcap">Permissions live above a deliberately "dumb" database. The blueprint, states, transitions, invariants and policy, is versioned data the agent can change safely, never freeform code.</p>
     </div>
+    <p class="figcap">Permissions live above a deliberately "dumb" database. The blueprint, states, transitions, invariants and policy, is versioned data the agent can change safely, never freeform code.</p>
   </section>
 
-  <!-- PRODUCT PREVIEW -->
   <section>
-    <div class="rule"></div>
-    <div class="eyebrow">Product preview</div>
+    <div class="rule"></div><div class="overline">Product preview</div>
     <h2>The human surface, only when a human needs it.</h2>
     <p>Most of the time there is no screen. When a person does need one, an MCP App renders the record, the only buttons shown are the transitions that person is actually allowed to make.</p>
-    <div class="grid2" style="background:transparent;border:0;gap:24px;margin-top:8px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px">
       <div class="mock">
-        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="bt">Temple &middot; Deal</span></div>
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="bt">temple · deal</span></div>
         <div class="body">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <h3 style="margin:0">Meridian Logistics</h3>
-            <span class="chip live"><span style="width:7px;height:7px;border-radius:50%;background:var(--signal-green);display:inline-block"></span>negotiation</span>
+            <span class="chip"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block"></span>negotiation</span>
           </div>
-          <dl class="kv">
-            <dt>Owner</dt><dd>Marco</dd>
-            <dt>Amount</dt><dd>&euro;84,000 / yr</dd>
-            <dt>Meeting</dt><dd>Fireflies &middot; 4 Jun &middot; transcript linked</dd>
-            <dt>Audit</dt><dd>7 transitions, all logged</dd>
-          </dl>
-          <div class="actions">
-            <span class="btn primary">Enter negotiation &check;</span>
-            <span class="btn">Mark won</span>
-            <span class="btn locked">Send proposal &middot; agent locked</span>
-          </div>
+          <dl class="kv"><dt>Owner</dt><dd>Marco</dd><dt>Amount</dt><dd>&euro;84,000 / yr</dd><dt>Meeting</dt><dd>Fireflies &middot; 4 Jun &middot; transcript linked</dd><dt>Audit</dt><dd>7 transitions, all logged</dd></dl>
+          <div class="actions"><span class="btn primary">Enter negotiation &check;</span><span class="btn">Mark won</span><span class="btn locked">Send proposal &middot; agent locked</span></div>
         </div>
       </div>
       <div class="mock">
-        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="bt">Temple &middot; Blueprint</span></div>
+        <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="bt">temple · blueprint</span></div>
         <div class="body">
-          <div class="eyebrow" style="margin-bottom:10px">deal-lifecycle &middot; v4 &middot; verified</div>
-          <pre style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.7;margin:0;color:var(--fg-1);white-space:pre-wrap">new &rarr; qualifying &rarr; meeting_held
-  &rarr; proposal_sent &rarr; negotiation &rarr; <span style="color:var(--green-deep)">won</span>
+          <div class="overline" style="margin-bottom:10px;color:var(--con-ink-subtle)">deal-lifecycle &middot; v4 &middot; verified</div>
+<pre class="spec">new &rarr; qualifying &rarr; meeting_held
+  &rarr; proposal_sent &rarr; negotiation &rarr; <span style="color:#7fd39b">won</span>
 
-<span style="color:var(--fg-2)">invariant I3</span>  no won without a transcript
-<span style="color:var(--fg-2)">policy</span>      operator_agent: advance only
-<span style="color:var(--fg-2)">verifier</span>    L1 algebra &middot; L2 reachability
+<span style="color:var(--con-ink-subtle)">invariant I3</span>  no won without a transcript
+<span style="color:var(--con-ink-subtle)">policy</span>      operator_agent: advance only
+<span style="color:var(--con-ink-subtle)">verifier</span>    L1 algebra &middot; L2 reachability
              L3 fault &middot; L4 property &check;</pre>
-          <div style="margin-top:16px"><span class="chip live">4 / 4 checks passed &middot; safe to load</span></div>
+          <div style="margin-top:16px"><span class="chip">4 / 4 checks passed &middot; safe to load</span></div>
         </div>
       </div>
     </div>
-    <p class="figcap">Illustrative mockups of the envisioned surface. The same blueprint powers both the agent path and this on-demand human view.</p>
+    <p class="figcap">Illustrative mockups of the envisioned Temple console. The same blueprint powers both the agent path and this on-demand human view.</p>
   </section>
 
-  <!-- THE OFFERING (pillars) -->
   <section>
-    <div class="rule"></div>
-    <div class="eyebrow">The offering</div>
-    <h2>Sold the way Nxt Phase already works.</h2>
-    <p>Not a product licence, an engagement. The four pillars map directly onto Temple.</p>
+    <div class="rule"></div><div class="overline">The offering</div>
+    <h2>Sold the way Incredicorp works.</h2>
+    <p>Not a product licence, an engagement. Four steps, the last one recurring.</p>
     <div class="pillars">
       <div class="pillar"><div class="pn">01</div><h3>Educate</h3><p>Show the team which subscriptions are pure interface, and what owning the data layer changes.</p></div>
       <div class="pillar"><div class="pn">02</div><h3>Prioritise</h3><p>Map one lifecycle to an explicit, verified blueprint. Fixed-fee assessment.</p></div>
@@ -292,10 +208,8 @@
     </div>
   </section>
 
-  <!-- BUSINESS CASE -->
   <section>
-    <div class="rule"></div>
-    <div class="eyebrow">The business case</div>
+    <div class="rule"></div><div class="overline">The business case</div>
     <h2>The buyer is over-paying for screens nobody opens.</h2>
     <p class="lead-p">A 150-person mid-market firm typically spends <strong>&euro;60k&ndash;&euro;120k a year</strong> across the replaceable stack, growing per seat, with the data locked in vendor silos and no unified audit trail. Temple turns that line item into owned infrastructure with one auth model and a clean, GDPR-ready audit log.</p>
     <div class="stats">
@@ -305,77 +219,48 @@
     </div>
   </section>
 
-  <!-- YEAR ONE NUMBERS -->
   <section>
-    <div class="rule"></div>
-    <div class="eyebrow">Year one &middot; base case</div>
+    <div class="rule"></div><div class="overline">Year one &middot; base case</div>
     <h2>A new revenue line, built on existing motion.</h2>
-    <p>Conservative funnel for an 11-person consultancy layering Temple onto current work. Pricing: assessment <strong>&euro;15k</strong> fixed, implementation <strong>&euro;75k</strong> average, managed run <strong>&euro;3k</strong>/mo, blueprint pack <strong>&euro;6k</strong>/yr.</p>
-    <div class="figure">
+    <p>Conservative funnel for a small senior team layering Temple onto current work. Pricing: assessment <strong>&euro;15k</strong> fixed, implementation <strong>&euro;75k</strong> average, managed run <strong>&euro;3k</strong>/mo, blueprint pack <strong>&euro;6k</strong>/yr.</p>
+    <div class="figure" style="border:1px solid var(--hairline);background:var(--surface-1)">
       <svg viewBox="0 0 920 320" width="100%" role="img" aria-label="Quarterly revenue bar chart, year one base case">
         <defs><style>
-          .ax{stroke:var(--hairline); stroke-width:1}
-          .qt{font-family:'Switzer',sans-serif; font-size:13px; fill:var(--fg-2)}
-          .qv{font-family:'PP Editorial New',serif; font-size:16px; fill:var(--fg-1)}
-          .yl{font-family:'Switzer',sans-serif; font-size:11px; fill:var(--fg-2)}
+          .ax{stroke:var(--hairline)} .qt{font-family:'Switzer',sans-serif; font-size:13px; fill:var(--ink-subtle)}
+          .qv{font-family:'PP Editorial New',serif; font-size:16px; fill:var(--ink)} .yl{font-family:'Switzer',sans-serif; font-size:11px; fill:var(--ink-subtle)}
         </style></defs>
-        <!-- gridlines at 0,100,200,300k -->
-        <line x1="70" y1="250" x2="900" y2="250" class="ax"/>
-        <line x1="70" y1="180" x2="900" y2="180" class="ax"/>
-        <line x1="70" y1="110" x2="900" y2="110" class="ax"/>
-        <line x1="70" y1="40"  x2="900" y2="40"  class="ax"/>
-        <text x="60" y="254" class="yl" text-anchor="end">0</text>
-        <text x="60" y="184" class="yl" text-anchor="end">100k</text>
-        <text x="60" y="114" class="yl" text-anchor="end">200k</text>
-        <text x="60" y="44"  class="yl" text-anchor="end">300k</text>
-        <!-- bars: scale 300k -> 210px (from y250 up). Q1 30k=21, Q2 216k=151, Q3 240k=168, Q4 327k=229 -->
-        <g>
-          <rect x="140" y="229" width="110" height="21" rx="5" style="fill:var(--surface-2);stroke:var(--hairline-strong)"/>
-          <text x="195" y="244" class="qv" text-anchor="middle" style="font-size:12px;fill:var(--fg-2)">&euro;30k</text>
-          <text x="195" y="276" class="qt" text-anchor="middle">Q1</text>
-
-          <rect x="340" y="99" width="110" height="151" rx="5" style="fill:var(--surface-2);stroke:var(--hairline-strong)"/>
-          <text x="395" y="92" class="qv" text-anchor="middle">&euro;216k</text>
-          <text x="395" y="276" class="qt" text-anchor="middle">Q2</text>
-
-          <rect x="540" y="82" width="110" height="168" rx="5" style="fill:var(--surface-2);stroke:var(--hairline-strong)"/>
-          <text x="595" y="75" class="qv" text-anchor="middle">&euro;240k</text>
-          <text x="595" y="276" class="qt" text-anchor="middle">Q3</text>
-
-          <rect x="740" y="21" width="110" height="229" rx="5" style="fill:var(--signal-green)"/>
-          <text x="795" y="14" class="qv" text-anchor="middle">&euro;327k</text>
-          <text x="795" y="276" class="qt" text-anchor="middle">Q4</text>
-        </g>
+        <line x1="70" y1="250" x2="900" y2="250" class="ax"/><line x1="70" y1="180" x2="900" y2="180" class="ax"/><line x1="70" y1="110" x2="900" y2="110" class="ax"/><line x1="70" y1="40" x2="900" y2="40" class="ax"/>
+        <text x="60" y="254" class="yl" text-anchor="end">0</text><text x="60" y="184" class="yl" text-anchor="end">100k</text><text x="60" y="114" class="yl" text-anchor="end">200k</text><text x="60" y="44" class="yl" text-anchor="end">300k</text>
+        <rect x="140" y="229" width="110" height="21" rx="5" style="fill:var(--surface-3);stroke:var(--hairline-strong)"/><text x="195" y="244" text-anchor="middle" style="font-size:12px;fill:var(--ink-subtle);font-family:Switzer">&euro;30k</text><text x="195" y="276" class="qt" text-anchor="middle">Q1</text>
+        <rect x="340" y="99" width="110" height="151" rx="5" style="fill:var(--surface-3);stroke:var(--hairline-strong)"/><text x="395" y="92" class="qv" text-anchor="middle">&euro;216k</text><text x="395" y="276" class="qt" text-anchor="middle">Q2</text>
+        <rect x="540" y="82" width="110" height="168" rx="5" style="fill:var(--surface-3);stroke:var(--hairline-strong)"/><text x="595" y="75" class="qv" text-anchor="middle">&euro;240k</text><text x="595" y="276" class="qt" text-anchor="middle">Q3</text>
+        <rect x="740" y="21" width="110" height="229" rx="5" style="fill:var(--green)"/><text x="795" y="14" class="qv" text-anchor="middle">&euro;327k</text><text x="795" y="276" class="qt" text-anchor="middle">Q4</text>
       </svg>
-      <p class="figcap">Quarterly recognised revenue, base case. Q4 highlighted: exit run-rate is roughly &euro;264k of recurring ARR (managed run + blueprint licences) heading into year two.</p>
     </div>
+    <p class="figcap">Quarterly recognised revenue, base case. Q4 highlighted: exit run-rate is roughly &euro;264k of recurring ARR (managed run + blueprint licences) heading into year two.</p>
 
     <table class="fin">
-      <thead>
-        <tr><th>Revenue line</th><th>Volume (yr 1)</th><th>Conservative</th><th>Base</th><th>Upside</th></tr>
-      </thead>
+      <thead><tr><th>Revenue line</th><th>Volume (yr 1)</th><th>Conservative</th><th>Base</th><th>Upside</th></tr></thead>
       <tbody>
         <tr><td>Lifecycle assessments</td><td>6 / 10 / 14</td><td>&euro;90k</td><td>&euro;150k</td><td>&euro;210k</td></tr>
         <tr><td>Build implementations</td><td>4 / 7 / 10</td><td>&euro;300k</td><td>&euro;525k</td><td>&euro;750k</td></tr>
         <tr><td>Managed run (recurring)</td><td>3 / 6 / 9 active EOY</td><td>&euro;45k</td><td>&euro;90k</td><td>&euro;150k</td></tr>
         <tr><td>Blueprint library</td><td>4 / 8 / 10 packs</td><td>&euro;24k</td><td>&euro;48k</td><td>&euro;60k</td></tr>
       </tbody>
-      <tfoot>
-        <tr><td>Year-one revenue</td><td></td><td>&euro;459k</td><td class="g">&euro;813k</td><td>&euro;1.17M</td></tr>
-      </tfoot>
+      <tfoot><tr><td>Year-one revenue</td><td></td><td>&euro;459k</td><td class="g">&euro;813k</td><td>&euro;1.17M</td></tr></tfoot>
     </table>
     <p class="small muted" style="margin-top:12px">Illustrative model. Blended gross margin ~60% (senior labour). The recurring lines (run + library) compound into year two and are the long-term value, the implementation fees fund the build-out.</p>
   </section>
 
-  <!-- CLOSE -->
-  <section>
-    <div class="rule"></div>
-    <blockquote>Own the data, not the dashboard. We never sell a vision we can't build, <span class="em-italic">and this one we can ship one lifecycle at a time.</span></blockquote>
-  </section>
+  <div class="cta">
+    <div class="overline" style="color:var(--con-ink-subtle)">The close</div>
+    <blockquote style="margin-top:12px">Own the data, not the dashboard. We never sell a vision we can't build, <span class="em-italic">and this one we can ship one lifecycle at a time.</span></blockquote>
+    <p class="sub">Incredicorp &middot; Temple is agent-native infrastructure. No hype. No black boxes.</p>
+  </div>
 
   <footer>
-    <span>Nxt Phase AI &middot; Temple strategy brief</span>
-    <span>Pragmatic by design. No hype. No black boxes.</span>
+    <span class="wordmark" style="font-size:15px"><svg class="mk" viewBox="0 0 24 24" style="width:18px;height:18px" aria-hidden="true"><rect class="bar" x="3" y="3.5" width="18" height="2.4" rx="1.2"/><rect class="bar" x="6" y="8.3" width="14" height="2.4" rx="1.2"/><rect class="bar" x="9" y="13.1" width="10" height="2.4" rx="1.2"/><rect class="acc" x="3" y="18" width="18" height="2.6" rx="1.3"/></svg>incredicorp</span>
+    <span>Temple strategy brief</span>
   </footer>
 
 </div>
@@ -384,15 +269,13 @@
   const root=document.documentElement, btns=[...document.querySelectorAll('.theme button')];
   const mq=window.matchMedia('(prefers-color-scheme: dark)');
   function apply(mode){
-    const dark = mode==='dark' || (mode==='system' && mq.matches);
-    root.setAttribute('data-theme', dark?'dark':'light');
-    const offblack=document.querySelector('.logo-light');
-    offblack.src = dark ? 'brand/assets/logos/logo-cream.svg' : 'brand/assets/logos/logo-off-black.svg';
-    btns.forEach(b=>b.setAttribute('aria-pressed', b.dataset.set===mode));
+    const dark=mode==='dark'||(mode==='system'&&mq.matches);
+    root.setAttribute('data-theme',dark?'dark':'light');
+    btns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.set===mode));
   }
-  btns.forEach(b=>b.addEventListener('click',()=>{localStorage.setItem('temple-theme',b.dataset.set); apply(b.dataset.set);}));
-  mq.addEventListener('change',()=>{ if((localStorage.getItem('temple-theme')||'light')==='system') apply('system'); });
-  apply(localStorage.getItem('temple-theme')||'light');
+  btns.forEach(b=>b.addEventListener('click',()=>{localStorage.setItem('ic-theme',b.dataset.set);apply(b.dataset.set);}));
+  mq.addEventListener('change',()=>{if((localStorage.getItem('ic-theme')||'light')==='system')apply('system');});
+  apply(localStorage.getItem('ic-theme')||'light');
 </script>
 </body>
 </html>
