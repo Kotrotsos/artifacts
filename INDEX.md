@@ -492,3 +492,4 @@
 | 2026-06-11 | content | images | [skill-frontmatter.png](projects/content/images/skill-frontmatter.png) | SKILL.md frontmatter terminal screenshot for skills article Substack version |
 | 2026-06-11 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | What Claude Skills Actually Are, Substack-ready HTML with all code as screenshots |
 | 2026-06-11 | temple | reports | [temple-one-pager.html](projects/temple/reports/temple-one-pager.html) | Temple one-pager: agent-native data layer replacing SaaS, NxtPhase brand, business case + year-1 revenue |
+| 2026-06-11 | temple | reports | [temple-deck.html](projects/temple/reports/temple-deck.html) | Temple 12-slide deck: stop renting interfaces, architecture, business case, revenue projections |
