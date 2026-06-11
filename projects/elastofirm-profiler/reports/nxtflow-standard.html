@@ -39,6 +39,10 @@ td.k{font-weight:600;color:var(--ink);white-space:nowrap}
 .badge.good{background:var(--good-bg);color:var(--good);border:1px solid var(--good-bd)}
 .badge.amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-bd)}
 .badge.grey{background:var(--surface-2);color:var(--muted);border:1px solid var(--border)}
+.mock{font-size:13px} .mock p{font-size:13px;margin:6px 0}
+.mock blockquote{border-left:3px solid var(--border-strong);padding:3px 10px;margin:8px 0;color:var(--muted);font-size:12.5px}
+.mock .mh{font-family:'Geist Mono',monospace;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin:12px 0 4px;font-weight:600}
+.mock pre{font-size:11px;padding:9px 11px;margin:6px 0}
 footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
 @media print{body{background:#fff;color:#000}.theme-toggle{display:none}.card,table{break-inside:avoid}}
 </style></head><body><div class="wrap">
@@ -109,7 +113,51 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-
 <li>List APIs truncate long descriptions: fetch per-story for full text (delegated to a subagent writing a file).</li>
 </ul></div>
 
-<h2>5 · Eval-before-optimize</h2>
+<h2>5 · Anatomy of a story — from transcript to Linear</h2>
+<p>Stories are born from raw PO transcripts via the bundled <code>transcript-stories</code> skill. The pipeline:</p>
+<div class="flow">
+<span class="step">raw transcript / email</span><span class="arr">→</span>
+<span class="step">extract asks + verbatim quotes</span><span class="arr">→</span>
+<span class="step">group into numbered milestones</span><span class="arr">→</span>
+<span class="step hot">code-analysis pass against the real repo</span><span class="arr">→</span>
+<span class="step">write stories</span><span class="arr">→</span>
+<span class="step">create in Linear (Backlog + estimate)</span>
+</div>
+<div class="grid2">
+<div class="card mock">
+<div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px">
+<span class="badge grey">INC-83</span><b style="font-size:14px">Zoekintensiteit indicator (searches per sessie, filters toegepast)</b>
+<span class="badge grey">3 Points</span><span class="badge grey">Backlog</span></div>
+<blockquote><b>Sectie:</b> Gebruiksstatistieken &nbsp;·&nbsp; <b>Inschatting:</b> M</blockquote>
+<div class="mh">### Waarom</div>
+<p>Alleen inloggen zegt weinig; de PO wil onderscheid tussen openen en echt gebruiken.</p>
+<blockquote>“Als je inlogt en je doet niks dan heb je natuurlijk heel veel uren.” — <i>Product owner, uit transcript</i></blockquote>
+<div class="mh">### Code-analyse</div>
+<p>Searches are driven from <code>app/page.tsx</code>: searchProfiles() (regel 336) calls GET /api/profiles … currently nothing records that a search happened. Target: count search events per session, feeding the usage_events table with event_type='search' and a filters_count integer.</p>
+<div class="mh">### Implementatie stappen</div>
+<ol class="tight"><li>Extend usage_events with filters_count INTEGER, had_query INTEGER</li>
+<li>Instrument /api/profiles (regel 804); not /count — avoid double counting</li>
+<li>Aggregate searches-per-session into GET /api/admin/usage-stats</li></ol>
+<div class="mh">### Mogelijke uitdagingen</div>
+<ul class="tight"><li>Session boundaries are fuzzy in a cookie-session app</li>
+<li>filters_count must stay in sync when new filters are added later</li></ul>
+<div class="mh">### Diagram</div>
+<pre>flowchart TD
+  A[search effect] --> B[GET /api/profiles]
+  B --> C[log usage event] --> D[admin stats panel]</pre>
+</div>
+<div class="card accent"><h3>The rules that make it work</h3>
+<ul class="tight">
+<li><b>Verbatim quotes only.</b> The Waarom quote is lifted from the transcript untouched; no usable quote → no quote (never paraphrase-as-quote).</li>
+<li><b>Code-analyse against the real repo.</b> Files, functions, line refs — a survey subagent reads the code before a single story is written. This is what makes a story executable without re-research.</li>
+<li><b>Estimates by scope:</b> S=1 (a field/toggle) · M=3 (component + endpoint) · L=5 (module/migration) · 8 = big/spike.</li>
+<li><b>Ambiguity is content:</b> open product decisions are written into Mogelijke uitdagingen — a named open question beats a wrong story.</li>
+<li><b>Numbered milestones</b> (<code>2 · Gebruiksstatistieken</code>) so every report sorts correctly; one simple mermaid flow per story.</li>
+<li><b>Checkpoint before bulk-create</b>, dedupe by title, addenda (e.g. a legal-text email) append to the same project with the source text verbatim where it must ship as written.</li>
+</ul></div>
+</div>
+
+<h2>6 · Eval-before-optimize</h2>
 <div class="flow">
 <span class="step">baseline harness (seeded, production code path)</span><span class="arr">→</span>
 <span class="step">blind LLM-as-judge</span><span class="arr">→</span>
@@ -125,14 +173,14 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-
 <li>Proof from the source project: rot15 retrieval 36% → 92% top-1 (100% top-5), validated against 11,978 distractors, before a single production file changed.</li>
 </ul></div>
 
-<h2>6 · Safe project CLI</h2>
+<h2>7 · Safe project CLI</h2>
 <div class="card warn"><ul class="tight">
 <li>One entry point (<code>&lt;project&gt; &lt;group&gt; &lt;command&gt;</code>): status · data · index · export · eval · db · admin. Stdlib argparse, importing existing modules.</li>
 <li><b>Read-only unless <code>--apply</code></b> (dry-run prints the exact delta) · auto-backup before destructive writes · typed confirmations (<code>--yes</code> skips prompts, never backups) · lock file · history log · read-only DB connections · merge-don't-replace ingestion · <code>--overwrite</code> required to clobber exports · exit codes 0/1/2/3.</li>
 <li>Deny paths are smoke-tested explicitly; destructive logic is proven on a copy of the database first.</li>
 </ul></div>
 
-<h2>7 · Agent working style</h2>
+<h2>8 · Agent working style</h2>
 <div class="card accent"><ul class="tight">
 <li>Bulk fetches and wide surveys → <b>subagents that write files</b>; the main context stays lean.</li>
 <li>Long computations → background tasks, reported on completion. Independent questions → parallel agents.</li>
@@ -141,16 +189,16 @@ footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);font-
 <li>Environment traps (alias-corrupted heredocs, stale dev servers, Radix pointer events, shadowed <code>Image</code>, CORS-tainted canvases, argparse flag hoisting …) are codified in <code>references/gotchas.md</code> — read once per project.</li>
 </ul></div>
 
-<h2>8 · Adopting nxtflow</h2>
+<h2>9 · Adopting nxtflow</h2>
 <div class="card"><table>
 <thead><tr><th>Route</th><th>How</th><th>When</th></tr></thead><tbody>
 <tr><td class="k">Skill</td><td>copy <code>skills/nxtflow/</code> → <code>~/.claude/skills/nxtflow/</code>, then "use nxtflow"</td><td>simplest; on-demand guidance</td></tr>
 <tr><td class="k">CLAUDE.md</td><td>copy <code>nxtflow/CLAUDE.md</code> into the project root (or merge)</td><td>make the standard ambient for a project</td></tr>
 <tr><td class="k">Plugin</td><td>the folder is a plugin root (<code>.claude-plugin/plugin.json</code> + <code>skills/</code>) — add to a marketplace or install from path</td><td>versioned distribution across machines/teams</td></tr>
 </tbody></table>
-<p>Companion: the <code>task-report</code> skill (house-style reports from Linear/transcript/Notion + tracker write-back).</p></div>
+<p>Companions bundled in this plugin: <code>transcript-stories</code> (raw transcript → Linear backlog in this format) and <code>task-report</code> (house-style reports from Linear/transcript/Notion + tracker write-back).</p></div>
 
-<footer>nxtflow v1.0 · distilled 2026-06-10 from the Elastofirm Profiler build · skill: skills/nxtflow/SKILL.md · references: flow · html-style · linear · eval · cli · gotchas</footer>
+<footer>nxtflow v1.0 · distilled 2026-06-10 from the Elastofirm Profiler build · skills: nxtflow · transcript-stories · references: flow · html-style · linear · eval · cli · gotchas</footer>
 </div>
 <script>
 const root=document.documentElement,btns=[...document.querySelectorAll('.theme-toggle button')],mq=window.matchMedia('(prefers-color-scheme: dark)');

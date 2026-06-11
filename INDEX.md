@@ -488,3 +488,4 @@
 | 2026-06-10 | elastofirm-profiler | reports | [matcher-experiments.html](projects/elastofirm-profiler/reports/matcher-experiments.html) | Matcher optimization experiments — canon_dt wins, validated at 12k scale |
 | 2026-06-10 | virtuele-assistent | reports | [prompt-flow-overview.html](projects/virtuele-assistent/reports/prompt-flow-overview.html) | Diagram of system-prompt assembly + data flow (generic vs refactor route, agent nodes, STEPS/FOLLOWUPS markers) |
 | 2026-06-10 | elastofirm-profiler | reports | [nxtflow-standard.html](projects/elastofirm-profiler/reports/nxtflow-standard.html) | nxtflow — the delivery standard distilled from this project (skill + CLAUDE.md + plugin) |
+| 2026-06-11 | elastofirm-profiler | reports | [nxtflow-standard.html](projects/elastofirm-profiler/reports/nxtflow-standard.html) | nxtflow standard v1.1 — adds transcript-stories skill + story anatomy section |
