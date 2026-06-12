@@ -503,3 +503,4 @@
 | 2026-06-12 | temple | docs | [temple-deck.pdf](projects/temple/docs/temple-deck.pdf) | Temple deck v4 PDF, simplified pitch |
 | 2026-06-12 | temple | reports | [temple-deck-share.html](projects/temple/reports/temple-deck-share.html) | Temple deck v4 self-contained share build, fonts and images embedded |
 | 2026-06-12 | reverse | reports | [nxtphase-compliance-audit-2026-06-12.html](projects/reverse/reports/nxtphase-compliance-audit-2026-06-12.html) | GDPR, cookie, US-transfer and WCAG 2.1 AA audit of nxtphase.ai |
+| 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | Build for the Model You Will Have in Six Months, trifecta: hero.png |

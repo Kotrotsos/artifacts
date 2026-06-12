@@ -250,3 +250,4 @@
 | 2026-06-10 | reports | [draft.html](reports/draft.html) | Fable 5 review as Autocomplete article, ready to paste, hero plus benchmark and decision visuals | /Users/marcokotrotsos/PERSONAL/Content/drafts/fable-5-review/draft.html |
 | 2026-06-11 | images | [skill-frontmatter.png](images/skill-frontmatter.png) | SKILL.md frontmatter terminal screenshot for skills article Substack version | /Users/marcokotrotsos/PERSONAL/Content/drafts/skills-what-they-actually-are/skill-frontmatter.png |
 | 2026-06-11 | reports | [substack-version.html](reports/substack-version.html) | What Claude Skills Actually Are, Substack-ready HTML with all code as screenshots | /Users/marcokotrotsos/PERSONAL/Content/drafts/skills-what-they-actually-are/substack-version.html |
+| 2026-06-12 | images | [hero.png](images/hero.png) | Build for the Model You Will Have in Six Months, trifecta: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/build-for-next-model/hero.png |
