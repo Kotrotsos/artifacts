@@ -10,3 +10,4 @@
 | 2026-06-11 | reports | [temple-glossary.html](reports/temple-glossary.html) | Temple glossary of Datadog Tempor talk terms, Incredicorp brand | /Users/marcokotrotsos/projects/temple/artifacts/temple-glossary.html |
 | 2026-06-12 | reports | [temple-deck.html](reports/temple-deck.html) | Temple deck v3, 20 slides: org-fit reference diagrams, state machine, cost graphs, real product screenshots, reviewed by 3-agent panel | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck.html |
 | 2026-06-12 | docs | [temple-deck.pdf](docs/temple-deck.pdf) | Temple deck v3 PDF export, 20 slides | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck.pdf |
+| 2026-06-12 | reports | [temple-deck.html](reports/temple-deck.html) | Temple deck v4: simplified pitch, data-rules-screen framing from judge panel | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck.html |

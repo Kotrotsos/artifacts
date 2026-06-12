@@ -499,3 +499,4 @@
 | 2026-06-11 | temple | reports | [temple-glossary.html](projects/temple/reports/temple-glossary.html) | Temple glossary of Datadog Tempor talk terms, Incredicorp brand |
 | 2026-06-12 | temple | reports | [temple-deck.html](projects/temple/reports/temple-deck.html) | Temple deck v3, 20 slides: org-fit reference diagrams, state machine, cost graphs, real product screenshots, reviewed by 3-agent panel |
 | 2026-06-12 | temple | docs | [temple-deck.pdf](projects/temple/docs/temple-deck.pdf) | Temple deck v3 PDF export, 20 slides |
+| 2026-06-12 | temple | reports | [temple-deck.html](projects/temple/reports/temple-deck.html) | Temple deck v4: simplified pitch, data-rules-screen framing from judge panel |
