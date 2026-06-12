@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recipes · Temple documentation</title>
+<style>
+  :root{color-scheme:light;
+    --bg:#ffffff;--surface:#f6f7f8;--ink:#16181d;--muted:#3d4149;--subtle:#6f7480;
+    --hairline:#e4e5e9;--accent:#5e6ad2;--accent-deep:#4c58c4;--green:#1e8e3e;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace}
+  html[data-theme="dark"]{color-scheme:dark;
+    --bg:#0f1011;--surface:#16181a;--ink:#f7f8f8;--muted:#d0d6e0;--subtle:#8a8f98;
+    --hairline:#26282d;--accent:#828fff;--accent-deep:#9aa6ff;--green:#3fbf63}
+  *{box-sizing:border-box} html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:56px 32px 96px}
+  .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;font-size:13px;color:var(--subtle)}
+  .theme{display:flex;gap:2px;padding:2px;background:var(--surface);border:1px solid var(--hairline);border-radius:10px}
+  .theme button{font:inherit;font-size:11px;text-transform:capitalize;padding:3px 10px;border:0;background:transparent;color:var(--subtle);border-radius:7px;cursor:pointer}
+  .theme button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:0 0 0 1px var(--hairline)}
+  h1{font-size:40px;line-height:1.1;letter-spacing:-0.02em;margin:0 0 18px}
+  h2{font-size:26px;letter-spacing:-0.01em;margin:52px 0 14px;padding-top:18px;border-top:1px solid var(--hairline)}
+  h3{font-size:18px;margin:30px 0 10px}
+  p{margin:0 0 14px;color:var(--muted)}
+  li{color:var(--muted);margin:4px 0}
+  a{color:var(--accent-deep);text-decoration:none} a:hover{text-decoration:underline}
+  code{font-family:var(--mono);font-size:.86em;background:var(--surface);border:1px solid var(--hairline);border-radius:5px;padding:1px 5px}
+  pre{background:var(--surface);border:1px solid var(--hairline);border-radius:10px;padding:16px 18px;overflow-x:auto;line-height:1.55;margin:0 0 16px}
+  pre code{background:none;border:0;padding:0;font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin:0 0 18px}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--subtle);padding:8px 10px;border-bottom:1px solid var(--hairline)}
+  td{padding:8px 10px;border-bottom:1px solid var(--hairline);vertical-align:top;color:var(--muted)}
+  td code{white-space:nowrap}
+  blockquote{margin:0 0 16px;padding:2px 18px;border-left:3px solid var(--accent);color:var(--subtle)}
+  @media print{.theme{display:none}body{background:#fff}h2{break-after:avoid}pre,table{break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="meta">
+    <span>Temple documentation · recipes</span>
+    <div class="theme" role="group" aria-label="Theme">
+      <button data-set-theme="light">light</button><button data-set-theme="dark">dark</button><button data-set-theme="system">system</button>
+    </div>
+  </div>
+<h1 id="recipes">Recipes</h1>
+<p>A recipe is one declarative file that becomes a working app. Drop it in <code>blueprints/</code>, restart Temple, and it exists: a data model, a workflow, permissions, an audit trail, a board on the dashboard, and a full agent surface over MCP. No code, no migration, no deploy step beyond the restart.</p>
+<p>Recipes are written in TOML, YAML or JSON, whichever you prefer. All three parse to the same model and pass through the same gates.</p>
+<p>The safety idea behind recipes is a closed pantry. A recipe can only combine ingredients the engine already knows: twelve property types, three guard kinds, four invariant kinds, four typed effects, five roles. It cannot express code. A hostile or broken recipe is refused at the door or rejected at write time, it is never executed.</p>
+<p>Temple ships four starter recipes: <code>flow</code> (issue tracking, a strict state machine), <code>pages</code> (typed documents in databases), <code>wiki</code> (free-form pages with revisions and backlinks), and <code>crm</code> (a lead pipeline, authored in TOML as the reference example of a custom recipe). They are examples, not the product. The product is that you can write your own.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><a href="#quick-start">Quick start</a></li>
+<li><a href="#the-recipe-file">The recipe file</a></li>
+<li><a href="#entity-types">Entity types</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#states-and-transitions">States and transitions</a></li>
+<li><a href="#invariants">Invariants</a></li>
+<li><a href="#effects">Effects</a></li>
+<li><a href="#enforcement-the-four-gates">Enforcement: the four gates</a></li>
+<li><a href="#the-verifier">The verifier</a></li>
+<li><a href="#worked-example-an-expense-approval-recipe-in-yaml">Worked example: an expense-approval recipe in YAML</a></li>
+<li><a href="#when-things-are-rejected">When things are rejected</a></li>
+<li><a href="#authoring-with-an-agent">Authoring with an agent</a></li>
+<li><a href="#format-notes">Format notes</a></li>
+</ul>
+<h2 id="quick-start">Quick start</h2>
+<p>A recipe is one declarative file. You write it, the engine interprets it. There is no code generation step and nothing to compile. The loop is:</p>
+<ol>
+<li>Write a file in <code>blueprints/</code>. The loader picks up <code>.json</code>, <code>.yaml</code>, <code>.yml</code> and <code>.toml</code>, nothing else.</li>
+<li>Restart the server. Blueprints are parsed once at boot and cached for the life of the process.</li>
+<li>Check the boot log. A recipe that fails to parse or verify is skipped, not half-loaded, and the server says so: <code>[blueprints] skipped: &lt;file&gt;: &lt;reason&gt;</code>. No warning means every file registered.</li>
+<li>Run <code>npm run verify</code>. It prints a PASS or FAIL per blueprint with each verifier level (L1 algebra, L2 reachability, L3 soundness, L4 property) and every finding, and exits non-zero on failure. This is the same gate the loader runs, so what passes here loads there.</li>
+<li>Open the dashboard. Your app is live at <code>/app/&lt;key&gt;</code> (a board view when the entity has a state machine), and the full spec the engine is enforcing is rendered at <code>/app/&lt;key&gt;/blueprint</code>.</li>
+</ol>
+<p>Every MCP tool works against the new app immediately, with no extra wiring: <code>query_entities</code>, <code>create_entity</code>, <code>request_transition</code> and <code>show_board</code> all take the app key, so an agent can use a recipe the moment it loads.</p>
+<h2 id="the-recipe-file">The recipe file</h2>
+<p>A recipe is one declarative document dropped into <code>blueprints/</code>. Three formats are accepted, chosen by file extension: TOML (<code>.toml</code>), YAML (<code>.yaml</code> or <code>.yml</code>) and JSON (<code>.json</code>). The format is surface syntax only. All three are parsed into one identical model and validated by the same strict schema (<code>parseBlueprintDocument</code> in <code>blueprint-schema.ts</code>), so <code>crm.toml</code> and <code>flow.json</code> go through exactly the same pipeline.</p>
+<p>Every object in the schema is a strict object: a key the schema does not know is a parse error, never silently ignored.</p>
+<p>Top-level fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Constraint</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>key</code></td>
+<td>string</td>
+<td>must match <code>^[a-z][a-z0-9_-]*$</code>, unique across all loaded recipes (a duplicate key skips the later file)</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>string</td>
+<td>min length 1</td>
+</tr>
+<tr>
+<td><code>kind</code></td>
+<td>string</td>
+<td>min length 1</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>number</td>
+<td>positive integer</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>string</td>
+<td>min length 1</td>
+</tr>
+<tr>
+<td><code>entities</code></td>
+<td>array</td>
+<td>at least 1 entity type</td>
+</tr>
+</tbody></table>
+<p><code>key</code> is the only identifier that allows hyphens. Entity type names, property names, state names and action names all use the stricter <code>^[a-z][a-z0-9_]*$</code>.</p>
+<h2 id="entity-types">Entity types</h2>
+<p>Each element of <code>entities</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Constraint and engine behavior</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>type</code></td>
+<td>string, required</td>
+<td><code>^[a-z][a-z0-9_]*$</code>, the type name used in every API call</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>string, required</td>
+<td>min length 1, singular display label</td>
+</tr>
+<tr>
+<td><code>labelPlural</code></td>
+<td>string, required</td>
+<td>min length 1, plural display label</td>
+</tr>
+<tr>
+<td><code>titleProperty</code></td>
+<td>string, required</td>
+<td>min length 1, must name a declared property (L1 verifier error otherwise). The engine derives the entity title from this property on every write, falling back to <code>(untitled)</code> when it is not a non-empty string</td>
+</tr>
+<tr>
+<td><code>stateMachine</code></td>
+<td>boolean, optional</td>
+<td>when true and <code>states</code> are declared, new entities start in the initial state and the verifier runs the full L1-L4 state checks. When absent, entities have a null state</td>
+</tr>
+<tr>
+<td><code>container</code></td>
+<td>boolean, optional</td>
+<td>declarative metadata accepted by the schema (the shipped <code>pages</code> recipe marks <code>database</code> as a container). The write pipeline does not branch on it</td>
+</tr>
+<tr>
+<td><code>hasBody</code></td>
+<td>boolean, optional</td>
+<td>advertises that the type carries a markdown body. It is exposed in app metadata and the UI describes the type as having a markdown body. The create and update pipeline accepts a <code>body</code> argument either way; the flag tells clients to expect one</td>
+</tr>
+<tr>
+<td><code>freeform</code></td>
+<td>boolean, optional</td>
+<td>declarative metadata accepted by the schema (used by the shipped <code>wiki</code> recipe). No branch in the write pipeline</td>
+</tr>
+<tr>
+<td><code>versioned</code></td>
+<td>boolean, optional</td>
+<td>every create and every property update writes a row to the <code>revisions</code> table with a per-entity incrementing version. On transitions, a revision is written only when the transition&#39;s effects include <code>write_revision</code></td>
+</tr>
+<tr>
+<td><code>parentTypes</code></td>
+<td>string array, optional</td>
+<td>enables and constrains parenting. Creating with a <code>parentId</code> on a type with no <code>parentTypes</code> is rejected with <code>&#39;&lt;type&gt;&#39; does not accept a parent</code>. The parent must exist, live in the same app, and its type must be listed, otherwise <code>parent must be one of: &lt;list&gt; (in &lt;app&gt;)</code></td>
+</tr>
+<tr>
+<td><code>properties</code></td>
+<td>array, required</td>
+<td>at least 1 property</td>
+</tr>
+<tr>
+<td><code>states</code></td>
+<td>array, optional</td>
+<td>see states and transitions</td>
+</tr>
+<tr>
+<td><code>transitions</code></td>
+<td>array, optional</td>
+<td>see states and transitions</td>
+</tr>
+<tr>
+<td><code>invariants</code></td>
+<td>array, optional</td>
+<td>see invariants</td>
+</tr>
+<tr>
+<td><code>effects</code></td>
+<td>array, optional</td>
+<td>entity-level effects, run on create and on property update (subject to each effect&#39;s <code>on</code> filter)</td>
+</tr>
+</tbody></table>
+<h2 id="properties">Properties</h2>
+<p>Property names must match <code>^[a-z][a-z0-9_]*$</code>. The <code>type</code> is a closed vocabulary of twelve values. Write-time validation (<code>validateUserProperties</code> in <code>validation.ts</code>) runs on all user-supplied properties: create arguments, update arguments and transition payloads. Two universal rules first:</p>
+<ul>
+<li>An unknown property name is rejected: <code>unknown property &#39;&lt;key&gt;&#39; on &lt;type&gt;; declared: &lt;list&gt;</code>.</li>
+<li><code>null</code> or <code>&quot;&quot;</code> is always accepted for any type. Clearing a value is allowed; required-ness is enforced at create, not per write.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Accepted value</th>
+<th>Rejected with</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>title</code></td>
+<td>any string</td>
+<td><code>&#39;&lt;key&gt;&#39; must be a string</code></td>
+</tr>
+<tr>
+<td><code>text</code></td>
+<td>any string</td>
+<td><code>&#39;&lt;key&gt;&#39; must be a string</code></td>
+</tr>
+<tr>
+<td><code>richtext</code></td>
+<td>any string</td>
+<td><code>&#39;&lt;key&gt;&#39; must be a string</code></td>
+</tr>
+<tr>
+<td><code>select</code></td>
+<td>a string that is one of <code>options</code></td>
+<td><code>&#39;&lt;key&gt;&#39; must be one of: &lt;options&gt;</code></td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td>a string that is one of <code>options</code></td>
+<td><code>&#39;&lt;key&gt;&#39; must be one of: &lt;options&gt;</code></td>
+</tr>
+<tr>
+<td><code>multiselect</code></td>
+<td>an array whose every element is a string in <code>options</code></td>
+<td><code>&#39;&lt;key&gt;&#39; must be an array of options</code> or <code>&#39;&lt;key&gt;&#39; values must be from: &lt;options&gt;</code></td>
+</tr>
+<tr>
+<td><code>number</code></td>
+<td>a finite number (<code>typeof value === &quot;number&quot;</code> and <code>Number.isFinite</code>), so NaN, Infinity and numeric strings all fail</td>
+<td><code>&#39;&lt;key&gt;&#39; must be a number</code></td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>a string <code>Date.parse</code> accepts</td>
+<td><code>&#39;&lt;key&gt;&#39; must be a parseable date string</code></td>
+</tr>
+<tr>
+<td><code>checkbox</code></td>
+<td>a boolean</td>
+<td><code>&#39;&lt;key&gt;&#39; must be true or false</code></td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td>a non-empty (after trim) string id</td>
+<td><code>&#39;&lt;key&gt;&#39; must be an id string</code></td>
+</tr>
+<tr>
+<td><code>relation</code></td>
+<td>a non-empty (after trim) string id</td>
+<td><code>&#39;&lt;key&gt;&#39; must be an id string</code></td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>a string matching <code>^https?:\/\/\S+$</code> (http or https, no whitespace)</td>
+<td><code>&#39;&lt;key&gt;&#39; must be an http(s) url</code></td>
+</tr>
+</tbody></table>
+<p>Other property fields:</p>
+<ul>
+<li><code>required</code> (boolean): checked at create only, after defaults are merged. Any required property that is still empty (null, <code>&quot;&quot;</code>, or an empty array) rejects with <code>&#39;&lt;name&gt;&#39; is required</code>. A required property also counts as guaranteed in the verifier&#39;s L3 check.</li>
+<li><code>options</code> (string array): the legal values for <code>select</code>, <code>status</code> and <code>multiselect</code>. If omitted on those types, no value passes.</li>
+<li><code>default</code> (any): applied at create as <code>{ ...defaults, ...userProperties }</code>, so user values win and defaults can satisfy the required check. Defaults are engine-applied, not user-supplied, so they bypass the write-time validator; keep them legal for their type yourself.</li>
+<li><code>relationType</code> (string, optional): accepted by the schema for relation properties. The write-time validator checks relation values only as non-empty id strings.</li>
+</ul>
+<p>Effect outputs (for example <code>closed_at</code> from <code>set_timestamp</code>, or <code>backlinks</code>) are trusted engine writes and bypass property validation entirely, like generated columns in a database.</p>
+<h2 id="states-and-transitions">States and transitions</h2>
+<p>States:</p>
+<ul>
+<li><code>name</code>: must match <code>^[a-z][a-z0-9_]*$</code>.</li>
+<li><code>initial</code> (boolean, optional): the verifier requires exactly one initial state per state machine (<code>expected exactly one initial state, found &lt;n&gt;</code> is an L1 error). New entities are created in this state.</li>
+<li><code>terminal</code> (boolean, optional): a terminal state may only be exited through a transition marked <code>reopen</code> (an L2 error otherwise). Declaring no terminal state at all is an L2 warning.</li>
+<li>Duplicate state names are an L1 error.</li>
+</ul>
+<p>Transitions:</p>
+<ul>
+<li><code>action</code>: must match <code>^[a-z][a-z0-9_]*$</code> and be unique within the entity type (duplicate actions are an L1 error). This is the verb callers invoke.</li>
+<li><code>from</code>: either the literal <code>&quot;*&quot;</code> (legal from every state) or a non-empty array of state names. Calling an action from a state not in <code>from</code> is rejected at the validation stage: <code>&#39;&lt;action&gt;&#39; is not legal from state &#39;&lt;state&gt;&#39;</code>.</li>
+<li><code>to</code>: the destination state name.</li>
+<li><code>reopen</code> (boolean, optional): marks the transition as a legitimate exit from a terminal state. The verifier is the enforcer here; at runtime a reopen transition behaves like any other.</li>
+<li><code>policy</code> (optional array): roles drawn from the closed set <code>owner</code>, <code>admin</code>, <code>member</code>, <code>viewer</code>, <code>agent</code>. When <code>policy</code> is absent, any caller whose role holds the <code>entity.transition</code> capability may fire the action (in the default capability map that is owner, admin, member and agent; viewer is read-only). When <code>policy</code> is present, the caller&#39;s role must also be in the list, otherwise the rejection is <code>action &#39;&lt;action&gt;&#39; is not permitted for role &#39;&lt;role&gt;&#39;</code>. An empty list is present but matches no role, so it blocks everyone. The base <code>entity.transition</code> capability is required in all cases.</li>
+<li><code>guards</code> (optional array): evaluated against the prospective property set, that is the entity&#39;s stored properties merged with any properties in the transition payload, so a payload can satisfy a guard in the same call. The three kinds, per <code>evaluateGuards</code>:<ul>
+<li><code>propertyPresent</code>: fails when the property is empty (null, undefined, <code>&quot;&quot;</code>, or an empty array), with <code>guard: &#39;&lt;prop&gt;&#39; must be set</code>.</li>
+<li><code>propertyEquals</code>: strict equality against <code>equals</code> (<code>!==</code>), with <code>guard: &#39;&lt;prop&gt;&#39; must equal &lt;json&gt;</code>.</li>
+<li><code>hasRelation</code>: the same emptiness check, phrased for relation properties, with <code>guard: relation &#39;&lt;prop&gt;&#39; must be set</code>.</li>
+<li>A guard whose <code>prop</code> is omitted is skipped, it passes vacuously.</li>
+</ul>
+</li>
+<li><code>effects</code> (optional array): run after guards pass, computed on the prospective entity. Their property patch is merged in before invariants are checked, so an effect can both satisfy and violate an invariant and the engine will see it.</li>
+</ul>
+<h2 id="invariants">Invariants</h2>
+<p>Each invariant has an <code>id</code> (min length 1), a <code>description</code> (min length 1), a <code>kind</code> from a closed set of four, and a <code>params</code> record. At runtime <code>checkInvariants</code> evaluates them against the prospective state and properties on every create, update and transition; a violation rejects the write with reason <code>&lt;id&gt;: &lt;description&gt;</code>.</p>
+<ul>
+<li><code>requiresPropertyWhenStateIn</code>, params <code>prop</code> and <code>states</code>: violated when the prospective state is in <code>states</code> and <code>prop</code> is empty (null, <code>&quot;&quot;</code>, or an empty array).</li>
+<li><code>numberMinWhenPresent</code>, params <code>prop</code> and <code>min</code>: skipped when the value is null or <code>&quot;&quot;</code>; otherwise violated when <code>Number(value) &lt; min</code>.</li>
+<li><code>requiredPropertyAlways</code>, params <code>prop</code>: violated whenever <code>prop</code> is empty, in every state, on every write.</li>
+<li><code>terminalNoExit</code>: a runtime no-op (<code>checkOne</code> always returns false for it). It is verifier-only: the L2 check that a terminal state has no non-reopen exit is the enforcement.</li>
+</ul>
+<h2 id="effects">Effects</h2>
+<p>An effect reference has a <code>name</code> from a closed set of four, optional <code>args</code>, and an optional <code>on</code> array limited to <code>&quot;create&quot;</code> and <code>&quot;update&quot;</code>. When <code>on</code> is present the effect only runs when the current action name is in the list; the engine&#39;s create and update flows run with action names <code>create</code> and <code>update</code>, so <code>on</code> is the filter for entity-level effects. Transition effects run under the transition&#39;s own action name, so leave <code>on</code> off there.</p>
+<p>Per <code>effects.ts</code>, effects are pure: they return a property patch and side-effect markers, and the transition layer performs any real I/O based on the markers.</p>
+<ul>
+<li><code>set_timestamp</code>: writes <code>new Date().toISOString()</code> into the property named by <code>args.prop</code> (default <code>updated_at</code>). The target property does not have to be declared; effect writes bypass validation (the crm recipe stamps an undeclared <code>closed_at</code> on <code>win</code>). Marker: <code>set_timestamp:&lt;prop&gt;</code>.</li>
+<li><code>extract_backlinks</code>: scans the entity body for <code>[[...]]</code> targets (regex <code>\[\[([^\]]+)\]\]</code>, trimmed, deduplicated) and writes the resulting array to the <code>backlinks</code> property. Marker: <code>extract_backlinks:&lt;count&gt;</code>.</li>
+<li><code>write_revision</code>: emits only the marker <code>write_revision</code>. The transition layer then writes a revision row, but only when the entity type is <code>versioned</code>.</li>
+<li><code>notify</code>: emits only the marker <code>notify</code>. No I/O is performed by the engine.</li>
+</ul>
+<p>Any other name is a parse error and cannot reach runtime.</p>
+<h2 id="enforcement-the-four-gates">Enforcement: the four gates</h2>
+<p><strong>Gate 1, strict parse.</strong> Every object in the document schema is strict, and every vocabulary (property types, guard kinds, invariant kinds, effect names, roles) is closed. A typo or an invented capability fails loudly at parse time. Real messages from the parser:</p>
+<pre><code>invalid blueprint document: entities.0: Unrecognized key: &quot;transtions&quot;
+invalid blueprint document: entities.0.transitions.0.guards.0.kind: Invalid option: expected one of &quot;propertyPresent&quot;|&quot;propertyEquals&quot;|&quot;hasRelation&quot;
+invalid blueprint document: entities.0.effects.0.name: Invalid option: expected one of &quot;set_timestamp&quot;|&quot;write_revision&quot;|&quot;extract_backlinks&quot;|&quot;notify&quot;
+</code></pre>
+<p>The first five issues are joined with <code>;</code> into one error.</p>
+<p><strong>Gate 2, the verifier gates registration.</strong> The loader (<code>blueprint.ts</code>) scans the blueprints directory in sorted order, picking up only <code>.json</code>, <code>.yaml</code>, <code>.yml</code> and <code>.toml</code> files. Each file is strict-parsed, checked for a duplicate <code>key</code>, and run through the L1-L4 verifier. Any failure means the file is not registered: parse errors are recorded as <code>&lt;file&gt;: &lt;error message&gt;</code>, verification failures as <code>&lt;file&gt;: failed verification (L1 algebra, L3 soundness), not loaded</code>, duplicates as <code>&lt;file&gt;: duplicate blueprint key &#39;&lt;key&gt;&#39;</code>. All skips are logged at startup (<code>[blueprints] skipped: ...</code>) and exposed via <code>blueprintLoadIssues()</code>. User-authored recipes go through exactly the same gate as the shipped ones. An unverified recipe never becomes an app.</p>
+<p><strong>Gate 3, the bouncer at write time.</strong> Every write funnels through <code>transition.ts</code> and returns either success or a rejection with a stage and reason. The stages are <code>policy</code>, <code>guard</code>, <code>invariant</code>, <code>validation</code> and <code>notfound</code>. In pipeline order:</p>
+<p>For a transition (<code>requestTransition</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Stage</th>
+<th>Example reason</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Entity type exists</td>
+<td>validation</td>
+<td><code>unknown entity type &lt;app&gt;/&lt;type&gt;</code></td>
+</tr>
+<tr>
+<td>Action exists on the type</td>
+<td>validation</td>
+<td><code>unknown action &#39;&lt;action&gt;&#39; for &lt;type&gt;</code></td>
+</tr>
+<tr>
+<td>Entity exists</td>
+<td>notfound</td>
+<td><code>entity &lt;id&gt; not found</code></td>
+</tr>
+<tr>
+<td>Role holds <code>entity.transition</code></td>
+<td>policy</td>
+<td><code>role &#39;&lt;role&gt;&#39; cannot transition in &lt;app&gt;</code></td>
+</tr>
+<tr>
+<td>Role is in the transition&#39;s <code>policy</code></td>
+<td>policy</td>
+<td><code>action &#39;&lt;action&gt;&#39; is not permitted for role &#39;&lt;role&gt;&#39;</code></td>
+</tr>
+<tr>
+<td>Current state is in <code>from</code></td>
+<td>validation</td>
+<td><code>&#39;&lt;action&gt;&#39; is not legal from state &#39;&lt;state&gt;&#39;</code></td>
+</tr>
+<tr>
+<td>Payload writes properties: role holds <code>entity.update</code></td>
+<td>policy</td>
+<td><code>writing properties during &#39;&lt;action&gt;&#39; requires entity.update</code></td>
+</tr>
+<tr>
+<td>Payload properties pass the type validator</td>
+<td>validation</td>
+<td><code>&#39;estimate&#39; must be a number</code></td>
+</tr>
+<tr>
+<td>Guards hold on merged properties</td>
+<td>guard</td>
+<td><code>guard: &#39;owner&#39; must be set</code></td>
+</tr>
+<tr>
+<td>Invariants hold on the prospective state and effect-patched properties</td>
+<td>invariant</td>
+<td><code>I_amount_non_negative: Amount, if set, must be zero or greater.</code></td>
+</tr>
+</tbody></table>
+<p>For create (<code>createEntityChecked</code>): unknown type (validation), <code>entity.create</code> capability (policy), property validation (validation), parent rules (validation, or notfound when the parent id does not exist), required properties after defaults (validation), then create effects and invariants (invariant). For update (<code>updateProperties</code>): <code>entity.update</code> (policy), missing entity (notfound), property validation (validation), update effects, then invariants against the current state (invariant).</p>
+<p><strong>Gate 4, append-only audit.</strong> Every successful create, update and transition inserts a row into the <code>entity_transitions</code> table recording org, entity, app, type, action, actor, from-state, to-state, the payload and the effect markers that ran. The repository layer only ever inserts into this table.</p>
+<h2 id="the-verifier">The verifier</h2>
+<p><code>verifyBlueprint</code> runs four levels over each entity type. A level fails on any error finding; warnings are reported but do not fail the level. A recipe is only registered when all four levels pass.</p>
+<p><strong>L1, algebra.</strong> Structural identities: the <code>titleProperty</code> names a declared property, invariants and guards reference declared properties, exactly one initial state, no duplicate state names or transition actions, every <code>from</code> and <code>to</code> names a known state. Example finding: <code>transition &#39;go&#39; references unknown from-state &#39;a&#39;</code>.</p>
+<p><strong>L2, reachability.</strong> A graph walk from the initial state. Errors: a state unreachable from the initial state, and a terminal state with a non-reopen exit. Warnings: a non-terminal dead end, and no terminal state at all. Example finding: <code>terminal state &#39;won&#39; has a non-reopen exit</code>.</p>
+<p><strong>L3, soundness.</strong> Model-checks invariants against entry paths instead of waiting for runtime. For <code>requiresPropertyWhenStateIn</code>, every transition into a covered state must guarantee the property: the property is required at create, or the transition guards on <code>propertyPresent</code> for that property, or every from-state is itself covered by the invariant. It also checks that <code>requiredPropertyAlways</code> targets a property that is required or defaulted, and that <code>numberMinWhenPresent</code> has a numeric <code>min</code>. Example finding: <code>transition &#39;approve&#39; can enter &#39;done&#39; without guaranteeing &#39;assignee&#39; (violates I_review_needs_assignee)</code>.</p>
+<p><strong>L4, property simulation.</strong> Runs 200 randomised legal action sequences of up to 12 steps each, cycling properties of type <code>user</code> between set and cleared, so guard-pass and guard-fail paths are explored for guards on those properties. Each step applies guards, effects and invariants exactly as the bouncer does, then asserts that invariants still hold after the applied step. Example finding: <code>simulation reached state &#39;won&#39; violating I_negotiation_needs_owner: A lead cannot be in negotiation or won without an owner. after &#39;win&#39;</code>. On success the level reports <code>passed 200 randomised runs</code>.</p>
+<h2 id="worked-example-an-expense-approval-recipe-in-yaml">Worked example: an expense-approval recipe in YAML</h2>
+<p>We will build <code>expenses</code>: an expense moves draft to submitted to approved to paid, with a rejected branch that can be reopened. Here is the complete file, <code>blueprints/expenses.yaml</code>. It parses strictly and passes all four verifier levels as written.</p>
+<pre><code class="language-yaml">key: expenses
+name: Expenses
+kind: expenses
+version: 1
+description: &gt;-
+  Expense approval. Drafts are submitted with an amount, approved or
+  rejected by a human with rank, and paid out. Rejected expenses can be
+  reopened back to draft.
+
+entities:
+  - type: expense
+    label: Expense
+    labelPlural: Expenses
+    titleProperty: title
+    stateMachine: true
+
+    properties:
+      - name: title
+        type: title
+        required: true
+      - name: amount
+        type: number
+      - name: category
+        type: select
+        options: [travel, meals, software, office, other]
+        default: other
+      - name: receipt
+        type: url
+      - name: approver
+        type: user
+      - name: paid
+        type: checkbox
+        default: false
+
+    states:
+      - name: draft
+        initial: true
+      - name: submitted
+      - name: approved
+      - name: paid
+        terminal: true
+      - name: rejected
+        terminal: true
+
+    transitions:
+      - action: submit
+        from: [draft]
+        to: submitted
+        guards:
+          - kind: propertyPresent
+            prop: amount
+        policy: [owner, admin, member, agent]
+
+      - action: approve
+        from: [submitted]
+        to: approved
+        guards:
+          - kind: propertyPresent
+            prop: approver
+        policy: [owner, admin]
+
+      - action: reject
+        from: [submitted]
+        to: rejected
+        policy: [owner, admin]
+
+      - action: mark_paid
+        from: [approved]
+        to: paid
+        effects:
+          - name: set_timestamp
+            args: { prop: paid_at }
+        policy: [owner, admin]
+
+      - action: reopen
+        from: [rejected]
+        to: draft
+        reopen: true
+        policy: [owner, admin, member]
+
+    invariants:
+      - id: I_approval_needs_approver
+        description: An expense cannot be approved or paid without an approver.
+        kind: requiresPropertyWhenStateIn
+        params:
+          prop: approver
+          states: [approved, paid]
+      - id: I_amount_non_negative
+        description: Amount, if set, must be zero or greater.
+        kind: numberMinWhenPresent
+        params:
+          prop: amount
+          min: 0
+</code></pre>
+<p>Four decisions worth walking through.</p>
+<p><strong>Guards make properties required at the moment they matter, not at create.</strong> <code>amount</code> is not <code>required: true</code>, because a draft is allowed to be empty while someone is still filling it in. The <code>propertyPresent</code> guard on <code>submit</code> is where the requirement bites: you cannot leave draft without an amount, and the rejection comes back as <code>guard: &#39;amount&#39; must be set</code>. The <code>numberMinWhenPresent</code> invariant then keeps any amount that is set at zero or above, on every write, including plain property updates.</p>
+<p><strong>The invariant has to be provably safe, and the verifier checks the proof.</strong> <code>I_approval_needs_approver</code> says approved and paid expenses always have an approver. L3 soundness model-checks this at load time: every transition into a protected state must guarantee the property, either by a <code>propertyPresent</code> guard on that transition, by the property being <code>required</code> at create, or because every from-state of the transition is itself covered by the invariant. This design passes because the only way into <code>approved</code> is <code>approve</code>, which guards on <code>approver</code>, and the only way into <code>paid</code> is <code>mark_paid</code>, whose sole from-state <code>approved</code> is already covered, so the property cannot have been lost on the way. If you dropped the guard from <code>approve</code>, the file would not load: <code>transition &#39;approve&#39; can enter &#39;approved&#39; without guaranteeing &#39;approver&#39; (violates I_approval_needs_approver)</code>.</p>
+<p><strong>Terminal states may only be exited by an explicit reopen.</strong> Both <code>paid</code> and <code>rejected</code> are terminal. <code>paid</code> has no exits at all. <code>rejected</code> has one, and it carries <code>reopen: true</code>; without that flag L2 rejects the file with <code>terminal state &#39;rejected&#39; has a non-reopen exit</code>. Reopening goes back to <code>draft</code>, so a reopened expense re-earns its way through the same guards.</p>
+<p><strong>Policy splits the work between agents and humans.</strong> <code>submit</code> lists <code>agent</code>, so an agent can move a draft forward. <code>approve</code>, <code>reject</code> and <code>mark_paid</code> list only <code>owner</code> and <code>admin</code>: spending decisions stay with humans who hold rank. Note that creating a draft is not governed by transition policy at all, it is the <code>entity.create</code> capability of the role, which agents have, so agents may draft and submit but an agent calling <code>approve</code> is bounced at the policy stage. One last detail: the <code>paid</code> checkbox and the <code>paid</code> state share a name but live in different namespaces, the checkbox is data on the entity, the state is a node in the machine, and <code>paid_at</code> is written by the <code>set_timestamp</code> effect as a trusted engine write, which is why it does not appear in <code>properties</code>.</p>
+<h2 id="when-things-are-rejected">When things are rejected</h2>
+<p>Every write is funneled through the same pipeline (policy, then from-state and payload validation, then guards, then effects, then invariants), and every rejection names its stage and reason. Load-time problems never reach runtime: a bad file is simply not registered. The messages below are the real shapes, with this recipe&#39;s names filled in.</p>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th>When</th>
+<th>Stage</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Unknown property in create/update/payload</td>
+<td>runtime</td>
+<td><code>validation</code></td>
+<td><code>unknown property &#39;snack&#39; on expense; declared: title, amount, category, receipt, approver, paid</code></td>
+</tr>
+<tr>
+<td>Wrong value type</td>
+<td>runtime</td>
+<td><code>validation</code></td>
+<td><code>&#39;amount&#39; must be a number</code> (also <code>&#39;paid&#39; must be true or false</code>, <code>&#39;receipt&#39; must be an http(s) url</code>, <code>&#39;approver&#39; must be an id string</code>)</td>
+</tr>
+<tr>
+<td>Select value not in options</td>
+<td>runtime</td>
+<td><code>validation</code></td>
+<td><code>&#39;category&#39; must be one of: travel, meals, software, office, other</code></td>
+</tr>
+<tr>
+<td>Action not legal from current state</td>
+<td>runtime</td>
+<td><code>validation</code></td>
+<td><code>&#39;approve&#39; is not legal from state &#39;draft&#39;</code></td>
+</tr>
+<tr>
+<td>Guard not satisfied</td>
+<td>runtime</td>
+<td><code>guard</code></td>
+<td><code>guard: &#39;amount&#39; must be set</code></td>
+</tr>
+<tr>
+<td>Role not in the transition&#39;s policy</td>
+<td>runtime</td>
+<td><code>policy</code></td>
+<td><code>action &#39;approve&#39; is not permitted for role &#39;agent&#39;</code></td>
+</tr>
+<tr>
+<td>Invariant would be violated</td>
+<td>runtime</td>
+<td><code>invariant</code></td>
+<td><code>I_amount_non_negative: Amount, if set, must be zero or greater.</code></td>
+</tr>
+<tr>
+<td>Parent not allowed by <code>parentTypes</code></td>
+<td>runtime</td>
+<td><code>validation</code></td>
+<td><code>&#39;expense&#39; does not accept a parent</code> or, on a type that declares parents, <code>parent must be one of: database, page (in pages)</code></td>
+</tr>
+<tr>
+<td>Typo key in the recipe file</td>
+<td>load</td>
+<td>parse error</td>
+<td><code>invalid blueprint document: entities.0: Unrecognized key: &quot;transtions&quot;</code></td>
+</tr>
+<tr>
+<td>Vocabulary violation (guard kind, effect name, property type)</td>
+<td>load</td>
+<td>parse error</td>
+<td><code>invalid blueprint document: entities.0.transitions.0.guards.0.kind: Invalid option: expected one of &quot;propertyPresent&quot;|&quot;propertyEquals&quot;|&quot;hasRelation&quot;</code></td>
+</tr>
+<tr>
+<td>Verifier finds an error</td>
+<td>load</td>
+<td>skipped</td>
+<td>boot log: <code>[blueprints] skipped: expenses.yaml: failed verification (L3 soundness), not loaded</code></td>
+</tr>
+<tr>
+<td>Two files claim the same key</td>
+<td>load</td>
+<td>skipped</td>
+<td>boot log: <code>[blueprints] skipped: expenses2.yaml: duplicate blueprint key &#39;expenses&#39;</code></td>
+</tr>
+</tbody></table>
+<p>Two things to internalize. First, the schema is strict and every vocabulary is closed: a misspelled key like <code>transtions</code> is a loud parse error, never a silently dropped rule, and there is no way to smuggle in a guard kind or effect name the engine does not ship. Second, a skipped file is invisible to the running system, so if your app is missing from the dashboard, the boot log warning is the first place to look, then <code>npm run verify</code> for the full finding list.</p>
+<h2 id="authoring-with-an-agent">Authoring with an agent</h2>
+<p>An agent authors a recipe the same way you do, because there is no other way. Claude writes the file into <code>blueprints/</code>, the server restarts, the strict parser and the L1-L4 verifier decide whether it loads, and <code>npm run verify</code> gives the agent the same findings to iterate against. There is no privileged path that skips the gate.</p>
+<p>The same symmetry holds at runtime. When an agent later uses the app over MCP, every <code>create_entity</code>, <code>update_properties</code> and <code>request_transition</code> call runs through the identical bouncer pipeline as a human in the UI: same property validation, same guards, same invariants, and a policy check against the <code>agent</code> role. In the expenses recipe that means an agent can draft and submit all day, and its attempt to <code>approve</code> is rejected at the policy stage with the same policy-stage rejection a human without the required role would get. The recipe is the contract, and it binds both kinds of author equally.</p>
+<h2 id="format-notes">Format notes</h2>
+<p>TOML, YAML and JSON all describe the same model. The file extension picks the parser, and from that point on parsing, verification and enforcement are byte-for-byte identical, so choose by taste.</p>
+<ul>
+<li><strong>TOML</strong> reads well for long recipes because nothing nests visually. The cost is repetition: every property, state and transition is its own <code>[[entities.properties]]</code>, <code>[[entities.states]]</code> or <code>[[entities.transitions]]</code> block, and inline tables carry the small structures, for example <code>guards = [{ kind = &quot;propertyPresent&quot;, prop = &quot;amount&quot; }]</code>. See <code>blueprints/crm.toml</code> for the shipped example.</li>
+<li><strong>YAML</strong> is the most compact, but indentation is structure. A <code>transitions:</code> block indented one level too deep becomes a stray key on the wrong object, and the strict schema turns that into an <code>Unrecognized key</code> parse error rather than a silent no-op, which is the failure you want, just be ready for it.</li>
+<li><strong>JSON</strong> is the natural choice for machine generation: no indentation semantics, no comments to lose, and trivially produced by serializing a validated object. See <code>blueprints/flow.json</code> for the shipped example.</li>
+</ul>
+
+
+  <p style="margin-top:56px;font-size:13px;color:var(--subtle)">Incredicorp · Temple. Generated from docs/RECIPES.md, fact-checked against the engine source.</p>
+</div>
+<script>(function(){var k='temple-docs-theme';
+function res(m){return m==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m}
+function ap(m){document.documentElement.setAttribute('data-theme',res(m));
+document.querySelectorAll('[data-set-theme]').forEach(function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-set-theme')===m))})}
+document.querySelectorAll('[data-set-theme]').forEach(function(b){b.addEventListener('click',function(){localStorage.setItem(k,b.getAttribute('data-set-theme'));ap(b.getAttribute('data-set-theme'))})});
+ap(localStorage.getItem(k)||'light');
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if((localStorage.getItem(k)||'light')==='system')ap('system')});
+})()</script>
+</body>
+</html>
