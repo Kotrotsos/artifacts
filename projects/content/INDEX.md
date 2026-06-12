@@ -272,3 +272,4 @@
 | 2026-06-12 | reports | [draft.html](reports/draft.html) | The Exponential Meets the Linear trifecta: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/exponential-meets-linear/draft.html |
 | 2026-06-12 | reports | [substack-version.html](reports/substack-version.html) | The Exponential Meets the Linear trifecta: substack-version.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/exponential-meets-linear/substack-version.html |
 | 2026-06-12 | reports | [draft.html](reports/draft.html) | The Exponential Meets the Linear, Medium, false-insight hook removed | /Users/marcokotrotsos/PERSONAL/Content/drafts/exponential-meets-linear/draft.html |
+| 2026-06-12 | reports | [substack-version.html](reports/substack-version.html) | The Exponential Meets the Linear, Substack, false-insight hook removed | /Users/marcokotrotsos/PERSONAL/Content/drafts/exponential-meets-linear/substack-version.html |
