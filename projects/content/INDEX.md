@@ -275,3 +275,4 @@
 | 2026-06-12 | reports | [substack-version.html](reports/substack-version.html) | The Exponential Meets the Linear, Substack, false-insight hook removed | /Users/marcokotrotsos/PERSONAL/Content/drafts/exponential-meets-linear/substack-version.html |
 | 2026-06-12 | images | [hero.png](images/hero.png) | Evals Are the Engineering article (plugs From Vibe to Production ch9): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/hero.png |
 | 2026-06-12 | images | [diagram-categories.png](images/diagram-categories.png) | Evals Are the Engineering article (plugs From Vibe to Production ch9): diagram-categories.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/diagram-categories.png |
+| 2026-06-12 | reports | [draft.html](reports/draft.html) | Evals Are the Engineering article (plugs From Vibe to Production ch9): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/draft.html |

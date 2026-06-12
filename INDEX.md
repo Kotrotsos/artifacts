@@ -530,3 +530,4 @@
 | 2026-06-12 | kyssbook-kdp | reports | [kdp-submission.html](projects/kyssbook-kdp/reports/kdp-submission.html) | KDP submission playbook (updated: 8x10 trim-size trap) |
 | 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | Evals Are the Engineering article (plugs From Vibe to Production ch9): hero.png |
 | 2026-06-12 | content | images | [diagram-categories.png](projects/content/images/diagram-categories.png) | Evals Are the Engineering article (plugs From Vibe to Production ch9): diagram-categories.png |
+| 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | Evals Are the Engineering article (plugs From Vibe to Production ch9): draft.html |
