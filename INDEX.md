@@ -523,3 +523,4 @@
 | 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | Courseware hero, Flat Iso ascending module steps |
 | 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | The Exponential Meets the Linear trifecta: hero.png |
 | 2026-06-12 | content | images | [diagram-two-curves.png](projects/content/images/diagram-two-curves.png) | The Exponential Meets the Linear trifecta: diagram-two-curves.png |
+| 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | The Exponential Meets the Linear trifecta: draft.html |
