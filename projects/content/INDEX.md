@@ -270,3 +270,4 @@
 | 2026-06-12 | images | [hero.png](images/hero.png) | The Exponential Meets the Linear trifecta: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/exponential-meets-linear/hero.png |
 | 2026-06-12 | images | [diagram-two-curves.png](images/diagram-two-curves.png) | The Exponential Meets the Linear trifecta: diagram-two-curves.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/exponential-meets-linear/diagram-two-curves.png |
 | 2026-06-12 | reports | [draft.html](reports/draft.html) | The Exponential Meets the Linear trifecta: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/exponential-meets-linear/draft.html |
+| 2026-06-12 | reports | [substack-version.html](reports/substack-version.html) | The Exponential Meets the Linear trifecta: substack-version.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/exponential-meets-linear/substack-version.html |
