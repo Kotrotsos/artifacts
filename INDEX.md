@@ -497,3 +497,4 @@
 | 2026-06-11 | temple | reports | [temple-one-pager.html](projects/temple/reports/temple-one-pager.html) | Temple one-pager, Incredicorp brand: dual-canvas cream + console, business case + year-1 revenue |
 | 2026-06-11 | temple | reports | [temple-deck.html](projects/temple/reports/temple-deck.html) | Temple 12-slide deck, Incredicorp brand: cream story + console technical slides + revenue |
 | 2026-06-11 | temple | reports | [temple-glossary.html](projects/temple/reports/temple-glossary.html) | Temple glossary of Datadog Tempor talk terms, Incredicorp brand |
+| 2026-06-12 | temple | reports | [temple-deck.html](projects/temple/reports/temple-deck.html) | Temple deck v3, 20 slides: org-fit reference diagrams, state machine, cost graphs, real product screenshots, reviewed by 3-agent panel |
