@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>nxtphase.ai - GDPR, Cookie &amp; WCAG Audit (2026-06-12)</title>
+<style>
+  :root{
+    --bg:#f9f6f1; --panel:#ffffff; --ink:#141414; --muted:#5c5c5c; --line:#e4ddd2;
+    --green:#2f7d49; --green-bg:#e7f1e9; --accent:#e86b10;
+    --crit:#b3261e; --high:#d1581f; --med:#b8860b; --low:#3a7ca5; --ok:#2f7d49;
+    --crit-bg:#fbe7e6; --high-bg:#fbeadf; --med-bg:#f8f1da; --low-bg:#e6f0f5; --ok-bg:#e7f1e9;
+  }
+  [data-theme="dark"]{
+    --bg:#16140f; --panel:#1f1c16; --ink:#f1ece3; --muted:#a89f90; --line:#332e25;
+    --green:#6cc189; --green-bg:#1d2a20; --accent:#f0832f;
+    --crit-bg:#33201e; --high-bg:#33261c; --med-bg:#302a1a; --low-bg:#1c2a31; --ok-bg:#1d2a20;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;font-size:16px}
+  .wrap{max-width:880px;margin:0 auto;padding:40px 24px 80px}
+  header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:8px}
+  h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+  h2{font-size:20px;margin:42px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  h3{font-size:16px;margin:26px 0 6px}
+  p{margin:10px 0}
+  .sub{color:var(--muted);font-size:14px;margin:0}
+  .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    padding:3px 8px;border-radius:4px;border:1px solid var(--line)}
+  .meta{color:var(--muted);font-size:13px}
+  button#themeToggle{background:var(--panel);color:var(--ink);border:1px solid var(--line);
+    border-radius:6px;padding:8px 12px;font-size:13px;cursor:pointer}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .sev{font-weight:700;font-size:11px;padding:2px 8px;border-radius:4px;white-space:nowrap}
+  .s-crit{color:var(--crit);background:var(--crit-bg)}
+  .s-high{color:var(--high);background:var(--high-bg)}
+  .s-med{color:var(--med);background:var(--med-bg)}
+  .s-low{color:var(--low);background:var(--low-bg)}
+  .s-ok{color:var(--ok);background:var(--ok-bg)}
+  .finding{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin:14px 0}
+  .finding h3{margin-top:0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .finding .id{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:600}
+  .kv{font-size:13px;color:var(--muted);margin:4px 0}
+  code{background:var(--green-bg);color:var(--ink);padding:1px 5px;border-radius:4px;font-size:13px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .swatch{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:middle;border:1px solid var(--line);margin-right:4px}
+  .cards{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+  .card{flex:1;min-width:120px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;text-align:center}
+  .card .n{font-size:26px;font-weight:700;line-height:1}
+  .card .l{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:6px}
+  ul{margin:8px 0;padding-left:20px}
+  li{margin:4px 0}
+  .note{background:var(--green-bg);border-left:3px solid var(--green);padding:10px 14px;border-radius:0 6px 6px 0;margin:14px 0;font-size:14px}
+  footer{margin-top:50px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:13px}
+  @media print{
+    body{background:#fff;color:#000;font-size:12px}
+    .wrap{max-width:100%;padding:0}
+    button#themeToggle{display:none}
+    .finding,.card,table{break-inside:avoid}
+    h2{break-after:avoid}
+    a{color:#000;text-decoration:none}
+    header.top{border-color:#000}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <p class="tag">Confidential - Authorized Assessment</p>
+      <h1>nxtphase.ai - Privacy, Cookie &amp; Accessibility Audit</h1>
+      <p class="sub">GDPR / AVG compliance, cookie handling, US data transfers, and WCAG 2.1 AA review</p>
+    </div>
+    <button id="themeToggle" onclick="toggleTheme()">Dark mode</button>
+  </header>
+  <p class="meta">Target: <code>https://nxtphase.ai</code> &nbsp;&middot;&nbsp; Date: 12 June 2026 &nbsp;&middot;&nbsp; Method: external black-box (recon + headless browser render) &nbsp;&middot;&nbsp; Authorization: site owner</p>
+
+  <h2>Executive summary</h2>
+  <p>nxtphase.ai is a Dutch-language Webflow marketing site for an AI consultancy (lang <code>nl-NL</code>), targeting MKB+ companies. It is a static site behind Cloudflare with a single contact form, so the technical attack surface is small and no exposed services, databases, or secrets were found. The meaningful risk is on the <strong>compliance and accessibility</strong> side.</p>
+  <p>The headline issue: the site processes personal data (contact form, business email) but has <strong>no privacy statement and no cookie statement at all</strong>. The footer "Privacy" and "Cookies" links are dead placeholders (<code>href="#"</code>) that are also hidden with a <code>hide</code> CSS class, and every candidate policy URL returns 404. For a Netherlands-based controller this is a direct AVG (GDPR) Article 13 gap. On the positive side, the site runs <strong>no analytics or marketing trackers</strong> and loads <strong>no external Google Fonts</strong>, which avoids the most commonly fined EU transfer problems.</p>
+
+  <div class="cards">
+    <div class="card"><div class="n" style="color:var(--crit)">0</div><div class="l">Critical</div></div>
+    <div class="card"><div class="n" style="color:var(--high)">2</div><div class="l">High</div></div>
+    <div class="card"><div class="n" style="color:var(--med)">7</div><div class="l">Medium</div></div>
+    <div class="card"><div class="n" style="color:var(--low)">2</div><div class="l">Low</div></div>
+    <div class="card"><div class="n" style="color:var(--ok)">5</div><div class="l">Good</div></div>
+  </div>
+
+  <h2>Findings at a glance</h2>
+  <table>
+    <thead><tr><th>#</th><th>Finding</th><th>Area</th><th>Severity</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>No privacy statement (privacyverklaring) exists or is linked</td><td>GDPR</td><td><span class="sev s-high">High</span></td></tr>
+      <tr><td>2</td><td>No "skip to content" link (keyboard bypass blocks)</td><td>WCAG 2.4.1 A</td><td><span class="sev s-high">High</span></td></tr>
+      <tr><td>3</td><td>No cookie statement; <code>_cfuvid</code> cookie set without disclosure</td><td>ePrivacy</td><td><span class="sev s-med">Medium</span></td></tr>
+      <tr><td>4</td><td>Contact-form "consent" is static text, not a real opt-in, no privacy link</td><td>GDPR</td><td><span class="sev s-med">Medium</span></td></tr>
+      <tr><td>5</td><td>Contact form submits via <code>method="get"</code> (personal data in URL)</td><td>Privacy/Sec</td><td><span class="sev s-med">Medium</span></td></tr>
+      <tr><td>6</td><td>Personal data processed on US infrastructure, undisclosed</td><td>Transfers</td><td><span class="sev s-med">Medium</span></td></tr>
+      <tr><td>7</td><td>Links with no accessible name (LinkedIn icon, logo)</td><td>WCAG 4.1.2 A</td><td><span class="sev s-med">Medium</span></td></tr>
+      <tr><td>8</td><td>/contact page has no <code>h1</code></td><td>WCAG 1.3.1 A</td><td><span class="sev s-med">Medium</span></td></tr>
+      <tr><td>9</td><td>Green consent text 3.2:1 contrast (below AA 4.5:1)</td><td>WCAG 1.4.3 AA</td><td><span class="sev s-med">Medium</span></td></tr>
+      <tr><td>10</td><td>Missing security headers (CSP, Referrer-Policy, etc.)</td><td>Hardening</td><td><span class="sev s-low">Low</span></td></tr>
+      <tr><td>11</td><td>Webflow surrogate-key / internal IDs exposed in headers</td><td>Info</td><td><span class="sev s-low">Low</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>1. GDPR / AVG &amp; privacy</h2>
+
+  <div class="finding">
+    <h3><span class="sev s-high">High</span> <span class="id">F-1</span> No privacy statement exists or is linked</h3>
+    <p class="kv">WCAG n/a &middot; AVG/GDPR Art. 13 &middot; Pages affected: site-wide</p>
+    <p>The footer contains two legal links that go nowhere and are hidden:</p>
+    <p><code>&lt;a href="#" class="footer_legal-link hide"&gt;Privacy&lt;/a&gt;</code><br>
+       <code>&lt;a href="#" class="footer_legal-link hide"&gt;Cookies&lt;/a&gt;</code></p>
+    <p>Every common policy URL returns 404: <code>/privacy</code>, <code>/privacybeleid</code>, <code>/privacyverklaring</code>, <code>/privacy-policy</code>, <code>/cookies</code>, <code>/cookiebeleid</code>, <code>/algemene-voorwaarden</code>, <code>/disclaimer</code>. A Netherlands-established controller that collects names, company, email and free-text messages must provide the Article 13 information (identity of controller, purposes, legal basis, recipients/processors, retention, data-subject rights, complaint route to the Autoriteit Persoonsgegevens). None of this is available to a visitor.</p>
+    <p><strong>Fix:</strong> Publish a real privacyverklaring (and a short cookie statement), wire both footer links to them, and remove the <code>hide</code> class.</p>
+  </div>
+
+  <div class="finding">
+    <h3><span class="sev s-med">Medium</span> <span class="id">F-3</span> No cookie statement; cookie set without disclosure</h3>
+    <p class="kv">ePrivacy / Telecommunicatiewet art. 11.7a &middot; Pages affected: site-wide</p>
+    <p>On every page load the site sets one cookie, <code>_cfuvid</code> (Cloudflare, httpOnly, session). Verified in a real browser render: no other cookies, no consent banner, and none of the words "cookie/consent/akkoord" appear anywhere in the page body. <code>_cfuvid</code> is arguably a strictly-necessary cookie (Cloudflare bot/rate-limiting), so it likely does not need prior consent, which is why this is Medium and not High today. The gap is structural: there is no cookie statement informing users that any cookie is set, and there is no consent layer ready for the day analytics or marketing tags are added. The moment a Google Analytics, Meta Pixel, or LinkedIn Insight tag is added, the absence of a consent banner becomes a clear violation.</p>
+    <p><strong>Fix:</strong> Add a brief cookie statement listing <code>_cfuvid</code> as functional/necessary. Before adding any analytics or marketing script, install a consent manager (e.g. Cookiebot, Complianz, Usercentrics) with prior-consent blocking.</p>
+  </div>
+
+  <div class="finding">
+    <h3><span class="sev s-med">Medium</span> <span class="id">F-4</span> Contact-form "consent" is non-functional</h3>
+    <p class="kv">AVG/GDPR Art. 13 &amp; transparency &middot; Page: /contact</p>
+    <p>Below the form sits the line <em>"Ik ga akkoord met de verwerking van mijn gegevens om mijn aanvraag te behandelen."</em> It is rendered as a static <code>&lt;div&gt;</code>, not a checkbox. The page contains zero checkbox elements, so the visitor never actively agrees, and the text does not link to any privacy information (there is none). It reads as if agreement is automatic on submit.</p>
+    <p>For a contact form the lawful basis is normally pre-contractual / legitimate interest, so an opt-in checkbox is not strictly required, but presenting an unchecked "I agree" statement with no privacy link is misleading and delivers none of the required transparency information.</p>
+    <p><strong>Fix:</strong> Replace the sentence with a short notice that links to the privacy statement, e.g. "We gebruiken je gegevens alleen om je aanvraag te behandelen. Lees ons <u>privacybeleid</u>." If you want to rely on consent, make it a real, unticked checkbox.</p>
+  </div>
+
+  <div class="finding">
+    <h3><span class="sev s-med">Medium</span> <span class="id">F-5</span> Contact form submits via GET</h3>
+    <p class="kv">Privacy + minor security &middot; Page: /contact</p>
+    <p>The form declares <code>method="get"</code>. On submit, the name, company, email address, and the free-text message (up to 5000 chars) are placed into the URL query string. Query strings leak into browser history, the <code>Referer</code> header sent to any third party loaded next, proxy/server logs, and CDN access logs. This is data minimisation / confidentiality hygiene that should not be in a URL.</p>
+    <p><strong>Fix:</strong> Change the form to <code>method="post"</code> (Webflow's default is POST/AJAX; this form was changed away from it).</p>
+  </div>
+
+  <h2>2. US servers &amp; data transfers</h2>
+
+  <div class="finding">
+    <h3><span class="sev s-med">Medium</span> <span class="id">F-6</span> EU personal data processed on US infrastructure, undisclosed</h3>
+    <p class="kv">AVG/GDPR Ch. V (Art. 44-49) &middot; Pages affected: site-wide</p>
+    <p>The site and the contact form run on US-headquartered processors. Confirmed signals:</p>
+    <table>
+      <thead><tr><th>Service</th><th>Role</th><th>Evidence</th><th>Location</th></tr></thead>
+      <tbody>
+        <tr><td>Webflow</td><td>Hosting + form handling</td><td><code>x-wf-region: us-east-1</code>, <code>x-lambda-id</code>, www CNAME <code>cdn.webflow.com</code></td><td>US (AWS us-east-1)</td></tr>
+        <tr><td>AWS CloudFront</td><td>jQuery delivery</td><td><code>d3e54v103j8qbb.cloudfront.net</code></td><td>US</td></tr>
+        <tr><td>Slater</td><td>Custom JS host</td><td><code>assets.slater.app/slater/20269/61392.js</code></td><td>US</td></tr>
+        <tr><td>Microsoft 365</td><td>Business email</td><td>MX <code>nxtphase-ai.mail.protection.outlook.com</code></td><td>US/EU (Microsoft)</td></tr>
+        <tr><td>Cloudflare</td><td>DNS + edge proxy</td><td>NS <code>*.ns.cloudflare.com</code>, edge PoP AMS</td><td>US (EU edge)</td></tr>
+        <tr><td>Calendly</td><td>Meeting booking</td><td><code>calendly.com/jan-nxtphase/30min</code> (only on click)</td><td>US</td></tr>
+      </tbody>
+    </table>
+    <p>Contact-form submissions therefore land on Webflow's US servers. This is lawful if each processor relies on the EU-US Data Privacy Framework or Standard Contractual Clauses and the controller has a data processing agreement in place, but it <strong>must be disclosed</strong> in the privacy statement (which is missing) and recorded in the register of processing activities. Calendly is reached only when a visitor actively clicks the booking link, so it is not loaded on page view.</p>
+    <p><strong>Fix:</strong> Sign/confirm DPAs with Webflow, Microsoft, Cloudflare, Slater (and Calendly if used), verify each is DPF-certified or covered by SCCs, and list them as recipients with the transfer basis in the privacy statement.</p>
+  </div>
+
+  <div class="note">
+    <strong>Good:</strong> No Google Analytics, Google Tag Manager, Meta Pixel, LinkedIn Insight, Hotjar, or Microsoft Clarity were found, and fonts are self-hosted via the Webflow CDN rather than loaded from <code>fonts.googleapis.com</code>. This avoids the exact "Google Fonts / Google Analytics transfers your IP to the US" issues that EU DPAs have repeatedly acted on. It also means there is currently no non-essential cookie that legally requires a consent banner.
+  </div>
+
+  <h2>3. Accessibility (WCAG 2.1 AA)</h2>
+
+  <div class="finding">
+    <h3><span class="sev s-high">High</span> <span class="id">F-2</span> No "skip to content" link</h3>
+    <p class="kv">WCAG 2.4.1 Bypass Blocks (Level A) &middot; Pages affected: site-wide</p>
+    <p>No skip link is present on any page. Keyboard and screen-reader users must tab through the entire navigation on every page before reaching content. This is a Level A failure.</p>
+    <p><strong>Fix:</strong> Add a visually-hidden "Naar inhoud" link as the first focusable element that targets the main content landmark and becomes visible on focus.</p>
+  </div>
+
+  <div class="finding">
+    <h3><span class="sev s-med">Medium</span> <span class="id">F-7</span> Links with no accessible name</h3>
+    <p class="kv">WCAG 2.4.4 Link Purpose / 4.1.2 Name, Role, Value (Level A) &middot; Page: home + footer</p>
+    <p>Three links on the homepage have no text, no <code>aria-label</code>, and no image <code>alt</code>, so a screen reader announces only "link":</p>
+    <ul>
+      <li>Footer LinkedIn social icon: <code>&lt;a href="https://www.linkedin.com/company/nxt-phase-ai/" target="_blank"&gt;</code> (icon only)</li>
+      <li>Header logo link and footer logo link (inline SVG, no title/label)</li>
+    </ul>
+    <p><strong>Fix:</strong> Add <code>aria-label="LinkedIn"</code> to the social link and <code>aria-label="Nxt Phase AI - home"</code> to the logo links (or give the logo SVG a <code>&lt;title&gt;</code>).</p>
+  </div>
+
+  <div class="finding">
+    <h3><span class="sev s-med">Medium</span> <span class="id">F-8</span> /contact page has no h1</h3>
+    <p class="kv">WCAG 1.3.1 Info &amp; Relationships (A) / 2.4.6 Headings (AA) &middot; Page: /contact</p>
+    <p>The contact page heading structure starts at <code>h2</code> with no <code>h1</code>. Screen-reader users navigating by heading lose the top-level page title. (The homepage is correct: exactly one <code>h1</code> and a logical h2/h3 order.)</p>
+    <p><strong>Fix:</strong> Promote the main contact heading to <code>h1</code>.</p>
+  </div>
+
+  <div class="finding">
+    <h3><span class="sev s-med">Medium</span> <span class="id">F-9</span> Insufficient color contrast on consent text</h3>
+    <p class="kv">WCAG 1.4.3 Contrast Minimum (Level AA) &middot; Page: /contact (and any green body text)</p>
+    <p>The consent line uses Signal Green text on the cream background at 12px:</p>
+    <p>
+      <span class="swatch" style="background:#3e9b5d"></span><code>#3e9b5d</code> text on
+      <span class="swatch" style="background:#f9f6f1"></span><code>#f9f6f1</code> background &rarr;
+      contrast ratio <strong>3.2:1</strong> (computed: <code>rgb(62,155,93)</code> on <code>rgb(249,246,241)</code>, font-size <code>12px</code>).
+    </p>
+    <p>AA requires 4.5:1 for normal-size text. At 12px this is normal text, so it fails. The same green used anywhere for normal-size body copy or links would also fail. (Green used as a <em>background</em> behind dark/white text, e.g. the "Verstuur" button, is fine.)</p>
+    <p><strong>Fix:</strong> Darken the green for text use to roughly <code>#2f7d49</code> or darker (4.5:1+ on cream), or increase the consent text size/weight. Keep the bright green for fills and large headings only.</p>
+  </div>
+
+  <div class="note">
+    <strong>Good (accessibility):</strong> every <code>&lt;img&gt;</code> has an <code>alt</code> attribute (decorative images correctly use empty alt); the homepage has exactly one <code>h1</code> with a logical heading order; the contact form fields all have associated <code>&lt;label for&gt;</code> elements; and <code>lang="nl-NL"</code> is set. These are the fundamentals and they are done right.
+  </div>
+
+  <h2>4. Hardening &amp; info disclosure (low)</h2>
+
+  <div class="finding">
+    <h3><span class="sev s-low">Low</span> <span class="id">F-10</span> Missing security headers</h3>
+    <p class="kv">Defense-in-depth &middot; Pages affected: site-wide</p>
+    <p>Present: <code>Strict-Transport-Security</code> (good), HTTPS enforced via 301. Missing: <code>Content-Security-Policy</code>, <code>X-Content-Type-Options</code>, <code>X-Frame-Options</code>/<code>frame-ancestors</code>, <code>Referrer-Policy</code>, <code>Permissions-Policy</code>. Webflow limits how much you can set, but <code>Referrer-Policy: strict-origin-when-cross-origin</code> is worth adding because it also reduces leakage of the GET form URL (see F-5).</p>
+  </div>
+
+  <div class="finding">
+    <h3><span class="sev s-low">Low</span> <span class="id">F-11</span> Internal identifiers in response headers</h3>
+    <p class="kv">Info disclosure &middot; Pages affected: site-wide</p>
+    <p>Responses expose Webflow internals: <code>surrogate-key</code> with site/page IDs (<code>6a155bcd...</code>), <code>x-lambda-id</code>, and <code>x-wf-region</code>. These are normal Webflow platform headers and not directly exploitable; noted only for completeness. No API keys, tokens, or secrets were found in the HTML or JS bundles.</p>
+  </div>
+
+  <h2>Recommendations</h2>
+  <h3>Immediate (this week)</h3>
+  <ul>
+    <li>Publish a privacyverklaring and a short cookie statement; wire the two footer links to them and remove the <code>hide</code> class. (F-1)</li>
+    <li>Change the contact form to <code>method="post"</code>. (F-5)</li>
+    <li>Replace the static "Ik ga akkoord" text with a notice that links to the privacy statement. (F-4)</li>
+    <li>Add a skip-to-content link and fix the unnamed LinkedIn/logo links. (F-2, F-7)</li>
+  </ul>
+  <h3>Short term (this month)</h3>
+  <ul>
+    <li>Add an <code>h1</code> to /contact; darken the green used for text to reach 4.5:1. (F-8, F-9)</li>
+    <li>Confirm DPAs and DPF/SCC coverage for Webflow, Microsoft 365, Cloudflare, Slater, Calendly; disclose them as processors. (F-6)</li>
+    <li>Add <code>Referrer-Policy</code> (and other headers where Webflow allows). (F-10)</li>
+  </ul>
+  <h3>Before adding any analytics or marketing tag</h3>
+  <ul>
+    <li>Install a consent manager with prior-consent blocking. Today there is no banner because there are no non-essential cookies; that changes the instant a tracker is added. (F-3)</li>
+  </ul>
+
+  <footer>
+    <p>Scope: external, unauthenticated review of nxtphase.ai performed 12 June 2026 using DNS/WHOIS/HTTP recon and a headless-browser render. No intrusive testing, no port scanning of shared Webflow/Cloudflare infrastructure, no form submissions with real data. This document is informational and is not legal advice; confirm GDPR conclusions with your DPO or legal counsel.</p>
+    <p>Evidence saved under <code>osint/</code> (recon JSON) and <code>osint/evidence/</code> (screenshots).</p>
+  </footer>
+
+</div>
+<script>
+  function toggleTheme(){
+    var r=document.documentElement;
+    var dark=r.getAttribute('data-theme')==='dark';
+    r.setAttribute('data-theme',dark?'light':'dark');
+    document.getElementById('themeToggle').textContent=dark?'Dark mode':'Light mode';
+  }
+</script>
+</body>
+</html>

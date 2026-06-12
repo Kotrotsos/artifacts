@@ -502,3 +502,4 @@
 | 2026-06-12 | temple | reports | [temple-deck.html](projects/temple/reports/temple-deck.html) | Temple deck v4: simplified pitch, data-rules-screen framing from judge panel |
 | 2026-06-12 | temple | docs | [temple-deck.pdf](projects/temple/docs/temple-deck.pdf) | Temple deck v4 PDF, simplified pitch |
 | 2026-06-12 | temple | reports | [temple-deck-share.html](projects/temple/reports/temple-deck-share.html) | Temple deck v4 self-contained share build, fonts and images embedded |
+| 2026-06-12 | reverse | reports | [nxtphase-compliance-audit-2026-06-12.html](projects/reverse/reports/nxtphase-compliance-audit-2026-06-12.html) | GDPR, cookie, US-transfer and WCAG 2.1 AA audit of nxtphase.ai |
