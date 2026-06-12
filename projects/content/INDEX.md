@@ -264,3 +264,4 @@
 | 2026-06-12 | reports | [draft.html](reports/draft.html) | Claude Code Today playbook, updated flat-style hero | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/draft.html |
 | 2026-06-12 | images | [hero.png](images/hero.png) | AI-Native Company substrate article: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-substrate/hero.png |
 | 2026-06-12 | images | [diagram-three-parts.png](images/diagram-three-parts.png) | AI-Native Company substrate article: diagram-three-parts.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-substrate/diagram-three-parts.png |
+| 2026-06-12 | reports | [draft.html](reports/draft.html) | AI-Native Company substrate article: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/ai-native-substrate/draft.html |
