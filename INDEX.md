@@ -513,3 +513,4 @@
 | 2026-06-12 | content | images | [screenshot-security.png](projects/content/images/screenshot-security.png) | Claude Code Today playbook: screenshot-security.png |
 | 2026-06-12 | content | images | [screenshot-workflow.png](projects/content/images/screenshot-workflow.png) | Claude Code Today playbook: screenshot-workflow.png |
 | 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | Claude Code Today playbook: draft.html |
+| 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | Claude Code Today hero, flat thick-outline isometric control hub, grayscale plus coral |

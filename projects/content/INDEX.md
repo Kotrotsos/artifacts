@@ -260,3 +260,4 @@
 | 2026-06-12 | images | [screenshot-security.png](images/screenshot-security.png) | Claude Code Today playbook: screenshot-security.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/screenshot-security.png |
 | 2026-06-12 | images | [screenshot-workflow.png](images/screenshot-workflow.png) | Claude Code Today playbook: screenshot-workflow.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/screenshot-workflow.png |
 | 2026-06-12 | reports | [draft.html](reports/draft.html) | Claude Code Today playbook: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/draft.html |
+| 2026-06-12 | images | [hero.png](images/hero.png) | Claude Code Today hero, flat thick-outline isometric control hub, grayscale plus coral | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/hero.png |
