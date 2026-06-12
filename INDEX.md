@@ -517,3 +517,4 @@
 | 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | Claude Code Today playbook, updated flat-style hero |
 | 2026-06-12 | temple | reports | [recipes.html](projects/temple/reports/recipes.html) | Temple recipes authoring documentation, fact-checked against engine source |
 | 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | AI-Native Company substrate article: hero.png |
+| 2026-06-12 | content | images | [diagram-three-parts.png](projects/content/images/diagram-three-parts.png) | AI-Native Company substrate article: diagram-three-parts.png |
