@@ -258,3 +258,4 @@
 | 2026-06-12 | images | [screenshot-automode.png](images/screenshot-automode.png) | Claude Code Today playbook: screenshot-automode.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/screenshot-automode.png |
 | 2026-06-12 | images | [screenshot-agentsview.png](images/screenshot-agentsview.png) | Claude Code Today playbook: screenshot-agentsview.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/screenshot-agentsview.png |
 | 2026-06-12 | images | [screenshot-security.png](images/screenshot-security.png) | Claude Code Today playbook: screenshot-security.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/screenshot-security.png |
+| 2026-06-12 | images | [screenshot-workflow.png](images/screenshot-workflow.png) | Claude Code Today playbook: screenshot-workflow.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/screenshot-workflow.png |
