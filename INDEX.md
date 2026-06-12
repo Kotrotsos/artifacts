@@ -525,3 +525,4 @@
 | 2026-06-12 | content | images | [diagram-two-curves.png](projects/content/images/diagram-two-curves.png) | The Exponential Meets the Linear trifecta: diagram-two-curves.png |
 | 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | The Exponential Meets the Linear trifecta: draft.html |
 | 2026-06-12 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | The Exponential Meets the Linear trifecta: substack-version.html |
+| 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | The Exponential Meets the Linear, Medium, false-insight hook removed |
