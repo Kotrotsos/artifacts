@@ -507,3 +507,4 @@
 | 2026-06-12 | content | images | [diagram-thin-harness.png](projects/content/images/diagram-thin-harness.png) | Build for the Model You Will Have in Six Months, trifecta: diagram-thin-harness.png |
 | 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | Build for the Model You Will Have in Six Months, trifecta: draft.html |
 | 2026-06-12 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | Build for the Model You Will Have in Six Months, trifecta: substack-version.html |
+| 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | Claude Code Today playbook: hero.png |
