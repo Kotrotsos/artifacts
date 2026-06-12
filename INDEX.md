@@ -516,3 +516,4 @@
 | 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | Claude Code Today hero, flat thick-outline isometric control hub, grayscale plus coral |
 | 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | Claude Code Today playbook, updated flat-style hero |
 | 2026-06-12 | temple | reports | [recipes.html](projects/temple/reports/recipes.html) | Temple recipes authoring documentation, fact-checked against engine source |
+| 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | AI-Native Company substrate article: hero.png |
