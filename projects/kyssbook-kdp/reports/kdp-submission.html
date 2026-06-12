@@ -227,13 +227,19 @@ footer{margin-top:54px;padding-top:18px;border-top:1px solid var(--hairline);fon
 <section id="paperback">
   <h2><span class="n">04</span>Flow B — Paperback</h2>
   <p class="lede">From the ebook's "+" menu choose <b>Create Paperback</b> so the two link on one product page. Same three tabs.</p>
+  <div class="box decide">
+    <h3>Read this first: the 6 × 9 trap</h3>
+    <p style="margin:0 0 8px;font-size:14.5px;color:var(--slate)">KDP defaults the trim size to <b>6 × 9</b>. This book is <b>8 × 10</b>. If you leave the default, the previewer throws a wall of errors (interior size mismatch, "image outside margins", "insufficient gutter", wrong cover size) because KDP is squeezing 8×10 pages into a 6×9 frame. None of those are real file problems.</p>
+    <div class="opt"><span class="tag green">Set trim</span><span class="d"><b>8 × 10 in</b> in Print Options before anything else.</span></div>
+    <div class="opt"><span class="tag green">Cover file</span><span class="d">Upload <b>paperback-cover.pdf</b> (17.64 × 10.25, back + spine + front). Not the interior, not a single 8×10 page. At 8×10 trim KDP expects 17.63 × 10.25 and this file matches.</span></div>
+  </div>
   <ol class="steps">
     <li><b>Reuse the metadata</b> title, subtitle, author, description, keywords, categories all match the ebook.</li>
     <li><b>ISBN</b> "Get a free KDP ISBN." <span class="hint">The wrap already reserves the back-cover barcode area; KDP overlays the barcode.</span></li>
     <li><b>Print options → Ink and paper</b> select <b>Black &amp; white interior with white paper</b> (see decision above). <span class="hint">Switch to Premium Color only if you accept the higher price.</span></li>
-    <li><b>Trim size</b> 8 × 10 in. <b>Bleed</b> "No bleed." <b>Cover finish</b> matte (suits the flat design) or glossy.</li>
-    <li><b>Manuscript</b> upload <code class="inl">claude-code-unstoppable-interior.pdf</code>.</li>
-    <li><b>Cover</b> choose "Upload a cover you already have (PDF)" and upload <code class="inl">paperback-cover.pdf</code>.</li>
+    <li><b>Trim size → 8 × 10 in</b> (change it from the 6 × 9 default). <b>Bleed</b> "No bleed." <b>Cover finish</b> matte (suits the flat design) or glossy. <span class="hint">This is the step everyone misses; set it before uploading anything.</span></li>
+    <li><b>Manuscript</b> upload <code class="inl">claude-code-unstoppable-interior.pdf</code> (8 × 10, 613 pp).</li>
+    <li><b>Cover</b> choose "Upload a cover you already have (PDF)" and upload the full wrap <code class="inl">paperback-cover.pdf</code> (17.64 × 10.25). <span class="hint">Not the interior and not a single page; it must be the back+spine+front wrap.</span></li>
     <li><b>Launch Previewer</b> let KDP run its checks. Confirm no margin or spine warnings, then approve.</li>
     <li><b>Pricing</b> $34.99 (US). KDP shows the printing cost and royalty live; adjust other marketplaces as you like.</li>
     <li><b>Proof first</b> order a printed proof before going live (see final checklist).</li>
@@ -358,3 +364,4 @@ If you build on Claude, this is the reference that reads like a book.</div>
 </script>
 </body>
 </html>
+this is 
