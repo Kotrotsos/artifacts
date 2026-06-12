@@ -255,3 +255,4 @@
 | 2026-06-12 | reports | [draft.html](reports/draft.html) | Build for the Model You Will Have in Six Months, trifecta: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/build-for-next-model/draft.html |
 | 2026-06-12 | reports | [substack-version.html](reports/substack-version.html) | Build for the Model You Will Have in Six Months, trifecta: substack-version.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/build-for-next-model/substack-version.html |
 | 2026-06-12 | images | [hero.png](images/hero.png) | Claude Code Today playbook: hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/hero.png |
+| 2026-06-12 | images | [screenshot-automode.png](images/screenshot-automode.png) | Claude Code Today playbook: screenshot-automode.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/claude-code-today/screenshot-automode.png |
