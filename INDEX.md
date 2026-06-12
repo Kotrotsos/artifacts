@@ -512,3 +512,4 @@
 | 2026-06-12 | content | images | [screenshot-agentsview.png](projects/content/images/screenshot-agentsview.png) | Claude Code Today playbook: screenshot-agentsview.png |
 | 2026-06-12 | content | images | [screenshot-security.png](projects/content/images/screenshot-security.png) | Claude Code Today playbook: screenshot-security.png |
 | 2026-06-12 | content | images | [screenshot-workflow.png](projects/content/images/screenshot-workflow.png) | Claude Code Today playbook: screenshot-workflow.png |
+| 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | Claude Code Today playbook: draft.html |
