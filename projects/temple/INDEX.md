@@ -14,3 +14,4 @@
 | 2026-06-12 | docs | [temple-deck.pdf](docs/temple-deck.pdf) | Temple deck v4 PDF, simplified pitch | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck.pdf |
 | 2026-06-12 | reports | [temple-deck-share.html](reports/temple-deck-share.html) | Temple deck v4 self-contained share build, fonts and images embedded | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck-share.html |
 | 2026-06-12 | reports | [recipes.html](reports/recipes.html) | Temple recipes authoring documentation, fact-checked against engine source | /Users/marcokotrotsos/projects/temple/src/docs/recipes.html |
+| 2026-06-12 | reports | [temple-how-it-works.html](reports/temple-how-it-works.html) | How Temple works: entity flow, blueprints, state and transition enforcement | /Users/marcokotrotsos/projects/temple/artifacts/temple-how-it-works.html |
