@@ -520,3 +520,4 @@
 | 2026-06-12 | content | images | [diagram-three-parts.png](projects/content/images/diagram-three-parts.png) | AI-Native Company substrate article: diagram-three-parts.png |
 | 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | AI-Native Company substrate article: draft.html |
 | 2026-06-12 | content | reports | [index.html](projects/content/reports/index.html) | Working in the Age of Agents courseware site: 6 modules, 22 lessons, progress tracking, light/dark toggle |
+| 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | Courseware hero, Flat Iso ascending module steps |
