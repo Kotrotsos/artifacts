@@ -522,3 +522,4 @@
 | 2026-06-12 | content | reports | [index.html](projects/content/reports/index.html) | Working in the Age of Agents courseware site: 6 modules, 22 lessons, progress tracking, light/dark toggle |
 | 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | Courseware hero, Flat Iso ascending module steps |
 | 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | The Exponential Meets the Linear trifecta: hero.png |
+| 2026-06-12 | content | images | [diagram-two-curves.png](projects/content/images/diagram-two-curves.png) | The Exponential Meets the Linear trifecta: diagram-two-curves.png |
