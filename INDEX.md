@@ -510,3 +510,4 @@
 | 2026-06-12 | content | images | [hero.png](projects/content/images/hero.png) | Claude Code Today playbook: hero.png |
 | 2026-06-12 | content | images | [screenshot-automode.png](projects/content/images/screenshot-automode.png) | Claude Code Today playbook: screenshot-automode.png |
 | 2026-06-12 | content | images | [screenshot-agentsview.png](projects/content/images/screenshot-agentsview.png) | Claude Code Today playbook: screenshot-agentsview.png |
+| 2026-06-12 | content | images | [screenshot-security.png](projects/content/images/screenshot-security.png) | Claude Code Today playbook: screenshot-security.png |
