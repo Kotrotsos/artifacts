@@ -12,3 +12,4 @@
 | 2026-06-12 | docs | [temple-deck.pdf](docs/temple-deck.pdf) | Temple deck v3 PDF export, 20 slides | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck.pdf |
 | 2026-06-12 | reports | [temple-deck.html](reports/temple-deck.html) | Temple deck v4: simplified pitch, data-rules-screen framing from judge panel | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck.html |
 | 2026-06-12 | docs | [temple-deck.pdf](docs/temple-deck.pdf) | Temple deck v4 PDF, simplified pitch | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck.pdf |
+| 2026-06-12 | reports | [temple-deck-share.html](reports/temple-deck-share.html) | Temple deck v4 self-contained share build, fonts and images embedded | /Users/marcokotrotsos/projects/temple/artifacts/temple-deck-share.html |
