@@ -297,3 +297,4 @@
 | 2026-06-13 | reports | [draft.html](reports/draft.html) | Five Signals From the Frontier article (animated branded visuals): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/draft.html |
 | 2026-06-13 | images | [hero.gif](images/hero.gif) | Five Signals article v2: animated illustrated hero, static readable diagrams: hero.gif | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/hero.gif |
 | 2026-06-13 | images | [hero-art.png](images/hero-art.png) | Five Signals article v2: animated illustrated hero, static readable diagrams: hero-art.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/hero-art.png |
+| 2026-06-13 | images | [chart-selfplay.png](images/chart-selfplay.png) | Five Signals article v2: animated illustrated hero, static readable diagrams: chart-selfplay.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/chart-selfplay.png |

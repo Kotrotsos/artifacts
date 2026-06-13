@@ -556,3 +556,4 @@
 | 2026-06-13 | content | reports | [draft.html](projects/content/reports/draft.html) | Five Signals From the Frontier article (animated branded visuals): draft.html |
 | 2026-06-13 | content | images | [hero.gif](projects/content/images/hero.gif) | Five Signals article v2: animated illustrated hero, static readable diagrams: hero.gif |
 | 2026-06-13 | content | images | [hero-art.png](projects/content/images/hero-art.png) | Five Signals article v2: animated illustrated hero, static readable diagrams: hero-art.png |
+| 2026-06-13 | content | images | [chart-selfplay.png](projects/content/images/chart-selfplay.png) | Five Signals article v2: animated illustrated hero, static readable diagrams: chart-selfplay.png |
