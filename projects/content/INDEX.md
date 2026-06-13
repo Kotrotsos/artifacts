@@ -293,3 +293,4 @@
 | 2026-06-13 | reports | [draft.html](reports/draft.html) | Tone Fix evals article with margin-fixed animated gif | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/draft.html |
 | 2026-06-13 | images | [hero.gif](images/hero.gif) | Five Signals From the Frontier article (animated branded visuals): hero.gif | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/hero.gif |
 | 2026-06-13 | images | [chart-selfplay.gif](images/chart-selfplay.gif) | Five Signals From the Frontier article (animated branded visuals): chart-selfplay.gif | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/chart-selfplay.gif |
+| 2026-06-13 | images | [signals-summary.gif](images/signals-summary.gif) | Five Signals From the Frontier article (animated branded visuals): signals-summary.gif | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/signals-summary.gif |
