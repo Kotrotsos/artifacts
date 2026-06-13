@@ -291,3 +291,4 @@
 | 2026-06-13 | reports | [draft.html](reports/draft.html) | Tone Fix evals article (animated eval gif, red accent variant): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/draft.html |
 | 2026-06-13 | images | [after-the-tone-edit.gif](images/after-the-tone-edit.gif) | After the tone edit, animated eval gif v2: more margin, fog uncropped, list static | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/after-the-tone-edit.gif |
 | 2026-06-13 | reports | [draft.html](reports/draft.html) | Tone Fix evals article with margin-fixed animated gif | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/draft.html |
+| 2026-06-13 | images | [hero.gif](images/hero.gif) | Five Signals From the Frontier article (animated branded visuals): hero.gif | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/hero.gif |
