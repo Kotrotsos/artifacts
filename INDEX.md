@@ -546,3 +546,4 @@
 | 2026-06-13 | content | reports | [draft.html](projects/content/reports/draft.html) | Tone Fix evals article, alt text aligned to Articles variant |
 | 2026-06-13 | content | images | [after-the-tone-edit.gif](projects/content/images/after-the-tone-edit.gif) | Tone Fix evals article (animated eval gif, red accent variant): after-the-tone-edit.gif |
 | 2026-06-13 | content | images | [hero.png](projects/content/images/hero.png) | Tone Fix evals article (animated eval gif, red accent variant): hero.png |
+| 2026-06-13 | content | images | [diagram-categories.png](projects/content/images/diagram-categories.png) | Tone Fix evals article (animated eval gif, red accent variant): diagram-categories.png |
