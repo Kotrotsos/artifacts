@@ -14,3 +14,4 @@
 | 2026-06-06 | reports | [chapter-plan.html](reports/chapter-plan.html) | Claude Code Unstoppable chapter plan: 4 volumes, 35 chapters from platform docs | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book05/sitemap/chapter-plan.html |
 | 2026-06-08 | reports | [kdp-submission.html](reports/kdp-submission.html) | KDP submission playbook for Claude Code Unstoppable (ebook + 8x10 paperback) | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book05/artifacts/kdp-submission.html |
 | 2026-06-12 | reports | [kdp-submission.html](reports/kdp-submission.html) | KDP submission playbook (updated: 8x10 trim-size trap) | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book05/artifacts/kdp-submission.html |
+| 2026-06-13 | reports | [cover-concepts.html](reports/cover-concepts.html) | Cover concept board: 6 color-forward ideas with mascot and author photo | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book05/artifacts/cover-concepts.html |
