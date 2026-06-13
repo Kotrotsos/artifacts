@@ -537,3 +537,4 @@
 | 2026-06-13 | print | reports | [eval-report-20260613T155113.html](projects/print/reports/eval-report-20260613T155113.html) | Matcher eval report — hybrid descriptor+ORB candidate selection, partial-print recall fix |
 | 2026-06-13 | content | images | [hero.png](projects/content/images/hero.png) | Tone Fix Broke the Agent (evals, nxtphase-branded visuals, plugs From Vibe to Production): hero.png |
 | 2026-06-13 | content | images | [screenshot-evalrun.png](projects/content/images/screenshot-evalrun.png) | Tone Fix Broke the Agent (evals, nxtphase-branded visuals, plugs From Vibe to Production): screenshot-evalrun.png |
+| 2026-06-13 | content | images | [diagram-categories.png](projects/content/images/diagram-categories.png) | Tone Fix Broke the Agent (evals, nxtphase-branded visuals, plugs From Vibe to Production): diagram-categories.png |
