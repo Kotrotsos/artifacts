@@ -549,3 +549,4 @@
 | 2026-06-13 | content | images | [diagram-categories.png](projects/content/images/diagram-categories.png) | Tone Fix evals article (animated eval gif, red accent variant): diagram-categories.png |
 | 2026-06-13 | content | reports | [draft.html](projects/content/reports/draft.html) | Tone Fix evals article (animated eval gif, red accent variant): draft.html |
 | 2026-06-13 | content | images | [after-the-tone-edit.gif](projects/content/images/after-the-tone-edit.gif) | After the tone edit, animated eval gif v2: more margin, fog uncropped, list static |
+| 2026-06-13 | content | reports | [draft.html](projects/content/reports/draft.html) | Tone Fix evals article with margin-fixed animated gif |
