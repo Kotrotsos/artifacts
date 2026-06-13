@@ -286,3 +286,4 @@
 | 2026-06-13 | reports | [draft.html](reports/draft.html) | Tone Fix evals article, nxtphase Articles variant visuals (white, red, blue, fog): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/draft.html |
 | 2026-06-13 | reports | [draft.html](reports/draft.html) | Tone Fix evals article, alt text aligned to Articles variant | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/draft.html |
 | 2026-06-13 | images | [after-the-tone-edit.gif](images/after-the-tone-edit.gif) | Tone Fix evals article (animated eval gif, red accent variant): after-the-tone-edit.gif | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/after-the-tone-edit.gif |
+| 2026-06-13 | images | [hero.png](images/hero.png) | Tone Fix evals article (animated eval gif, red accent variant): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/evals-are-the-engineering/hero.png |
