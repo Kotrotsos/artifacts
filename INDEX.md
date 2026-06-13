@@ -557,3 +557,4 @@
 | 2026-06-13 | content | images | [hero.gif](projects/content/images/hero.gif) | Five Signals article v2: animated illustrated hero, static readable diagrams: hero.gif |
 | 2026-06-13 | content | images | [hero-art.png](projects/content/images/hero-art.png) | Five Signals article v2: animated illustrated hero, static readable diagrams: hero-art.png |
 | 2026-06-13 | content | images | [chart-selfplay.png](projects/content/images/chart-selfplay.png) | Five Signals article v2: animated illustrated hero, static readable diagrams: chart-selfplay.png |
+| 2026-06-13 | content | images | [signals-summary.png](projects/content/images/signals-summary.png) | Five Signals article v2: animated illustrated hero, static readable diagrams: signals-summary.png |
