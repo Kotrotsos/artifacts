@@ -551,3 +551,4 @@
 | 2026-06-13 | content | images | [after-the-tone-edit.gif](projects/content/images/after-the-tone-edit.gif) | After the tone edit, animated eval gif v2: more margin, fog uncropped, list static |
 | 2026-06-13 | content | reports | [draft.html](projects/content/reports/draft.html) | Tone Fix evals article with margin-fixed animated gif |
 | 2026-06-13 | content | images | [hero.gif](projects/content/images/hero.gif) | Five Signals From the Frontier article (animated branded visuals): hero.gif |
+| 2026-06-13 | content | images | [chart-selfplay.gif](projects/content/images/chart-selfplay.gif) | Five Signals From the Frontier article (animated branded visuals): chart-selfplay.gif |
