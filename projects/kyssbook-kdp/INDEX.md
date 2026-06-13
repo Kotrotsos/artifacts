@@ -15,3 +15,4 @@
 | 2026-06-08 | reports | [kdp-submission.html](reports/kdp-submission.html) | KDP submission playbook for Claude Code Unstoppable (ebook + 8x10 paperback) | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book05/artifacts/kdp-submission.html |
 | 2026-06-12 | reports | [kdp-submission.html](reports/kdp-submission.html) | KDP submission playbook (updated: 8x10 trim-size trap) | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book05/artifacts/kdp-submission.html |
 | 2026-06-13 | reports | [cover-concepts.html](reports/cover-concepts.html) | Cover concept board: 6 color-forward ideas with mascot and author photo | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book05/artifacts/cover-concepts.html |
+| 2026-06-13 | reports | [kdp-aplus.html](reports/kdp-aplus.html) | KDP A+ Content: 5-module layout with copy and 300 DPI images | /Users/marcokotrotsos/PERSONAL/kyssbook-kdp/book05/artifacts/kdp-aplus.html |

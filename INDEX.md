@@ -533,3 +533,4 @@
 | 2026-06-12 | content | reports | [draft.html](projects/content/reports/draft.html) | Evals Are the Engineering article (plugs From Vibe to Production ch9): draft.html |
 | 2026-06-12 | temple | reports | [temple-how-it-works.html](projects/temple/reports/temple-how-it-works.html) | How Temple works: entity flow, blueprints, state and transition enforcement |
 | 2026-06-13 | kyssbook-kdp | reports | [cover-concepts.html](projects/kyssbook-kdp/reports/cover-concepts.html) | Cover concept board: 6 color-forward ideas with mascot and author photo |
+| 2026-06-13 | kyssbook-kdp | reports | [kdp-aplus.html](projects/kyssbook-kdp/reports/kdp-aplus.html) | KDP A+ Content: 5-module layout with copy and 300 DPI images |
