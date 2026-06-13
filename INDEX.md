@@ -543,3 +543,4 @@
 | 2026-06-13 | content | images | [screenshot-evalrun.png](projects/content/images/screenshot-evalrun.png) | Tone Fix evals article, nxtphase Articles variant visuals (white, red, blue, fog): screenshot-evalrun.png |
 | 2026-06-13 | content | images | [diagram-categories.png](projects/content/images/diagram-categories.png) | Tone Fix evals article, nxtphase Articles variant visuals (white, red, blue, fog): diagram-categories.png |
 | 2026-06-13 | content | reports | [draft.html](projects/content/reports/draft.html) | Tone Fix evals article, nxtphase Articles variant visuals (white, red, blue, fog): draft.html |
+| 2026-06-13 | content | reports | [draft.html](projects/content/reports/draft.html) | Tone Fix evals article, alt text aligned to Articles variant |
