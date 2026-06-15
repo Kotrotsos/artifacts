@@ -565,3 +565,4 @@
 | 2026-06-15 | content | images | [diagram-escalation.png](projects/content/images/diagram-escalation.png) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): diagram-escalation.png |
 | 2026-06-15 | content | images | [diagram-stops.png](projects/content/images/diagram-stops.png) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): diagram-stops.png |
 | 2026-06-15 | content | reports | [draft.html](projects/content/reports/draft.html) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): draft.html |
+| 2026-06-15 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): substack-version.html |
