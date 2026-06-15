@@ -300,3 +300,4 @@
 | 2026-06-13 | images | [chart-selfplay.png](images/chart-selfplay.png) | Five Signals article v2: animated illustrated hero, static readable diagrams: chart-selfplay.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/chart-selfplay.png |
 | 2026-06-13 | images | [signals-summary.png](images/signals-summary.png) | Five Signals article v2: animated illustrated hero, static readable diagrams: signals-summary.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/signals-summary.png |
 | 2026-06-13 | reports | [draft.html](reports/draft.html) | Five Signals article v2: animated illustrated hero, static readable diagrams: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/draft.html |
+| 2026-06-15 | images | [hero.gif](images/hero.gif) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): hero.gif | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/hero.gif |
