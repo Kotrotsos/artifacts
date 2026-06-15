@@ -561,3 +561,4 @@
 | 2026-06-13 | content | reports | [draft.html](projects/content/reports/draft.html) | Five Signals article v2: animated illustrated hero, static readable diagrams: draft.html |
 | 2026-06-15 | elastofirm-profiler | reports | [profile-selection-verification.html](projects/elastofirm-profiler/reports/profile-selection-verification.html) | Verification: file-explorer profile selection + right-click context menu (v0.37.0) |
 | 2026-06-15 | content | images | [hero.gif](projects/content/images/hero.gif) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): hero.gif |
+| 2026-06-15 | content | images | [hero-art.png](projects/content/images/hero-art.png) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): hero-art.png |
