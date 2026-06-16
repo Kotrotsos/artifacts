@@ -596,3 +596,4 @@
 | 2026-06-16 | elastofirm-profiler | reports | [canon-dt-course.html](projects/elastofirm-profiler/reports/canon-dt-course.html) | Course site teaching how canon_dt matching works with visual pipeline images and schematics |
 | 2026-06-16 | elastofirm-profiler | reports | [canon-dt-course.html](projects/elastofirm-profiler/reports/canon-dt-course.html) | canon_dt course v2: adds square-ish failure-mode lesson with eccentricity-gate benchmark |
 | 2026-06-16 | elastofirm-profiler | reports | [ab-matcher.html](projects/elastofirm-profiler/reports/ab-matcher.html) | A/B: live production matcher vs eccentricity-gated canon_dt+ORB matcher, rotation/margin recovery |
+| 2026-06-16 | content | images | [hero.png](projects/content/images/hero.png) | Five Signals article, static images in current clean style (no animation): hero.png |
