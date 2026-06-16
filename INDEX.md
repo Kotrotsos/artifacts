@@ -593,3 +593,4 @@
 | 2026-06-16 | elastofirm-profiler | reports | [match-report.html](projects/elastofirm-profiler/reports/match-report.html) | Visual match report: 10 source profiles with nearest catalogue matches and similarity scores |
 | 2026-06-16 | temple | reports | [temple-access-control.html](projects/temple/reports/temple-access-control.html) | Access control docs: spaces, grants, bouncer logic, and prompting guide for personal/team/company data |
 | 2026-06-16 | elastofirm-profiler | reports | [match-report.html](projects/elastofirm-profiler/reports/match-report.html) | Rotation matcher comparison: current global HOG vs canon_dt recovering rotated profiles |
+| 2026-06-16 | elastofirm-profiler | reports | [canon-dt-course.html](projects/elastofirm-profiler/reports/canon-dt-course.html) | Course site teaching how canon_dt matching works with visual pipeline images and schematics |
