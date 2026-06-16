@@ -585,3 +585,4 @@
 | 2026-06-16 | content | reports | [draft.html](projects/content/reports/draft.html) | Agent Credit Card, no gradient, clean white cards with warm shadow: draft.html |
 | 2026-06-16 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | Agent Credit Card, no gradient, clean white cards with warm shadow: substack-version.html |
 | 2026-06-16 | content | images | [hero.png](projects/content/images/hero.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): hero.png |
+| 2026-06-16 | content | images | [hero-art.png](projects/content/images/hero-art.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): hero-art.png |

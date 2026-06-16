@@ -325,3 +325,4 @@
 | 2026-06-16 | reports | [draft.html](reports/draft.html) | Agent Credit Card, no gradient, clean white cards with warm shadow: draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/draft.html |
 | 2026-06-16 | reports | [substack-version.html](reports/substack-version.html) | Agent Credit Card, no gradient, clean white cards with warm shadow: substack-version.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/substack-version.html |
 | 2026-06-16 | images | [hero.png](images/hero.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/small-agent-stuck/hero.png |
+| 2026-06-16 | images | [hero-art.png](images/hero-art.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): hero-art.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/small-agent-stuck/hero-art.png |
