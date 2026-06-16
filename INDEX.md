@@ -574,3 +574,4 @@
 | 2026-06-16 | content | images | [diagram-stops.png](projects/content/images/diagram-stops.png) | Agent Credit Card, tight snug-glow cards (no margin overflow): diagram-stops.png |
 | 2026-06-16 | content | reports | [draft.html](projects/content/reports/draft.html) | Agent Credit Card, tight snug-glow cards (no margin overflow): draft.html |
 | 2026-06-16 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | Agent Credit Card, tight snug-glow cards (no margin overflow): substack-version.html |
+| 2026-06-16 | content | images | [hero.png](projects/content/images/hero.png) | Agent Credit Card, softer/more-transparent snug glow: hero.png |
