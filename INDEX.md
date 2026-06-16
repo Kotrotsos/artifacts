@@ -602,3 +602,4 @@
 | 2026-06-16 | content | reports | [draft.html](projects/content/reports/draft.html) | Five Signals article, static images in current clean style (no animation): draft.html |
 | 2026-06-16 | elastofirm-profiler | reports | [ab-diagnose.html](projects/elastofirm-profiler/reports/ab-diagnose.html) | Ranking diagnosis: RP-11176 under 5 scoring schemes, canon-cos vs ORB-heavy combined |
 | 2026-06-16 | temple | reports | [temple-manual.html](projects/temple/reports/temple-manual.html) | The Temple Manual: full guide from thesis to architecture, concepts, apps, MCP tool reference, cookbook, and screenshots |
+| 2026-06-16 | temple | reports | [temple-manual.html](projects/temple/reports/temple-manual.html) | The Temple Manual (updated): now includes show_access, show_list, and diff_versions widget screenshots |
