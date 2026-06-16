@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Temple Access Control: Spaces and Sharing</title>
+<style>
+:root{
+  --canvas:#ffffff;
+  --surface-1:#f7f8f8;
+  --surface-2:#f0f1f2;
+  --surface-3:#e8eaec;
+  --hairline:#e2e3e5;
+  --hairline-strong:#d2d4d8;
+  --ink:#08090a;
+  --ink-muted:#3c4149;
+  --ink-subtle:#6b7280;
+  --ink-tertiary:#9aa0a6;
+  --accent:#5e6ad2;
+  --accent-hover:#4d59c4;
+  --accent-soft:rgba(94,106,210,.10);
+  --accent-on:#ffffff;
+  --success:#1f8c3a;
+  --success-soft:rgba(31,140,58,.10);
+  --warn:#a96f12;
+  --warn-soft:rgba(169,111,18,.12);
+  --danger:#c0392b;
+  --danger-soft:rgba(192,57,43,.10);
+  --font-display:"Inter","SF Pro Display",-apple-system,system-ui,"Segoe UI",Roboto,sans-serif;
+  --font-text:"Inter","SF Pro Display",-apple-system,system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --maxw:780px;
+}
+html[data-theme="dark"]{
+  --canvas:#08090a;
+  --surface-1:#0f1011;
+  --surface-2:#141517;
+  --surface-3:#1a1c1e;
+  --hairline:#23252a;
+  --hairline-strong:#34343a;
+  --ink:#f7f8f8;
+  --ink-muted:#d0d6e0;
+  --ink-subtle:#8a8f98;
+  --ink-tertiary:#62666d;
+  --accent:#5e6ad2;
+  --accent-hover:#828fff;
+  --accent-soft:rgba(94,106,210,.16);
+  --accent-on:#ffffff;
+  --success:#3fb95a;
+  --success-soft:rgba(63,185,90,.14);
+  --warn:#d99a2b;
+  --warn-soft:rgba(217,154,43,.14);
+  --danger:#e0584a;
+  --danger-soft:rgba(224,88,74,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--canvas);color:var(--ink);font-family:var(--font-text);font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{color:var(--accent-hover);text-decoration:underline;}
+code{font-family:var(--font-mono);font-size:.86em;background:var(--surface-2);border:1px solid var(--hairline);border-radius:5px;padding:1px 5px;color:var(--ink-muted);}
+.layout{display:grid;grid-template-columns:248px 1fr;min-height:100vh;}
+
+/* Sidebar */
+.sidebar{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;border-right:1px solid var(--hairline);background:var(--surface-1);padding:26px 20px;}
+.brand{display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+.brand-dot{width:11px;height:11px;border-radius:3px;background:var(--accent);}
+.brand-name{font-family:var(--font-display);font-weight:700;letter-spacing:-.3px;font-size:15px;}
+.brand-sub{font-size:11px;color:var(--ink-tertiary);font-family:var(--font-mono);margin-bottom:22px;}
+.nav{display:flex;flex-direction:column;gap:1px;}
+.nav-group{font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-tertiary);margin:18px 0 7px;}
+.nav a{color:var(--ink-subtle);font-size:13.5px;padding:5px 9px;border-radius:7px;display:block;}
+.nav a:hover{background:var(--surface-2);color:var(--ink);text-decoration:none;}
+.nav a.active{background:var(--accent-soft);color:var(--accent);font-weight:600;}
+
+/* Theme toggle */
+.theme-toggle{display:flex;gap:2px;margin-top:24px;background:var(--surface-2);border:1px solid var(--hairline);border-radius:9px;padding:3px;}
+.theme-toggle button{flex:1;font-family:var(--font-text);font-size:11.5px;font-weight:600;color:var(--ink-subtle);background:transparent;border:0;border-radius:6px;padding:5px 0;cursor:pointer;}
+.theme-toggle button.active{background:var(--canvas);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08);}
+
+/* Content */
+.content{padding:56px 48px 120px;max-width:calc(var(--maxw) + 96px);}
+.hero{margin-bottom:48px;}
+.eyebrow{font-family:var(--font-mono);font-size:12px;color:var(--accent);letter-spacing:.4px;margin-bottom:12px;}
+h1{font-family:var(--font-display);font-size:40px;font-weight:700;letter-spacing:-1.1px;line-height:1.08;margin-bottom:16px;}
+.lede{font-size:18px;color:var(--ink-muted);line-height:1.55;max-width:var(--maxw);}
+section{margin-bottom:52px;scroll-margin-top:24px;max-width:var(--maxw);}
+h2{font-family:var(--font-display);font-size:25px;font-weight:650;letter-spacing:-.5px;margin-bottom:14px;padding-top:8px;}
+h3{font-family:var(--font-display);font-size:17px;font-weight:600;letter-spacing:-.2px;margin:26px 0 10px;}
+p{margin-bottom:14px;color:var(--ink-muted);}
+strong{color:var(--ink);font-weight:600;}
+ul,ol{margin:0 0 14px 22px;color:var(--ink-muted);}
+li{margin-bottom:7px;}
+
+/* Callouts */
+.note{border:1px solid var(--hairline);border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:9px;padding:15px 18px;margin:18px 0;font-size:14.5px;}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft);}
+.note.good{border-left-color:var(--success);background:var(--success-soft);}
+.note .lbl{font-weight:700;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-subtle);display:block;margin-bottom:5px;}
+
+/* Axis cards */
+.axes{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+.axis{border:1px solid var(--hairline);border-radius:12px;padding:20px;background:var(--surface-1);}
+.axis h4{font-family:var(--font-display);font-size:15px;font-weight:650;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.axis .tag{font-family:var(--font-mono);font-size:10.5px;padding:2px 7px;border-radius:6px;background:var(--surface-3);color:var(--ink-subtle);}
+.axis p{font-size:13.5px;margin-bottom:0;}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--hairline);vertical-align:top;}
+th{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-subtle);background:var(--surface-1);}
+td code{white-space:nowrap;}
+tr:last-child td{border-bottom:0;}
+
+/* Pills */
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:9999px;font-size:12px;font-weight:600;padding:2px 10px;white-space:nowrap;}
+.pill .dot{width:7px;height:7px;border-radius:50%;}
+.pill.personal{color:var(--success);background:var(--success-soft);}.pill.personal .dot{background:var(--success);}
+.pill.team{color:var(--accent);background:var(--accent-soft);}.pill.team .dot{background:var(--accent);}
+.pill.company{color:var(--accent-hover);background:var(--accent-soft);}.pill.company .dot{background:var(--accent-hover);}
+
+/* Code blocks */
+pre{background:var(--surface-1);border:1px solid var(--hairline);border-radius:11px;padding:18px 20px;overflow-x:auto;margin:16px 0;font-family:var(--font-mono);font-size:12.8px;line-height:1.7;color:var(--ink-muted);}
+pre code{background:none;border:0;padding:0;font-size:inherit;color:inherit;}
+pre .c{color:var(--ink-tertiary);}
+pre .k{color:var(--accent);}
+
+/* Prompt examples */
+.prompt{border:1px solid var(--hairline);border-radius:11px;padding:0;margin:14px 0;overflow:hidden;background:var(--surface-1);}
+.prompt .scenario{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-subtle);padding:11px 16px 0;}
+.prompt .say{font-family:var(--font-mono);font-size:13px;color:var(--ink);padding:8px 16px;}
+.prompt .say::before{content:"\201C";color:var(--ink-tertiary);}
+.prompt .say::after{content:"\201D";color:var(--ink-tertiary);}
+.prompt .does{font-size:13px;color:var(--ink-subtle);padding:9px 16px 14px;border-top:1px solid var(--hairline);background:var(--surface-2);}
+.prompt .does b{color:var(--ink);font-weight:600;}
+
+.footer{max-width:var(--maxw);margin-top:40px;padding-top:22px;border-top:1px solid var(--hairline);font-size:13px;color:var(--ink-tertiary);}
+
+@media (max-width:880px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--hairline);}
+  .content{padding:36px 24px 80px;}
+  .axes{grid-template-columns:1fr;}
+  h1{font-size:32px;}
+}
+@media print{
+  .sidebar{display:none;}
+  .layout{grid-template-columns:1fr;}
+  .content{padding:0;max-width:100%;}
+  a{color:var(--ink);text-decoration:none;}
+  .note,.axis,pre,.prompt,table{break-inside:avoid;}
+  section{break-inside:avoid-page;}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-dot"></span><span class="brand-name">Temple</span></div>
+    <div class="brand-sub">access control</div>
+    <nav class="nav" id="nav">
+      <div class="nav-group">Model</div>
+      <a href="#overview">Two axes</a>
+      <a href="#spaces">Spaces</a>
+      <a href="#ownership">Ownership and writes</a>
+      <a href="#sharing">Sharing and grants</a>
+      <div class="nav-group">Safety</div>
+      <a href="#defaults">Safe defaults</a>
+      <a href="#fks">Cross-space keys</a>
+      <a href="#bouncer">Bouncer logic</a>
+      <div class="nav-group">Reference</div>
+      <a href="#tools">Tools</a>
+      <a href="#schema">Schema</a>
+      <a href="#prompting">Prompting guide</a>
+    </nav>
+    <div class="theme-toggle" id="themeToggle">
+      <button data-mode="light">Light</button>
+      <button data-mode="dark">Dark</button>
+      <button data-mode="system">System</button>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="hero">
+      <div class="eyebrow">Temple // personal, team, and company data, kept apart on purpose</div>
+      <h1>Spaces and Sharing</h1>
+      <p class="lede">How Temple lets people keep private work, contribute to shared datasources, and share specific things with specific people, without personal data leaking into the shared world or project data accidentally landing in a personal store.</p>
+    </div>
+
+    <section id="overview">
+      <h2>The two axes</h2>
+      <p>Every safety property comes from keeping two ideas strictly apart. Most cross-contamination bugs are really one of these two being confused for the other.</p>
+      <div class="axes">
+        <div class="axis">
+          <h4>Ownership <span class="tag">immutable</span></h4>
+          <p>Every entity belongs to exactly one <strong>home space</strong>, set when it is created and never changed by a normal write. The home space decides where writes land, the foreign-key boundary, and provenance.</p>
+        </div>
+        <div class="axis">
+          <h4>Access <span class="tag">revocable</span></h4>
+          <p>Who may read, comment on, or write a thing. <strong>Grants</strong> are layered on top of ownership. They are audited, reversible, and they never move data between spaces.</p>
+        </div>
+      </div>
+      <div class="note good">
+        <span class="lbl">The key idea</span>
+        Sharing with a person or a group is purely the access axis. A personal note you share with a colleague stays in your personal space; they simply hold a read grant on it. Nothing moves.
+      </div>
+    </section>
+
+    <section id="spaces">
+      <h2>Spaces</h2>
+      <p>A space is the home, and the owner, of the entities inside it. There are three kinds, all living inside an org. Org isolation is the outer hard wall; spaces partition within the org.</p>
+      <table>
+        <thead><tr><th>Kind</th><th>Home for</th><th>Members</th></tr></thead>
+        <tbody>
+          <tr><td><span class="pill personal"><span class="dot"></span>Personal</span></td><td>one user's private data</td><td>the owner only (implicit)</td></tr>
+          <tr><td><span class="pill team"><span class="dot"></span>Team</span></td><td>a named group's shared data</td><td>explicit members in <code>space_members</code></td></tr>
+          <tr><td><span class="pill company"><span class="dot"></span>Company</span></td><td>org-wide shared data</td><td>every org member (implicit)</td></tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <span class="lbl">Share, or use a space?</span>
+        Share when <em>access</em> is the point and you stay the owner. Use a team or company space when <em>joint ownership</em> is the point. If you keep sharing the same personal collection with the same five people, that is the signal to promote it into a team space.
+      </div>
+    </section>
+
+    <section id="ownership">
+      <h2>Ownership and write resolution</h2>
+      <p>The dangerous moment is a write: where does the new data land? Temple resolves the home space of a new entity in a fixed order, so the answer is never a silent guess.</p>
+      <ol>
+        <li>an explicit <code>space</code> argument, if one was given;</li>
+        <li>else the parent or collection's home space, so contributing into a shared collection lands in that collection, not in the writer's own store;</li>
+        <li>else the actor's personal space, which is the safe default.</li>
+      </ol>
+      <p>A write to an <strong>existing</strong> entity always resolves to that entity's home space, never the writer's. Editing a shared document edits it in place rather than forking a private copy. This is exactly what answers the two original worries: you can contribute to something shared with you without it secretly landing in your own store, and your edits do not silently leave the shared space.</p>
+      <p>Moving an entity from one space to another is a separate, audited <code>transfer</code> (promote) operation. It is the only thing that crosses a boundary, and it is deliberate, never a side effect.</p>
+    </section>
+
+    <section id="sharing">
+      <h2>Sharing and grants</h2>
+      <p>A grant says: principal <strong>P</strong> may act at level <strong>L</strong> on target <strong>T</strong>. That is the whole vocabulary of sharing.</p>
+      <h3>Principals (who you can share with)</h3>
+      <table>
+        <thead><tr><th>Kind</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><code>user</code></td><td>a single person, matched by email</td></tr>
+          <tr><td><code>group</code></td><td>an ad-hoc named set of users, like "launch reviewers"</td></tr>
+          <tr><td><code>space</code></td><td>a team space, whose membership doubles as a principal</td></tr>
+        </tbody>
+      </table>
+      <h3>Targets and levels</h3>
+      <p>You can grant on a single <code>entity</code>, a <code>collection</code> (a container whose members inherit the grant), or a whole <code>space</code>. Levels are ordered: <code>read</code> &lt; <code>comment</code> &lt; <code>write</code>.</p>
+      <div class="note good">
+        <span class="lbl">Why sharing is the safe verb</span>
+        A grant never moves data, so it cannot leak by accident. It is reversible: revoke and the access is gone, with the whole history kept. Re-granting the same pair revokes the old grant and writes a new one, so there is at most one live grant per pair and every change is auditable.
+      </div>
+    </section>
+
+    <section id="defaults">
+      <h2>Safe defaults and asymmetry</h2>
+      <p>The two failure modes are not equally bad, so they are not guarded equally.</p>
+      <table>
+        <thead><tr><th>Direction</th><th>What it is</th><th>Guard</th></tr></thead>
+        <tbody>
+          <tr><td>Personal to shared</td><td>confidentiality breach: visible to others, hard to retract</td><td>default-deny; explicit confirmation</td></tr>
+          <tr><td>Shared to personal</td><td>governance sprawl: annoying, recoverable</td><td>low-friction; default-allow</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>Writes to a shared space require an explicit membership grant; the bouncer rejects them otherwise.</li>
+        <li>Writes to your personal space are default-allow.</li>
+        <li>Granting <strong>read</strong> is low-friction. Granting <strong>write</strong>, or sharing anything out of a space you do not personally own, is echoed back and confirmed before it commits.</li>
+        <li>If a write scope is ever ambiguous, it defaults to personal. The failure mode becomes "my data stayed private," never "my data went public."</li>
+      </ul>
+    </section>
+
+    <section id="fks">
+      <h2>Cross-space foreign keys</h2>
+      <p>Temple's relations are typed foreign keys, checked statically by the verifier and at runtime by the bouncer. The space rule extends that check.</p>
+      <ul>
+        <li>A relation may not point across a space boundary unless the blueprint declares it cross-space.</li>
+        <li>A cross-space reference, when allowed, requires the actor to be able to read both sides.</li>
+        <li>Linked records are never auto-shared. Sharing one record does not transitively expose the records it points at.</li>
+      </ul>
+      <p>This stops a personal note from hard-linking a shared record, which would break for everyone else, and stops a shared record from depending on something only you can see.</p>
+    </section>
+
+    <section id="bouncer">
+      <h2>Bouncer evaluation</h2>
+      <p><code>resolveAccess(actor, entity, need)</code> is the entry point. It is an AND of two gates: the RBAC capability (can this role read or write at all) and the access decision (can this actor touch this specific entity).</p>
+      <pre><code><span class="c">// 1. Hard walls</span>
+if (entity.org_id !== actor.orgId) <span class="k">deny</span>(<span class="c">"cross-org"</span>)
+
+<span class="c">// 2. RBAC capability gate (role-wide)</span>
+need === <span class="c">"read"</span> ? require can(actor, <span class="c">"entity.read"</span>)
+                  : require can(actor, <span class="c">"entity.update"</span>)
+
+<span class="c">// 3. Access gate: most permissive of ownership OR grants</span>
+<span class="k">evaluateAccess</span>(need, {
+  ownership:  owner of personal home  -&gt; write
+              member of team home      -&gt; write
+              any member, company home -&gt; write
+  grants:     strongest live grant whose principal matches the actor
+              (their user id, their groups, their team spaces)
+              and whose target matches the entity, its collection,
+              or its home space
+})
+
+<span class="c">// satisfied when rank(level) &gt;= rank(need),  read=1 comment=2 write=3</span></code></pre>
+      <p>Ownership and grants are evaluated together and the most permissive wins for the access axis; the RBAC capability is an AND gate on top, so a viewer can never write, however widely a thing is shared. The pure decision lives in <code>src/auth/access.ts</code> and is unit-testable without a database.</p>
+    </section>
+
+    <section id="tools">
+      <h2>Tools</h2>
+      <table>
+        <thead><tr><th>Tool</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td><code>grant_access</code></td><td>Share an entity or collection with a user, group, or team. Read is low-friction; write or sharing out of a space you do not own is confirmed first.</td></tr>
+          <tr><td><code>revoke_access</code></td><td>Stop sharing. Instant, audited, never needs confirmation.</td></tr>
+          <tr><td><code>list_grants</code></td><td>Who an entity is shared with: every live grant, level, granter, expiry.</td></tr>
+          <tr><td><code>show_access</code></td><td>Render the ownership and sharing state of an entity as an HTML artifact (the <code>access</code> widget).</td></tr>
+        </tbody>
+      </table>
+      <h3>grant_access</h3>
+      <pre><code>grant_access({
+  entityId:   <span class="k">string</span>,           <span class="c">// the entity or container to share</span>
+  principal:  <span class="k">string</span>,           <span class="c">// user email | group name | team name</span>
+  level:      <span class="k">"read"</span> | <span class="k">"comment"</span> | <span class="k">"write"</span>,
+  targetKind: <span class="k">"entity"</span> | <span class="k">"collection"</span>,  <span class="c">// optional, default entity</span>
+  expiresAt:  <span class="k">string</span>             <span class="c">// optional ISO timestamp; auto-expires</span>
+})</code></pre>
+      <p>Only the home-space owner (personal), a team-space manager, or an org admin or owner may grant access on a target.</p>
+    </section>
+
+    <section id="schema">
+      <h2>Schema</h2>
+      <p>Defined in <code>sql/003_spaces_grants.sql</code>. Five new tables plus one column.</p>
+      <pre><code><span class="k">spaces</span>(id, org_id, kind, name, owner_user_id, archived)
+<span class="k">space_members</span>(id, space_id, user_id, role)        <span class="c">// member | manager</span>
+<span class="k">groups</span>(id, org_id, name, created_by)
+<span class="k">group_members</span>(id, group_id, user_id)
+<span class="k">grants</span>(id, org_id,
+       principal_kind, principal_id,                <span class="c">// user | group | space</span>
+       target_kind, target_id,                      <span class="c">// entity | collection | space</span>
+       level, granted_by, granted_at,
+       expires_at, revoked_at, revoked_by)
+<span class="k">entities</span>.space_id                                  <span class="c">// new, immutable home space</span></code></pre>
+      <p>The live-grant uniqueness per (principal, target) pair is enforced in the app layer, by revoking the prior grant before inserting, so the schema stays portable across PostgreSQL and pg-mem.</p>
+    </section>
+
+    <section id="prompting">
+      <h2>Prompting guide</h2>
+      <p>The habit worth building: name the destination only when it is shared. "Personal" is silence; "shared," "team," and "company" are spoken words. The dangerous direction always requires an affirmative act of typing.</p>
+
+      <div class="prompt">
+        <div class="scenario">Write to personal (the common case)</div>
+        <div class="say">Jot down a note: revisit the bouncer FK rules next week.</div>
+        <div class="does">Lands in your <b>personal</b> space by default. No ceremony.</div>
+      </div>
+
+      <div class="prompt">
+        <div class="scenario">Write to shared (must be explicit)</div>
+        <div class="say">Add this to the company datasource: Q3 onboarding checklist, owner is Ops.</div>
+        <div class="does">The word "company" is the trigger. The agent echoes <b>"writing to the shared store, visible org-wide, confirm?"</b> before committing.</div>
+      </div>
+
+      <div class="prompt">
+        <div class="scenario">Ambiguous on purpose</div>
+        <div class="say">Save the new client contact for Acme.</div>
+        <div class="does">The agent <b>asks</b> "personal contacts or the shared CRM?" rather than guessing. If it ever silently picks shared, the guardrails are too weak.</div>
+      </div>
+
+      <div class="prompt">
+        <div class="scenario">Share with a person</div>
+        <div class="say">Share my Project X collection with alice@acme.com, read-only.</div>
+        <div class="does">A read grant. Project X stays in your personal space; Alice just gets access.</div>
+      </div>
+
+      <div class="prompt">
+        <div class="scenario">Share with a group</div>
+        <div class="say">Give the design group write access to the roadmap.</div>
+        <div class="does">A write grant to a group principal. The agent confirms first because it is write-level.</div>
+      </div>
+
+      <div class="prompt">
+        <div class="scenario">Time-boxed</div>
+        <div class="say">Share this record with bob@acme.com until Friday.</div>
+        <div class="does">Sets <code>expiresAt</code>; the grant auto-expires, no cleanup needed.</div>
+      </div>
+
+      <div class="prompt">
+        <div class="scenario">Revoke</div>
+        <div class="say">Stop sharing the pricing draft with Alice.</div>
+        <div class="does">Instant and audited. Revocation never needs confirmation.</div>
+      </div>
+
+      <div class="prompt">
+        <div class="scenario">Audit what is exposed</div>
+        <div class="say">Who can see this? / What have I shared out of my personal store?</div>
+        <div class="does"><code>show_access</code> renders the sharing panel; the grant ledger is the audit you actually want.</div>
+      </div>
+
+      <div class="prompt">
+        <div class="scenario">Use shared as reference, keep output private</div>
+        <div class="say">Using the shared roadmap as reference, draft my own private planning notes.</div>
+        <div class="does">Reads shared, writes personal. The cross-space FK rule keeps the personal note from hard-linking a shared record; it references by id only.</div>
+      </div>
+
+      <div class="prompt">
+        <div class="scenario">Promote (the only bridge across a boundary)</div>
+        <div class="say">Take my personal draft of the pricing page and promote it to the team space.</div>
+        <div class="does">The explicit <code>transfer</code> op. Shows a diff and confirms, because it crosses the confidentiality boundary.</div>
+      </div>
+    </section>
+
+    <div class="footer">
+      Temple access control. Source spec: <code>docs/access-control.md</code>. Implementation: <code>sql/003_spaces_grants.sql</code>, <code>src/auth/access.ts</code>, <code>src/mcp/access-tools.ts</code>.
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var toggle=document.getElementById("themeToggle");
+  var mq=window.matchMedia("(prefers-color-scheme: dark)");
+  function resolve(mode){ return mode==="system" ? (mq.matches?"dark":"light") : mode; }
+  function apply(mode){
+    root.setAttribute("data-theme", resolve(mode));
+    Array.prototype.forEach.call(toggle.children,function(b){ b.classList.toggle("active", b.dataset.mode===mode); });
+  }
+  var saved=localStorage.getItem("temple-theme")||"light"; // light is the default
+  apply(saved);
+  toggle.addEventListener("click",function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    localStorage.setItem("temple-theme", b.dataset.mode); apply(b.dataset.mode);
+  });
+  mq.addEventListener("change",function(){ if((localStorage.getItem("temple-theme")||"light")==="system") apply("system"); });
+
+  // Scrollspy for the sidebar nav.
+  var links=Array.prototype.slice.call(document.querySelectorAll("#nav a"));
+  var map={}; links.forEach(function(a){ map[a.getAttribute("href").slice(1)]=a; });
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){ links.forEach(function(l){l.classList.remove("active");}); var a=map[en.target.id]; if(a)a.classList.add("active"); }
+    });
+  },{rootMargin:"-10% 0px -80% 0px"});
+  document.querySelectorAll("section[id]").forEach(function(s){ obs.observe(s); });
+})();
+</script>
+</body>
+</html>
