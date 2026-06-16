@@ -590,3 +590,4 @@
 | 2026-06-16 | content | images | [diagram-rule.png](projects/content/images/diagram-rule.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): diagram-rule.png |
 | 2026-06-16 | content | reports | [draft.html](projects/content/reports/draft.html) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): draft.html |
 | 2026-06-16 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): substack-version.html |
+| 2026-06-16 | elastofirm-profiler | reports | [match-report.html](projects/elastofirm-profiler/reports/match-report.html) | Visual match report: 10 source profiles with nearest catalogue matches and similarity scores |
