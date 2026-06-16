@@ -583,3 +583,4 @@
 | 2026-06-16 | content | images | [diagram-escalation.png](projects/content/images/diagram-escalation.png) | Agent Credit Card, no gradient, clean white cards with warm shadow: diagram-escalation.png |
 | 2026-06-16 | content | images | [diagram-stops.png](projects/content/images/diagram-stops.png) | Agent Credit Card, no gradient, clean white cards with warm shadow: diagram-stops.png |
 | 2026-06-16 | content | reports | [draft.html](projects/content/reports/draft.html) | Agent Credit Card, no gradient, clean white cards with warm shadow: draft.html |
+| 2026-06-16 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | Agent Credit Card, no gradient, clean white cards with warm shadow: substack-version.html |
