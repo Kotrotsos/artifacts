@@ -598,3 +598,4 @@
 | 2026-06-16 | elastofirm-profiler | reports | [ab-matcher.html](projects/elastofirm-profiler/reports/ab-matcher.html) | A/B: live production matcher vs eccentricity-gated canon_dt+ORB matcher, rotation/margin recovery |
 | 2026-06-16 | content | images | [hero.png](projects/content/images/hero.png) | Five Signals article, static images in current clean style (no animation): hero.png |
 | 2026-06-16 | content | images | [chart-selfplay.png](projects/content/images/chart-selfplay.png) | Five Signals article, static images in current clean style (no animation): chart-selfplay.png |
+| 2026-06-16 | content | images | [signals-summary.png](projects/content/images/signals-summary.png) | Five Signals article, static images in current clean style (no animation): signals-summary.png |
