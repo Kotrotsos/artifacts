@@ -312,3 +312,4 @@
 | 2026-06-16 | images | [hero.png](images/hero.png) | Agent Credit Card, tight snug-glow cards (no margin overflow): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/hero.png |
 | 2026-06-16 | images | [diagram-escalation.png](images/diagram-escalation.png) | Agent Credit Card, tight snug-glow cards (no margin overflow): diagram-escalation.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/diagram-escalation.png |
 | 2026-06-16 | images | [diagram-stops.png](images/diagram-stops.png) | Agent Credit Card, tight snug-glow cards (no margin overflow): diagram-stops.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/diagram-stops.png |
+| 2026-06-16 | reports | [draft.html](reports/draft.html) | Agent Credit Card, tight snug-glow cards (no margin overflow): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/draft.html |
