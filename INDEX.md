@@ -580,3 +580,4 @@
 | 2026-06-16 | content | reports | [draft.html](projects/content/reports/draft.html) | Agent Credit Card, softer/more-transparent snug glow: draft.html |
 | 2026-06-16 | content | reports | [substack-version.html](projects/content/reports/substack-version.html) | Agent Credit Card, softer/more-transparent snug glow: substack-version.html |
 | 2026-06-16 | content | images | [hero.png](projects/content/images/hero.png) | Agent Credit Card, no gradient, clean white cards with warm shadow: hero.png |
+| 2026-06-16 | content | images | [diagram-escalation.png](projects/content/images/diagram-escalation.png) | Agent Credit Card, no gradient, clean white cards with warm shadow: diagram-escalation.png |
