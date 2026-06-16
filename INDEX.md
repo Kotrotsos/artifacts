@@ -600,3 +600,4 @@
 | 2026-06-16 | content | images | [chart-selfplay.png](projects/content/images/chart-selfplay.png) | Five Signals article, static images in current clean style (no animation): chart-selfplay.png |
 | 2026-06-16 | content | images | [signals-summary.png](projects/content/images/signals-summary.png) | Five Signals article, static images in current clean style (no animation): signals-summary.png |
 | 2026-06-16 | content | reports | [draft.html](projects/content/reports/draft.html) | Five Signals article, static images in current clean style (no animation): draft.html |
+| 2026-06-16 | elastofirm-profiler | reports | [ab-diagnose.html](projects/elastofirm-profiler/reports/ab-diagnose.html) | Ranking diagnosis: RP-11176 under 5 scoring schemes, canon-cos vs ORB-heavy combined |
