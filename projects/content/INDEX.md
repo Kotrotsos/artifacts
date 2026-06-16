@@ -327,3 +327,4 @@
 | 2026-06-16 | images | [hero.png](images/hero.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/small-agent-stuck/hero.png |
 | 2026-06-16 | images | [hero-art.png](images/hero-art.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): hero-art.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/small-agent-stuck/hero-art.png |
 | 2026-06-16 | images | [diagram-kept.png](images/diagram-kept.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): diagram-kept.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/small-agent-stuck/diagram-kept.png |
+| 2026-06-16 | images | [diagram-rule.png](images/diagram-rule.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): diagram-rule.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/small-agent-stuck/diagram-rule.png |

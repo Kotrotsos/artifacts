@@ -587,3 +587,4 @@
 | 2026-06-16 | content | images | [hero.png](projects/content/images/hero.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): hero.png |
 | 2026-06-16 | content | images | [hero-art.png](projects/content/images/hero-art.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): hero-art.png |
 | 2026-06-16 | content | images | [diagram-kept.png](projects/content/images/diagram-kept.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): diagram-kept.png |
+| 2026-06-16 | content | images | [diagram-rule.png](projects/content/images/diagram-rule.png) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): diagram-rule.png |
