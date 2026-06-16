@@ -306,3 +306,4 @@
 | 2026-06-15 | images | [diagram-stops.png](images/diagram-stops.png) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): diagram-stops.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/diagram-stops.png |
 | 2026-06-15 | reports | [draft.html](reports/draft.html) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/draft.html |
 | 2026-06-15 | reports | [substack-version.html](reports/substack-version.html) | We Gave the Agent a Credit Card trifecta (DN42 incident, guardrails): substack-version.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/substack-version.html |
+| 2026-06-16 | images | [hero.png](images/hero.png) | Agent Credit Card article, static hero (reverted from animation): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/agent-credit-card/hero.png |
