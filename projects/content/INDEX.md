@@ -333,3 +333,4 @@
 | 2026-06-16 | images | [hero.png](images/hero.png) | Five Signals article, static images in current clean style (no animation): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/hero.png |
 | 2026-06-16 | images | [chart-selfplay.png](images/chart-selfplay.png) | Five Signals article, static images in current clean style (no animation): chart-selfplay.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/chart-selfplay.png |
 | 2026-06-16 | images | [signals-summary.png](images/signals-summary.png) | Five Signals article, static images in current clean style (no animation): signals-summary.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/signals-summary.png |
+| 2026-06-16 | reports | [draft.html](reports/draft.html) | Five Signals article, static images in current clean style (no animation): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/draft.html |
