@@ -331,3 +331,4 @@
 | 2026-06-16 | reports | [draft.html](reports/draft.html) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): draft.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/small-agent-stuck/draft.html |
 | 2026-06-16 | reports | [substack-version.html](reports/substack-version.html) | The Small Agent That Actually Stuck trifecta (narrow reliable agents): substack-version.html | /Users/marcokotrotsos/PERSONAL/Content/drafts/small-agent-stuck/substack-version.html |
 | 2026-06-16 | images | [hero.png](images/hero.png) | Five Signals article, static images in current clean style (no animation): hero.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/hero.png |
+| 2026-06-16 | images | [chart-selfplay.png](images/chart-selfplay.png) | Five Signals article, static images in current clean style (no animation): chart-selfplay.png | /Users/marcokotrotsos/PERSONAL/Content/drafts/frontier-five-signals/chart-selfplay.png |
